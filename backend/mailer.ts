@@ -26,6 +26,7 @@ export async function sendMail(payload: MailPayload) {
   try {
     await transporter.sendMail({
       from: process.env.NUTRI_EMAIL_FROM,
+      replyTo: process.env.NUTRI_EMAIL_REPLY_TO || undefined,
       ...payload,
     });
     return { delivered: true as const };
