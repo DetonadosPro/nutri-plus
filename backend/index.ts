@@ -16,6 +16,7 @@ import {
   type AuthUser,
 } from "./auth";
 import { appUrlForRequest, sendMail } from "./mailer";
+import { appConfig } from "./config";
 import { normalizeSearch } from "./taco-import";
 import {
   macroEnergy,
@@ -54,7 +55,7 @@ if (tacoCount !== 597)
   );
 
 const app = express();
-const port = Number(process.env.NUTRI_API_PORT || 3001);
+const port = appConfig.apiPort;
 const sessionCookie = "nutri_session";
 
 app.use(

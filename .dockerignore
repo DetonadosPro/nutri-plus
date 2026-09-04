@@ -1,0 +1,13 @@
+node_modules
+**/node_modules
+.git
+.env*
+!.env.example
+frontend/.certs
+frontend/dist
+frontend/.vinext
+coverage
+outputs
+tmp
+*.pem
+backend/data/backups

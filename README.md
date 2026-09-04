@@ -1,6 +1,6 @@
 # Nutri+
 
-Sistema exclusivamente local para acompanhamento nutricional de pacientes e nutricionistas. A única base alimentar ativa é a TACO 4ª edição ampliada e revisada, com 597 alimentos e 26 componentes por 100 g.
+Sistema para acompanhamento nutricional de pacientes e nutricionistas, executável localmente ou em servidor. A única base alimentar ativa é a TACO 4ª edição ampliada e revisada, com 597 alimentos e 26 componentes por 100 g.
 
 ## Organização
 
@@ -50,6 +50,19 @@ npm test              # testes do backend
 npm run build         # validação de produção do frontend
 ```
 
+## Execução portátil com Docker
+
+O banco, a API e o frontend podem ser executados sem instalar suas dependências diretamente na máquina:
+
+1. copie `.env.docker.example` para `.env`;
+2. defina uma senha forte em `POSTGRES_PASSWORD` (codifique caracteres especiais para uso em URL);
+3. execute `docker compose up --build`;
+4. acesse `http://localhost:8080`.
+
+O PostgreSQL fica em um volume persistente. `docker compose down` para os serviços sem apagar os dados; não use a opção `--volumes` sem ter um backup confirmado.
+
+Em qualquer ambiente, o endereço do PostgreSQL fica somente em `DATABASE_URL`. Consulte `docs/ARCHITECTURE.md` para as proteções de conexão e a rotina de backup.
+
 ## Política nutricional
 
 - todos os valores são por 100 g e escalados por uma única regra no backend;
@@ -58,6 +71,6 @@ npm run build         # validação de produção do frontend
 - zero numérico continua sendo zero real;
 - kcal e kJ são campos independentes da tabela;
 - os totais de refeições, dias e períodos usam a mesma função centralizada;
-- o banco e a aplicação permanecem locais; somente o envio opcional de e-mails utiliza o provedor SMTP configurado.
+- a API é a única camada que acessa o PostgreSQL; nenhuma credencial é armazenada no Git.
 
 Detalhes: [arquitetura](docs/ARCHITECTURE.md) e [relatório da TACO](docs/TACO_EXTRACTION_REPORT.md).
