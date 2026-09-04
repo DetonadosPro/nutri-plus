@@ -1,0 +1,3006 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans-app);
+  --font-display: var(--font-display-app);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-surface-soft: var(--surface-soft);
+  --radius-sm: calc(var(--radius) * 0.65);
+  --radius-md: calc(var(--radius) * 0.82);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.45);
+}
+
+:root {
+  --large-screen-scale: 1;
+  --background: oklch(0.985 0.006 175);
+  --foreground: oklch(0.255 0.025 161);
+  --card: oklch(0.998 0.002 175);
+  --card-foreground: var(--foreground);
+  --popover: oklch(0.998 0.002 95);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(0.43 0.075 161);
+  --primary-foreground: oklch(0.985 0.004 95);
+  --secondary: oklch(0.935 0.022 158);
+  --secondary-foreground: oklch(0.34 0.06 160);
+  --muted: oklch(0.955 0.009 175);
+  --muted-foreground: oklch(0.49 0.024 155);
+  --accent: oklch(0.94 0.025 84);
+  --accent-foreground: var(--foreground);
+  --destructive: oklch(0.57 0.19 27);
+  --border: oklch(0.895 0.012 175);
+  --input: oklch(0.845 0.015 175);
+  --ring: oklch(0.56 0.075 160);
+  --surface-soft: oklch(0.97 0.012 175);
+  --radius: 0.85rem;
+  --chart-grid: oklch(0.88 0.012 92);
+  --chart-sage: oklch(0.48 0.08 160);
+  --chart-amber: oklch(0.65 0.1 72);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  button,
+  [role="button"],
+  summary {
+    cursor: pointer;
+  }
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+  button:focus-visible,
+  a:focus-visible,
+  summary:focus-visible {
+    @apply outline-none ring-2 ring-ring/40 ring-offset-2 ring-offset-background;
+  }
+  ::selection {
+    background: oklch(0.82 0.05 159 / 55%);
+  }
+}
+
+@layer components {
+  .login-shell {
+    background:
+      radial-gradient(circle at 85% 8%, rgb(211 234 228 / 65%), transparent 28rem),
+      var(--background);
+  }
+  .login-story {
+    background:
+      radial-gradient(circle at 18% 82%, rgb(255 255 255 / 72%), transparent 20rem),
+      linear-gradient(145deg, #edf4f0, #f5f1e8);
+  }
+  .login-card {
+    @apply rounded-[26px] border bg-card/82 p-5 shadow-[0_22px_70px_oklch(0.25_0.025_160/.09)] backdrop-blur-sm sm:p-8 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none;
+  }
+  .app-canvas {
+    @apply min-h-dvh bg-background text-foreground;
+  }
+  .app-frame {
+    @apply mx-auto min-h-dvh max-w-[1680px];
+  }
+  @media (min-width: 1681px) {
+    /* Keep the proven 1680px composition and enlarge the whole frame as the
+       viewport grows. CSS zoom preserves layout, sticky positioning and hit
+       areas unlike a transform on the outer canvas. */
+    .app-frame {
+      width: 1680px;
+      min-height: calc(100dvh / var(--large-screen-scale));
+      max-width: none;
+      zoom: var(--large-screen-scale);
+    }
+    .app-frame .app-sidebar {
+      height: calc(100dvh / var(--large-screen-scale));
+    }
+  }
+  .app-sidebar {
+    @apply sticky top-0 h-dvh flex-col border-r bg-[oklch(0.965_0.011_94)] px-5 py-6;
+  }
+  .content-shell {
+    @apply mx-auto w-full max-w-[1320px] px-5 py-7 sm:px-8 sm:py-9 lg:px-10 xl:px-14 xl:py-11;
+  }
+  .mobile-topbar {
+    @apply sticky top-0 z-40 flex h-16 items-center justify-between border-b bg-background/95 px-5 backdrop-blur;
+  }
+  .mobile-bottom-nav {
+    @apply fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t bg-background/96 px-1 pb-[max(.45rem,env(safe-area-inset-bottom))] pt-1 backdrop-blur;
+  }
+  .mobile-bottom-nav button {
+    @apply flex min-h-[58px] flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-semibold text-muted-foreground transition-colors duration-200;
+  }
+  .mobile-bottom-nav button[aria-current="page"] {
+    @apply text-primary;
+  }
+  .sidebar-link {
+    @apply flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold text-muted-foreground transition-all duration-200 hover:bg-white/65 hover:text-foreground;
+  }
+  .sidebar-link[aria-current="page"] {
+    @apply bg-white text-primary shadow-[0_1px_2px_oklch(0.25_0.02_160/.07)];
+  }
+  .avatar-mark {
+    @apply grid size-10 shrink-0 place-items-center rounded-full bg-secondary text-sm font-bold text-primary;
+  }
+
+  .page-header {
+    @apply mb-8 flex flex-wrap items-end justify-between gap-5;
+  }
+  .page-title {
+    @apply mt-1 font-display text-[2rem] font-semibold leading-[1.08] tracking-[-0.045em] sm:text-[2.45rem];
+  }
+  .page-title::first-letter {
+    text-transform: uppercase;
+  }
+  .page-description {
+    @apply mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-[15px];
+  }
+  .eyebrow {
+    @apply text-xs font-bold uppercase tracking-[0.12em] text-primary;
+  }
+  .section-header {
+    @apply mb-4 flex flex-wrap items-end justify-between gap-3;
+  }
+  .section-title {
+    @apply font-display text-xl font-semibold tracking-[-0.025em];
+  }
+  .section-description {
+    @apply mt-1 text-sm text-muted-foreground;
+  }
+
+  .surface-panel {
+    @apply rounded-[22px] border bg-card p-5 shadow-[0_1px_2px_oklch(0.25_0.02_160/.035)] sm:p-6;
+  }
+  .energy-hero {
+    @apply mb-5 rounded-[24px] border bg-card px-5 py-6 sm:px-7 sm:py-7;
+  }
+  .progress-track {
+    @apply h-1.5 overflow-hidden rounded-full bg-muted;
+  }
+  .progress-track > span {
+    @apply block h-full rounded-full bg-primary transition-[width] duration-300;
+  }
+  .progress-track > span.blue {
+    @apply bg-[#5b9aaa];
+  }
+  .macro-energy-grid > :not(:first-child) {
+    border-top: 1px solid var(--border);
+  }
+  .macro-energy-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* The metric card is intentionally stacked until the desktop workspace is
+     genuinely wide. At very wide viewports the three compact columns use the
+     available room without squeezing the kcal/percentage pair. */
+  @media (min-width: 2200px) {
+    .macro-energy-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .macro-energy-grid > :not(:first-child) {
+      border-top: 0;
+      border-left: 1px solid var(--border);
+    }
+    .macro-energy-grid > * {
+      padding-top: 0;
+      padding-bottom: 0;
+      padding-inline: 0.25rem;
+    }
+    .macro-energy-grid > :first-child {
+      padding-left: 0;
+    }
+    .macro-energy-grid > :last-child {
+      padding-right: 0;
+    }
+  }
+
+  .metric-grid {
+    @apply grid grid-cols-2 gap-px overflow-hidden rounded-[20px] border bg-border;
+  }
+  .metric-grid > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+  @media (min-width: 64rem) {
+    .metric-grid {
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 0.75rem;
+      overflow: visible;
+      border-color: transparent;
+      background: transparent;
+    }
+    .metric-grid > .metric {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+    }
+    .metric-grid > :last-child:nth-child(odd) {
+      grid-column: auto;
+    }
+  }
+  .metric-grid-compact {
+    @apply mt-0;
+  }
+  .metric-grid-narrow {
+    @apply lg:grid-cols-2;
+  }
+  .metric {
+    @apply min-w-0 bg-card px-4 py-4 sm:px-5;
+  }
+  .metric[data-tone="sage"] {
+    box-shadow: inset 0 3px 0 oklch(0.65 0.07 160 / 55%);
+  }
+  .metric[data-tone="blue"] {
+    box-shadow: inset 0 3px 0 oklch(0.68 0.07 220 / 50%);
+  }
+  .metric[data-tone="amber"] {
+    box-shadow: inset 0 3px 0 oklch(0.72 0.09 75 / 48%);
+  }
+  .metric-label {
+    @apply truncate text-xs font-medium text-muted-foreground;
+  }
+  .metric-value {
+    @apply mt-1.5 truncate font-display text-xl font-semibold tabular-nums sm:text-2xl;
+  }
+  .metric-detail {
+    @apply mt-1 truncate text-[11px] text-muted-foreground;
+  }
+  .glycemic-level {
+    @apply shrink-0 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.08em];
+  }
+  .glycemic-level[data-level="baixo"] {
+    @apply bg-emerald-100 text-emerald-700;
+  }
+  .glycemic-level[data-level="médio"] {
+    @apply bg-amber-100 text-amber-700;
+  }
+  .glycemic-level[data-level="alto"] {
+    @apply bg-rose-100 text-rose-700;
+  }
+  .glycemic-classification {
+    @apply inline-flex shrink-0 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[.08em];
+  }
+  .glycemic-classification[data-level="excelente"] {
+    @apply bg-emerald-100 text-emerald-700;
+  }
+  .glycemic-classification[data-level="boa"] {
+    @apply bg-lime-100 text-lime-700;
+  }
+  .glycemic-classification[data-level="moderada"] {
+    @apply bg-amber-100 text-amber-700;
+  }
+  .glycemic-classification[data-level="elevada"] {
+    @apply bg-orange-100 text-orange-700;
+  }
+  .glycemic-classification[data-level="muito-elevada"] {
+    @apply bg-rose-100 text-rose-700;
+  }
+
+  .feature-icon {
+    @apply grid size-11 shrink-0 place-items-center rounded-2xl bg-secondary text-primary;
+  }
+  .feature-icon.blue {
+    @apply bg-[#e6f2f4] text-[#397784];
+  }
+  .icon-button {
+    @apply grid size-11 shrink-0 place-items-center rounded-xl border bg-card text-foreground transition-all duration-200 hover:bg-muted active:scale-[.97];
+  }
+  .icon-button.subtle {
+    @apply border-transparent bg-transparent text-muted-foreground hover:bg-muted hover:text-foreground;
+  }
+  .icon-button.filled-blue {
+    @apply border-[#bdd8de] bg-card text-foreground shadow-sm hover:bg-muted;
+  }
+  .secondary-action {
+    @apply inline-flex min-h-10 items-center gap-2 rounded-xl px-2.5 text-sm font-semibold text-primary transition-colors duration-200 hover:bg-secondary;
+  }
+
+  .meal-timeline {
+    @apply overflow-hidden rounded-[22px] border bg-card;
+  }
+  .meal-group {
+    @apply px-4 py-5 sm:px-5;
+  }
+  .meal-group + .meal-group {
+    @apply border-t;
+  }
+  .meal-group-header {
+    @apply flex items-start gap-3;
+  }
+  .meal-icon {
+    @apply grid size-10 shrink-0 place-items-center rounded-2xl bg-[oklch(0.955_0.018_82)] text-[#78613f];
+  }
+  .meal-title {
+    @apply font-display text-lg font-semibold;
+  }
+  .meal-time {
+    @apply text-xs font-medium text-muted-foreground;
+  }
+  .meal-subtitle {
+    @apply mt-0.5 text-xs text-muted-foreground;
+  }
+  .meal-entries {
+    @apply ml-[52px] mt-3 divide-y;
+  }
+  .meal-entry {
+    @apply flex min-h-14 items-start gap-3 py-3;
+  }
+  .meal-entry-title {
+    @apply text-sm font-semibold leading-snug;
+  }
+  .meal-entry-time {
+    @apply text-[11px] font-semibold text-muted-foreground;
+  }
+  .meal-entry-meta {
+    @apply mt-1 text-xs text-muted-foreground;
+  }
+  .meal-add {
+    @apply ml-[52px] mt-2 inline-flex min-h-10 items-center gap-1.5 rounded-xl px-2 text-xs font-semibold text-primary transition hover:bg-secondary;
+  }
+  .meal-timeline-dense .meal-entry:nth-child(n + 4) {
+    @apply hidden;
+  }
+  .meal-timeline-dense .meal-add {
+    @apply hidden;
+  }
+
+  .daily-nutrient-disclosure {
+    @apply mt-4 overflow-hidden rounded-[18px] border bg-card/65 transition-colors duration-200 open:bg-card;
+  }
+  .daily-nutrient-disclosure > summary {
+    @apply flex min-h-16 list-none items-center gap-3 px-4 py-3 text-left sm:px-5;
+  }
+  .daily-nutrient-disclosure > summary::-webkit-details-marker {
+    display: none;
+  }
+  .daily-nutrient-disclosure > summary strong {
+    @apply block text-sm font-semibold;
+  }
+  .daily-nutrient-disclosure > summary small {
+    @apply mt-0.5 block truncate text-[11px] font-normal text-muted-foreground sm:text-xs;
+  }
+  .daily-nutrient-icon {
+    @apply grid size-9 shrink-0 place-items-center rounded-xl bg-secondary text-primary;
+  }
+  .daily-nutrient-count {
+    @apply hidden shrink-0 rounded-full bg-muted px-2.5 py-1 text-[10px] font-semibold text-muted-foreground sm:inline-flex;
+  }
+  .daily-nutrient-content {
+    @apply border-t px-4 pb-2 sm:px-5;
+  }
+  .daily-nutrient-content > section {
+    @apply border-t-0;
+  }
+
+  .empty-state {
+    @apply flex min-h-56 flex-col items-center justify-center rounded-[22px] border border-dashed bg-card/45 px-6 py-10 text-center;
+  }
+  .empty-state-icon {
+    @apply grid size-11 place-items-center rounded-2xl bg-muted text-muted-foreground;
+  }
+
+  .date-navigator {
+    @apply mb-5 rounded-[22px] border bg-card p-3 sm:p-4;
+  }
+  .day-strip {
+    @apply flex min-w-0 gap-1 overflow-x-auto overscroll-x-contain scroll-smooth px-1 [scrollbar-width:none];
+    scroll-snap-type: x mandatory;
+  }
+  .day-strip::-webkit-scrollbar {
+    display: none;
+  }
+  .day-chip {
+    @apply flex min-h-[68px] min-w-[58px] flex-1 snap-center flex-col items-center justify-center rounded-2xl text-muted-foreground transition-all duration-200 hover:bg-muted;
+  }
+  .day-chip[aria-pressed="true"] {
+    @apply bg-primary text-primary-foreground shadow-sm;
+  }
+  .day-content-transition {
+    @apply transition-opacity duration-200;
+  }
+  .day-content-transition.is-loading {
+    @apply opacity-55;
+  }
+
+  .meal-picker {
+    @apply grid grid-cols-2 gap-2 sm:grid-cols-3;
+  }
+  .meal-picker button {
+    @apply flex min-h-12 items-center gap-2 rounded-xl border bg-card px-3 text-left text-xs font-semibold text-muted-foreground transition-all duration-200 hover:bg-muted;
+  }
+  .meal-picker button[aria-pressed="true"] {
+    @apply border-primary/35 bg-secondary text-primary shadow-[0_0_0_1px_oklch(0.43_0.075_161/.12)];
+  }
+
+  .guidance-item {
+    @apply grid grid-cols-[44px_minmax(0,1fr)] gap-4 rounded-[22px] border bg-card p-5 sm:p-6;
+  }
+  .profile-grid {
+    @apply mt-4 grid gap-px overflow-hidden rounded-[20px] border bg-border sm:grid-cols-2;
+  }
+  .profile-grid > div {
+    @apply bg-card p-4 sm:p-5;
+  }
+  .profile-grid dt {
+    @apply text-xs font-medium text-muted-foreground;
+  }
+  .profile-grid dd {
+    @apply mt-1.5 text-sm font-semibold leading-relaxed;
+  }
+
+  .patient-list {
+    @apply overflow-hidden rounded-[22px] border bg-card;
+  }
+  .patient-list-head {
+    @apply hidden grid-cols-[minmax(210px,1.35fr)_110px_125px_105px_24px] gap-4 border-b bg-muted/45 px-5 py-3 text-[11px] font-bold uppercase tracking-[.08em] text-muted-foreground md:grid;
+  }
+  .patient-row {
+    @apply grid w-full grid-cols-[minmax(0,1fr)_20px] items-center gap-3 border-b px-4 py-4 text-left transition-colors duration-200 last:border-0 hover:bg-muted/45 md:grid-cols-[minmax(210px,1.35fr)_110px_125px_105px_24px] md:gap-4 md:px-5;
+  }
+  .patient-cell {
+    @apply hidden text-sm md:block;
+  }
+  .patient-cell small {
+    @apply hidden text-[10px] uppercase tracking-wide text-muted-foreground;
+  }
+  .patient-cell strong {
+    @apply font-semibold;
+  }
+  .patient-workspace-header {
+    @apply grid grid-cols-[56px_minmax(0,1fr)] items-center gap-4 rounded-[24px] border bg-card p-5 sm:flex sm:flex-wrap sm:p-6;
+  }
+  .patient-workspace-header > button {
+    @apply col-start-2 justify-self-start sm:ml-auto;
+  }
+  .patient-workspace-avatar {
+    @apply grid size-14 shrink-0 place-items-center rounded-full bg-secondary font-display text-lg font-bold text-primary sm:size-16;
+  }
+  .workspace-tabs {
+    @apply my-6 flex gap-1 overflow-x-auto border-b [scrollbar-width:none];
+  }
+  .workspace-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .workspace-tabs button {
+    @apply relative flex min-h-12 shrink-0 items-center gap-2 px-3 text-sm font-semibold text-muted-foreground transition-colors duration-200 hover:text-foreground;
+  }
+  .workspace-tabs button[aria-current="page"] {
+    @apply text-primary;
+  }
+  .workspace-tabs button[aria-current="page"]::after {
+    content: "";
+    @apply absolute inset-x-2 bottom-0 h-0.5 rounded-full bg-primary;
+  }
+  .range-picker {
+    @apply inline-flex rounded-xl bg-muted p-1;
+  }
+  .range-picker button {
+    @apply min-h-9 rounded-lg px-3 text-xs font-semibold text-muted-foreground transition-all duration-200;
+  }
+  .range-picker button[aria-pressed="true"] {
+    @apply bg-card text-foreground shadow-sm;
+  }
+  .compact-details {
+    @apply grid gap-x-5 gap-y-4 sm:grid-cols-2;
+  }
+  .compact-details dt {
+    @apply text-xs font-medium text-muted-foreground;
+  }
+  .compact-details dd {
+    @apply mt-1 text-sm font-semibold leading-relaxed;
+  }
+  .status-badge {
+    @apply inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[.08em];
+  }
+  .status-badge[data-tone="private"] {
+    @apply bg-[#f2e8e3] text-[#805a4d];
+  }
+  .status-badge[data-tone="shared"] {
+    @apply bg-secondary text-primary;
+  }
+  .segmented-control {
+    @apply grid grid-cols-2 gap-1 rounded-xl bg-muted p-1;
+  }
+  .segmented-control button {
+    @apply flex min-h-10 items-center justify-center gap-2 rounded-lg text-xs font-semibold text-muted-foreground transition-all duration-200;
+  }
+  .segmented-control button[aria-pressed="true"] {
+    @apply bg-card text-foreground shadow-sm;
+  }
+  .feedback-item {
+    @apply rounded-[20px] border bg-card p-5;
+  }
+
+  /* Shared Nutri+ experience: the patient diary establishes the visual system
+     used by both roles while patient-only interactions remain scoped below. */
+  .patient-app-shell,
+  .nutritionist-app-shell {
+    --patient-ink: #183331;
+    --patient-muted: #617270;
+    --patient-line: #dfe8e7;
+    --patient-blue: #4e9fc2;
+    --patient-blue-soft: #e9f5fa;
+    --patient-protein: #529bb5;
+    --patient-carb: #d6902e;
+    --patient-fat: #cd7068;
+    background: radial-gradient(circle at 12% -10%, #e8f4f1 0, transparent 28rem), #f7f9f8;
+    color: var(--patient-ink);
+  }
+  .nutritionist-app-shell .nutritionist-bottom-nav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .nutritionist-app-shell .mobile-bottom-nav button[aria-current="page"] {
+    background: #dceee9;
+    color: #245f53;
+    box-shadow: inset 0 0 0 1px #b8d7d0;
+  }
+  :is(.patient-app-shell, .nutritionist-app-shell) .content-shell {
+    max-width: 1440px;
+    padding: 1rem;
+  }
+  :is(.patient-app-shell, .nutritionist-app-shell) .mobile-topbar {
+    height: 3.625rem;
+    border-color: var(--patient-line);
+    background: rgb(247 249 248 / 92%);
+  }
+  :is(.patient-app-shell, .nutritionist-app-shell) .app-sidebar {
+    border-color: var(--patient-line);
+    background: rgb(244 248 247 / 94%);
+  }
+  :is(.patient-app-shell, .nutritionist-app-shell) .page-header {
+    margin-bottom: 1.25rem;
+    align-items: center;
+  }
+  :is(.patient-app-shell, .nutritionist-app-shell) .page-title {
+    margin-top: 0.2rem;
+    font-size: clamp(1.7rem, 7vw, 2.25rem);
+    letter-spacing: -0.05em;
+  }
+  :is(.patient-app-shell, .nutritionist-app-shell) .page-description {
+    margin-top: 0.35rem;
+    max-width: 42rem;
+    font-size: 0.78rem;
+  }
+  :is(.patient-app-shell, .nutritionist-app-shell) .metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    overflow: visible;
+    border: 0;
+    background: transparent;
+  }
+  :is(.patient-app-shell, .nutritionist-app-shell) .metric-grid > .metric {
+    border: 1px solid var(--patient-line);
+    border-radius: 1.125rem;
+    box-shadow: 0 6px 20px rgb(25 57 54 / 3%);
+  }
+  :is(.patient-app-shell, .nutritionist-app-shell) .metric-grid > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+  :is(.patient-app-shell, .nutritionist-app-shell) .surface-panel,
+  :is(.patient-app-shell, .nutritionist-app-shell) .guidance-item,
+  :is(.patient-app-shell, .nutritionist-app-shell) .meal-timeline,
+  :is(.patient-app-shell, .nutritionist-app-shell) .profile-grid,
+  :is(.patient-app-shell, .nutritionist-app-shell) .date-navigator,
+  .nutritionist-app-shell .patient-list,
+  .nutritionist-app-shell .patient-workspace-header,
+  .nutritionist-app-shell .feedback-item,
+  .nutritionist-app-shell .daily-nutrient-disclosure {
+    border-color: var(--patient-line);
+    box-shadow: 0 8px 26px rgb(25 57 54 / 4%);
+  }
+  :is(.patient-app-shell, .nutritionist-app-shell) .surface-panel {
+    border-radius: 1.25rem;
+  }
+  .nutritionist-app-shell .patient-list,
+  .nutritionist-app-shell .patient-workspace-header,
+  .nutritionist-app-shell .feedback-item {
+    border-radius: 1.125rem;
+  }
+  .nutritionist-app-shell .workspace-tabs {
+    border-color: var(--patient-line);
+  }
+  .nutritionist-app-shell .mobile-bottom-nav {
+    border-color: var(--patient-line);
+    background: rgb(249 251 250 / 94%);
+    box-shadow: 0 -10px 32px rgb(25 57 54 / 7%);
+  }
+  .patient-sidebar-add {
+    margin-top: 1.25rem;
+    display: flex;
+    min-height: 2.75rem;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 0.875rem;
+    background: var(--patient-ink);
+    padding-inline: 0.75rem;
+    color: white;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    transition:
+      transform 160ms ease,
+      background 160ms ease;
+  }
+  .patient-sidebar-add:hover {
+    background: #244744;
+  }
+  .patient-sidebar-add:active {
+    transform: scale(0.98);
+  }
+  .patient-day-home {
+    margin-inline: auto;
+    max-width: 1320px;
+  }
+  .patient-day-switcher {
+    margin-bottom: 0.875rem;
+    touch-action: pan-y;
+    user-select: none;
+  }
+  .patient-day-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .patient-day-heading > div {
+    min-width: 0;
+  }
+  .patient-day-greeting {
+    color: var(--patient-muted);
+    font-size: 0.75rem;
+    font-weight: 650;
+  }
+  .patient-day-heading h1 {
+    font-family: var(--font-display-app);
+    font-size: clamp(1.8rem, 8vw, 2.35rem);
+    font-weight: 650;
+    letter-spacing: -0.055em;
+    line-height: 1;
+    text-transform: capitalize;
+  }
+  .patient-day-title-row {
+    margin-top: 0.125rem;
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.55rem;
+  }
+  .patient-calendar-button {
+    position: relative;
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex: 0 0 auto;
+    cursor: pointer;
+    place-items: center;
+    border-radius: 0.8rem;
+    background: var(--patient-blue-soft);
+    color: var(--patient-blue);
+    transition:
+      transform 160ms ease,
+      background 160ms ease;
+  }
+  .patient-calendar-button:hover {
+    background: #dceff7;
+  }
+  .patient-calendar-button:active {
+    transform: scale(0.96);
+  }
+  .patient-calendar-button:focus-within {
+    outline: 2px solid rgb(78 159 194 / 45%);
+    outline-offset: 2px;
+  }
+  .patient-calendar-button input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    cursor: pointer;
+    opacity: 0;
+  }
+  .patient-selected-date {
+    margin-top: 0.3rem;
+    overflow: hidden;
+    color: var(--patient-muted);
+    font-size: 0.6875rem;
+    font-weight: 620;
+    text-overflow: ellipsis;
+    text-transform: capitalize;
+    white-space: nowrap;
+  }
+  .patient-day-stats {
+    display: grid;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+    place-items: center;
+    border-radius: 0.875rem;
+    background: var(--patient-blue-soft);
+    color: var(--patient-blue);
+    transition:
+      transform 160ms ease,
+      background 160ms ease;
+  }
+  .patient-day-stats:hover {
+    background: #dceff7;
+  }
+  .patient-day-stats:active {
+    transform: scale(0.96);
+  }
+  .patient-date-control {
+    margin-top: 0.75rem;
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 1fr) 2.75rem;
+    align-items: center;
+    overflow: hidden;
+    border: 1px solid var(--patient-line);
+    border-radius: 1rem;
+    background: rgb(255 255 255 / 85%);
+  }
+  .patient-date-control > button {
+    display: grid;
+    min-height: 2.75rem;
+    place-items: center;
+    color: var(--patient-muted);
+    transition:
+      background 160ms ease,
+      color 160ms ease;
+  }
+  .patient-date-control > button:hover {
+    background: #f0f5f4;
+    color: var(--patient-ink);
+  }
+  .patient-date-current {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-inline: 1px solid var(--patient-line);
+    color: var(--patient-ink);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: capitalize;
+  }
+  .patient-date-current span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .patient-date-current input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    cursor: pointer;
+    opacity: 0;
+  }
+  .patient-date-current:focus-within {
+    box-shadow: inset 0 0 0 2px rgb(78 159 194 / 45%);
+  }
+  .patient-back-today {
+    margin-top: 0.25rem;
+    display: inline-flex;
+    min-height: 2rem;
+    border-radius: 999px;
+    padding-inline: 0.75rem;
+    color: var(--patient-blue);
+    font-size: 0.6875rem;
+    font-weight: 750;
+  }
+  .patient-swipe-hint {
+    margin-top: 0.2rem;
+    color: #8b9997;
+    font-size: 0.625rem;
+  }
+  .patient-day-dashboard {
+    display: grid;
+    grid-template-areas: "energy" "macros" "insights" "meals";
+    gap: 0.875rem;
+  }
+  .patient-energy-card {
+    grid-area: energy;
+    overflow: hidden;
+    border: 1px solid #cfe5ee;
+    border-radius: 1.625rem;
+    background:
+      radial-gradient(circle at 93% 12%, rgb(255 255 255 / 68%) 0, transparent 9rem),
+      linear-gradient(145deg, #dff1f8, #eff9fc 72%);
+    padding: 1.125rem;
+    box-shadow: 0 14px 40px rgb(53 104 120 / 7%);
+  }
+  .patient-energy-card[data-over="true"] {
+    border-color: #f0d3ce;
+    background: linear-gradient(145deg, #fbecea, #fff8f6);
+  }
+  .patient-energy-sentence {
+    color: #435d63;
+    font-size: 0.8125rem;
+  }
+  .patient-energy-sentence strong {
+    color: var(--patient-ink);
+    font-weight: 800;
+  }
+  .patient-energy-main {
+    margin-top: 0.375rem;
+    display: flex;
+    align-items: end;
+    gap: 0.75rem;
+  }
+  .patient-energy-number {
+    min-width: 0;
+    font-family: var(--font-display-app);
+    font-size: clamp(3.25rem, 17vw, 5.25rem);
+    font-weight: 680;
+    letter-spacing: -0.075em;
+    line-height: 0.92;
+  }
+  .patient-energy-main > div {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 0.35rem;
+    font-size: 0.875rem;
+    line-height: 1.15;
+  }
+  .patient-energy-main > div strong {
+    font-size: 1rem;
+  }
+  .patient-energy-main > div span {
+    color: var(--patient-muted);
+  }
+  .patient-energy-track,
+  .patient-macro-track,
+  .patient-water-track {
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 75%);
+  }
+  .patient-energy-track {
+    margin-top: 1rem;
+    height: 0.625rem;
+  }
+  .patient-energy-track span,
+  .patient-macro-track span,
+  .patient-water-track span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--patient-blue);
+    transition: width 280ms ease-out;
+  }
+  .patient-energy-card[data-over="true"] .patient-energy-track span {
+    background: var(--patient-fat);
+  }
+  .patient-energy-footer {
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    color: var(--patient-muted);
+    font-size: 0.6875rem;
+    font-weight: 600;
+  }
+  .patient-macro-grid {
+    grid-area: macros;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    gap: 0.5rem;
+  }
+  .patient-macro-card {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--patient-line);
+    border-radius: 1.125rem;
+    background: rgb(255 255 255 / 92%);
+    box-shadow: 0 6px 22px rgb(31 62 59 / 4%);
+  }
+  .patient-macro-card > summary {
+    display: block;
+    list-style: none;
+    padding: 0.75rem;
+  }
+  .patient-macro-card > summary::-webkit-details-marker {
+    display: none;
+  }
+  .patient-macro-label {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--patient-muted);
+    font-size: 0.65rem;
+    font-weight: 700;
+  }
+  .patient-macro-label > span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .patient-macro-chevron {
+    margin-left: auto;
+    flex: 0 0 auto;
+    transition: transform 160ms ease;
+  }
+  .patient-macro-card[open] .patient-macro-chevron {
+    transform: rotate(180deg);
+  }
+  .patient-macro-letter {
+    display: grid;
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 0.45rem;
+    background: #ebf5f8;
+    color: var(--patient-protein);
+    font-size: 0.625rem;
+  }
+  .patient-macro-card[data-tone="carb"] .patient-macro-letter {
+    background: #fff4df;
+    color: var(--patient-carb);
+  }
+  .patient-macro-card[data-tone="fat"] .patient-macro-letter {
+    background: #faece9;
+    color: var(--patient-fat);
+  }
+  .patient-macro-card > summary > p {
+    margin-top: 0.55rem;
+    display: flex;
+    min-width: 0;
+    align-items: baseline;
+    white-space: nowrap;
+  }
+  .patient-macro-card > summary > p strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: var(--font-display-app);
+    font-size: 1.05rem;
+    font-weight: 750;
+    letter-spacing: -0.035em;
+  }
+  .patient-macro-card > summary > p span {
+    color: var(--patient-muted);
+    font-size: 0.625rem;
+  }
+  .patient-macro-track {
+    margin-top: 0.55rem;
+    height: 0.3rem;
+    background: #edf1f1;
+  }
+  .patient-macro-card[data-tone="protein"] .patient-macro-track span {
+    background: var(--patient-protein);
+  }
+  .patient-macro-card[data-tone="carb"] .patient-macro-track span {
+    background: var(--patient-carb);
+  }
+  .patient-macro-card[data-tone="fat"] .patient-macro-track span {
+    background: var(--patient-fat);
+  }
+  .patient-macro-card[data-over="true"] .patient-macro-track span {
+    background-image: repeating-linear-gradient(
+      135deg,
+      transparent 0 4px,
+      rgb(255 255 255 / 42%) 4px 7px
+    );
+  }
+  .patient-macro-card > summary > small {
+    margin-top: 0.4rem;
+    display: block;
+    overflow: hidden;
+    color: var(--patient-muted);
+    font-size: 0.575rem;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .patient-macro-expanded {
+    display: grid;
+    gap: 0.4rem;
+    border-top: 1px solid var(--patient-line);
+    background: #f8faf9;
+    padding: 0.65rem 0.75rem;
+    animation: patient-reveal 160ms ease-out both;
+  }
+  .patient-macro-kcal-icon {
+    display: none;
+  }
+  .patient-macro-expanded small {
+    display: block;
+    color: var(--patient-muted);
+    font-size: 0.625rem;
+    line-height: 1.25;
+  }
+  .patient-macro-expanded p {
+    margin-top: 0.1rem;
+    white-space: nowrap;
+    font-size: 0.6875rem;
+  }
+  .patient-macro-expanded p strong,
+  .patient-macro-energy-share > strong {
+    font-family: var(--font-display-app);
+    font-size: 0.9rem;
+    font-weight: 760;
+  }
+  .patient-macro-energy-share {
+    border-top: 1px solid var(--patient-line);
+    padding-top: 0.35rem;
+  }
+  .patient-day-insights {
+    grid-area: insights;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+  .patient-insight-card {
+    min-width: 0;
+    border: 1px solid var(--patient-line);
+    border-radius: 1.125rem;
+    background: rgb(255 255 255 / 88%);
+    padding: 0.75rem;
+  }
+  .patient-insight-heading {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .patient-insight-heading > div {
+    min-width: 0;
+  }
+  .patient-insight-icon {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 0.7rem;
+    background: #fff4df;
+    color: var(--patient-carb);
+    font-size: 0.65rem;
+    font-weight: 850;
+  }
+  .patient-insight-card.water .patient-insight-icon {
+    background: var(--patient-blue-soft);
+    color: var(--patient-blue);
+  }
+  .patient-insight-heading p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.6875rem;
+    font-weight: 750;
+  }
+  .patient-insight-heading small {
+    display: block;
+    color: var(--patient-muted);
+    font-size: 0.625rem;
+  }
+  .patient-insight-value {
+    margin-top: 0.65rem;
+    display: flex;
+    min-height: 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.35rem;
+  }
+  .patient-insight-value strong,
+  .patient-water-row strong {
+    font-family: var(--font-display-app);
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+  .patient-insight-value > span {
+    overflow: hidden;
+    border-radius: 999px;
+    background: #fff2d8;
+    padding: 0.25rem 0.4rem;
+    color: #8a5b16;
+    font-size: 0.5rem;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .patient-insight-value > span[data-level="excelente"],
+  .patient-insight-value > span[data-level="boa"] {
+    background: #e8f5ea;
+    color: #317149;
+  }
+  .patient-insight-value > span[data-level="elevada"],
+  .patient-insight-value > span[data-level="muito-elevada"] {
+    background: #fae9e6;
+    color: #a04d45;
+  }
+  .patient-insight-detail {
+    margin-top: 0.45rem;
+    color: var(--patient-muted);
+    font-size: 0.625rem;
+    line-height: 1.35;
+  }
+  .patient-water-row {
+    margin-top: 0.6rem;
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.35rem;
+  }
+  .patient-water-row > p {
+    display: flex;
+    min-width: 0;
+    align-items: baseline;
+    white-space: nowrap;
+  }
+  .patient-water-row > p span {
+    color: var(--patient-muted);
+    font-size: 0.625rem;
+  }
+  .patient-water-actions {
+    display: flex;
+    gap: 0.3rem;
+  }
+  .patient-water-actions button {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border-radius: 0.65rem;
+    background: var(--patient-blue);
+    color: white;
+    transition:
+      transform 140ms ease,
+      opacity 140ms ease;
+  }
+  .patient-water-actions button:active {
+    transform: scale(0.94);
+  }
+  .patient-water-actions button:disabled {
+    opacity: 0.35;
+  }
+  .patient-water-track {
+    margin-top: 0.55rem;
+    height: 0.3rem;
+    background: var(--patient-blue-soft);
+  }
+  .patient-meals-section {
+    grid-area: meals;
+    min-width: 0;
+    padding-top: 0.25rem;
+  }
+  .patient-section-heading {
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+  .patient-section-kicker {
+    color: var(--patient-muted);
+    font-size: 0.625rem;
+    font-weight: 750;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .patient-section-heading h2 {
+    margin-top: 0.1rem;
+    font-family: var(--font-display-app);
+    font-size: 1.55rem;
+    font-weight: 680;
+    letter-spacing: -0.04em;
+  }
+  .patient-section-heading > button {
+    display: flex;
+    min-height: 2.5rem;
+    align-items: center;
+    gap: 0.35rem;
+    border-radius: 0.75rem;
+    padding-inline: 0.6rem;
+    color: var(--patient-blue);
+    font-size: 0.6875rem;
+    font-weight: 750;
+  }
+  .patient-section-heading > button:hover {
+    background: var(--patient-blue-soft);
+  }
+  .patient-meal-list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 0.5rem;
+  }
+  .patient-meal-card {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--patient-line);
+    border-radius: 1.125rem;
+    background: rgb(255 255 255 / 93%);
+    box-shadow: 0 6px 20px rgb(25 57 54 / 3%);
+    transition:
+      border-color 180ms ease,
+      box-shadow 180ms ease;
+  }
+  .patient-meal-card.is-expanded {
+    border-color: #bfdad7;
+    box-shadow: 0 12px 32px rgb(25 57 54 / 7%);
+  }
+  .patient-meal-summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 2.75rem;
+    min-height: 4.5rem;
+    align-items: stretch;
+  }
+  .patient-meal-toggle {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: 2.5rem minmax(0, 1fr) auto 1rem;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.65rem 0.25rem 0.65rem 0.75rem;
+    text-align: left;
+  }
+  .patient-meal-icon {
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    place-items: center;
+    border-radius: 0.85rem;
+    background: #fff2d9;
+    color: #d28724;
+  }
+  .patient-meal-card[data-tone="mint"] .patient-meal-icon {
+    background: #e8f4e9;
+    color: #64a06c;
+  }
+  .patient-meal-card[data-tone="coral"] .patient-meal-icon {
+    background: #fae9e6;
+    color: #c6655b;
+  }
+  .patient-meal-card[data-tone="peach"] .patient-meal-icon {
+    background: #fff0e8;
+    color: #dc8058;
+  }
+  .patient-meal-card[data-tone="blue"] .patient-meal-icon {
+    background: var(--patient-blue-soft);
+    color: var(--patient-blue);
+  }
+  .patient-meal-card[data-tone="violet"] .patient-meal-icon {
+    background: #f1ebf8;
+    color: #8b68aa;
+  }
+  .patient-meal-name {
+    min-width: 0;
+  }
+  .patient-meal-name > span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.8rem;
+    font-weight: 780;
+  }
+  .patient-meal-name small {
+    margin-top: 0.1rem;
+    display: block;
+    overflow: hidden;
+    color: var(--patient-muted);
+    font-size: 0.6rem;
+    font-weight: 550;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .patient-meal-energy {
+    display: flex;
+    align-items: baseline;
+    gap: 0.2rem;
+    white-space: nowrap;
+  }
+  .patient-meal-energy strong {
+    font-family: var(--font-display-app);
+    font-size: 1rem;
+    font-weight: 750;
+  }
+  .patient-meal-energy small {
+    color: var(--patient-muted);
+    font-size: 0.625rem;
+  }
+  .patient-meal-add-button {
+    display: grid;
+    min-width: 2.75rem;
+    place-items: center;
+    border-left: 1px solid var(--patient-line);
+    background: #f6faf9;
+    color: var(--patient-blue);
+    transition:
+      background 150ms ease,
+      color 150ms ease;
+  }
+  .patient-meal-add-button:hover {
+    background: var(--patient-blue-soft);
+  }
+  .patient-meal-details {
+    border-top: 1px solid var(--patient-line);
+    animation: patient-reveal 180ms ease-out both;
+  }
+  .patient-meal-macros {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-bottom: 1px solid var(--patient-line);
+    background: #f8faf9;
+  }
+  .patient-meal-macros > div {
+    min-width: 0;
+    padding: 0.55rem 0.75rem;
+  }
+  .patient-meal-macros > div + div {
+    border-left: 1px solid var(--patient-line);
+  }
+  .patient-meal-macros small,
+  .patient-meal-macros strong {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .patient-meal-macros small {
+    color: var(--patient-muted);
+    font-size: 0.625rem;
+  }
+  .patient-meal-macros strong {
+    margin-top: 0.15rem;
+    font-size: 0.7rem;
+  }
+  .patient-meal-food-row {
+    display: flex;
+    min-width: 0;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+  .patient-meal-food-row + .patient-meal-food-row {
+    border-top: 1px solid var(--patient-line);
+  }
+  .patient-meal-food-row p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.75rem;
+    font-weight: 720;
+    line-height: 1.35;
+    white-space: nowrap;
+  }
+  .patient-meal-food-row > div > span {
+    margin-top: 0.15rem;
+    display: block;
+    color: var(--patient-muted);
+    font-size: 0.625rem;
+  }
+  .patient-food-nutrients {
+    margin-top: 0.45rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+  .patient-food-nutrients small {
+    border-radius: 999px;
+    background: #eef3f2;
+    padding: 0.18rem 0.4rem;
+    color: #526562;
+    font-size: 0.625rem;
+    font-weight: 650;
+  }
+  .patient-food-actions {
+    display: grid;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 0.7rem;
+    color: var(--patient-muted);
+  }
+  .patient-food-actions:hover {
+    background: #eef3f2;
+  }
+  .patient-meal-footer {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--patient-line);
+  }
+  .patient-meal-footer button {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    color: var(--patient-muted);
+    font-size: 0.625rem;
+    font-weight: 720;
+  }
+  .patient-meal-footer button + button {
+    border-left: 1px solid var(--patient-line);
+    color: var(--patient-blue);
+  }
+  .patient-bottom-nav {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    min-height: 4.5rem;
+    border-color: var(--patient-line);
+    background: rgb(249 251 250 / 94%);
+    box-shadow: 0 -10px 32px rgb(25 57 54 / 7%);
+  }
+  .patient-bottom-nav button {
+    min-width: 0;
+  }
+  .patient-bottom-nav .patient-primary-action {
+    align-self: start;
+    width: 3.5rem;
+    min-height: 3.5rem;
+    justify-self: center;
+    margin-top: -0.85rem;
+    border: 4px solid #f7f9f8;
+    border-radius: 50%;
+    background: var(--patient-blue);
+    color: white;
+    box-shadow: 0 8px 20px rgb(78 159 194 / 28%);
+  }
+  .patient-bottom-nav .patient-primary-action span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .patient-orientation-dot {
+    position: absolute;
+    top: 0.35rem;
+    right: 25%;
+    width: 0.65rem;
+    height: 0.65rem;
+    border: 2px solid #f7f9f8;
+    border-radius: 999px;
+    background: #d94e4e;
+  }
+
+  .animate-content-in {
+    animation: content-in 220ms ease-out both;
+  }
+}
+
+@keyframes patient-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes content-in {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 639px) {
+  .page-header {
+    @apply items-start;
+  }
+  .page-header > :last-child {
+    @apply ml-auto;
+  }
+  .meal-entries,
+  .meal-add {
+    @apply ml-0;
+  }
+  .metric {
+    @apply px-3 py-4;
+  }
+  .day-chip {
+    @apply min-w-[54px];
+  }
+  .patient-row {
+    @apply gap-y-3;
+  }
+  .patient-row .patient-cell {
+    @apply block pl-[52px];
+  }
+  .patient-row .patient-cell:nth-of-type(n + 3) {
+    @apply hidden;
+  }
+  .patient-row .patient-cell small {
+    @apply mr-1 inline;
+  }
+}
+
+@media (max-width: 359px) {
+  :is(.patient-app-shell, .nutritionist-app-shell) .content-shell {
+    padding-inline: 0.75rem;
+  }
+  .patient-energy-card {
+    padding: 1rem;
+  }
+  .patient-energy-number {
+    font-size: 3.1rem;
+  }
+  .patient-macro-grid,
+  .patient-day-insights {
+    gap: 0.375rem;
+  }
+  .patient-macro-card > summary,
+  .patient-insight-card {
+    padding: 0.625rem;
+  }
+  .patient-insight-card.glycemic .patient-insight-value {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .patient-insight-card.glycemic .patient-insight-value > span {
+    max-width: 100%;
+    font-size: 0.45rem;
+  }
+  .patient-insight-card.glycemic .patient-insight-detail {
+    display: none;
+  }
+  .patient-macro-letter {
+    display: none;
+  }
+  .patient-meal-toggle {
+    grid-template-columns: 2.25rem minmax(0, 1fr) auto 0.875rem;
+    gap: 0.45rem;
+    padding-left: 0.6rem;
+  }
+  .patient-meal-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+}
+
+@media (min-width: 640px) {
+  :is(.patient-app-shell, .nutritionist-app-shell) .content-shell {
+    padding: 1.5rem 2rem 2rem;
+  }
+  .patient-day-switcher {
+    margin-bottom: 1.125rem;
+  }
+  .patient-day-heading h1 {
+    font-size: 2.6rem;
+  }
+  .patient-date-control {
+    max-width: 31rem;
+  }
+  .patient-swipe-hint {
+    display: none;
+  }
+  .patient-energy-card {
+    padding: 1.5rem 1.75rem;
+  }
+  .patient-macro-grid,
+  .patient-day-insights {
+    gap: 0.75rem;
+  }
+  .patient-macro-card > summary,
+  .patient-insight-card {
+    padding: 1rem;
+  }
+  .patient-meal-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+  .patient-macro-expanded {
+    grid-template-columns: 2rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.8rem 1rem;
+  }
+  .patient-macro-kcal-icon {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border-radius: 0.65rem;
+    background: var(--patient-blue-soft);
+    color: var(--patient-protein);
+  }
+  .patient-macro-card[data-tone="carb"] .patient-macro-kcal-icon {
+    background: #fff4df;
+    color: var(--patient-carb);
+  }
+  .patient-macro-card[data-tone="fat"] .patient-macro-kcal-icon {
+    background: #faece9;
+    color: var(--patient-fat);
+  }
+  .patient-macro-energy-share {
+    border-top: 0;
+    padding-top: 0;
+    text-align: right;
+  }
+}
+
+@media (min-width: 1024px) {
+  :is(.patient-app-shell, .nutritionist-app-shell) .content-shell {
+    padding: 2rem 2.5rem 3rem;
+  }
+  :is(.patient-app-shell, .nutritionist-app-shell) .page-title {
+    font-size: 2.35rem;
+  }
+  :is(.patient-app-shell, .nutritionist-app-shell) .metric-grid {
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  }
+  :is(.patient-app-shell, .nutritionist-app-shell) .metric-grid > :last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+  .patient-day-dashboard {
+    grid-template-columns: minmax(0, 1.6fr) minmax(18rem, 0.75fr);
+    grid-template-areas:
+      "energy insights"
+      "macros insights"
+      "meals meals";
+    gap: 1rem;
+  }
+  .patient-day-insights {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .patient-insight-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.125rem;
+  }
+  .patient-meal-list {
+    gap: 0.875rem;
+  }
+  .patient-meal-summary {
+    min-height: 4.75rem;
+  }
+}
+
+@media (min-width: 1440px) {
+  :is(.patient-app-shell, .nutritionist-app-shell) .content-shell {
+    padding-inline: 3.5rem;
+  }
+  .patient-day-dashboard {
+    grid-template-columns: minmax(0, 1.75fr) minmax(20rem, 0.7fr);
+  }
+  .patient-energy-card {
+    padding: 1.75rem 2rem;
+  }
+  .patient-energy-number {
+    font-size: 5.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+@layer components {
+  .user-identity {
+    @apply grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2.5 rounded-2xl border bg-card/75 p-2.5 shadow-[0_5px_18px_oklch(0.25_0.025_160/.035)];
+  }
+  .user-identity-name {
+    display: -webkit-box;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .nutritionist-bottom-nav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-color: var(--patient-line);
+    background: rgb(249 251 250 / 94%);
+    box-shadow: 0 -10px 32px rgb(25 57 54 / 7%);
+  }
+  .nutritionist-bottom-nav button {
+    min-width: 0;
+    min-height: 54px;
+    gap: 0.2rem;
+    padding-inline: 0.125rem;
+    font-size: 9px;
+  }
+  .nutritionist-bottom-nav button span {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .user-logout {
+    @apply inline-flex size-9 shrink-0 items-center justify-center rounded-xl text-muted-foreground transition-colors duration-200 hover:bg-muted hover:text-foreground;
+  }
+  .attention-list {
+    @apply divide-y;
+  }
+  .attention-list button {
+    @apply flex min-h-16 w-full items-center gap-3 py-3 text-left text-muted-foreground transition-colors duration-200 hover:text-foreground;
+  }
+  .attention-list button:first-child {
+    @apply pt-0;
+  }
+  .attention-list button:last-child {
+    @apply pb-0;
+  }
+  .attention-list .feature-icon {
+    @apply size-9 rounded-xl;
+  }
+  .attention-list strong {
+    @apply block font-display text-lg leading-none text-foreground;
+  }
+  .attention-list small {
+    @apply mt-1 block text-xs;
+  }
+  .guidance-item[data-recent="true"] {
+    @apply border-primary/25 bg-[linear-gradient(135deg,var(--card),color-mix(in_oklch,var(--secondary),white_58%))];
+    box-shadow: 0 12px 34px rgb(25 57 54 / 7%);
+  }
+
+  .macro-goal-editor {
+    @apply rounded-[20px] border bg-surface-soft p-4 sm:p-5;
+  }
+  .macro-total-badge {
+    @apply inline-flex rounded-full bg-rose-100 px-3 py-1.5 text-xs font-bold text-rose-700;
+  }
+  .macro-total-badge[data-valid="true"] {
+    @apply bg-emerald-100 text-emerald-700;
+  }
+  .macro-distribution-bar {
+    @apply mt-4 flex h-2.5 w-full overflow-hidden rounded-full bg-muted;
+  }
+  .macro-distribution-bar > span {
+    @apply h-full transition-[width] duration-300;
+  }
+  .macro-distribution-bar > span[data-tone="carb"] {
+    background: var(--patient-carb, #d6902e);
+  }
+  .macro-distribution-bar > span[data-tone="protein"] {
+    background: var(--patient-protein, #529bb5);
+  }
+  .macro-distribution-bar > span[data-tone="fat"] {
+    background: var(--patient-fat, #cd7068);
+  }
+  .macro-goal-control {
+    @apply rounded-2xl border bg-card p-3.5 shadow-[0_4px_16px_oklch(0.25_0.025_160/.03)];
+  }
+  .macro-goal-label,
+  .macro-distribution-summary dt {
+    @apply flex items-center gap-2 text-xs font-semibold text-muted-foreground;
+  }
+  .macro-goal-label i,
+  .macro-distribution-summary dt i {
+    @apply block size-2 rounded-full;
+  }
+  [data-tone="carb"] > .macro-goal-label i,
+  .macro-distribution-summary [data-tone="carb"] dt i {
+    background: var(--patient-carb, #d6902e);
+  }
+  [data-tone="protein"] > .macro-goal-label i,
+  .macro-distribution-summary [data-tone="protein"] dt i {
+    background: var(--patient-protein, #529bb5);
+  }
+  [data-tone="fat"] > .macro-goal-label i,
+  .macro-distribution-summary [data-tone="fat"] dt i {
+    background: var(--patient-fat, #cd7068);
+  }
+  .macro-distribution-summary {
+    @apply rounded-[20px] border bg-card px-4 pb-4 pt-1 shadow-[0_6px_20px_oklch(0.25_0.025_160/.035)];
+  }
+  .macro-distribution-summary dl {
+    @apply mt-4 grid grid-cols-3 gap-3;
+  }
+  .macro-distribution-summary dl > div {
+    @apply min-w-0;
+  }
+  .macro-distribution-summary dd {
+    @apply mt-1.5 font-display text-lg font-semibold tabular-nums;
+  }
+  .macro-distribution-summary dd small {
+    @apply ml-1.5 text-[11px] font-medium text-muted-foreground;
+  }
+
+  :is(.patient-app-shell, .nutritionist-app-shell) [data-slot="dialog-content"] {
+    border-color: var(--patient-line);
+  }
+  :is(.patient-app-shell, .nutritionist-app-shell) select {
+    @apply border-input bg-card shadow-[0_1px_2px_oklch(0.25_0.02_160/.025)] outline-none transition-[border-color,box-shadow] duration-200 focus:border-ring focus:ring-3 focus:ring-ring/25;
+  }
+  :is(.patient-app-shell, .nutritionist-app-shell) .feedback-item,
+  :is(.patient-app-shell, .nutritionist-app-shell) .guidance-item,
+  :is(.patient-app-shell, .nutritionist-app-shell) .patient-list {
+    box-shadow: 0 8px 28px rgb(25 57 54 / 3.5%);
+  }
+  :is(.patient-app-shell, .nutritionist-app-shell) .patient-row:focus-visible,
+  :is(.patient-app-shell, .nutritionist-app-shell) .sidebar-link:focus-visible,
+  :is(.patient-app-shell, .nutritionist-app-shell) .workspace-tabs button:focus-visible {
+    @apply outline-none ring-2 ring-ring/35 ring-inset;
+  }
+}
+
+@media (max-width: 420px) {
+  .macro-distribution-summary dl {
+    @apply gap-2;
+  }
+  .macro-distribution-summary dt {
+    @apply text-[10px];
+  }
+  .macro-distribution-summary dd {
+    @apply text-base;
+  }
+  .macro-distribution-summary dd small {
+    @apply block ml-0;
+  }
+}
+
+@layer components {
+  /* Nutritionist patient workspace: a continuous clinical record, not a card dashboard. */
+  .nutritionist-app-shell {
+    --workspace-accent: #4f9caf;
+    --workspace-accent-soft: #e9f5f7;
+    --workspace-mint: #e9f4ef;
+    --workspace-line: #d9e5e3;
+    --workspace-subtle: #f3f7f6;
+    background:
+      radial-gradient(circle at 72% -8%, rgb(221 241 241 / 72%), transparent 31rem),
+      #f7faf9;
+  }
+  .nutritionist-app-shell .app-sidebar {
+    background: #f2f7f5;
+  }
+  .nutritionist-workspace {
+    margin-inline: auto;
+    max-width: 1240px;
+  }
+  .nutritionist-app-shell .patient-workspace-header {
+    position: relative;
+    display: grid;
+    grid-template-columns: 2.5rem 4rem minmax(0, 1fr) auto;
+    gap: 1rem;
+    align-items: center;
+    border: 0;
+    border-bottom: 1px solid var(--workspace-line);
+    border-radius: 0;
+    background: transparent;
+    padding: 0.25rem 0 1.5rem;
+    box-shadow: none;
+  }
+  .nutritionist-app-shell .patient-workspace-header > button {
+    grid-column: auto;
+    justify-self: auto;
+    margin-left: 0;
+  }
+  .workspace-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+  .workspace-actions [data-slot="button"] {
+    border-color: #bfd8d4;
+    background: rgb(255 255 255 / 75%);
+    color: #326b5b;
+  }
+  .workspace-back {
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    place-items: center;
+    border: 1px solid var(--workspace-line);
+    border-radius: 0.8rem;
+    background: rgb(255 255 255 / 75%);
+    color: var(--patient-muted);
+    transition: 160ms ease;
+  }
+  .workspace-back:hover {
+    border-color: #b8d4d1;
+    background: white;
+    color: var(--patient-ink);
+    transform: translateX(-2px);
+  }
+  .nutritionist-app-shell .patient-workspace-avatar {
+    width: 4rem;
+    height: 4rem;
+    background: linear-gradient(145deg, #e4f2ec, #d8ebe4);
+    color: #326b5b;
+  }
+  .workspace-goals {
+    border-color: #bfd8d4;
+    background: rgb(255 255 255 / 75%);
+    color: #326b5b;
+  }
+  .nutritionist-app-shell .workspace-tabs {
+    margin: 0;
+    padding-top: 0.6rem;
+    border-bottom: 1px solid var(--workspace-line);
+  }
+  .nutritionist-app-shell .workspace-tabs button {
+    min-height: 3.25rem;
+    padding-inline: 1rem;
+  }
+  .nutritionist-app-shell .workspace-tabs button[aria-current="page"] {
+    color: #397c70;
+  }
+  .nutritionist-app-shell .workspace-tabs button[aria-current="page"]::after {
+    height: 3px;
+    background: #70b5aa;
+  }
+
+  .patient-record-layout {
+    padding-top: 2rem;
+  }
+  .patient-clinical-sheet {
+    overflow: hidden;
+    border: 1px solid var(--workspace-line);
+    border-radius: 1.6rem;
+    background: rgb(255 255 255 / 86%);
+    box-shadow: 0 22px 60px rgb(31 72 66 / 5%);
+  }
+  .clinical-sheet-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.8fr);
+    align-items: end;
+    gap: 2rem;
+    padding: 2rem 2.25rem 1.6rem;
+  }
+  .clinical-sheet-heading h2,
+  .patient-history-flow h2,
+  .nutritionist-diary-heading h2 {
+    margin-top: 0.25rem;
+    font-family: var(--font-display-app);
+    font-size: clamp(1.65rem, 3vw, 2.25rem);
+    font-weight: 670;
+    letter-spacing: -0.045em;
+    line-height: 1.05;
+  }
+  .clinical-objective {
+    border-left: 2px solid #8fc5bb;
+    padding-left: 1.15rem;
+  }
+  .clinical-objective small,
+  .clinical-kicker {
+    display: block;
+    color: var(--patient-muted);
+    font-size: 0.68rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .clinical-objective strong {
+    margin-top: 0.3rem;
+    display: block;
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+  .clinical-vitals {
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    gap: 1rem;
+    align-items: center;
+    border-block: 1px solid var(--workspace-line);
+    background: linear-gradient(90deg, #f4f9f7, #f8fbfa);
+    padding: 1.3rem 2.25rem;
+  }
+  .clinical-section-icon {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 0.9rem;
+    background: var(--workspace-mint);
+    color: #4d8b79;
+  }
+  .clinical-vitals dl {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .clinical-vitals dl > div {
+    min-width: 0;
+    padding-inline: 1.25rem;
+  }
+  .clinical-vitals dl > div + div {
+    border-left: 1px solid var(--workspace-line);
+  }
+  .clinical-vitals dt,
+  .clinical-context dt,
+  .day-context-panel dt {
+    color: var(--patient-muted);
+    font-size: 0.68rem;
+    font-weight: 650;
+  }
+  .clinical-vitals dd {
+    margin-top: 0.2rem;
+    overflow: hidden;
+    font-family: var(--font-display-app);
+    font-size: 1.2rem;
+    font-weight: 720;
+    letter-spacing: -0.035em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .clinical-vitals small {
+    display: block;
+    margin-top: 0.15rem;
+    overflow: hidden;
+    color: var(--patient-muted);
+    font-size: 0.61rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .clinical-sheet-columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 0.7fr);
+  }
+  .clinical-planning,
+  .clinical-context {
+    min-width: 0;
+    padding: 1.8rem 2.25rem;
+  }
+  .clinical-context {
+    border-left: 1px solid var(--workspace-line);
+    background: #fbfcfc;
+  }
+  .clinical-planning > header,
+  .clinical-context > header,
+  .day-composition-panel > header,
+  .day-context-panel > header,
+  .nutritionist-meals-flow > header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .clinical-context > header {
+    justify-content: flex-start;
+  }
+  .clinical-planning h3,
+  .clinical-context h3,
+  .day-composition-panel h3,
+  .day-context-panel h3,
+  .nutritionist-meals-flow h3 {
+    margin-top: 0.2rem;
+    font-family: var(--font-display-app);
+    font-size: 1.25rem;
+    font-weight: 680;
+    letter-spacing: -0.03em;
+  }
+  .planned-energy {
+    display: flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    white-space: nowrap;
+  }
+  .planned-energy strong {
+    font-family: var(--font-display-app);
+    font-size: 1.65rem;
+    font-weight: 720;
+  }
+  .planned-energy span {
+    color: var(--patient-muted);
+    font-size: 0.67rem;
+  }
+  .clinical-planning .macro-distribution-summary {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+  }
+  .clinical-planning .macro-distribution-bar {
+    height: 0.55rem;
+  }
+  .clinical-planning .macro-distribution-summary dl {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--workspace-line);
+  }
+  .planning-macro-energy {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    padding-top: 0.85rem;
+    color: var(--patient-muted);
+    font-size: 0.68rem;
+    font-weight: 600;
+  }
+  .clinical-context dl {
+    margin-top: 1.25rem;
+  }
+  .clinical-context dl > div {
+    padding-block: 0.8rem;
+  }
+  .clinical-context dl > div + div {
+    border-top: 1px solid var(--workspace-line);
+  }
+  .clinical-context dd,
+  .day-context-panel dd {
+    margin-top: 0.3rem;
+    font-size: 0.82rem;
+    font-weight: 650;
+    line-height: 1.45;
+  }
+  .clinical-feedback {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    border-top: 1px solid var(--workspace-line);
+    background: #f7faf9;
+    padding: 1.15rem 2.25rem;
+  }
+  .clinical-feedback > div {
+    min-width: 0;
+  }
+  .clinical-feedback p:not(.clinical-kicker) {
+    margin-top: 0.25rem;
+    display: flex;
+    min-width: 0;
+    gap: 0.7rem;
+    font-size: 0.75rem;
+  }
+  .clinical-feedback p span {
+    overflow: hidden;
+    color: var(--patient-muted);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .patient-history-flow {
+    margin-top: 1.5rem;
+    padding: 1.4rem 0.25rem 0;
+  }
+  .patient-history-flow > header {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .patient-history-flow > header > p {
+    color: var(--patient-muted);
+    font-size: 0.75rem;
+  }
+  .patient-history-flow > header > p strong {
+    color: var(--patient-ink);
+    font-family: var(--font-display-app);
+    font-size: 1.35rem;
+  }
+  .history-energy-bars {
+    display: grid;
+    height: 8.5rem;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    gap: 0.45rem;
+    align-items: end;
+    margin-top: 1.25rem;
+    border-bottom: 1px solid var(--workspace-line);
+    background: repeating-linear-gradient(to bottom, transparent 0 2rem, rgb(210 225 222 / 48%) 2.05rem 2.1rem);
+  }
+  .history-energy-bars > div {
+    display: grid;
+    height: 100%;
+    grid-template-rows: minmax(0, 1fr) 1.2rem;
+    align-items: end;
+    justify-items: center;
+  }
+  .history-energy-bars span {
+    width: min(68%, 3rem);
+    min-height: 2px;
+    border-radius: 0.55rem 0.55rem 0.12rem 0.12rem;
+    background: linear-gradient(#82c4ba, #a9d7cf);
+    transition: height 260ms ease;
+  }
+  .history-energy-bars small,
+  .history-caption {
+    color: var(--patient-muted);
+    font-size: 0.62rem;
+  }
+  .history-caption {
+    margin-top: 0.65rem;
+  }
+
+  .nutritionist-diary {
+    padding-top: 2rem;
+  }
+  .nutritionist-diary-heading {
+    margin-bottom: 1.25rem;
+  }
+  .nutritionist-diary-heading > div > p:last-child {
+    margin-top: 0.4rem;
+    color: var(--patient-muted);
+    font-size: 0.76rem;
+  }
+  .nutritionist-app-shell .date-navigator {
+    border-color: var(--workspace-line);
+    background: rgb(255 255 255 / 72%);
+    box-shadow: none;
+  }
+  .nutritionist-app-shell .day-chip[aria-pressed="true"] {
+    outline: 1px solid #9accc4;
+    background: #e8f5f2;
+    color: #2f6e63;
+    box-shadow: 0 5px 14px rgb(49 105 95 / 8%);
+  }
+  .nutritionist-day-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    overflow: hidden;
+    border-block: 1px solid var(--workspace-line);
+    background: rgb(255 255 255 / 70%);
+  }
+  .day-composition-panel,
+  .day-context-panel {
+    min-width: 0;
+    padding: 1.65rem 1.9rem;
+  }
+  .day-context-panel {
+    border-left: 1px solid var(--workspace-line);
+    background: #f5f9f8;
+  }
+  .day-composition-panel > header > span {
+    color: var(--patient-muted);
+    font-size: 0.68rem;
+    font-weight: 650;
+  }
+  .day-energy-row {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .day-energy-row > div {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+  }
+  .day-energy-row > div strong {
+    font-family: var(--font-display-app);
+    font-size: clamp(2.8rem, 6vw, 4.25rem);
+    font-weight: 640;
+    letter-spacing: -0.06em;
+    line-height: 0.9;
+  }
+  .day-energy-row span,
+  .day-energy-row > p {
+    color: var(--patient-muted);
+    font-size: 0.68rem;
+    font-weight: 620;
+  }
+  .day-energy-track,
+  .day-macro-lines i {
+    display: block;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #eaf0ef;
+  }
+  .day-energy-track {
+    height: 0.65rem;
+    margin-top: 1rem;
+  }
+  .day-energy-track > span,
+  .day-macro-lines i > span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--workspace-accent);
+  }
+  .day-energy-track[data-over="true"] > span {
+    background: #ca706a;
+  }
+  .day-macro-lines {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+  .day-macro-lines p {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.4rem;
+    color: var(--patient-muted);
+    font-size: 0.65rem;
+  }
+  .day-macro-disclosure > summary {
+    position: relative;
+    display: block;
+    list-style: none;
+    border-radius: 0.6rem;
+    padding: 0.25rem;
+    transition: background 160ms ease;
+  }
+  .day-macro-disclosure > summary::-webkit-details-marker {
+    display: none;
+  }
+  .day-macro-disclosure > summary:hover {
+    background: #f2f7f6;
+  }
+  .day-macro-chevron {
+    position: absolute;
+    top: 0.35rem;
+    right: 0.25rem;
+    flex: 0 0 auto;
+    transition: transform 180ms ease;
+  }
+  .day-macro-disclosure[open] .day-macro-chevron {
+    transform: rotate(180deg);
+  }
+  .day-macro-disclosure > summary p {
+    padding-right: 1rem;
+  }
+  .day-macro-expanded {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.55rem 0.25rem 0;
+    animation: patient-reveal 160ms ease-out both;
+  }
+  .day-macro-expanded strong {
+    font-family: var(--font-display-app);
+    font-size: 0.82rem;
+  }
+  .day-macro-expanded span {
+    color: var(--patient-muted);
+    font-size: 0.58rem;
+  }
+  .day-macro-lines p strong {
+    overflow: hidden;
+    color: var(--patient-ink);
+    text-overflow: ellipsis;
+  }
+  .day-macro-lines i {
+    height: 0.3rem;
+    margin-top: 0.45rem;
+  }
+  .day-macro-lines [data-tone="protein"] i > span { background: var(--patient-protein); }
+  .day-macro-lines [data-tone="carb"] i > span { background: var(--patient-carb); }
+  .day-macro-lines [data-tone="fat"] i > span { background: var(--patient-fat); }
+  .day-context-panel dl {
+    margin-top: 1.2rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .day-context-panel dl > div {
+    min-width: 0;
+    padding: 0.75rem 1rem 0.75rem 0;
+  }
+  .day-context-panel dl > div + div:not(.day-context-note) {
+    border-left: 1px solid var(--workspace-line);
+    padding-left: 1rem;
+  }
+  .day-context-panel small {
+    color: var(--patient-muted);
+    font-size: 0.6rem;
+  }
+  .day-context-note {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--workspace-line);
+  }
+  .nutritionist-meals-flow {
+    padding-top: 2rem;
+  }
+  .nutritionist-meals-flow > header {
+    align-items: end;
+    margin-bottom: 1rem;
+  }
+  .nutritionist-meals-flow > header > p {
+    max-width: 26rem;
+    color: var(--patient-muted);
+    font-size: 0.68rem;
+    text-align: right;
+  }
+  .nutritionist-meals-flow .patient-meal-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+  .day-context-footer {
+    margin-top: 2rem;
+    border: 1px solid var(--workspace-line);
+    border-radius: 1.15rem;
+    background: #f5f9f8;
+  }
+  .patient-meal-readonly {
+    display: grid;
+    min-width: 2.75rem;
+    place-items: center;
+    border-left: 1px solid var(--patient-line);
+    background: #f6faf9;
+    color: var(--patient-muted);
+    transition: background 150ms ease, color 150ms ease;
+  }
+  .patient-meal-readonly:hover:not(:disabled) {
+    background: var(--patient-blue-soft);
+    color: var(--patient-blue);
+  }
+  .patient-meal-readonly:disabled {
+    cursor: default;
+  }
+  .nutritionist-meals-flow .patient-meal-toggle {
+    grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+  }
+  .nutritionist-meals-flow .patient-meal-toggle > svg {
+    display: none;
+  }
+
+  .patient-row-open {
+    display: grid;
+    width: 100%;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem;
+    text-align: left;
+  }
+  .nutritionist-app-shell .patient-row {
+    grid-template-columns: minmax(0, 1fr) 2.25rem;
+  }
+  .patient-row:has(.patient-row-open:focus-visible) {
+    outline: 2px solid rgb(78 159 194 / 42%);
+    outline-offset: -2px;
+  }
+  .workspace-tab-body {
+    padding-top: 2rem;
+  }
+  .patient-profile-area {
+    padding-top: 1rem;
+  }
+  .profile-bmi-disclosure {
+    margin-top: 1rem;
+    overflow: hidden;
+    border: 1px solid var(--patient-line);
+    border-radius: 1rem;
+    background: var(--surface-soft);
+    transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+  }
+  .profile-bmi-disclosure[open] {
+    border-color: #9fcac2;
+    background: #edf7f4;
+    box-shadow: 0 8px 24px rgb(38 93 82 / 8%);
+  }
+  .profile-bmi-disclosure > summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto 1rem;
+    align-items: center;
+    gap: 0.55rem;
+    list-style: none;
+    padding: 0.9rem;
+  }
+  .profile-bmi-disclosure > summary::-webkit-details-marker,
+  .profile-disclosure > summary::-webkit-details-marker {
+    display: none;
+  }
+  .profile-bmi-disclosure > summary p {
+    font-size: 0.82rem;
+    font-weight: 750;
+  }
+  .profile-bmi-disclosure > summary small {
+    display: block;
+    margin-top: 0.15rem;
+    color: var(--patient-muted);
+    font-size: 0.62rem;
+  }
+  .profile-bmi-disclosure > summary > span {
+    border-radius: 999px;
+    background: white;
+    padding: 0.3rem 0.5rem;
+    color: var(--patient-muted);
+    font-size: 0.62rem;
+    font-weight: 650;
+  }
+  .profile-bmi-disclosure > summary svg,
+  .profile-disclosure > summary svg {
+    transition: transform 180ms ease;
+  }
+  .profile-bmi-disclosure[open] > summary svg,
+  .profile-disclosure[open] > summary svg {
+    transform: rotate(180deg);
+  }
+  .profile-bmi-ranges {
+    display: grid;
+    gap: 0.35rem;
+    border-top: 1px solid var(--patient-line);
+    padding: 0.75rem;
+    animation: patient-reveal 160ms ease-out both;
+  }
+  .profile-bmi-ranges > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    border-radius: 0.65rem;
+    padding: 0.4rem 0.5rem;
+    color: var(--patient-muted);
+    font-size: 0.61rem;
+  }
+  .profile-bmi-ranges > div[data-current="true"] {
+    background: #dceee9;
+    color: #285f53;
+  }
+  .profile-bmi-ranges > p {
+    padding: 0.35rem 0.5rem 0;
+    color: var(--patient-muted);
+    font-size: 0.58rem;
+  }
+  .profile-disclosure-list {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .profile-disclosure {
+    overflow: hidden;
+    border: 1px solid var(--patient-line);
+    border-radius: 1rem;
+    background: rgb(255 255 255 / 86%);
+    transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+  }
+  .profile-disclosure[open] {
+    border-color: #8fc2b8;
+    background: #edf7f4;
+    box-shadow: 0 10px 28px rgb(38 93 82 / 8%);
+  }
+  .profile-disclosure > summary {
+    display: flex;
+    min-height: 3.5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    list-style: none;
+    padding: 0.9rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 750;
+  }
+  .profile-disclosure[open] > summary {
+    color: #285f53;
+  }
+  .profile-disclosure dl {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid #cfe2de;
+    animation: patient-reveal 160ms ease-out both;
+  }
+  .profile-disclosure dl > div {
+    min-width: 0;
+    padding: 0.9rem 1rem;
+  }
+  .profile-disclosure dl > div:nth-child(even) {
+    border-left: 1px solid #cfe2de;
+  }
+  .profile-disclosure dl > div:nth-child(n + 3) {
+    border-top: 1px solid #cfe2de;
+  }
+  .profile-disclosure dt {
+    color: var(--patient-muted);
+    font-size: 0.65rem;
+    font-weight: 620;
+  }
+  .profile-disclosure dd {
+    margin-top: 0.25rem;
+    font-size: 0.78rem;
+    font-weight: 680;
+    line-height: 1.45;
+  }
+  .patient-progress-caption {
+    margin-bottom: 1.25rem;
+    color: var(--patient-muted);
+    font-size: 0.78rem;
+  }
+  .nutritionist-self-profile {
+    max-width: 52rem;
+    margin-inline: auto;
+  }
+  .nutritionist-profile-intro {
+    display: grid;
+    grid-template-columns: 4rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--patient-line);
+    border-radius: 1.5rem;
+    background: rgb(255 255 255 / 88%);
+    padding: 1.25rem;
+  }
+  .nutritionist-profile-avatar {
+    display: grid;
+    width: 4rem;
+    height: 4rem;
+    place-items: center;
+    border-radius: 1.25rem;
+    background: #dceee9;
+    color: #285f53;
+    font-weight: 760;
+  }
+  .nutritionist-profile-intro h1 {
+    margin-top: 0.2rem;
+    font-family: var(--font-display), serif;
+    font-size: 1.55rem;
+    font-weight: 680;
+    line-height: 1.05;
+  }
+  .nutritionist-profile-intro > div > p:last-child {
+    margin-top: 0.35rem;
+    color: var(--patient-muted);
+    font-size: 0.74rem;
+  }
+  .nutritionist-profile-sections {
+    gap: 0.65rem;
+  }
+  .patient-create-progress {
+    display: grid;
+    gap: 0.75rem;
+    border-radius: 1rem;
+    background: #edf7f4;
+    padding: 0.85rem 1rem;
+  }
+  .patient-create-progress > div:first-child {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .patient-create-progress span {
+    color: var(--patient-muted);
+    font-size: 0.66rem;
+    font-weight: 650;
+  }
+  .patient-create-progress strong {
+    color: #285f53;
+    font-size: 0.78rem;
+  }
+  .patient-create-progress-track {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.35rem;
+  }
+  .patient-create-progress-track i {
+    height: 0.25rem;
+    border-radius: 999px;
+    background: #cfe2de;
+    transition: background 180ms ease, transform 180ms ease;
+  }
+  .patient-create-progress-track i[data-state="done"] {
+    background: #70a99d;
+  }
+  .patient-create-progress-track i[data-state="current"] {
+    background: #2f7163;
+    transform: scaleY(1.35);
+  }
+  .patient-create-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+    gap: 0.75rem;
+    position: sticky;
+    bottom: -1.5rem;
+    z-index: 2;
+    margin: 0 -1.5rem -1.5rem;
+    border-top: 1px solid var(--border);
+    background: rgb(255 255 255 / 96%);
+    padding: 0.9rem 1.5rem calc(0.9rem + env(safe-area-inset-bottom));
+    backdrop-filter: blur(12px);
+  }
+  .food-entry-sheet {
+    background: #f7fbfa;
+  }
+  .food-search-input {
+    border-color: #b9d7d1;
+    box-shadow: 0 8px 24px rgb(38 93 82 / 7%);
+  }
+  .food-search-input:focus-visible {
+    border-color: #69a698;
+    box-shadow: 0 0 0 3px rgb(105 166 152 / 14%), 0 10px 28px rgb(38 93 82 / 8%);
+  }
+  .food-search-clear {
+    position: absolute;
+    top: 50%;
+    right: 0.65rem;
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    transform: translateY(-50%);
+    place-items: center;
+    border-radius: 999px;
+    color: var(--muted-foreground);
+  }
+  .food-search-clear:hover {
+    background: var(--muted);
+  }
+  .food-result-list {
+    overflow: hidden;
+    border-block: 1px solid var(--border);
+  }
+  .food-result-row {
+    transition: background 160ms ease;
+  }
+  .food-result-row:hover {
+    background: rgb(237 247 244 / 70%);
+  }
+  .food-search-state {
+    display: flex;
+    min-height: 12rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 2rem;
+    text-align: center;
+    color: var(--muted-foreground);
+    font-size: 0.78rem;
+  }
+  .food-search-state strong {
+    color: var(--foreground);
+    font-size: 0.88rem;
+  }
+  .food-selected-card {
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    gap: 0.85rem;
+    border: 1px solid #b9d7d1;
+    border-radius: 1.15rem;
+    background: #edf7f4;
+    padding: 1rem;
+  }
+  .food-selected-card > span {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    border-radius: 0.85rem;
+    background: white;
+    color: #347a6b;
+  }
+  .food-selected-card small,
+  .food-selected-card em {
+    display: block;
+    color: var(--patient-muted);
+    font-size: 0.62rem;
+    font-style: normal;
+  }
+  .food-selected-card p {
+    margin-block: 0.2rem;
+    font-size: 0.92rem;
+    font-weight: 730;
+    line-height: 1.35;
+  }
+  .food-entry-footer {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+    box-shadow: 0 -10px 30px rgb(38 70 63 / 5%);
+  }
+}
+
+@media (min-width: 768px) {
+  .patient-row-open {
+    grid-template-columns: minmax(210px, 1.35fr) 110px 125px 105px;
+  }
+}
+
+@media (max-width: 899px) {
+  .nutritionist-app-shell .patient-workspace-header {
+    grid-template-columns: 2.5rem 3.5rem minmax(0, 1fr);
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+  }
+  .nutritionist-app-shell .patient-workspace-avatar {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+  .nutritionist-app-shell .patient-workspace-header > .workspace-actions {
+    grid-column: 2 / -1;
+    justify-self: start;
+  }
+  .clinical-sheet-heading,
+  .clinical-sheet-columns,
+  .nutritionist-day-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .clinical-objective {
+    border-left: 0;
+    border-top: 1px solid var(--workspace-line);
+    padding-top: 1rem;
+    padding-left: 0;
+  }
+  .clinical-vitals {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .clinical-vitals > .clinical-section-icon {
+    display: none;
+  }
+  .clinical-vitals dl {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem 0;
+  }
+  .clinical-vitals dl > div:nth-child(4) {
+    border-left: 0;
+  }
+  .clinical-vitals dl > div:last-child {
+    grid-column: span 2;
+  }
+  .clinical-context,
+  .day-context-panel {
+    border-top: 1px solid var(--workspace-line);
+    border-left: 0;
+  }
+  .nutritionist-meals-flow .patient-meal-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 639px) {
+  .nutritionist-profile-intro {
+    grid-template-columns: 3.25rem minmax(0, 1fr);
+    padding: 1rem;
+  }
+  .nutritionist-profile-avatar {
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+  .nutritionist-profile-intro > button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+  .patient-create-dialog > button:first-child {
+    z-index: 4;
+  }
+  .patient-create-field[data-active="false"] {
+    display: none;
+  }
+  .patient-create-field[data-active="true"] {
+    animation: content-in 180ms ease-out both;
+  }
+  .food-entry-sheet [data-slot="sheet-header"] {
+    padding-block: 1rem;
+  }
+  .food-entry-scroll {
+    padding-block: 1rem;
+  }
+  .food-macro-preview > div {
+    padding: 0.75rem;
+  }
+  .food-macro-preview > div p:last-child {
+    font-size: 1.05rem;
+  }
+  .patient-record-layout,
+  .nutritionist-diary {
+    padding-top: 1.25rem;
+  }
+  .nutritionist-app-shell .patient-row .patient-cell {
+    display: none;
+  }
+  .nutritionist-app-shell .patient-workspace-header .page-title {
+    font-size: 1.55rem;
+  }
+  .nutritionist-app-shell .patient-workspace-header .page-description {
+    font-size: 0.68rem;
+  }
+  .patient-clinical-sheet {
+    border-radius: 1.2rem;
+  }
+  .clinical-sheet-heading,
+  .clinical-vitals,
+  .clinical-planning,
+  .clinical-context {
+    padding: 1.25rem;
+  }
+  .clinical-vitals dl {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .clinical-vitals dl > div {
+    padding-inline: 0.65rem;
+  }
+  .clinical-vitals dl > div:first-child,
+  .clinical-vitals dl > div:nth-child(4) {
+    padding-left: 0;
+  }
+  .clinical-vitals dl > div:nth-child(4) {
+    border-left: 0;
+  }
+  .clinical-vitals dd {
+    font-size: 1rem;
+  }
+  .clinical-feedback {
+    align-items: flex-start;
+    padding: 1rem 1.25rem;
+  }
+  .clinical-feedback p strong {
+    display: none;
+  }
+  .clinical-feedback .secondary-action {
+    flex: 0 0 auto;
+    font-size: 0.7rem;
+  }
+  .patient-history-flow > header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .history-energy-bars {
+    gap: 0.25rem;
+  }
+  .nutritionist-diary-heading h2 {
+    font-size: 1.7rem;
+  }
+  .day-composition-panel,
+  .day-context-panel {
+    padding: 1.25rem;
+  }
+  .day-energy-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .day-energy-row > div strong {
+    font-size: 3rem;
+  }
+  .day-macro-lines {
+    gap: 0.55rem;
+  }
+  .day-macro-lines p {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .day-context-panel dl {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .day-context-panel dl > div + div:not(.day-context-note) {
+    border-top: 1px solid var(--workspace-line);
+    border-left: 0;
+    padding-left: 0;
+  }
+  .day-context-note {
+    grid-column: auto;
+  }
+  .nutritionist-meals-flow > header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .nutritionist-meals-flow > header > p {
+    text-align: left;
+  }
+  .workspace-actions {
+    justify-content: flex-start;
+  }
+  .workspace-actions [data-slot="button"] {
+    min-height: 2.35rem;
+    padding-inline: 0.7rem;
+    font-size: 0.7rem;
+  }
+  .profile-disclosure dl {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .profile-disclosure dl > div:nth-child(even) {
+    border-left: 0;
+  }
+  .profile-disclosure dl > div + div {
+    border-top: 1px solid #cfe2de;
+  }
+}

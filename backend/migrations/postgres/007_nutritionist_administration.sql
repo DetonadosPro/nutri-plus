@@ -1,0 +1,12 @@
+ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check;
+ALTER TABLE users ADD CONSTRAINT users_role_check CHECK (role IN ('admin', 'nutritionist', 'patient'));
+ALTER TABLE users ADD COLUMN IF NOT EXISTS suspended_at TIMESTAMPTZ;
+
+CREATE TABLE IF NOT EXISTS nutritionist_profiles (
+  user_id BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+  crn TEXT NOT NULL UNIQUE,
+  state CHAR(2) NOT NULL,
+  phone TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

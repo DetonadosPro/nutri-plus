@@ -1,0 +1,26 @@
+{
+  "name": "nutri-plus",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": ["frontend", "backend"],
+  "engines": { "node": ">=22.13.0" },
+  "scripts": {
+    "dev": "concurrently -k -n FRONTEND,BACKEND -c green,blue \"npm:dev:frontend\" \"npm:dev:backend\"",
+    "dev:frontend": "npm run dev --workspace @nutri/frontend",
+    "dev:backend": "npm run dev --workspace @nutri/backend",
+    "serve:frontend": "npm run serve:local --workspace @nutri/frontend",
+    "serve:https": "node scripts/local-https-proxy.mjs",
+    "start:local": "concurrently -k -n FRONTEND,BACKEND,HTTPS -c green,blue,magenta \"npm:serve:frontend\" \"npm:dev:backend\" \"npm:serve:https\"",
+    "build": "npm run build --workspace @nutri/frontend",
+    "lint": "npm run lint --workspace @nutri/frontend",
+    "format": "npm run format --workspace @nutri/frontend",
+    "test": "npm run test --workspace @nutri/backend",
+    "db:setup": "npm run db:setup --workspace @nutri/backend",
+    "taco:extract": "npm run taco:extract --workspace @nutri/backend",
+    "taco:import": "npm run taco:import --workspace @nutri/backend",
+    "ig:import": "npm run ig:import --workspace @nutri/backend",
+    "audit": "npm run audit --workspace @nutri/backend"
+  },
+  "devDependencies": { "concurrently": "^10.0.5", "typescript": "5.9.3" }
+}

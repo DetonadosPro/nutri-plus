@@ -1,0 +1,52 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/.vinext/
+/out/
+
+# misc
+.DS_Store
+*.pem
+/frontend/.certs/
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# local environment
+.env*
+!.env.example
+
+# deployment and generated files
+.vercel
+next-env.d.ts
+*.tsbuildinfo
+/dist/
+/.wrangler/
+/outputs/
+/work/
+/tmp/
+
+# local SQLite database
+/backend/data/*.sqlite
+/backend/data/*.sqlite-shm
+/backend/data/*.sqlite-wal
+/backend/data/backups/
+
+# local Codex/browser data
+/.codex-local/
+/certificado-android/
