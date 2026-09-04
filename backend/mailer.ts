@@ -1,22 +1,23 @@
 import nodemailer from 'nodemailer';
+import { appConfig } from './config';
 
 type MailPayload = { to: string; subject: string; text: string; html: string };
 
 const smtpConfigured = Boolean(
-  process.env.NUTRI_SMTP_HOST &&
-    process.env.NUTRI_SMTP_USER &&
-    process.env.NUTRI_SMTP_PASSWORD &&
-    process.env.NUTRI_EMAIL_FROM,
+  appConfig.email.host &&
+    appConfig.email.user &&
+    appConfig.email.password &&
+    appConfig.email.from,
 );
 
 const transporter = smtpConfigured
   ? nodemailer.createTransport({
-      host: process.env.NUTRI_SMTP_HOST,
-      port: Number(process.env.NUTRI_SMTP_PORT || 587),
-      secure: Number(process.env.NUTRI_SMTP_PORT || 587) === 465,
+      host: appConfig.email.host,
+      port: appConfig.email.port,
+      secure: appConfig.email.port === 465,
       auth: {
-        user: process.env.NUTRI_SMTP_USER,
-        pass: process.env.NUTRI_SMTP_PASSWORD,
+        user: appConfig.email.user,
+        pass: appConfig.email.password,
       },
     })
   : null;
@@ -25,8 +26,8 @@ export async function sendMail(payload: MailPayload) {
   if (!transporter) return { delivered: false as const };
   try {
     await transporter.sendMail({
-      from: process.env.NUTRI_EMAIL_FROM,
-      replyTo: process.env.NUTRI_EMAIL_REPLY_TO || undefined,
+      from: appConfig.email.from,
+      replyTo: appConfig.email.replyTo || undefined,
       ...payload,
     });
     return { delivered: true as const };
@@ -37,7 +38,7 @@ export async function sendMail(payload: MailPayload) {
 }
 
 export function appUrlForRequest(headers: { [key: string]: unknown }) {
-  const configured = process.env.NUTRI_APP_URL?.replace(/\/$/, '');
+  const configured = appConfig.appUrl;
   if (configured) return configured;
   const forwardedHost = String(headers['x-forwarded-host'] || 'localhost:3000');
   return `https://${forwardedHost}`;

@@ -1,22 +1,22 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadEnvFile } from 'node:process';
 import pg, { type PoolClient, type QueryResultRow } from 'pg';
+import { appConfig } from './config';
 
 const serverDir = dirname(fileURLToPath(import.meta.url));
 const projectDir = serverDir;
-const envFile = join(serverDir, '..', '.env.local');
-if (existsSync(envFile)) loadEnvFile(envFile);
-
-const connectionString = process.env.DATABASE_URL_DEV;
-if (!connectionString) throw new Error('DATABASE_URL_DEV não configurada. Copie .env.example para .env.local e informe apenas o PostgreSQL local.');
+const connectionString = appConfig.database.url;
 
 const parsedUrl = new URL(connectionString);
 const databaseName = parsedUrl.pathname.replace(/^\//, '');
-if (!['localhost', '127.0.0.1', '::1'].includes(parsedUrl.hostname) || !databaseName || ['postgres', 'template0', 'template1'].includes(databaseName)) {
-  throw new Error('Proteção de desenvolvimento: o Nutri+ aceita somente um banco PostgreSQL local dedicado em DATABASE_URL_DEV.');
+const localDatabase = ['localhost', '127.0.0.1', '::1'].includes(parsedUrl.hostname);
+if (!['postgres:', 'postgresql:'].includes(parsedUrl.protocol)) {
+  throw new Error('DATABASE_URL deve apontar para um banco PostgreSQL.');
+}
+if ((!localDatabase && !appConfig.database.allowRemote) || !databaseName || ['postgres', 'template0', 'template1'].includes(databaseName)) {
+  throw new Error('Conexão recusada: use um PostgreSQL dedicado. Para um host não local, defina NUTRI_ALLOW_REMOTE_DATABASE=true explicitamente.');
 }
 
 pg.types.setTypeParser(20, Number);

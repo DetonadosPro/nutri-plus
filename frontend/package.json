@@ -8,6 +8,7 @@
     "build": "vinext build",
     "start": "wrangler dev --config dist/server/wrangler.json",
     "serve:local": "vinext start --port 3002 --hostname 127.0.0.1",
+    "serve:container": "vinext start --port 3000 --hostname 0.0.0.0",
     "lint": "oxlint",
     "format": "oxfmt"
   },
