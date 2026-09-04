@@ -2,7 +2,7 @@ import { sites } from '@openai/sites-vite-plugin';
 import tailwindcss from '@tailwindcss/postcss';
 import vinext from 'vinext';
 import { defineConfig } from 'vite';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import hostingConfig from './.openai/hosting.json';
 
 const SITE_CREATOR_PLACEHOLDER_DATABASE_ID =
@@ -12,6 +12,28 @@ const { d1, r2 } = hostingConfig;
 
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === 'seatbelt';
+
+// Certificados usados somente no desenvolvimento local.
+// Em produção (AWS), o HTTPS será tratado pelo Nginx.
+const localCertUrl = new URL(
+  './.certs/nutri-local.pem',
+  import.meta.url,
+);
+
+const localKeyUrl = new URL(
+  './.certs/nutri-local-key.pem',
+  import.meta.url,
+);
+
+const hasLocalHttpsCertificates =
+  existsSync(localCertUrl) && existsSync(localKeyUrl);
+
+const localHttps = hasLocalHttpsCertificates
+  ? {
+      cert: readFileSync(localCertUrl),
+      key: readFileSync(localKeyUrl),
+    }
+  : undefined;
 
 const localBindingConfig = {
   main: 'vinext/server/fetch-handler',
@@ -46,29 +68,51 @@ export default defineConfig(async () => {
   const { cloudflare } = await import('@cloudflare/vite-plugin');
 
   return {
-    css: { postcss: { plugins: [tailwindcss()] } },
+    css: {
+      postcss: {
+        plugins: [tailwindcss()],
+      },
+    },
+
     server: {
       host: '0.0.0.0',
-      allowedHosts: ['desktop-2f3adjr.tail8c5116.ts.net'],
-      https: {
-        cert: readFileSync(new URL('./.certs/nutri-local.pem', import.meta.url)),
-        key: readFileSync(new URL('./.certs/nutri-local-key.pem', import.meta.url)),
-      },
+
+      allowedHosts: [
+        'desktop-2f3adjr.tail8c5116.ts.net',
+      ],
+
+      // Só ativa HTTPS local se os certificados existirem.
+      ...(localHttps
+        ? {
+            https: localHttps,
+          }
+        : {}),
+
       proxy: {
         '/api': {
           target: 'http://127.0.0.1:3001',
           changeOrigin: false,
         },
       },
+
       ...(isCodexSeatbeltSandbox
-        ? { watch: { useFsEvents: false, usePolling: true } }
+        ? {
+            watch: {
+              useFsEvents: false,
+              usePolling: true,
+            },
+          }
         : {}),
     },
+
     plugins: [
       vinext(),
       sites(),
       cloudflare({
-        viteEnvironment: { name: 'rsc', childEnvironments: ['ssr'] },
+        viteEnvironment: {
+          name: 'rsc',
+          childEnvironments: ['ssr'],
+        },
         config: localBindingConfig,
       }),
     ],
