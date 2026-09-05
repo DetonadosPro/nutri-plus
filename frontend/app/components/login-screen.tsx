@@ -92,7 +92,7 @@ export function LoginScreen({
           </div>
         </div>
         <p className="text-xs text-muted-foreground">
-          Versão local de desenvolvimento • dados de demonstração
+          Dados protegidos por perfil • acesso individual
         </p>
       </section>
 
