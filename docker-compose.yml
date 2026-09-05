@@ -27,6 +27,9 @@ services:
       NUTRI_ENV: container
       NUTRI_API_PORT: 3001
       NUTRI_APP_URL: ${NUTRI_APP_URL:-http://localhost:8080}
+      NUTRI_PATIENT_URL: ${NUTRI_PATIENT_URL:-http://localhost:8080}
+      NUTRI_NUTRITIONIST_URL: ${NUTRI_NUTRITIONIST_URL:-http://localhost:8080/?portal=nutritionist}
+      NUTRI_ADMIN_URL: ${NUTRI_ADMIN_URL:-http://localhost:8080/?portal=admin}
       NUTRI_SMTP_HOST: ${NUTRI_SMTP_HOST:-}
       NUTRI_SMTP_PORT: ${NUTRI_SMTP_PORT:-587}
       NUTRI_SMTP_USER: ${NUTRI_SMTP_USER:-}

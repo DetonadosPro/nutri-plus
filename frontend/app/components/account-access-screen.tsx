@@ -7,10 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Brand } from './brand';
+import { portalLabels, type PortalRole } from '@/lib/portal';
 
 type Flow = { type: 'activate' } | { type: 'verify'; token: string } | { type: 'reset'; token: string };
 
-export function AccountAccessScreen({ flow, onBack }: { flow: Flow; onBack: () => void }) {
+export function AccountAccessScreen({ flow, portal, onBack }: { flow: Flow; portal: PortalRole; onBack: () => void }) {
   const [code, setCode] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,12 +25,12 @@ export function AccountAccessScreen({ flow, onBack }: { flow: Flow; onBack: () =
     if (flow.type !== 'verify') return;
     api<{ message: string }>('/auth/verify-email', {
       method: 'POST',
-      body: JSON.stringify({ token: flow.token }),
+      body: JSON.stringify({ token: flow.token, expectedRole: portal }),
     })
       .then((result) => setMessage(result.message))
       .catch((reason) => setError(reason instanceof Error ? reason.message : 'Não foi possível confirmar.'))
       .finally(() => setLoading(false));
-  }, [flow]);
+  }, [flow, portal]);
 
   async function submit() {
     if (password.length < 8) return setError('A senha deve ter pelo menos 8 caracteres.');
@@ -41,14 +42,14 @@ export function AccountAccessScreen({ flow, onBack }: { flow: Flow; onBack: () =
         if (!code.trim() || !email.trim()) throw new Error('Informe o código e o e-mail.');
         const result = await api<{ message: string; previewUrl: string | null }>('/auth/activate', {
           method: 'POST',
-          body: JSON.stringify({ code, email: email.trim(), password }),
+          body: JSON.stringify({ code, email: email.trim(), password, expectedRole: portal }),
         });
         setMessage(result.message);
         setPreviewUrl(result.previewUrl);
       } else if (flow.type === 'reset') {
         const result = await api<{ message: string }>('/auth/password-reset', {
           method: 'POST',
-          body: JSON.stringify({ token: flow.token, password }),
+          body: JSON.stringify({ token: flow.token, password, expectedRole: portal }),
         });
         setMessage(result.message);
       }
@@ -59,11 +60,14 @@ export function AccountAccessScreen({ flow, onBack }: { flow: Flow; onBack: () =
     }
   }
 
-  const title = flow.type === 'activate' ? 'Ative seu acesso' : flow.type === 'reset' ? 'Crie uma nova senha' : 'Confirmando seu e-mail';
+  const title = flow.type === 'activate'
+    ? portal === 'nutritionist' ? 'Cadastre seu acesso profissional' : 'Ative seu acesso'
+    : flow.type === 'reset' ? 'Crie uma nova senha' : 'Confirmando seu e-mail';
   return (
     <main className="login-shell grid min-h-dvh place-items-center px-5 py-8">
       <section className="login-card w-full max-w-md">
         <Brand />
+        <p className="mt-3 text-sm font-semibold text-primary">Portal {portalLabels[portal]}</p>
         <button type="button" onClick={onBack} className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-primary">
           <ArrowLeft className="size-4" /> Voltar para entrar
         </button>
@@ -89,7 +93,7 @@ export function AccountAccessScreen({ flow, onBack }: { flow: Flow; onBack: () =
           <div className="mt-6 space-y-4">
             {flow.type === 'activate' && (
               <>
-                <div className="space-y-2"><Label htmlFor="activation-code">Código recebido</Label><Input id="activation-code" value={code} onChange={(event) => setCode(event.target.value.toUpperCase())} placeholder="XXXXX-XXXXX" autoCapitalize="characters" /></div>
+                <div className="space-y-2"><Label htmlFor="activation-code">{portal === 'nutritionist' ? 'Código fornecido pela administração' : 'Código recebido'}</Label><Input id="activation-code" value={code} onChange={(event) => setCode(event.target.value.toUpperCase())} placeholder="XXXXX-XXXXX" autoCapitalize="characters" /></div>
                 <div className="space-y-2"><Label htmlFor="activation-email">Seu e-mail</Label><Input id="activation-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" /></div>
               </>
             )}

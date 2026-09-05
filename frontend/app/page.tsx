@@ -4,6 +4,7 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { api } from "@/lib/client-api";
 import { LoginScreen } from "./components/login-screen";
 import { AccountAccessScreen } from "./components/account-access-screen";
+import { portalForLocation, portalLabels, portalUrl, type PortalRole } from "@/lib/portal";
 import type { User } from "./types";
 
 const PatientApp = lazy(() =>
@@ -25,8 +26,11 @@ export default function HomePage() {
   const [session, setSession] = useState<Session | null>(null);
   const [checking, setChecking] = useState(true);
   const [accountFlow, setAccountFlow] = useState<AccountFlow | null>(null);
+  const [portal, setPortal] = useState<PortalRole>('patient');
 
   useEffect(() => {
+    const currentPortal = portalForLocation(window.location);
+    setPortal(currentPortal);
     const params = new URLSearchParams(window.location.search);
     const verify = params.get("verify");
     const reset = params.get("reset");
@@ -56,8 +60,25 @@ export default function HomePage() {
   }
 
   if (checking) return <LoadingScreen />;
-  if (accountFlow) return <AccountAccessScreen flow={accountFlow} onBack={closeAccountFlow} />;
-  if (!session) return <LoginScreen onLogin={setSession} onActivate={() => setAccountFlow({ type: "activate" })} />;
+  if (accountFlow) return <AccountAccessScreen flow={accountFlow} portal={portal} onBack={closeAccountFlow} />;
+  if (!session) return <LoginScreen portal={portal} onLogin={setSession} onActivate={() => setAccountFlow({ type: "activate" })} />;
+  if (session.user.role !== portal) {
+    return (
+      <main className="login-shell grid min-h-dvh place-items-center px-5 py-8">
+        <section className="login-card w-full max-w-md text-center">
+          <p className="text-sm font-semibold text-primary">Portal {portalLabels[portal]}</p>
+          <h1 className="font-display mt-3 text-3xl font-semibold tracking-[-0.04em]">Este acesso pertence a outra área</h1>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            Sua conta é do perfil {portalLabels[session.user.role]}. Continue pelo portal correto.
+          </p>
+          <a className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-xl bg-primary px-4 font-semibold text-primary-foreground" href={portalUrl(session.user.role)}>
+            Abrir portal {portalLabels[session.user.role]}
+          </a>
+          <button className="mt-4 text-sm font-semibold text-primary" onClick={logout}>Sair desta conta</button>
+        </section>
+      </main>
+    );
+  }
   return (
     <Suspense fallback={<LoadingScreen />}>
       {session.user.role === "patient" ? (

@@ -12,6 +12,18 @@ O `docker-compose.yml` reproduz a arquitetura completa com PostgreSQL, inicializ
 
 Credenciais e URLs reais permanecem fora do Git. Para trocar o PostgreSQL de host sem alterar o código, basta mudar `DATABASE_URL` no ambiente correspondente.
 
+## Portais por perfil
+
+O frontend usa uma base compartilhada, mas cada hostname abre um portal isolado:
+
+- `nutriplusapp.store`: paciente;
+- `pro.nutriplusapp.store`: nutricionista;
+- `admin.nutriplusapp.store`: administração.
+
+O portal determina o perfil usado no login e impede que uma sessão de outro perfil abra a área incorreta. Pacientes e nutricionistas ativam a própria conta com códigos de uso único; o portal profissional identifica explicitamente o código gerado pela administração. O backend também confere o perfil associado ao código ou link, então a separação não depende apenas da interface.
+
+Em desenvolvimento local, use `?portal=patient`, `?portal=nutritionist` ou `?portal=admin`.
+
 ## Backups
 
 `scripts/backup-postgres.sh` cria um dump PostgreSQL em formato verificável, valida o arquivo e remove cópias locais antigas. Quando `NUTRI_BACKUP_S3_URI` estiver configurada, a mesma rotina envia uma cópia para armazenamento S3. A rotina deve ser ativada no servidor somente depois de criar e restringir o destino externo.
