@@ -15,7 +15,7 @@ import {
   verifyPassword,
   type AuthUser,
 } from "./auth";
-import { appUrlForRequest, sendMail } from "./mailer";
+import { appUrlForRole, sendMail } from "./mailer";
 import { appConfig } from "./config";
 import { normalizeSearch } from "./taco-import";
 import {
@@ -60,7 +60,15 @@ const sessionCookie = "nutri_session";
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://127.0.0.1:3000", "http://192.168.1.31:3000"],
+    origin: [
+      "http://localhost:3000",
+      "http://127.0.0.1:3000",
+      "http://192.168.1.31:3000",
+      "https://nutriplusapp.store",
+      "https://www.nutriplusapp.store",
+      "https://pro.nutriplusapp.store",
+      "https://admin.nutriplusapp.store",
+    ],
     credentials: true,
   }),
 );
@@ -120,12 +128,12 @@ async function saveAccountToken(
 async function validAccountToken(rawToken: string, purpose: AccountTokenPurpose) {
   return db
     .prepare(
-      `SELECT at.id, at.user_id AS "userId", u.name, u.email
+      `SELECT at.id, at.user_id AS "userId", u.name, u.email, u.role
        FROM account_tokens at JOIN users u ON u.id = at.user_id
        WHERE at.token_hash = ? AND at.purpose = ? AND at.used_at IS NULL
          AND at.expires_at > CURRENT_TIMESTAMP`,
     )
-    .get<{ id: number; userId: number; name: string; email: string | null }>(tokenHash(rawToken), purpose);
+    .get<{ id: number; userId: number; name: string; email: string | null; role: 'patient' | 'nutritionist' }>(tokenHash(rawToken), purpose);
 }
 
 async function patientAccess(user: AuthUser, patientId?: number) {
@@ -410,12 +418,15 @@ app.post(
         code: z.string().min(8).max(32),
         email: z.email(),
         password: z.string().min(8).max(128),
+        expectedRole: z.enum(["patient", "nutritionist"]),
       })
       .parse(req.body);
     const normalizedCode = normalizeActivationCode(payload.code);
     const activation = await validAccountToken(normalizedCode, "activation");
     if (!activation)
       return res.status(400).json({ error: "Código inválido, expirado ou já utilizado." });
+    if (activation.role !== payload.expectedRole)
+      return res.status(400).json({ error: "Este código pertence a outro portal do Nutri+." });
     const emailInUse = await db
       .prepare("SELECT id FROM users WHERE LOWER(email) = LOWER(?) AND id <> ?")
       .get<{ id: number }>(payload.email, activation.userId);
@@ -430,7 +441,7 @@ app.post(
       await db.prepare("UPDATE account_tokens SET used_at = CURRENT_TIMESTAMP WHERE id = ?").run(activation.id);
       await saveAccountToken(activation.userId, "email_verification", verificationToken, 24);
     });
-    const verificationUrl = `${appUrlForRequest(req.headers)}/?verify=${encodeURIComponent(verificationToken)}`;
+    const verificationUrl = `${appUrlForRole(activation.role, req.headers)}/?verify=${encodeURIComponent(verificationToken)}`;
     const mail = await sendMail({
       to: payload.email,
       subject: "Confirme seu acesso ao Nutri+",
@@ -449,10 +460,12 @@ app.post(
 app.post(
   "/api/auth/verify-email",
   route(async (req, res) => {
-    const payload = z.object({ token: z.string().min(20).max(200) }).parse(req.body);
+    const payload = z.object({ token: z.string().min(20).max(200), expectedRole: z.enum(["patient", "nutritionist"]) }).parse(req.body);
     const verification = await validAccountToken(payload.token, "email_verification");
     if (!verification)
       return res.status(400).json({ error: "Link inválido, expirado ou já utilizado." });
+    if (verification.role !== payload.expectedRole)
+      return res.status(400).json({ error: "Este link pertence a outro portal do Nutri+." });
     await transaction(async () => {
       await db
         .prepare("UPDATE users SET active = TRUE, email_verified_at = CURRENT_TIMESTAMP WHERE id = ? AND role IN ('patient', 'nutritionist') AND suspended_at IS NULL")
@@ -467,10 +480,12 @@ app.post(
   "/api/auth/password-reset",
   route(async (req, res) => {
     const payload = z
-      .object({ token: z.string().min(20).max(200), password: z.string().min(8).max(128) })
+      .object({ token: z.string().min(20).max(200), password: z.string().min(8).max(128), expectedRole: z.enum(["patient", "nutritionist"]) })
       .parse(req.body);
     const reset = await validAccountToken(payload.token, "password_reset");
     if (!reset) return res.status(400).json({ error: "Link inválido, expirado ou já utilizado." });
+    if (reset.role !== payload.expectedRole)
+      return res.status(400).json({ error: "Este link pertence a outro portal do Nutri+." });
     await transaction(async () => {
       await db.prepare("UPDATE users SET password_hash = ? WHERE id = ? AND active = TRUE").run(hashPassword(payload.password), reset.userId);
       await db.prepare("UPDATE account_tokens SET used_at = CURRENT_TIMESTAMP WHERE id = ?").run(reset.id);
@@ -620,7 +635,7 @@ app.post(
     const token = createAccountToken();
     await saveAccountToken(account.id, purpose, token, purpose === "email_verification" ? 24 : 1, admin.id);
     const query = purpose === "email_verification" ? "verify" : "reset";
-    const url = `${appUrlForRequest(req.headers)}/?${query}=${encodeURIComponent(token)}`;
+    const url = `${appUrlForRole('nutritionist', req.headers)}/?${query}=${encodeURIComponent(token)}`;
     const isVerification = purpose === "email_verification";
     const mail = await sendMail({
       to: account.email, subject: isVerification ? "Confirme seu acesso profissional ao Nutri+" : "Restaure sua senha profissional do Nutri+",
@@ -1311,7 +1326,7 @@ app.post(
       return res.status(409).json({ error: "O paciente ainda não confirmou o e-mail." });
     const resetToken = createAccountToken();
     await saveAccountToken(account.id, "password_reset", resetToken, 1, user.id);
-    const resetUrl = `${appUrlForRequest(req.headers)}/?reset=${encodeURIComponent(resetToken)}`;
+    const resetUrl = `${appUrlForRole('patient', req.headers)}/?reset=${encodeURIComponent(resetToken)}`;
     const mail = await sendMail({
       to: account.email,
       subject: "Restaure sua senha do Nutri+",
@@ -1342,7 +1357,7 @@ app.post(
       return res.status(409).json({ error: "Este paciente não está aguardando confirmação de e-mail." });
     const verificationToken = createAccountToken();
     await saveAccountToken(account.id, "email_verification", verificationToken, 24, user.id);
-    const verificationUrl = `${appUrlForRequest(req.headers)}/?verify=${encodeURIComponent(verificationToken)}`;
+    const verificationUrl = `${appUrlForRole('patient', req.headers)}/?verify=${encodeURIComponent(verificationToken)}`;
     const mail = await sendMail({
       to: account.email,
       subject: "Confirme seu acesso ao Nutri+",

@@ -8,17 +8,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api } from "@/lib/client-api";
 import type { User } from "../types";
+import { portalLabels, type PortalRole } from "@/lib/portal";
 
 export function LoginScreen({
   onLogin,
   onActivate,
+  portal,
 }: {
   onLogin: (session: { user: User; patientId: number | null }) => void;
   onActivate: () => void;
+  portal: PortalRole;
 }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"patient" | "nutritionist" | "admin">("patient");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -44,7 +46,7 @@ export function LoginScreen({
       onLogin(
         await api("/auth/login", {
           method: "POST",
-          body: JSON.stringify({ email: normalizedEmail, password, role }),
+          body: JSON.stringify({ email: normalizedEmail, password, role: portal }),
         }),
       );
     } catch (err) {
@@ -52,13 +54,6 @@ export function LoginScreen({
     } finally {
       setLoading(false);
     }
-  }
-
-  function fill(role: "patient" | "nutritionist" | "admin") {
-    setRole(role);
-    setEmail(role === "patient" ? "" : role === "admin" ? "admin@local.test" : "nutri@local.test");
-    setPassword(role === "patient" ? "" : role === "admin" ? "Admin123!" : "Nutri123!");
-    setError("");
   }
 
   return (
@@ -106,49 +101,19 @@ export function LoginScreen({
           <div className="mb-10 lg:hidden">
             <Brand />
           </div>
-          <p className="text-sm font-semibold text-primary">Bem-vindo de volta</p>
+          <p className="text-sm font-semibold text-primary">Portal {portalLabels[portal]}</p>
           <h2 className="font-display mt-2 text-3xl font-semibold tracking-[-0.045em]">
             Acesse sua área
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            {role === "patient"
+            {portal === "patient"
               ? "Registre sua rotina e acompanhe as metas definidas pelo nutricionista."
-              : role === "nutritionist"
+              : portal === "nutritionist"
                 ? "Acompanhe seus pacientes e transforme registros em decisões claras."
                 : "Gerencie somente o acesso dos profissionais ao Nutri+."}
           </p>
 
-          <div
-            className="mt-6 grid grid-cols-3 gap-1.5 rounded-xl bg-muted p-1.5"
-            aria-label="Preencher acesso de demonstração"
-          >
-            <button
-              type="button"
-              aria-pressed={role === "patient"}
-              onClick={() => fill("patient")}
-              className={`rounded-lg px-3 py-2.5 text-sm font-semibold transition ${role === "patient" ? "bg-white text-primary shadow-sm" : "hover:bg-white/70"}`}
-            >
-              Sou paciente
-            </button>
-            <button
-              type="button"
-              aria-pressed={role === "nutritionist"}
-              onClick={() => fill("nutritionist")}
-              className={`rounded-lg px-3 py-2.5 text-sm font-semibold transition ${role === "nutritionist" ? "bg-white text-primary shadow-sm" : "hover:bg-white/70"}`}
-            >
-              Sou nutricionista
-            </button>
-            <button
-              type="button"
-              aria-pressed={role === "admin"}
-              onClick={() => fill("admin")}
-              className={`rounded-lg px-2 py-2.5 text-xs font-semibold transition ${role === "admin" ? "bg-white text-primary shadow-sm" : "hover:bg-white/70"}`}
-            >
-              Administração
-            </button>
-          </div>
-
-          <form onSubmit={submit} noValidate className="mt-7 space-y-5">
+          <form onSubmit={submit} noValidate className="mt-8 space-y-5">
             <div className="space-y-2">
               <Label htmlFor="email">E-mail</Label>
               <Input
@@ -157,7 +122,7 @@ export function LoginScreen({
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 className="h-12 bg-white px-3"
-                autoComplete={role === "patient" ? "off" : "username"}
+                autoComplete="username"
               />
             </div>
             <div className="space-y-2">
@@ -170,7 +135,7 @@ export function LoginScreen({
                   onChange={(event) => setPassword(event.target.value)}
                   className="h-12 bg-white px-3 pr-11"
                   minLength={8}
-                  autoComplete={role === "patient" ? "new-password" : "current-password"}
+                  autoComplete="current-password"
                 />
                 <button
                   type="button"
@@ -200,16 +165,15 @@ export function LoginScreen({
               )}
             </Button>
           </form>
-          {role === "patient" && (
+          {portal !== "admin" && (
             <button type="button" onClick={onActivate} className="mt-4 w-full text-center text-sm font-semibold text-primary">
-              Recebi um código de ativação
+              {portal === 'nutritionist' ? 'Primeiro acesso com código da administração' : 'Recebi um código de ativação'}
             </button>
           )}
           <div className="mt-6 flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
             <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
             <p>
-              O acesso é validado pelo servidor local. Pacientes visualizam somente os próprios
-              dados.
+              O acesso é validado pelo Nutri+. Cada perfil visualiza somente sua própria área.
             </p>
           </div>
         </div>
