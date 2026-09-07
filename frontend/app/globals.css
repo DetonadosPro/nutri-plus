@@ -704,6 +704,8 @@
     border-radius: 0.8rem;
     background: var(--patient-blue-soft);
     color: var(--patient-blue);
+    border: 1px solid rgb(78 159 194 / 10%);
+    box-shadow: 0 5px 16px rgb(78 159 194 / 10%);
     transition:
       transform 160ms ease,
       background 160ms ease;
@@ -714,16 +716,9 @@
   .patient-calendar-button:active {
     transform: scale(0.96);
   }
-  .patient-calendar-button:focus-within {
+  .patient-calendar-button:focus-visible {
     outline: 2px solid rgb(78 159 194 / 45%);
     outline-offset: 2px;
-  }
-  .patient-calendar-button input {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    cursor: pointer;
-    opacity: 0;
   }
   .patient-selected-date {
     margin-top: 0.3rem;

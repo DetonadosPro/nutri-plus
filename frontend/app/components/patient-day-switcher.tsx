@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { BarChart3, CalendarDays } from "lucide-react";
 import { addDays, brazilNow, formatDate, isToday } from "@/lib/datetime";
+import { DatePickerPopover } from "./date-picker-popover";
 
 type TouchPoint = { x: number; y: number };
 
@@ -46,17 +47,14 @@ export function PatientDaySwitcher({
           <p className="patient-day-greeting">Olá, {firstName}</p>
           <div className="patient-day-title-row">
             <h1>{today ? "Hoje" : formatDate(date, { weekday: "long" })}</h1>
-            <label className="patient-calendar-button" aria-label="Escolher data">
+            <DatePickerPopover
+              date={date}
+              onChange={onChange}
+              triggerClassName="patient-calendar-button"
+              align="start"
+            >
               <CalendarDays className="size-5" aria-hidden="true" />
-              <input
-                type="date"
-                value={date}
-                onChange={(event) => {
-                  if (event.target.value) onChange(event.target.value);
-                }}
-                aria-label="Escolher data"
-              />
-            </label>
+            </DatePickerPopover>
           </div>
           <p className="patient-selected-date">
             {formatDate(date, {

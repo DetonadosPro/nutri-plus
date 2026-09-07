@@ -3,6 +3,7 @@
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { addDays, formatDate, isToday } from "@/lib/datetime";
+import { DatePickerPopover } from "./date-picker-popover";
 
 export function DateNavigator({
   date,
@@ -31,24 +32,10 @@ export function DateNavigator({
             {formatDate(date, { month: "long", year: "numeric" })}
           </p>
         </div>
-        <details className="relative">
-          <summary className="secondary-action list-none">
+        <DatePickerPopover date={date} onChange={onChange} triggerClassName="secondary-action">
             <CalendarDays className="size-4" />
             Ir para data
-          </summary>
-          <div className="absolute right-0 top-11 z-30 rounded-2xl border bg-popover p-3 shadow-lg">
-            <label className="text-xs font-semibold text-muted-foreground" htmlFor="jump-date">
-              Escolha uma data
-            </label>
-            <input
-              id="jump-date"
-              type="date"
-              value={date}
-              onChange={(event) => onChange(event.target.value)}
-              className="mt-2 h-11 rounded-xl border border-input bg-white px-3 text-sm"
-            />
-          </div>
-        </details>
+        </DatePickerPopover>
       </div>
       <div className="mt-3 grid grid-cols-[44px_minmax(0,1fr)_44px] items-center gap-1">
         <button
