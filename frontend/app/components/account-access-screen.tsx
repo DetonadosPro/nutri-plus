@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ArrowLeft, CheckCircle2, KeyRound, MailCheck } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, CircleAlert, KeyRound, MailCheck } from 'lucide-react';
 import { api } from '@/lib/client-api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,6 +22,7 @@ export function AccountAccessScreen({ flow, onBack }: { flow: Flow; onBack: () =
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [deliveryFailed, setDeliveryFailed] = useState(false);
   const [identifiedRole, setIdentifiedRole] = useState<InvitedRole | null>(null);
 
   useEffect(() => {
@@ -62,12 +63,13 @@ export function AccountAccessScreen({ flow, onBack }: { flow: Flow; onBack: () =
       if (flow.type === 'activate') {
         if (!identifiedRole) throw new Error('Identifique o código antes de continuar.');
         if (!email.trim()) throw new Error('Informe o seu e-mail.');
-        const result = await api<{ message: string; previewUrl: string | null }>('/auth/activate', {
+        const result = await api<{ message: string; previewUrl: string | null; deliveryStatus?: string }>('/auth/activate', {
           method: 'POST',
           body: JSON.stringify({ code, email: email.trim(), password }),
         });
         setMessage(result.message);
         setPreviewUrl(result.previewUrl);
+        setDeliveryFailed(result.deliveryStatus === 'failed');
       } else if (flow.type === 'reset') {
         const result = await api<{ message: string }>('/auth/password-reset', {
           method: 'POST',
@@ -99,8 +101,8 @@ export function AccountAccessScreen({ flow, onBack }: { flow: Flow; onBack: () =
         <h1 className="font-display mt-4 text-3xl font-semibold tracking-[-0.04em]">{title}</h1>
         {message ? (
           <div className="mt-6 space-y-4">
-            <p className="flex gap-2 rounded-xl border border-primary/15 bg-primary/5 p-4 text-sm leading-relaxed text-primary">
-              <CheckCircle2 className="mt-0.5 size-5 shrink-0" /> {message}
+            <p role={deliveryFailed ? 'alert' : 'status'} className={`flex gap-2 rounded-xl border p-4 text-sm leading-relaxed ${deliveryFailed ? 'border-amber-200 bg-amber-50 text-amber-900' : 'border-primary/15 bg-primary/5 text-primary'}`}>
+              {deliveryFailed ? <CircleAlert className="mt-0.5 size-5 shrink-0" /> : <CheckCircle2 className="mt-0.5 size-5 shrink-0" />} {message}
             </p>
             {previewUrl && (
               <a href={previewUrl} className="block rounded-xl border px-4 py-3 text-center text-sm font-semibold text-primary">

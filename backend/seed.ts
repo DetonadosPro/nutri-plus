@@ -1,11 +1,13 @@
 import { db, transaction } from './db';
 import { hashPassword } from './auth';
+import { appConfig } from './config';
 
 async function addUser(name: string, email: string, password: string, role: 'admin' | 'nutritionist' | 'patient', canManage = false) {
-  return (await db.prepare(`INSERT INTO users (name, email, password_hash, role, can_manage_nutrition_data, email_verified_at) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP) RETURNING id`).get<{ id: number }>(name, email, hashPassword(password), role, canManage))!.id;
+  return (await db.prepare(`INSERT INTO users (name, email, password_hash, role, can_manage_nutrition_data, email_verified_at) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP) RETURNING id`).get<{ id: number }>(name, email, await hashPassword(password), role, canManage))!.id;
 }
 
 export async function seedDatabase() {
+  if (!appConfig.security.allowDemoSeed) throw new Error('Dados de demonstração só podem ser criados em desenvolvimento explicitamente habilitado.');
   const admin = await db.prepare('SELECT id FROM users WHERE LOWER(email) = LOWER(?)').get('admin@local.test');
   if (!admin) await addUser('Administrador Nutri+', 'admin@local.test', 'Admin123!', 'admin');
   const existing = await db.prepare('SELECT id FROM users WHERE LOWER(email) = LOWER(?)').get('nutri@local.test');

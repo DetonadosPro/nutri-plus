@@ -24,8 +24,10 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL:?Configure_DATABASE_URL_in_local_environment}
       NUTRI_ALLOW_REMOTE_DATABASE: "true"
-      NUTRI_ENV: container
+      NUTRI_ENV: ${NUTRI_ENV:-development}
+      NODE_ENV: ${NUTRI_ENV:-development}
       NUTRI_API_PORT: 3001
+      NUTRI_API_HOST: "0.0.0.0"
       NUTRI_APP_URL: ${NUTRI_APP_URL:-http://localhost:8080}
       NUTRI_SMTP_HOST: ${NUTRI_SMTP_HOST:-}
       NUTRI_SMTP_PORT: ${NUTRI_SMTP_PORT:-587}
