@@ -8,16 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api } from "@/lib/client-api";
 import type { User } from "../types";
-import { portalLabels, type PortalRole } from "@/lib/portal";
 
 export function LoginScreen({
   onLogin,
   onActivate,
-  portal,
 }: {
   onLogin: (session: { user: User; patientId: number | null }) => void;
   onActivate: () => void;
-  portal: PortalRole;
 }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,7 +43,7 @@ export function LoginScreen({
       onLogin(
         await api("/auth/login", {
           method: "POST",
-          body: JSON.stringify({ email: normalizedEmail, password, role: portal }),
+          body: JSON.stringify({ email: normalizedEmail, password }),
         }),
       );
     } catch (err) {
@@ -101,16 +98,12 @@ export function LoginScreen({
           <div className="mb-10 lg:hidden">
             <Brand />
           </div>
-          <p className="text-sm font-semibold text-primary">Portal {portalLabels[portal]}</p>
+          <p className="text-sm font-semibold text-primary">Acesso Nutri+</p>
           <h2 className="font-display mt-2 text-3xl font-semibold tracking-[-0.045em]">
             Acesse sua área
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            {portal === "patient"
-              ? "Registre sua rotina e acompanhe as metas definidas pelo nutricionista."
-              : portal === "nutritionist"
-                ? "Acompanhe seus pacientes e transforme registros em decisões claras."
-                : "Gerencie somente o acesso dos profissionais ao Nutri+."}
+            Entre com seus dados. O Nutri+ abrirá automaticamente a área da sua conta.
           </p>
 
           <form onSubmit={submit} noValidate className="mt-8 space-y-5">
@@ -165,11 +158,9 @@ export function LoginScreen({
               )}
             </Button>
           </form>
-          {portal !== "admin" && (
-            <button type="button" onClick={onActivate} className="mt-4 w-full text-center text-sm font-semibold text-primary">
-              {portal === 'nutritionist' ? 'Primeiro acesso com código da administração' : 'Recebi um código de ativação'}
-            </button>
-          )}
+          <button type="button" onClick={onActivate} className="mt-4 w-full text-center text-sm font-semibold text-primary">
+            Primeiro acesso com código de convite
+          </button>
           <div className="mt-6 flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
             <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
             <p>

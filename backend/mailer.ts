@@ -43,7 +43,3 @@ export function appUrlForRequest(headers: { [key: string]: unknown }) {
   const forwardedHost = String(headers['x-forwarded-host'] || 'localhost:3000');
   return `https://${forwardedHost}`;
 }
-
-export function appUrlForRole(role: 'patient' | 'nutritionist' | 'admin', headers: { [key: string]: unknown }) {
-  return appConfig.portalUrls[role] || appUrlForRequest(headers);
-}
