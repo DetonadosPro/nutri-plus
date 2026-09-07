@@ -31,11 +31,11 @@ Na mesma rede local, o celular pode acessar `https://192.168.1.31:3000` enquanto
 - links de confirmação expiram em 24 horas e links de restauração em 1 hora;
 - cada novo código ou link invalida o anterior da mesma finalidade.
 
-Para enviar mensagens reais, copie as variáveis `NUTRI_SMTP_*` e `NUTRI_EMAIL_FROM` do `.env.example` para `.env.local`. O Amazon SES pode ser usado com suas credenciais SMTP. Sem essa configuração, o sistema permanece funcional e mostra o link local de teste na própria tela.
+Para enviar mensagens reais, configure as variáveis `NUTRI_SMTP_*` e `NUTRI_EMAIL_FROM`. Em produção, as credenciais são carregadas do AWS Secrets Manager. Links locais de teste só aparecem em desenvolvimento com `NUTRI_ALLOW_EMAIL_PREVIEW=true`; falhas de entrega em produção nunca expõem os links.
 
 ## Administração dos nutricionistas
 
-A área administrativa local é acessada com `admin@local.test` e a senha inicial `Admin123!`. Ela cadastra e controla somente contas profissionais, sem listar, consultar, contar, transferir ou modificar pacientes e dados clínicos.
+A área administrativa cadastra e controla somente contas profissionais, sem listar, consultar, contar, transferir ou modificar pacientes e dados clínicos. Contas de demonstração são exclusivas do desenvolvimento; o seed exige `NUTRI_ALLOW_DEMO_SEED=true` e é bloqueado em produção.
 
 O administrador gera um código de ativação para o nutricionista, acompanha a confirmação do e-mail, envia restauração de senha e pode suspender ou reativar o acesso profissional. Pacientes permanecem vinculados exclusivamente ao nutricionista que os cadastrou.
 
@@ -74,3 +74,5 @@ Em qualquer ambiente, o endereço do PostgreSQL fica somente em `DATABASE_URL`. 
 - a API é a única camada que acessa o PostgreSQL; nenhuma credencial é armazenada no Git.
 
 Detalhes: [arquitetura](docs/ARCHITECTURE.md) e [relatório da TACO](docs/TACO_EXTRACTION_REPORT.md).
+
+Configuração de produção, IAM Role, Secrets Manager e cuidados de rotação: [segurança na AWS](docs/AWS_SECURITY.md).

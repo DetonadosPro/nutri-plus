@@ -2209,10 +2209,14 @@ function PatientPasswordDialog({
         : patient.accessStatus === 'pending_verification'
           ? 'email-verification'
           : 'activation-code';
-      const response = await api<{ message?: string; previewUrl?: string | null; activationCode?: string }>(
+      const response = await api<{ message?: string; previewUrl?: string | null; activationCode?: string; deliveryStatus?: string }>(
         `/nutritionist/patients/${patient.id}/${path}`,
         { method: 'POST' },
       );
+      if (response.deliveryStatus === 'failed') {
+        setError(response.message || 'Não foi possível entregar o e-mail. Tente reenviar mais tarde.');
+        return;
+      }
       setResult(response);
       await onSaved();
     } catch (reason) {

@@ -52,7 +52,12 @@ export function AdminApp({ user, onLogout }: { user: User; onLogout: () => void 
 
   async function access(account: NutritionistAccount, action: 'activation' | 'verification' | 'password_reset' | 'suspend' | 'reactivate') {
     try {
-      const result = await api<{ message?: string; activationCode?: string; previewUrl?: string | null }>(`/admin/nutritionists/${account.id}/access`, { method: 'POST', body: JSON.stringify({ action }) });
+      const result = await api<{ message?: string; activationCode?: string; previewUrl?: string | null; deliveryStatus?: string }>(`/admin/nutritionists/${account.id}/access`, { method: 'POST', body: JSON.stringify({ action }) });
+      if (result.deliveryStatus === 'failed') {
+        toast.add({ title: result.message || 'Não foi possível entregar o e-mail.', type: 'error' });
+        await load();
+        return;
+      }
       if (result.activationCode) setActivationCode(result.activationCode);
       setResultMessage(result.message || (result.activationCode ? 'Novo código gerado.' : 'Ação concluída.'));
       setPreviewUrl(result.previewUrl || null);

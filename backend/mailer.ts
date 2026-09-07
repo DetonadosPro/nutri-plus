@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { appConfig } from './config';
+import { mailDeliveryResult } from './security-policy';
 
 type MailPayload = { to: string; subject: string; text: string; html: string };
 
@@ -15,6 +16,10 @@ const transporter = smtpConfigured
       host: appConfig.email.host,
       port: appConfig.email.port,
       secure: appConfig.email.port === 465,
+      requireTLS: appConfig.email.port !== 465,
+      connectionTimeout: 10_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 20_000,
       auth: {
         user: appConfig.email.user,
         pass: appConfig.email.password,
@@ -31,15 +36,18 @@ export async function sendMail(payload: MailPayload) {
       ...payload,
     });
     return { delivered: true as const };
-  } catch (error) {
-    console.error('Não foi possível enviar o e-mail transacional:', error instanceof Error ? error.message : error);
+  } catch {
+    console.error('Não foi possível entregar o e-mail transacional.');
     return { delivered: false as const };
   }
+}
+
+export function deliveryResult(delivered: boolean, url: string, successMessage: string) {
+  return mailDeliveryResult(delivered, url, successMessage, appConfig.security.allowEmailPreview);
 }
 
 export function appUrlForRequest(headers: { [key: string]: unknown }) {
   const configured = appConfig.appUrl;
   if (configured) return configured;
-  const forwardedHost = String(headers['x-forwarded-host'] || 'localhost:3000');
-  return `https://${forwardedHost}`;
+  return 'http://localhost:3000';
 }

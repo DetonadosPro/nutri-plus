@@ -13,9 +13,11 @@
     "audit": "tsx audit.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.1127.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
     "nodemailer": "^7.0.13",
     "pg": "^8.23.0",
     "read-excel-file": "^9.3.10",
