@@ -56,13 +56,21 @@ describe("cálculos centralizados por porção", () => {
     expect(day.values.proteina_g).toBeCloseTo(21);
     expect(day.values.energia_kcal).toBeCloseTo(300);
   });
-  it("mantém ausência como indisponível no total", () => {
-    expect(
-      sumNutrientSets([
-        scaleNutrients({ vitamina_c_mg: 10 }, 100),
-        scaleNutrients({ vitamina_c_mg: null }, 100),
-      ]).values.vitamina_c_mg,
-    ).toBeNull();
+  it("soma os valores disponíveis sem transformar o parcial em indisponível", () => {
+    const total = sumNutrientSets([
+      scaleNutrients({ vitamina_c_mg: 10 }, 100),
+      scaleNutrients({ vitamina_c_mg: null }, 100),
+    ]);
+    expect(total.values.vitamina_c_mg).toBe(10);
+    expect(total.unavailable).toContain("vitamina_c_mg");
+  });
+  it("mantém o total indisponível quando nenhum valor é conhecido", () => {
+    const total = sumNutrientSets([
+      scaleNutrients({ vitamina_c_mg: null }, 100),
+      scaleNutrients({ vitamina_c_mg: null }, 50),
+    ]);
+    expect(total.values.vitamina_c_mg).toBeNull();
+    expect(total.unavailable).toContain("vitamina_c_mg");
   });
   it("calcula distribuição energética uma única vez no backend", () => {
     const energy = macroEnergy({

@@ -29,14 +29,20 @@ export function scaleNutrients(basePer100g: NutrientMap, grams: number): ScaledN
 export function sumNutrientSets(sets: ScaledNutrients[]): ScaledNutrients {
   const values: Record<string, number | null> = {};
   const unavailable = new Set<string>();
+  const available = new Set<string>();
   for (const set of sets) {
     for (const [code, value] of Object.entries(set.values)) {
-      if (value == null || values[code] === null) values[code] = null;
-      else values[code] = (values[code] ?? 0) + value;
+      if (value == null) unavailable.add(code);
+      else {
+        values[code] = (values[code] ?? 0) + value;
+        available.add(code);
+      }
     }
     for (const code of set.unavailable) unavailable.add(code);
   }
-  for (const code of unavailable) values[code] = null;
+  for (const code of unavailable) {
+    if (!available.has(code)) values[code] = null;
+  }
   return { values, unavailable: [...unavailable].sort() };
 }
 
