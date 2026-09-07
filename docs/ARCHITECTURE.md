@@ -12,17 +12,13 @@ O `docker-compose.yml` reproduz a arquitetura completa com PostgreSQL, inicializ
 
 Credenciais e URLs reais permanecem fora do Git. Para trocar o PostgreSQL de host sem alterar o código, basta mudar `DATABASE_URL` no ambiente correspondente.
 
-## Portais por perfil
+## Entrada única e perfis
 
-O frontend usa uma base compartilhada, mas cada hostname abre um portal isolado:
+O frontend oferece uma única entrada em `nutriplusapp.store`. O login envia somente e-mail e senha; o backend identifica o perfil cadastrado e o frontend abre automaticamente a área de paciente, nutricionista ou administração.
 
-- `nutriplusapp.store`: paciente;
-- `pro.nutriplusapp.store`: nutricionista;
-- `admin.nutriplusapp.store`: administração.
+Os convites também não pedem que a pessoa escolha um perfil. O administrador cria exclusivamente contas de nutricionista, e o nutricionista cria exclusivamente contas de paciente vinculadas a ele. Cada código é hashado, de uso único, possui validade e referencia uma conta cujo perfil já foi definido pelo emissor autorizado. Antes do cadastro, a interface consulta o código e informa automaticamente qual conta será criada.
 
-O portal determina o perfil usado no login e impede que uma sessão de outro perfil abra a área incorreta. Pacientes e nutricionistas ativam a própria conta com códigos de uso único; o portal profissional identifica explicitamente o código gerado pela administração. O backend também confere o perfil associado ao código ou link, então a separação não depende apenas da interface.
-
-Em desenvolvimento local, use `?portal=patient`, `?portal=nutritionist` ou `?portal=admin`.
+As permissões continuam verificadas no backend em todas as rotas; a entrada comum não mistura dados nem concede acesso entre perfis.
 
 ## Backups
 

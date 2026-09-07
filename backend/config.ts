@@ -26,11 +26,6 @@ export const appConfig = {
   environment: process.env.NUTRI_ENV || process.env.NODE_ENV || 'development',
   apiPort: Number(process.env.NUTRI_API_PORT || 3001),
   appUrl: process.env.NUTRI_APP_URL?.replace(/\/$/, ''),
-  portalUrls: {
-    patient: (process.env.NUTRI_PATIENT_URL || process.env.NUTRI_APP_URL)?.replace(/\/$/, ''),
-    nutritionist: process.env.NUTRI_NUTRITIONIST_URL?.replace(/\/$/, ''),
-    admin: process.env.NUTRI_ADMIN_URL?.replace(/\/$/, ''),
-  },
   database: {
     url: required('DATABASE_URL', 'DATABASE_URL_DEV'),
     allowRemote: enabled('NUTRI_ALLOW_REMOTE_DATABASE'),
