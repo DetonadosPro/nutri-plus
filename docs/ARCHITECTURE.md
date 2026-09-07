@@ -20,6 +20,8 @@ Os convites também não pedem que a pessoa escolha um perfil. O administrador c
 
 As permissões continuam verificadas no backend em todas as rotas; a entrada comum não mistura dados nem concede acesso entre perfis.
 
+Os antigos endereços `www`, `pro` e `admin` redirecionam para o domínio principal preservando o caminho e os parâmetros de confirmação. A configuração versionada está em `deploy/nginx/nutriplus.conf`.
+
 ## Backups
 
 `scripts/backup-postgres.sh` cria um dump PostgreSQL em formato verificável, valida o arquivo e remove cópias locais antigas. Quando `NUTRI_BACKUP_S3_URI` estiver configurada, a mesma rotina envia uma cópia para armazenamento S3. A rotina deve ser ativada no servidor somente depois de criar e restringir o destino externo.
