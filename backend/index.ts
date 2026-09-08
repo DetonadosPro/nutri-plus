@@ -16,7 +16,7 @@ import {
   verifyPassword,
   type AuthUser,
 } from "./auth";
-import { appUrlForRequest, sendMail, deliveryResult } from "./mailer";
+import { accountMailHtml, appUrlForRequest, sendMail, deliveryResult } from "./mailer";
 import { appConfig } from "./config";
 import { AccountTokenError, saveAccountToken, validAccountToken, withAccountToken } from './account-tokens';
 import { accountMailLimit, authenticationLimits, configureSecurity, sessionCookieOptions } from './security';
@@ -422,7 +422,15 @@ app.post(
       to: payload.email,
       subject: "Confirme seu acesso ao Nutri+",
       text: `Olá, ${activation.name}. Confirme seu e-mail para ativar o Nutri+: ${verificationUrl}`,
-      html: `<p>Olá, ${activation.name}.</p><p>Confirme seu e-mail para ativar seu acesso ao Nutri+.</p><p><a href="${verificationUrl}">Confirmar meu e-mail</a></p><p>Este link expira em 24 horas.</p>`,
+      html: accountMailHtml({
+        name: activation.name,
+        eyebrow: "Confirmação de e-mail",
+        title: "Seu acesso ao Nutri+ está quase pronto",
+        message: "Confirme seu e-mail para ativar seu acesso e começar a usar o Nutri+.",
+        actionLabel: "Confirmar meu e-mail",
+        actionUrl: verificationUrl,
+        expiration: "Este link expira em 24 horas.",
+      }),
     });
     res.json(deliveryResult(mail.delivered, verificationUrl, 'Enviamos o link de confirmação para o seu e-mail.'));
   }),
@@ -593,7 +601,19 @@ app.post(
     const mail = await sendMail({
       to: account.email, subject: isVerification ? "Confirme seu acesso profissional ao Nutri+" : "Restaure sua senha profissional do Nutri+",
       text: `Olá, ${account.name}. ${isVerification ? "Confirme seu e-mail" : "Defina uma nova senha"}: ${url}`,
-      html: `<p>Olá, ${account.name}.</p><p>${isVerification ? "Confirme seu e-mail para ativar seu acesso profissional." : "A administração solicitou a restauração da sua senha."}</p><p><a href="${url}">${isVerification ? "Confirmar meu e-mail" : "Definir nova senha"}</a></p>`,
+      html: accountMailHtml({
+        name: account.name,
+        eyebrow: isVerification ? "Confirmação de e-mail" : "Segurança da conta",
+        title: isVerification ? "Seu acesso profissional está quase pronto" : "Crie uma nova senha",
+        message: isVerification
+          ? "Confirme seu e-mail para ativar seu acesso profissional ao Nutri+."
+          : "A administração solicitou a restauração da senha da sua conta.",
+        actionLabel: isVerification ? "Confirmar meu e-mail" : "Definir nova senha",
+        actionUrl: url,
+        expiration: isVerification
+          ? "Este link expira em 24 horas."
+          : "Este link expira em 1 hora e só pode ser usado uma vez.",
+      }),
     });
     res.json(deliveryResult(mail.delivered, url, `E-mail enviado para ${account.email}.`));
   }),
@@ -1286,7 +1306,15 @@ app.post(
       to: account.email,
       subject: "Restaure sua senha do Nutri+",
       text: `Olá, ${account.name}. Defina uma nova senha para o Nutri+: ${resetUrl}`,
-      html: `<p>Olá, ${account.name}.</p><p>Recebemos uma solicitação do seu nutricionista para restaurar sua senha.</p><p><a href="${resetUrl}">Definir nova senha</a></p><p>Este link expira em 1 hora e só pode ser usado uma vez.</p>`,
+      html: accountMailHtml({
+        name: account.name,
+        eyebrow: "Segurança da conta",
+        title: "Crie uma nova senha",
+        message: "Recebemos uma solicitação do seu nutricionista para restaurar sua senha.",
+        actionLabel: "Definir nova senha",
+        actionUrl: resetUrl,
+        expiration: "Este link expira em 1 hora e só pode ser usado uma vez.",
+      }),
     });
     res.json(deliveryResult(mail.delivered, resetUrl, `Enviamos a restauração para ${account.email}.`));
   }),
@@ -1312,7 +1340,15 @@ app.post(
       to: account.email,
       subject: "Confirme seu acesso ao Nutri+",
       text: `Olá, ${account.name}. Confirme seu e-mail para ativar o Nutri+: ${verificationUrl}`,
-      html: `<p>Olá, ${account.name}.</p><p>Confirme seu e-mail para ativar seu acesso ao Nutri+.</p><p><a href="${verificationUrl}">Confirmar meu e-mail</a></p><p>Este link expira em 24 horas.</p>`,
+      html: accountMailHtml({
+        name: account.name,
+        eyebrow: "Confirmação de e-mail",
+        title: "Seu acesso ao Nutri+ está quase pronto",
+        message: "Confirme seu e-mail para ativar seu acesso e começar a usar o Nutri+.",
+        actionLabel: "Confirmar meu e-mail",
+        actionUrl: verificationUrl,
+        expiration: "Este link expira em 24 horas.",
+      }),
     });
     res.json(deliveryResult(mail.delivered, verificationUrl, `Reenviamos a confirmação para ${account.email}.`));
   }),
