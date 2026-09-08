@@ -425,22 +425,9 @@ function EnergySettings({
           </option>
         </select>
       </label>
-      <label>
-        Fator de gasto cotidiano
-        <input
-          required
-          type="number"
-          min="1"
-          max="2.5"
-          step="0.001"
-          value={factor}
-          onChange={(e) => setFactor(e.target.value)}
-        />
-      </label>
       <p>
-        Na segunda opção, configure um fator sem os exercícios que serão
-        acrescentados. A aproximação líquida pressupõe substituição de repouso;
-        movimento cotidiano já incluído não deve ser somado.
+        O fator cotidiano é definido em Metas. Na segunda estratégia, os
+        exercícios registrados são acrescentados pelo gasto líquido estimado.
       </p>
       <label className="activity-checkbox">
         <input

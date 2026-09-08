@@ -1815,6 +1815,7 @@ function CreatePatientDialog({
     heightCm: '170',
     weightKg: '70',
     energyKcal: '2000',
+    dailyActivityFactor: '1.2',
     carbohydratePercent: '50',
     proteinPercent: '20',
     fatPercent: '30',
@@ -1862,6 +1863,8 @@ function CreatePatientDialog({
       Boolean(form.foodPreferences.trim() && form.foodRestrictions.trim() && form.allergies.trim() && form.mealRoutine.trim()),
       Boolean(
         numeric(form.energyKcal) &&
+          Number(form.dailyActivityFactor) >= 1 &&
+          Number(form.dailyActivityFactor) <= 2.5 &&
           Math.abs(Number(form.carbohydratePercent) + Number(form.proteinPercent) + Number(form.fatPercent) - 100) <= 0.001,
       ),
     ][step];
@@ -1880,6 +1883,7 @@ function CreatePatientDialog({
     const heightCm = Number(form.heightCm);
     const weightKg = Number(form.weightKg);
     const energyKcal = Number(form.energyKcal);
+    const dailyActivityFactor = Number(form.dailyActivityFactor);
     const carbohydratePercent = Number(form.carbohydratePercent);
     const proteinPercent = Number(form.proteinPercent);
     const fatPercent = Number(form.fatPercent);
@@ -1890,7 +1894,10 @@ function CreatePatientDialog({
       !Number.isFinite(weightKg) ||
       weightKg <= 0 ||
       !Number.isFinite(energyKcal) ||
-      energyKcal <= 0
+      energyKcal <= 0 ||
+      !Number.isFinite(dailyActivityFactor) ||
+      dailyActivityFactor < 1 ||
+      dailyActivityFactor > 2.5
     ) {
       setError('Informe altura, peso e meta energética válidos.');
       return;
@@ -1920,6 +1927,7 @@ function CreatePatientDialog({
           heightCm,
           weightKg,
           energyKcal,
+          dailyActivityFactor,
           carbohydratePercent,
           proteinPercent,
           fatPercent,
@@ -1935,6 +1943,7 @@ function CreatePatientDialog({
         heightCm: '170',
         weightKg: '70',
         energyKcal: '2000',
+        dailyActivityFactor: '1.2',
         carbohydratePercent: '50',
         proteinPercent: '20',
         fatPercent: '30',
@@ -2105,6 +2114,22 @@ function CreatePatientDialog({
                 value={form.energyKcal}
                 onChange={(value) => set('energyKcal', value)}
               />
+            </div>
+            <div className="mt-4 rounded-2xl border border-primary/15 bg-white p-4">
+              <div className="grid items-end gap-3 sm:grid-cols-[1fr_11rem]">
+                <div>
+                  <p className="text-sm font-medium">Fator cotidiano</p>
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                    Multiplica a basal para estimar um dia comum sem treino. Exercícios registrados são somados separadamente.
+                  </p>
+                </div>
+                <GoalInput
+                  label="Fator sobre a basal"
+                  value={form.dailyActivityFactor}
+                  step="0.05"
+                  onChange={(value) => set('dailyActivityFactor', value)}
+                />
+              </div>
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
               <MacroGoalControl
@@ -2312,6 +2337,7 @@ function GoalsDialog({
     proteinPercent: String(goals?.protein_percent ?? 20),
     fatPercent: String(goals?.fat_percent ?? 30),
     fiberG: String(goals?.fiber_g ?? 30),
+    dailyActivityFactor: String(goals?.daily_activity_factor ?? 1.2),
   });
   const [error, setError] = useState('');
   useEffect(() => {
@@ -2322,6 +2348,7 @@ function GoalsDialog({
         proteinPercent: String(goals.protein_percent ?? 20),
         fatPercent: String(goals.fat_percent ?? 30),
         fiberG: String(goals.fiber_g ?? 30),
+        dailyActivityFactor: String(goals.daily_activity_factor ?? 1.2),
       });
   }, [goals]);
   const set = (key: string, value: string) =>
@@ -2330,6 +2357,7 @@ function GoalsDialog({
   const carbohydratePercent = Number(form.carbohydratePercent) || 0;
   const proteinPercent = Number(form.proteinPercent) || 0;
   const fatPercent = Number(form.fatPercent) || 0;
+  const dailyActivityFactor = Number(form.dailyActivityFactor);
   const macroTotal = carbohydratePercent + proteinPercent + fatPercent;
   const validDistribution =
     Math.abs(macroTotal - 100) < 0.001 &&
@@ -2352,6 +2380,7 @@ function GoalsDialog({
           proteinPercent,
           fatPercent,
           fiberG: form.fiberG === '' ? null : Number(form.fiberG),
+          dailyActivityFactor,
         }),
       });
       await onSaved();
@@ -2385,6 +2414,20 @@ function GoalsDialog({
             value={form.fiberG}
             onChange={(value) => set('fiberG', value)}
           />
+          <div className="rounded-2xl border bg-surface-soft px-4 py-4 sm:col-span-2">
+            <p className="text-sm font-medium">Fator cotidiano</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Multiplica a basal para estimar um dia comum sem treino. Exercícios registrados são somados separadamente.
+            </p>
+            <div className="mt-3 max-w-48">
+              <GoalInput
+                label="Fator sobre a basal"
+                value={form.dailyActivityFactor}
+                step="0.05"
+                onChange={(value) => set('dailyActivityFactor', value)}
+              />
+            </div>
+          </div>
           <section className="macro-goal-editor sm:col-span-2">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
@@ -2462,7 +2505,16 @@ function GoalsDialog({
             {error}
           </p>
         )}
-        <Button onClick={save} disabled={!validDistribution || energyKcal <= 0}>
+        <Button
+          onClick={save}
+          disabled={
+            !validDistribution ||
+            energyKcal <= 0 ||
+            !Number.isFinite(dailyActivityFactor) ||
+            dailyActivityFactor < 1 ||
+            dailyActivityFactor > 2.5
+          }
+        >
           Salvar metas a partir de hoje
         </Button>
       </DialogContent>

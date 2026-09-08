@@ -67,6 +67,7 @@ export type Goals = {
   fat_g?: number;
   fiber_g?: number;
   water_ml?: number;
+  daily_activity_factor?: number;
 };
 export type GlycemicClassification =
   | 'excelente'
