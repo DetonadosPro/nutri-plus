@@ -152,6 +152,9 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
       ).toBe(false);
     });
     it("registra, edita, preserva snapshots e exclui com totais sincronizados", async () => {
+      const beforeActivity = (await request(`/history?from=${today}&to=${today}`)).body;
+      expect(beforeActivity.days[0].base.mode).toBe("base_plus_net");
+      expect(beforeActivity.days[0].additionalKcal).toBe(0);
       const created = await request("/sessions", "POST", payload());
       expect(created.status).toBe(201);
       const s = created.body;

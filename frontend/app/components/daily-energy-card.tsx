@@ -25,6 +25,12 @@ export function signedEnergy(value: number | null) {
   if (value == null) return '—';
   return `${Math.abs(value) < 0.5 ? '' : value > 0 ? '+' : '−'}${formatNumber(Math.abs(value))}`;
 }
+function dailyBalanceLabel(label: string) {
+  if (label === 'Déficit estimado') return 'Déficit estimado do dia';
+  if (label === 'Superávit estimado') return 'Superávit estimado do dia';
+  if (label === 'Neutro estimado') return 'Balanço neutro do dia';
+  return 'Balanço estimado do dia';
+}
 export function DailyEnergyCard({
   summary,
   date,
@@ -102,7 +108,9 @@ export function DailyEnergyCard({
             aria-busy={!day && !error}
           >
             <span className="daily-energy-label">
-              {day?.balanceKcal == null ? 'Balanço estimado' : day.label}
+              {day?.balanceKcal == null
+                ? 'Balanço estimado do dia'
+                : dailyBalanceLabel(day.label)}
             </span>
             <p>
               <strong>{signedEnergy(day?.balanceKcal ?? null)}</strong>
@@ -136,8 +144,8 @@ export function DailyEnergyCard({
           <DialogHeader>
             <DialogTitle>Seu balanço do dia</DialogTitle>
             <DialogDescription>
-              O saldo compara os alimentos registrados com o gasto estimado do
-              dia inteiro.
+              O saldo do dia compara os alimentos registrados com o gasto de
+              base e somente os exercícios que você registrou.
             </DialogDescription>
           </DialogHeader>
           {error && (
