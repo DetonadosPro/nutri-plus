@@ -95,7 +95,7 @@ function ageAt(birth: string | null, day: string) {
 }
 export async function energyHistory(patient: Row, from: string, to: string) {
   const id = Number(patient.id);
-  const [sessions, weights, settings, food, status, saved] = [
+  const [sessions, weights, settings, goalFactors, food, status, saved] = [
     await db
       .prepare(
         "SELECT * FROM activity_sessions WHERE patient_id = ? AND activity_date BETWEEN ? AND ? ORDER BY activity_date DESC, local_time DESC,id DESC",
@@ -109,6 +109,11 @@ export async function energyHistory(patient: Row, from: string, to: string) {
     await db
       .prepare(
         "SELECT * FROM energy_settings WHERE patient_id = ? ORDER BY valid_from DESC,id DESC",
+      )
+      .all<Row>(id),
+    await db
+      .prepare(
+        "SELECT valid_from,daily_activity_factor FROM nutrition_goals WHERE patient_id = ? ORDER BY valid_from DESC,id DESC",
       )
       .all<Row>(id),
     await db
@@ -131,9 +136,11 @@ export async function energyHistory(patient: Row, from: string, to: string) {
   for (let day = from; day <= to; day = addCalendarDays(day, 1)) {
     const weight = weights.find((w) => w.weighed_at <= day) ?? null;
     const setting = settings.find((s) => s.valid_from <= day);
+    const goal = goalFactors.find((g) => g.valid_from <= day);
     const age = ageAt(patient.birth_date, day);
     const mode = setting?.mode ?? "base_plus_net";
     const factor =
+      goal?.daily_activity_factor ??
       setting?.factor ??
       (mode === "base_plus_net"
         ? ACTIVITY_FACTORS.sedentary

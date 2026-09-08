@@ -1134,6 +1134,7 @@ app.post(
         heightCm: z.number().positive().max(250),
         weightKg: z.number().positive().max(500),
         energyKcal: z.number().positive().max(10000),
+        dailyActivityFactor: z.number().min(1).max(2.5).default(1.2),
         carbohydratePercent: z.number().min(0).max(100),
         proteinPercent: z.number().min(0).max(100),
         fatPercent: z.number().min(0).max(100),
@@ -1181,7 +1182,7 @@ app.post(
         .run(patient!.id, brazilDate(), payload.weightKg, user.id);
       await db
         .prepare(
-          `INSERT INTO nutrition_goals (patient_id, valid_from, energy_kcal, fiber_g, carbohydrate_percent, protein_percent, fat_percent, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+          `INSERT INTO nutrition_goals (patient_id, valid_from, energy_kcal, fiber_g, carbohydrate_percent, protein_percent, fat_percent, daily_activity_factor, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         )
         .run(
           patient!.id,
@@ -1191,6 +1192,7 @@ app.post(
           payload.carbohydratePercent,
           payload.proteinPercent,
           payload.fatPercent,
+          payload.dailyActivityFactor,
           user.id,
         );
       const activationCode = createActivationCode();
@@ -1406,6 +1408,7 @@ app.post(
         proteinPercent: z.number().min(0).max(100),
         fatPercent: z.number().min(0).max(100),
         fiberG: z.number().positive().nullable(),
+        dailyActivityFactor: z.number().min(1).max(2.5).default(1.2),
         waterMl: z.number().positive().nullable().optional(),
       })
       .refine(
@@ -1417,7 +1420,7 @@ app.post(
       .parse(req.body);
     await db
       .prepare(
-        `INSERT INTO nutrition_goals (patient_id, valid_from, energy_kcal, protein_g, protein_gkg_min, protein_gkg_max, carbohydrate_g, fat_g, fiber_g, water_ml, carbohydrate_percent, protein_percent, fat_percent, created_by) VALUES (?, ?, ?, NULL, NULL, NULL, NULL, NULL, ?, NULL, ?, ?, ?, ?) ON CONFLICT(patient_id, valid_from) DO UPDATE SET energy_kcal=excluded.energy_kcal, protein_g=NULL, protein_gkg_min=NULL, protein_gkg_max=NULL, carbohydrate_g=NULL, fat_g=NULL, fiber_g=excluded.fiber_g, carbohydrate_percent=excluded.carbohydrate_percent, protein_percent=excluded.protein_percent, fat_percent=excluded.fat_percent`,
+        `INSERT INTO nutrition_goals (patient_id, valid_from, energy_kcal, protein_g, protein_gkg_min, protein_gkg_max, carbohydrate_g, fat_g, fiber_g, water_ml, carbohydrate_percent, protein_percent, fat_percent, daily_activity_factor, created_by) VALUES (?, ?, ?, NULL, NULL, NULL, NULL, NULL, ?, NULL, ?, ?, ?, ?, ?) ON CONFLICT(patient_id, valid_from) DO UPDATE SET energy_kcal=excluded.energy_kcal, protein_g=NULL, protein_gkg_min=NULL, protein_gkg_max=NULL, carbohydrate_g=NULL, fat_g=NULL, fiber_g=excluded.fiber_g, carbohydrate_percent=excluded.carbohydrate_percent, protein_percent=excluded.protein_percent, fat_percent=excluded.fat_percent, daily_activity_factor=excluded.daily_activity_factor`,
       )
       .run(
         patient.id,
@@ -1427,6 +1430,7 @@ app.post(
         payload.carbohydratePercent,
         payload.proteinPercent,
         payload.fatPercent,
+        payload.dailyActivityFactor,
         user.id,
       );
     res.status(201).json(await activeGoals(Number(patient.id), payload.validFrom));
