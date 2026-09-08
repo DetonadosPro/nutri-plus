@@ -10,21 +10,7 @@ export type ScaledNutrients = {
   unavailable: string[];
 };
 
-export function scaleNutrients(basePer100g: NutrientMap, grams: number): ScaledNutrients {
-  if (!Number.isFinite(grams) || grams < 0)
-    throw new Error("A quantidade deve ser um número não negativo.");
-  const factor = grams / 100;
-  const values: Record<string, number | null> = {};
-  const unavailable: string[] = [];
-
-  for (const [code, value] of Object.entries(basePer100g)) {
-    if (value == null || !Number.isFinite(value)) {
-      unavailable.push(code);
-      values[code] = null;
-    } else values[code] = value * factor;
-  }
-  return { values, unavailable };
-}
+export { scaleNutrients } from '../../shared/scale-nutrients';
 
 export function sumNutrientSets(sets: ScaledNutrients[]): ScaledNutrients {
   const values: Record<string, number | null> = {};

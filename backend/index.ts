@@ -1,4 +1,6 @@
 import { patientAccess } from './patient-access';
+import { recognizePhoto, rankFoodCandidates } from './food-recognition';
+import { rateLimit } from 'express-rate-limit';
 import { activitiesRouter, seedActivityCatalog } from './activities';
 import express, { type Request, type Response } from "express";
 import cors from "cors";
@@ -84,6 +86,7 @@ app.use('/api/nutritionist', accountMailLimit());
 app.use('/api/admin', accountMailLimit());
 
 type Handler = (req: Request, res: Response) => unknown;
+class InputError extends Error {}
 const route =
   (handler: Handler): Handler =>
   async (req, res) => {
@@ -92,6 +95,10 @@ const route =
     } catch (error) {
       if (!res.headersSent) {
         if (error instanceof AccountTokenError) {
+          res.status(400).json({ error: error.message });
+          return;
+        }
+        if (error instanceof InputError) {
           res.status(400).json({ error: error.message });
           return;
         }
@@ -762,6 +769,38 @@ app.get(
   }),
 );
 
+app.post('/api/foods/recognize',
+  async (req, res, next) => {
+    try {
+      const user = await authUser(req, res);
+      if (!user) return;
+      if (!await patientAccess(user)) return res.status(403).json({ error: 'Ação não permitida.' });
+      res.locals.photoUser = user.id;
+      next();
+    } catch (error) { next(error); }
+  },
+  rateLimit({ windowMs: 60_000, limit: 5, keyGenerator: (_req, res) => String(res.locals.photoUser), message: { error: 'Aguarde um minuto para analisar outra foto.' } }),
+  express.raw({ type: ['image/jpeg', 'image/png', 'image/webp'], limit: '5mb' }),
+  route(async (req, res) => {
+    if (!Buffer.isBuffer(req.body)) return res.status(400).json({ error: 'Escolha uma foto JPEG, PNG ou WebP de até 5 MB.' });
+    let detected;
+    try { detected = await recognizePhoto(req.body); }
+    catch { return res.status(503).json({ error: 'Não foi possível analisar esta foto agora. Tente outra imagem ou use a busca manual.' }); }
+    const foods = await db.prepare("SELECT id, source_code, description, category, source FROM foods WHERE active AND source = 'TACO'").all<{ id: number; source_code: string; description: string; category: string; source: string }>();
+    const items = await Promise.all(detected.items.map(async item => {
+      const ranked = rankFoodCandidates(item.name, foods);
+      const alternatives = item.alternatives.flatMap(name => rankFoodCandidates(name, foods));
+      const candidates = [...new Map([...ranked, ...alternatives].map(r => [r.food.id, r.food])).values()].slice(0, 5);
+      const payload = await Promise.all(candidates.map(async food => {
+        const nutrition = await nutrientsForFood(Number(food.id));
+        return { ...food, nutrients: nutrition.values, nutrientSources: nutrition.sources, dataSources: [nutrition.source], favorite: false };
+      }));
+      return { name: item.name, needsChoice: item.uncertain || !ranked[0]?.exact, candidates: payload };
+    }));
+    res.json({ items });
+  }),
+);
+
 app.get(
   "/api/patient/orientations",
   route(async (req, res) => {
@@ -874,16 +913,19 @@ app.post(
           .string()
           .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
           .default(brazilTime()),
-        foodId: z.number().int().positive(),
-        grams: z.number().positive().max(5000),
+        foodId: z.number().int().positive().optional(),
+        grams: z.number().positive().max(5000).optional(),
+        items: z.array(z.object({ foodId: z.number().int().positive(), grams: z.number().positive().max(5000) })).min(1).max(20).optional(),
       })
+      .refine(value => value.items ? value.foodId == null && value.grams == null : value.foodId != null && value.grams != null)
       .parse(req.body);
-    const allowed = await db
-      .prepare(`SELECT 1 FROM foods WHERE id = ? AND source = 'TACO' AND active`)
-      .get(payload.foodId);
-    if (!allowed) return res.status(400).json({ error: "Selecione um alimento ativo da TACO." });
+    const entries = payload.items || [{ foodId: payload.foodId!, grams: payload.grams! }];
     const consumedAt = localTimestamp(payload.date, payload.consumedTime);
     await transaction(async () => {
+      for (const entry of entries) {
+        const allowed = await db.prepare("SELECT id FROM foods WHERE id = ? AND source = 'TACO' AND active FOR SHARE").get(entry.foodId);
+        if (!allowed) throw new InputError('Selecione um alimento ativo da TACO.');
+      }
       await db
         .prepare(
           "INSERT INTO daily_logs (patient_id, log_date) VALUES (?, ?) ON CONFLICT(patient_id, log_date) DO NOTHING",
@@ -893,11 +935,11 @@ app.post(
         .prepare("SELECT id FROM daily_logs WHERE patient_id = ? AND log_date = ?")
         .get<{ id: number }>(patient!.id, payload.date);
       const meal = await getOrCreateMeal(log!.id, payload.mealType, consumedAt);
-      await db
+      for (const entry of entries) await db
         .prepare(
           "INSERT INTO meal_entries (meal_id, food_id, amount, unit, grams_equivalent, consumed_at) VALUES (?, ?, ?, ?, ?, ?)",
         )
-        .run(meal.id, payload.foodId, payload.grams, "g", payload.grams, consumedAt);
+        .run(meal.id, entry.foodId, entry.grams, "g", entry.grams, consumedAt);
       await refreshMealTime(meal.id);
     });
     res.status(201).json(await dailySummary(Number(patient!.id), payload.date));
