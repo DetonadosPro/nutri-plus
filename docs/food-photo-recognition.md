@@ -89,3 +89,27 @@ Confirme com `ss -ltn` no servidor que 11435 está em 127.0.0.1; se estiver em 0
 7. Revise em 360/390/768/1440px: nenhum recorte lateral, botões acessíveis, revisão rolável e quantidades editáveis. Não houve inspeção visual real nesta entrega devido à preferência do usuário por operar o PC.
 
 Se o 4B demorar demais ou causar falta de memória, baixe a variante 2B e altere `NUTRI_VISION_MODEL` no script de inicialização após verificar a licença da tag. Compare pratos iguais; não trocar apenas com base no tamanho. Nunca executar o modelo na instância Lightsail de 2 GB.
+
+## Trocar o provedor sem alterar o Nutri+
+
+Frontend, backend público, correspondência TACO e revisão não conhecem o modelo. O gateway implementa três adaptadores: `ollama`, `openai-responses` e `openai-compatible`. A API oficial da OpenAI aceita imagens e Structured Outputs pela Responses API; `gpt-4o-mini` é o padrão sugerido neste script por suportar ambos. Referência oficial: https://developers.openai.com/api/docs/models/gpt-4o-mini.
+
+Para voltar ao Ollama:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File services/food-vision/configure-provider.ps1 -Provider ollama
+```
+
+Para OpenAI, coloque a chave sozinha em um arquivo privado fora do Git e execute:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File services/food-vision/configure-provider.ps1 -Provider openai-responses -ApiKeyFile 'C:\caminho-privado\openai-key.txt'
+```
+
+Para outro serviço que aceite Chat Completions com imagem e `response_format: json_schema`:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File services/food-vision/configure-provider.ps1 -Provider openai-compatible -Model 'modelo-visual' -ApiBaseUrl 'https://api.exemplo.com/v1' -ApiKeyFile 'C:\caminho-privado\chave.txt'
+```
+
+Reinicie `start.ps1`; o Lightsail e o túnel não mudam. A chave nunca vai ao frontend ou ao Lightsail: fica no PC que executa o gateway. APIs externas recebem a foto normalizada para realizar a inferência e podem gerar cobrança; revisar os termos de dados, retenção e preço do provedor escolhido antes de habilitar.
