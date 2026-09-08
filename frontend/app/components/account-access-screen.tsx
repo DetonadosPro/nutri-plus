@@ -13,6 +13,14 @@ type Flow = { type: 'activate' } | { type: 'verify'; token: string } | { type: '
 type InvitedRole = 'patient' | 'nutritionist';
 const roleLabel: Record<InvitedRole, string> = { patient: 'Paciente', nutritionist: 'Nutricionista' };
 
+function formatActivationCode(value: string) {
+  const raw = value
+    .toUpperCase()
+    .replace(/[^A-HJ-NP-Z2-9]/g, '')
+    .slice(0, 10);
+  return raw.length > 5 ? `${raw.slice(0, 5)}-${raw.slice(5)}` : raw;
+}
+
 export function AccountAccessScreen({ flow, onBack }: { flow: Flow; onBack: () => void }) {
   const [code, setCode] = useState('');
   const [email, setEmail] = useState('');
@@ -37,7 +45,8 @@ export function AccountAccessScreen({ flow, onBack }: { flow: Flow; onBack: () =
   }, [flow]);
 
   async function identifyCode() {
-    if (!code.trim()) return setError('Informe o código de convite.');
+    if (code.replace('-', '').length !== 10)
+      return setError('Digite os 10 caracteres do código de convite.');
     setLoading(true);
     setError('');
     try {
@@ -117,7 +126,7 @@ export function AccountAccessScreen({ flow, onBack }: { flow: Flow; onBack: () =
           <div className="mt-6 space-y-4">
             {flow.type === 'activate' && (
               <>
-                <div className="space-y-2"><Label htmlFor="activation-code">Código de convite</Label><Input id="activation-code" value={code} onChange={(event) => { setCode(event.target.value.toUpperCase()); setIdentifiedRole(null); }} placeholder="XXXXX-XXXXX" autoCapitalize="characters" /></div>
+                <div className="space-y-2"><Label htmlFor="activation-code">Código de convite</Label><Input id="activation-code" value={code} onChange={(event) => { setCode(formatActivationCode(event.target.value)); setIdentifiedRole(null); }} placeholder="XXXXX-XXXXX" autoCapitalize="characters" autoComplete="one-time-code" maxLength={11} inputMode="text" spellCheck={false} /></div>
                 {!identifiedRole ? (
                   <Button variant="outline" className="w-full" onClick={identifyCode} disabled={loading}>{loading ? 'Identificando…' : 'Continuar'}</Button>
                 ) : (
