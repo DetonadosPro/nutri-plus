@@ -1,0 +1,86 @@
+export type ActivityCatalog = {
+  code: string;
+  version: string;
+  name: string;
+  category: string;
+  description: string;
+  aliases: string[];
+  met: number;
+  source: string;
+  notes: string;
+  resistance: boolean;
+  favorite: boolean;
+  recent: string | null;
+};
+export type StrengthDetail = {
+  name: string;
+  sets: number;
+  reps: number | null;
+  loadKg: number | null;
+  executionSeconds: number | null;
+  restSeconds: number | null;
+};
+export type ManualActivity = {
+  name: string;
+  kcal: number;
+  kind: 'gross' | 'net' | 'unknown';
+  source: string;
+};
+export type ActivitySession = {
+  id: number;
+  activity_date: string;
+  local_time: string;
+  duration_minutes: number;
+  intensity: string;
+  outside_base: boolean;
+  note: string;
+  details: StrengthDetail[];
+  revision: number;
+  snapshot: {
+    method: 'met' | 'manual';
+    code: string | null;
+    catalogVersion: string | null;
+    name: string;
+    category: string;
+    met: number | null;
+    source: string;
+    notes: string;
+    resistance: boolean;
+    weight: { weight_kg: number; weighed_at: string } | null;
+    grossKcal: number | null;
+    netKcal: number | null;
+    manual: ManualActivity | null;
+  };
+};
+export type EnergyDay = {
+  habitualKcal: number | null;
+  date: string;
+  base: {
+    restingKcal: number | null;
+    factor: number | null;
+    baseKcal: number | null;
+    mode: 'habitual_includes_exercise' | 'base_plus_net';
+    clinicalReview: boolean;
+    note: string;
+  };
+  activities: ActivitySession[];
+  intakeKcal: number | null;
+  knownIntakeKcal: number | null;
+  foodComplete: boolean;
+  missingFoodEnergy: number;
+  additionalKcal: number | null;
+  totalKcal: number | null;
+  balanceKcal: number | null;
+  label: string;
+  accumulatedKcal: number | null;
+};
+export type EnergyHistory = {
+  from: string;
+  to: string;
+  days: EnergyDay[];
+  sessions: ActivitySession[];
+  modalities: Array<{ name: string; minutes: number; sessions: number }>;
+  completeDays: number;
+  accumulatedKcal: number | null;
+  theoreticalKg: number | null;
+};

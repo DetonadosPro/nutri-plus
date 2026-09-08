@@ -1,0 +1,26 @@
+{
+  "reference": "2024 Adult Compendium of Physical Activities",
+  "referenceUrl": "https://pacompendium.com/adult-compendium/",
+  "retrievedAt": "2026-09-07",
+  "catalogVersion": "2024-pt-BR.1",
+  "catalogCount": 142,
+  "categories": 15,
+  "sourceSnapshotSha256": "19fcf60f4b2992ad0897224074ba7f5eb19aa720331fe95a181fd2055f075359",
+  "description": "Selected Portuguese labels; METs and codes preserved from official pages. Source snapshot contains additional untranslated rows for audit, not exposed as catalog items.",
+  "pages": [
+    "https://pacompendium.com/conditioning-exercise/",
+    "https://pacompendium.com/walking/",
+    "https://pacompendium.com/running/",
+    "https://pacompendium.com/bicycling/",
+    "https://pacompendium.com/water-activities/",
+    "https://pacompendium.com/sports/",
+    "https://pacompendium.com/dancing/",
+    "https://pacompendium.com/home-activities/",
+    "https://pacompendium.com/lawn-garden/",
+    "https://pacompendium.com/occupation/",
+    "https://pacompendium.com/transportation/",
+    "https://pacompendium.com/winter-activities/",
+    "https://pacompendium.com/music-playing/",
+    "https://pacompendium.com/video-games/"
+  ]
+}

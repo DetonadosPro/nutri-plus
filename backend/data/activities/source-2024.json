@@ -1,0 +1,6547 @@
+[
+  {
+    "code": "02000",
+    "met": 7.3,
+    "description": "Aerobic, general",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02001",
+    "met": 5.5,
+    "description": "Aerobic, step, with 4-inch step",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02002",
+    "met": 7.3,
+    "description": "Aerobic, step, with 6 – 8 inch step",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02003",
+    "met": 9,
+    "description": "Aerobic, step, with 10 – 12 inch step",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02004",
+    "met": 7.8,
+    "description": "Bench step class, general",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02005",
+    "met": 4.8,
+    "description": "Aerobic dance, low impact, moderate effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02006",
+    "met": 8,
+    "description": "Aerobic dance, high impact, vigorous effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02007",
+    "met": 10,
+    "description": "Aerobic dance wearing 10-15 lb weights",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02008",
+    "met": 5,
+    "description": "Army type obstacle course exercise, boot camp training program",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02020",
+    "met": 7.5,
+    "description": "Calisthenics (e.g., pushups, sit ups, pull-ups, jumping jacks, burpees, battling ropes), vigorous effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02022",
+    "met": 3.8,
+    "description": "Calisthenics (e.g., pushups, sit ups, pull-ups, lunges), moderate effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02024",
+    "met": 2.8,
+    "description": "Calisthenics (e.g., curl ups, abdominal crunches, plank),  light effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02030",
+    "met": 3.5,
+    "description": "Calisthenics, light or moderate effort, general (e.g., back exercises), going up & down from floor (Taylor Code 150)",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02032",
+    "met": 6,
+    "description": "Circuit training, body weight exercises",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02034",
+    "met": 3.5,
+    "description": "Circuit training, light effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02035",
+    "met": 5,
+    "description": "Circuit training, moderate effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02040",
+    "met": 7.5,
+    "description": "Circuit training, including kettlebells, some aerobic movement with minimal rest, general, vigorous intensity",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02045",
+    "met": 3.5,
+    "description": "Curves™ exercise routines in women",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02048",
+    "met": 5,
+    "description": "Elliptical trainer, moderate effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02049",
+    "met": 9,
+    "description": "Elliptical trainer, vigorous effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02050",
+    "met": 6,
+    "description": "Resistance (weight lifting – free weight, nautilus or universal-type), power lifting or body building, vigorous effort (Taylor Code 210)",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02052",
+    "met": 5,
+    "description": "Resistance (weight) training, squats, deadlift, slow or explosive effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02054",
+    "met": 3.5,
+    "description": "Resistance (weight) training, multiple exercises, 8-15 reps at varied resistance",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02055",
+    "met": 5.8,
+    "description": "Resistance Training, circuit, reciprocal supersets, peripheral heart action training",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02056",
+    "met": 3,
+    "description": "Body weight resistance exercises (e.g., squat, lunge, push-up, crunch), general",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02057",
+    "met": 6.5,
+    "description": "Body weight resistance exercises (e.g., squat, lunge, push-up, crunch), high intensity",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02058",
+    "met": 9.8,
+    "description": "Kettlebell swings",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02060",
+    "met": 5.5,
+    "description": "Health club exercise, general (Taylor Code 160)",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02061",
+    "met": 5,
+    "description": "Health club exercise classes, general, gym/weight training combined in one visit",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02062",
+    "met": 7.8,
+    "description": "Health club exercise, conditioning classes",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02064",
+    "met": 3.8,
+    "description": "Home exercise, general",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02065",
+    "met": 9.3,
+    "description": "Stair treadmill ergometer, general",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02068",
+    "met": 11,
+    "description": "Rope skipping exercise, general",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02069",
+    "met": 9,
+    "description": "Jumping rope, Digi-Jump Machine, 120 jumps/minute",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02070",
+    "met": 7.3,
+    "description": "Rowing, stationary ergometer, general, vigorous effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02071",
+    "met": 5,
+    "description": "Rowing, stationary ergometer, general, &lt;100 watts,  moderate effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02072",
+    "met": 7.5,
+    "description": "Rowing, stationary, 100 to 149 watts, vigorous effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02073",
+    "met": 11,
+    "description": "Rowing, stationary, 150 to 199 watts, vigorous effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02074",
+    "met": 14,
+    "description": "Rowing, stationary, ≥ 200 watts, very vigorous effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02078",
+    "met": 11,
+    "description": "Shuttle running, forward/backward/lateral",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02080",
+    "met": 6.8,
+    "description": "Ski machine, general",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02082",
+    "met": 10.5,
+    "description": "Ski ergometer, cross country, double poling, slow to moderate speed",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02084",
+    "met": 18,
+    "description": "Ski ergometer, cross country, double poling, fast to maximum speed",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02085",
+    "met": 10.5,
+    "description": "Slide board exercise, general",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02090",
+    "met": 6,
+    "description": "Slimnastics, jazzercise",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02101",
+    "met": 2.3,
+    "description": "Stretching, mild",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02103",
+    "met": 1.8,
+    "description": "Pilates, traditional, mat",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02105",
+    "met": 2.8,
+    "description": "Pilates, general",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02107",
+    "met": 8.5,
+    "description": "Pound, combination of Pilates and body movements with drumming",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02108",
+    "met": 4.5,
+    "description": "Pole dancing, exercise class",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02110",
+    "met": 6.8,
+    "description": "Teaching exercise classes (e.g., aerobic, water)",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02112",
+    "met": 2.8,
+    "description": "Therapeutic exercise ball, Fitball exercise",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02114",
+    "met": 9.5,
+    "description": "Therapeutic exercise ball, Fitball exercise, high intensity",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02115",
+    "met": 2.8,
+    "description": "Upper body exercise, arm ergometer, general, light",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02116",
+    "met": 2,
+    "description": "Arm Ergometer, hand bike, 15W",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02117",
+    "met": 2.8,
+    "description": "Arm Ergometer, hand bike, 25-30W",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02118",
+    "met": 3.5,
+    "description": "Arm Ergometer, hand bike, 45W",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02119",
+    "met": 4.3,
+    "description": "Upper body exercise, stationary bicycle – Airdyne (arms only) 40 rpm, moderate intensity",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02120",
+    "met": 5.3,
+    "description": "Water aerobics, water calisthenics, water exercise",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02135",
+    "met": 1.3,
+    "description": "Whirlpool, sitting",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02140",
+    "met": 2.5,
+    "description": "Video, exercise workouts, TV conditioning programs (e.g., yoga, stretching, seated), light effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02143",
+    "met": 4,
+    "description": "Video, exercise workouts, TV conditioning programs (e.g., cardio-resistance training), moderate",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02145",
+    "met": 6,
+    "description": "Video, exercise workouts, TV conditioning programs (e.g., cardio-resistance training), vigorous",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02150",
+    "met": 2.3,
+    "description": "Yoga, Hatha",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02153",
+    "met": 8,
+    "description": "Yoga, Hatha, high intensity",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02155",
+    "met": 3,
+    "description": "Yoga, Hot",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02160",
+    "met": 4,
+    "description": "Yoga, Power",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02170",
+    "met": 2,
+    "description": "Yoga, Nadisodhana",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02175",
+    "met": 2.3,
+    "description": "Yoga, General",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02180",
+    "met": 3.5,
+    "description": "Yoga, Surya Namaskar",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02185",
+    "met": 2.7,
+    "description": "Yoga, Vinyasa",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02200",
+    "met": 5.3,
+    "description": "Native New Zealander PA, (e.g., Haka Powhiri, Poi, Moteatea, etc.), general moderate effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02205",
+    "met": 6.8,
+    "description": "Native New Zealander PA, general, vigorous effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02210",
+    "met": 7,
+    "description": "High intensity interval exercise,  moderate effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02214",
+    "met": 11,
+    "description": "High intensity interval exercise,  burpees, mountain climbers, squat jumps, Tabata, vigorous effort",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02225",
+    "met": 2.3,
+    "description": "Balance Exercise Assist Robot (BEAR), simulated skiing, tennis, rodeo",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02230",
+    "met": 5.8,
+    "description": "Hooping (formerly known as hula® hooping)",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02240",
+    "met": 9,
+    "description": "Impulse Training System, Inertial Exercise Trainer",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02280",
+    "met": 7.9,
+    "description": "Virtual Reality Fitness,  Supernatural™ “Flow”, “Boxing&#8221; vigorous intensity",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02284",
+    "met": 9.3,
+    "description": "ExerCube, workout series",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02288",
+    "met": 13,
+    "description": "Blackbox Immersive virtual reality exergaming system, vigorous intensity",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02300",
+    "met": 3,
+    "description": "Wand exercise, Life-Build-Line",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02310",
+    "met": 6.5,
+    "description": "Zumba, group class",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02315",
+    "met": 5.5,
+    "description": "Zumba, home video",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02340",
+    "met": 2.8,
+    "description": "Sit to stand exercise, 6-12 times/min",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "02344",
+    "met": 4,
+    "description": "Sit to stand exercise, 18-24 times/min",
+    "slug": "conditioning-exercise",
+    "estimated": false
+  },
+  {
+    "code": "17010",
+    "met": 7,
+    "description": "Backpacking (Taylor Code 050)",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17011",
+    "met": 3.5,
+    "description": "Walking with a day pack, level ground, assumed in the city",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17012",
+    "met": 7.8,
+    "description": "Backpacking,  hiking with a daypack, organized walking with daypack",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17016",
+    "met": 4,
+    "description": "Carrying 5 to 14 lb (2.3 to 6.4 kg) load (e.g. suitcase, boxes, groceries), level ground, moderate pace",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17018",
+    "met": 4.5,
+    "description": "Carrying 15 – 155 lb (6.8 – 70.4 kg) load (e.g. suitcase, boxes, furniture), level ground or downstairs, slow pace",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17019",
+    "met": 6.5,
+    "description": "Carrying 50 to 150 pound load (e.g., equine or bovine feed, fence pipes, furniture), level ground, moderate pace",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17021",
+    "met": 2.3,
+    "description": "Carrying ~10 lb child, slow walking",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17025",
+    "met": 8.3,
+    "description": "Carrying load upstairs, general",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17026",
+    "met": 5.5,
+    "description": "Carrying load, 1 to 15 lb load, upstairs",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17027",
+    "met": 6,
+    "description": "Carrying load, 16 to 24 lb load, upstairs",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17028",
+    "met": 8,
+    "description": "Carrying load, 25 to 49 lb load, upstairs",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17029",
+    "met": 10,
+    "description": "Carrying load, 50 to 74 lb load, upstairs",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17030",
+    "met": 12,
+    "description": "Carrying load, &gt;74 lb load, upstairs",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17031",
+    "met": 3.8,
+    "description": "Loading  and/or unloading a car, implied walking",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17032",
+    "met": 5,
+    "description": "Climbing hills, no load, 5 to 20% grade, very slow pace",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17033",
+    "met": 3.8,
+    "description": "Climbing hills, 15-50 lb load, 1 to 2% grade, slow pace",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17034",
+    "met": 5.3,
+    "description": "Climbing hills, no load, 1 to 5% grade, moderate-to-brisk pace",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17035",
+    "met": 7,
+    "description": "Climbing hills, no load, 6 to 10% grade, moderate-to-brisk pace",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17036",
+    "met": 8.8,
+    "description": "Climbing hills, no load, 11 to 20% grade, slow-to-moderate pace",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17037",
+    "met": 10,
+    "description": "Climbing hills, no load, 4.0 to 5.0 mph, 3 to 5% grade, very fast pace",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17038",
+    "met": 8.5,
+    "description": "Climbing hills, no load, steep grade (30%), slow pace (less than 1.2 mph)",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17039",
+    "met": 15.5,
+    "description": "Climbing hills, no load, very steep grade (30-40%), 1.2 to 1.8 mph",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17040",
+    "met": 16.3,
+    "description": "Climbing hills, no load, steep grade (10-40%), 1.8 to 5.0 mph",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17045",
+    "met": 6.5,
+    "description": "Climbing hills, 10 to 20 lb load, 5 to 10% grade, moderate",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17050",
+    "met": 7.5,
+    "description": "Climbing hills, 21 to 40 lb load, 3 to 10% grade, moderate-to-brisk pace",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17060",
+    "met": 10,
+    "description": "Climbing hills, 20+ pound load, 5 to 20% grade, moderate to brisk pace",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17070",
+    "met": 3.5,
+    "description": "Descending stairs",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17076",
+    "met": 4.5,
+    "description": "Hauling water, head hauling, walking on flat surface",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17080",
+    "met": 6,
+    "description": "Hiking, cross country (Taylor Code 040)",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17081",
+    "met": 3.8,
+    "description": "Hiking slowly or ambling through fields and hillsides, no load",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17082",
+    "met": 5.3,
+    "description": "Hiking or walking at a normal pace through fields and hillsides, no load",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17085",
+    "met": 2.5,
+    "description": "Bird watching, walking and stopping",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17088",
+    "met": 4.5,
+    "description": "Marching, moderate speed, military, no pack",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17090",
+    "met": 8,
+    "description": "Marching rapidly, military, no pack",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17100",
+    "met": 3.8,
+    "description": "Pushing or pulling stroller with child or walking with children, 2.5 to 3.1 mph",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17105",
+    "met": 3.8,
+    "description": "Pushing a wheelchair, non-occupational",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17110",
+    "met": 6.5,
+    "description": "Race walking",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17130",
+    "met": 8,
+    "description": "Stair climbing, using or climbing up ladder (Taylor Code 030)",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17131",
+    "met": 6.8,
+    "description": "Stair climbing, general",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17133",
+    "met": 4.5,
+    "description": "Stair climbing, slow pace",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17134",
+    "met": 9.3,
+    "description": "Stair climbing, fast pace, one step at a time",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17136",
+    "met": 7.5,
+    "description": "Stair climbing, two steps at a time",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17138",
+    "met": 7.5,
+    "description": "Stair climbing, ascending and descending stairs",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17140",
+    "met": 4.5,
+    "description": "Using crutches, level ground, general",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17142",
+    "met": 7,
+    "description": "Using crutches, fast pace",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17145",
+    "met": 4.3,
+    "description": "Using medical knee scooter",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17150",
+    "met": 2.3,
+    "description": "Walking, household",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17151",
+    "met": 2.3,
+    "description": "Walking, less than 2.0 mph, level, strolling, very slow",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17152",
+    "met": 2.8,
+    "description": "Walking, 2.0 to 2.4 mph, level, slow pace, firm surface",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17160",
+    "met": 3.5,
+    "description": "Walking for pleasure (Taylor Code 010)",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17161",
+    "met": 2.5,
+    "description": "Walking from house to car or bus, from car or bus to go places, from car or bus to and from the worksite",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17162",
+    "met": 2.5,
+    "description": "Walking to neighbor’s house or family’s house for social reasons",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17165",
+    "met": 3,
+    "description": "Walking the dog",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17170",
+    "met": 3,
+    "description": "Walking, 2.5 mph, firm, level surface",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17180",
+    "met": 3.3,
+    "description": "Walking, 2.5 mph, downhill",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17190",
+    "met": 3.8,
+    "description": "Walking, 2.8 to 3.4 mph, level, moderate pace, firm surface",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17200",
+    "met": 4.8,
+    "description": "Walking, 3.5 to 3.9 mph, level, brisk, firm surface, walking for exercise",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17220",
+    "met": 5.5,
+    "description": "Walking, 4.0 to 4.4 mph (6.4 to 7.1 km/h), level, firm surface, very brisk pace",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17230",
+    "met": 7,
+    "description": "Walking, 4.5 to 4.9 mph, level, firm surface, very, very brisk",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17231",
+    "met": 8.5,
+    "description": "Walking, 5.0 to 5.5 mph (8.8 to 8.9 km/h), level, firm surface",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17250",
+    "met": 3.5,
+    "description": "Walking, for pleasure, work break",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17255",
+    "met": 4,
+    "description": "Walking, self-selected speed, indoor track or outdoors, firm surface",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17260",
+    "met": 4.8,
+    "description": "Walking, grass track",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17262",
+    "met": 4.5,
+    "description": "Walking, normal pace, plowed field or sand",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17270",
+    "met": 4,
+    "description": "Walking, to work or class (Taylor Code 015)",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17280",
+    "met": 2.5,
+    "description": "Walking, to and from an outhouse",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17302",
+    "met": 4.3,
+    "description": "Walking, for exercise, 2.5 to 3.5 mph (4.0 to 5.6 km/h), with ski poles, Nordic walking, level, moderate pace",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17304",
+    "met": 5.3,
+    "description": "Walking, for exercise, 3.6 to 4.4 mph (5.8 to 7.1 km/h), with ski poles, Nordic walking, level, moderate pace",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17305",
+    "met": 8.5,
+    "description": "Walking, for exercise, 4.5 to 5.0 mph, with ski poles, Nordic walking, level, fast pace",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17310",
+    "met": 8.8,
+    "description": "Walking, for exercise, with ski poles, Nordic walking, uphill, moderate pace",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17313",
+    "met": 10.8,
+    "description": "Walking, for exercise, with ski poles, Nordic walking, level ground, carrying 20 to 30 lb load (9.0 to 15.0 kg)",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17315",
+    "met": 12.3,
+    "description": "Walking, for exercise, with ski poles, Nordic walking, uphill, carrying 20 to 30 lb load (9.0 to 15.0 kg)",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17320",
+    "met": 6,
+    "description": "Walking, backward, 3.5 mph, level",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17325",
+    "met": 7.8,
+    "description": "Walking, backward, 3.5 mph, uphill, 5% grade",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17330",
+    "met": 8,
+    "description": "Walking, Teabag walk, Monty Python Ministry of Silly Walks",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17332",
+    "met": 3.5,
+    "description": "Walking, Putey walk, Monty Python Ministry of Silly Walks",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17340",
+    "met": 2.1,
+    "description": "Walking, treadmill, less than 1.0 mph, 0% grade",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17343",
+    "met": 2.3,
+    "description": "Walking, treadmill, 1.0 mph, 0% grade",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17346",
+    "met": 2.8,
+    "description": "Walking, treadmill, 1.2 to 1.9 mph, 0% grade (1.9 to 3.1 km/h)",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17349",
+    "met": 3,
+    "description": "Walking, treadmill, 2.0 to 2.4 mph (3.2 to 3.9 km/h), 0% grade",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17352",
+    "met": 3.5,
+    "description": "Walking, treadmill, 2.5 to 2.9 mph (4.0 to 4.7 km/h), 0% grade",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17355",
+    "met": 3.8,
+    "description": "Walking, treadmill, 3.0 to 3.4 mph (4.8 to 5.5 km/h), 0% grade",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17358",
+    "met": 4.8,
+    "description": "Walking, treadmill, 3.5 to 3.9 mph (5.6 to 6.3 km/h), 0% grade",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17361",
+    "met": 5.8,
+    "description": "Walking, treadmill, 4.0 to 4.4 mph (6.4 to 7.1 km/h), 0% grade",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17364",
+    "met": 6.8,
+    "description": "Walking, treadmill, 4.5 to 4.9 mph (7.2 to 7.9 km/h), 0% grade",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17367",
+    "met": 8.3,
+    "description": "Walking, treadmill, 5.0 to 5.5 mph (8.0 to 8.9 km/h), 0% grade",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17382",
+    "met": 3.3,
+    "description": "Walking, treadmill, downhill (-3% to -12% grade), 2.8 to 3.1 mph",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17412",
+    "met": 3.3,
+    "description": "Walking, treadmill, downhill (-5% to -25% grade), 2.8 mph, with Nordic Poles",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17434",
+    "met": 4.8,
+    "description": "Walking, treadmill, 2.5 mph, 0% grade, 5 to 20 degrees C, 40 lb (18.2 kg) load",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17438",
+    "met": 5.8,
+    "description": "Walking, treadmill, 2.5 mph, 0% grade, -10 to 0 degrees C, 40 lb (18.2 kg) load",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17455",
+    "met": 8.3,
+    "description": "Walking, Curved treadmill, 3.0 to 5.0 mph, brisk pace",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17475",
+    "met": 7.8,
+    "description": "Walking treadmill, backwards, 2.5 mph, +10% grade",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "17492",
+    "met": 1.5,
+    "description": "Walking, with a walker or step-to gait on treadmill, 0.7 mph (1.1 km/h), 0% grade",
+    "slug": "walking",
+    "estimated": false
+  },
+  {
+    "code": "01003",
+    "met": 14,
+    "description": "Bicycling, mountain, uphill, vigorous",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01004",
+    "met": 16,
+    "description": "Bicycling, mountain, competitive racing",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01008",
+    "met": 8.5,
+    "description": "Bicycling, BMX",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01009",
+    "met": 8.5,
+    "description": "Bicycling, mountain, general",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01010",
+    "met": 4,
+    "description": "Bicycling, &lt;10 mph, leisure, to work or for pleasure (Taylor Code 115)",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01011",
+    "met": 6.8,
+    "description": "Bicycling, to/from work, self selected pace",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01013",
+    "met": 5.8,
+    "description": "Bicycling, on dirt or farm road, moderate pace",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01014",
+    "met": 7,
+    "description": "Bicycling, general",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01015",
+    "met": 4.3,
+    "description": "Bicycling, self-selected easy pace",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01016",
+    "met": 7,
+    "description": "Bicycling, self-selected moderate pace",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01017",
+    "met": 9,
+    "description": "Bicycling, self-selected vigorous pace",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01018",
+    "met": 3.5,
+    "description": "Bicycling, leisure 5.5 mph",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01019",
+    "met": 5.8,
+    "description": "Bicycling, leisure, 9.4 mph",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01020",
+    "met": 6.8,
+    "description": "Bicycling, 10-11.9 mph, leisure, slow, light effort",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01030",
+    "met": 8,
+    "description": "Bicycling, 12-13.9 mph, leisure, moderate effort",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01040",
+    "met": 10,
+    "description": "Bicycling, 14-15.9 mph, racing or leisure, fast, vigorous effort",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01050",
+    "met": 12,
+    "description": "Bicycling, 16-19 mph, racing/not drafting or &gt;19 mph drafting, very fast, racing general",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01060",
+    "met": 16.8,
+    "description": "Bicycling, &gt;20 mph, racing, not drafting",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01065",
+    "met": 8.5,
+    "description": "Bicycling, 12 mph, seated, hands on brake hoods or bar drops, 80 rpm",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01066",
+    "met": 9,
+    "description": "Bicycling, 12 mph, standing, hands on brake hoods, 60 rpm",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01070",
+    "met": 5,
+    "description": "Unicycling",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01080",
+    "met": 6.8,
+    "description": "E-bike (electrically assisted) without electronic support",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01084",
+    "met": 6,
+    "description": "E-bike (electrically assisted) with light electronic support",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01088",
+    "met": 4,
+    "description": "E-bike (electrically assisted) with high electronic support",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01200",
+    "met": 6.8,
+    "description": "Bicycling, stationary, general",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01210",
+    "met": 3.5,
+    "description": "Bicycling, stationary, 25-30 watts, very light to light effort",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01214",
+    "met": 4,
+    "description": "Bicycling, stationary, 50 watts, light effort",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01216",
+    "met": 5,
+    "description": "Bicycling, stationary, 60 watts, light to moderate effort",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01218",
+    "met": 5.8,
+    "description": "Bicycling, stationary, 70-80 watts",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01220",
+    "met": 6,
+    "description": "Bicycling, stationary, 90-100 watts,  moderate to vigorous",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01224",
+    "met": 6.8,
+    "description": "Bicycling, stationary, 101-125 watts",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01228",
+    "met": 8,
+    "description": "Bicycling, stationary, 126-150 watts",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01232",
+    "met": 10.3,
+    "description": "Bicycling, stationary, 151-199 watts",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01236",
+    "met": 10.8,
+    "description": "Bicycling, stationary, 200-229 watts, vigorous",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01240",
+    "met": 12.5,
+    "description": "Bicycling, stationary, 230-250 watts, very vigorous",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01244",
+    "met": 13.8,
+    "description": "Bicycling, stationary, 270-305 watts, very vigorous",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01248",
+    "met": 16.3,
+    "description": "Bicycling, stationary, &gt;325 watts, very vigorous",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01252",
+    "met": 5.5,
+    "description": "Bicycling, concentric only, 100 W",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01254",
+    "met": 11,
+    "description": "Bicycling, concentric only, 200 W",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01262",
+    "met": 2.3,
+    "description": "Bicycling, eccentric only, 100 to 149 W",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01264",
+    "met": 4,
+    "description": "Bicycling, eccentric only, 200 W",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01270",
+    "met": 9,
+    "description": "Bicycling, stationary, RPM/Spin bike class",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01290",
+    "met": 8.8,
+    "description": "Bicycling, interactive virtual cycling, indoor cycle ergometer",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "01305",
+    "met": 8.8,
+    "description": "Bicycling, high intensity interval training",
+    "slug": "bicycling",
+    "estimated": false
+  },
+  {
+    "code": "12010",
+    "met": 6,
+    "description": "Jog/walk combination (jogging component of less than 10 minutes) (Taylor Code 180)",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12020",
+    "met": 7.5,
+    "description": "Jogging, general, self-selected pace",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12025",
+    "met": 4.8,
+    "description": "Jogging, in place",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12026",
+    "met": 3.3,
+    "description": "Jogging 2.6 to 3.7 mph",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12027",
+    "met": 4.5,
+    "description": "Jogging on a mini-tramp",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12028",
+    "met": 6.5,
+    "description": "Running, 4 to 4.2 mph (13 min/mile)",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12029",
+    "met": 7.8,
+    "description": "Running 4.3 to 4.8 mph",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12030",
+    "met": 8.5,
+    "description": "Running, 5.0 to 5.2 mph (12 min/mile)",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12045",
+    "met": 9,
+    "description": "Running, 5.5 -5.8 mph",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12050",
+    "met": 9.3,
+    "description": "Running, 6-6.3 mph (10 min/mile)",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12060",
+    "met": 10.5,
+    "description": "Running, 6.7 mph (9 min/mile)",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12070",
+    "met": 11,
+    "description": "Running, 7 mph (8.5 min/mile)",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12080",
+    "met": 11.8,
+    "description": "Running, 7.5 mph (8 min/mile)",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12090",
+    "met": 12,
+    "description": "Running, 8 mph (7.5 min/mile)",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12100",
+    "met": 12.5,
+    "description": "Running, 8.6 mph (7 min/mile)",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12110",
+    "met": 13,
+    "description": "Running, 9 mph (6.5 min/mile)",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12115",
+    "met": 14.8,
+    "description": "Running, 9.3 to 9.6 mph",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12120",
+    "met": 14.8,
+    "description": "Running, 10 mph (6 min/mile)",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12130",
+    "met": 16.8,
+    "description": "Running, 11 mph (5.5 min/mile)",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12132",
+    "met": 18.5,
+    "description": "Running, 12 mph (5.0 min/mile)",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12134",
+    "met": 19.8,
+    "description": "Running, 13 mph (4.6 min/mile)",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12135",
+    "met": 23,
+    "description": "Running, 14 mph (4.3 min/mile)",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12140",
+    "met": 9.3,
+    "description": "Running, cross country",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12145",
+    "met": 10.5,
+    "description": "Running, self-selected pace",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12150",
+    "met": 8,
+    "description": "Running (Taylor Code 200)",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12170",
+    "met": 15,
+    "description": "Running, stairs, up",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12180",
+    "met": 10,
+    "description": "Running, on a track, team practice",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12184",
+    "met": 18,
+    "description": "Running, on track, 500-1500m, competitive",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12186",
+    "met": 19.3,
+    "description": "Running, on track, 2000-3000m, competitive",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12190",
+    "met": 8,
+    "description": "Running, training, pushing a wheelchair or baby carrier",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12200",
+    "met": 13.3,
+    "description": "Running, marathon",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12255",
+    "met": 10.3,
+    "description": "Running uphill, 4.5mph, 5% incline",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12260",
+    "met": 13.3,
+    "description": "Running uphill, 6.0 mph, 5% incline",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12265",
+    "met": 15.5,
+    "description": "Running uphill, 7.0 mph, 5% incline",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12325",
+    "met": 17.5,
+    "description": "Running uphill, 5.0 to 5.9 mph, 15% incline",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12335",
+    "met": 8.8,
+    "description": "Running uphill, 0.6 to 0.79 mph, 30% incline",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12337",
+    "met": 10.3,
+    "description": "Running uphill, 0.8 to 0.99 mph, 30% incline",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12339",
+    "met": 11.8,
+    "description": "Running uphill, 1.0 to 1.19 mph, 30% incline",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12341",
+    "met": 13.5,
+    "description": "Running uphill, 1.2 to 1.39 mph, 30-40% incline",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12343",
+    "met": 14.8,
+    "description": "Running uphill, 1.4 to 1.59 mph, 30% incline",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12345",
+    "met": 16.3,
+    "description": "Running uphill, &gt;1.6mph, 10-30% incline",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12350",
+    "met": 16,
+    "description": "Running, hilly terrain, ±100m change in elevation",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12352",
+    "met": 5.8,
+    "description": "Running downhill, 5.0 to 5.9 mph, -10% to -15%",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12353",
+    "met": 7.5,
+    "description": "Running downhill, 6.0 to 6.9 mph, -10% to -15%",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12355",
+    "met": 9,
+    "description": "Running downhill, 7.0 to 8.9 mph, -10% to -15%",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12358",
+    "met": 9.3,
+    "description": "Running downhill, 6.0 to 7.9 mph, -3% to -9%",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12361",
+    "met": 13.8,
+    "description": "Running downhill, 8.0 to 10.5 mph, -3% to -9%",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12405",
+    "met": 5.3,
+    "description": "Running/jogging, curved treadmill, 3.0 to 3.9 mph",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12408",
+    "met": 6.5,
+    "description": "Running/jogging, curved treadmill, 4.0 to 4.9 mph",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12410",
+    "met": 11,
+    "description": "Running curved treadmill, 5.0 to 5.9 mph",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12412",
+    "met": 12,
+    "description": "Running curved treadmill, 7.0 to 7.9 mph",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12414",
+    "met": 14,
+    "description": "Running curved treadmill, 8.0 to 8.9 mph",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12416",
+    "met": 16.8,
+    "description": "Running curved treadmill, 9.0 to 9.9 mph",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12508",
+    "met": 8.5,
+    "description": "Running, 5.0 – 5.9 mph, 1.0 to 3.0 kg backpack",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12510",
+    "met": 9.5,
+    "description": "Running, 6.0 – 6.9 mph, 1.0 to 3.0 kg backpack",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12512",
+    "met": 9.8,
+    "description": "Running, 7.0 – 7.9 mph, 1.0 to 3.0 kg backpack",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12514",
+    "met": 12,
+    "description": "Running, 8.0 – 8.9 mph, 1.0 to 3.0 kg backpack",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12555",
+    "met": 7.8,
+    "description": "Running, barefoot, 3.5-5.9 mph",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12560",
+    "met": 12,
+    "description": "Running, barefoot, 6.0-7.9 mph",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12565",
+    "met": 13.5,
+    "description": "Running, barefoot, 8.0-8.9 mph",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12585",
+    "met": 8,
+    "description": "Running, jogging stroller, indoors, 5 mph",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12588",
+    "met": 9,
+    "description": "Running, jogging stroller, indoors, 6 mph",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12593",
+    "met": 10,
+    "description": "Running, jogging stroller, outdoors, 5 mph",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12595",
+    "met": 11.5,
+    "description": "Running, jogging stroller, outdoors, 6 mph",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12600",
+    "met": 11.5,
+    "description": "Skipping, 5.5-6.0 mph",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "12620",
+    "met": 13,
+    "description": "Triathlon, Running",
+    "slug": "running",
+    "estimated": false
+  },
+  {
+    "code": "15000",
+    "met": 5.5,
+    "description": "Alaska Native Games, Eskimo Olympics, general",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15010",
+    "met": 4.3,
+    "description": "Archery (non-hunting)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15020",
+    "met": 7,
+    "description": "Badminton, competitive (Taylor Code 450)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15025",
+    "met": 9,
+    "description": "Badminton, competitive, match play",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15030",
+    "met": 5.5,
+    "description": "Badminton, social singles and doubles, general",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15040",
+    "met": 8,
+    "description": "Basketball, game (Taylor Code 490)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15050",
+    "met": 6,
+    "description": "Basketball, non-game, general (Taylor Code 480)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15055",
+    "met": 7.5,
+    "description": "Basketball, general",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15060",
+    "met": 7,
+    "description": "Basketball, officiating (Taylor Code 500)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15062",
+    "met": 5.8,
+    "description": "Basketball, officiating",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15070",
+    "met": 5,
+    "description": "Basketball, shooting baskets",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15072",
+    "met": 9.3,
+    "description": "Basketball, drills, practice",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15080",
+    "met": 2.5,
+    "description": "Billiards",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15090",
+    "met": 3,
+    "description": "Bowling (Taylor Code 390)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15092",
+    "met": 3.8,
+    "description": "Bowling, indoor, bowling alley",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15100",
+    "met": 12.3,
+    "description": "Boxing, in ring, general",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15110",
+    "met": 5.8,
+    "description": "Boxing, punching bag",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15113",
+    "met": 7,
+    "description": "Boxing, punching bag, 60 b/min",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15115",
+    "met": 8.5,
+    "description": "Boxing, punching bag, 120 b/min",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15118",
+    "met": 10.8,
+    "description": "Boxing, punching bag, 180 b/min",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15120",
+    "met": 7.8,
+    "description": "Boxing, sparring",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15125",
+    "met": 9.3,
+    "description": "Boxing, simulated boxing round, exercise",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15130",
+    "met": 7,
+    "description": "Broomball",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15135",
+    "met": 5.8,
+    "description": "Children’s games, adults playing (e.g., hopscotch, 4-square, dodge ball, playground apparatus, t-ball,  tetherball, marbles, jacks, arcade games), moderate effort",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15138",
+    "met": 6,
+    "description": "Cheerleading, gymnastic moves, competitive",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15140",
+    "met": 4,
+    "description": "Coaching, football, soccer, basketball, baseball, swimming, etc.",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15142",
+    "met": 8,
+    "description": "Coaching, actively playing sport with players",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15150",
+    "met": 4.8,
+    "description": "Cricket, batting, bowling, fielding",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15160",
+    "met": 3.3,
+    "description": "Croquet",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15170",
+    "met": 4,
+    "description": "Curling",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15180",
+    "met": 2.5,
+    "description": "Darts, wall or lawn",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15190",
+    "met": 6,
+    "description": "Drag racing, pushing or driving a car",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15192",
+    "met": 8.5,
+    "description": "Auto racing, open wheel",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15195",
+    "met": 7.8,
+    "description": "Futsal",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15200",
+    "met": 6,
+    "description": "Fencing, general",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15203",
+    "met": 9.8,
+    "description": "Fencing, epee, competitive",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15205",
+    "met": 10.5,
+    "description": "Floorball",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15210",
+    "met": 8,
+    "description": "Football, competitive",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15230",
+    "met": 8,
+    "description": "Football, touch, flag, general (Taylor Code 510)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15232",
+    "met": 4,
+    "description": "Football, touch, flag, light effort",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15235",
+    "met": 2.5,
+    "description": "Football or baseball, playing catch",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15240",
+    "met": 3,
+    "description": "Frisbee playing, general",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15250",
+    "met": 8,
+    "description": "Frisbee, ultimate",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15252",
+    "met": 3.8,
+    "description": "Frisbee golf",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15255",
+    "met": 4.5,
+    "description": "Golf, general",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15265",
+    "met": 4.3,
+    "description": "Golf, walking, carrying clubs",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15270",
+    "met": 3.5,
+    "description": "Golf, miniature, driving range",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15285",
+    "met": 4.5,
+    "description": "Golf, walking, pulling clubs",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15290",
+    "met": 3.5,
+    "description": "Golf, using power cart (Taylor Code 070)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15300",
+    "met": 3.8,
+    "description": "Gymnastics, general",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15310",
+    "met": 4,
+    "description": "Hacky sack",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15320",
+    "met": 12,
+    "description": "Handball, general (Taylor Code 520)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15330",
+    "met": 8,
+    "description": "Handball, team",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15335",
+    "met": 4,
+    "description": "High ropes course, multiple elements",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15340",
+    "met": 3.5,
+    "description": "Hang gliding",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15350",
+    "met": 7.8,
+    "description": "Hockey, field",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15360",
+    "met": 8,
+    "description": "Hockey, ice, general",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15362",
+    "met": 10,
+    "description": "Hockey, ice, competitive",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15370",
+    "met": 5.5,
+    "description": "Horseback riding, general",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15380",
+    "met": 4.5,
+    "description": "Horse grooming, maintenance, saddling tasks",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15390",
+    "met": 5.8,
+    "description": "Horseback riding, trotting",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15395",
+    "met": 7.3,
+    "description": "Horseback riding, canter or gallop",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15400",
+    "met": 3.8,
+    "description": "Horseback riding, walking",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15402",
+    "met": 9,
+    "description": "Horseback riding, jumping",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15403",
+    "met": 6,
+    "description": "Horseback riding, reining",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15406",
+    "met": 2.1,
+    "description": "Horseback riding, simulator",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15408",
+    "met": 1.8,
+    "description": "Horse cart, driving, standing or sitting",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15410",
+    "met": 3,
+    "description": "Horseshoe pitching, quoits",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15420",
+    "met": 12,
+    "description": "Jai alai",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15425",
+    "met": 5.3,
+    "description": "Martial Arts, different types, slower pace, novice performers, practice",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15430",
+    "met": 10.3,
+    "description": "Martial Arts, different types, moderate pace (e.g., judo, jujitsu, karate, kick boxing, tae kwon do, tai-bo, Muay Thai boxing)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15432",
+    "met": 14.3,
+    "description": "Taekwondo, combat simulation",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15433",
+    "met": 11.3,
+    "description": "Judo",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15440",
+    "met": 4,
+    "description": "Juggling",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15444",
+    "met": 6.5,
+    "description": "Kendo, kihon-keiko style, moderate intensity",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15445",
+    "met": 9.6,
+    "description": "Kendo, kirikaeshi style, high intensity",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15446",
+    "met": 11.3,
+    "description": "Kendo, kakari keiko style, very high intensity",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15450",
+    "met": 7,
+    "description": "Kickball",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15455",
+    "met": 5.5,
+    "description": "Kung Fu Gymnastics",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15457",
+    "met": 7.3,
+    "description": "Kickboxing",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15460",
+    "met": 8,
+    "description": "Lacrosse",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15465",
+    "met": 3.3,
+    "description": "Lawn bowling, bocce ball, outdoor",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15470",
+    "met": 4,
+    "description": "Motocross, off-road motor sports, all-terrain vehicle, general",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15475",
+    "met": 5.3,
+    "description": "Motorcycle racing, Supormoto racing",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15477",
+    "met": 7,
+    "description": "Netball",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15480",
+    "met": 9,
+    "description": "Orienteering",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15490",
+    "met": 10,
+    "description": "Paddleball, competitive",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15500",
+    "met": 6,
+    "description": "Paddleball, casual, general (Taylor Code 460)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15503",
+    "met": 1.8,
+    "description": "Paragliding, moderate altitude",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15506",
+    "met": 6.5,
+    "description": "Prusik climbing",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15510",
+    "met": 8,
+    "description": "Polo, on horseback",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15520",
+    "met": 10,
+    "description": "Racquetball, competitive",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15525",
+    "met": 10.3,
+    "description": "Race Walking, 3.1 m/s (6.9 mph)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15527",
+    "met": 13.8,
+    "description": "Race Walking, 3.7 m/s (8.3 mph)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15528",
+    "met": 15.5,
+    "description": "Race Walking, racing speed, 4.0 m/s (8.95 mph)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15530",
+    "met": 7,
+    "description": "Racquetball, general (Taylor Code 470)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15533",
+    "met": 8,
+    "description": "Rock or mountain climbing (Taylor Code 060), (formerly code 17120)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15534",
+    "met": 8.8,
+    "description": "Rock climbing, free boulder",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15535",
+    "met": 7.3,
+    "description": "Rock climbing, ascending rock, high difficulty",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15536",
+    "met": 10.5,
+    "description": "Rock climbing, speed climbing, very difficult",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15537",
+    "met": 5.8,
+    "description": "Rock climbing, ascending or traversing rock, low-to-moderate difficulty",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15538",
+    "met": 10.5,
+    "description": "Rock climbing, treadwall, 4-6 m/min",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15539",
+    "met": 10.5,
+    "description": "Rock climbing, treadwall, 7-10 m/min",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15540",
+    "met": 5,
+    "description": "Rock climbing, rappelling,",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15542",
+    "met": 4,
+    "description": "Rodeo sports, general, light effort",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15544",
+    "met": 5.5,
+    "description": "Rodeo sports, general, moderate effort",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15546",
+    "met": 7,
+    "description": "Rodeo sports, general, vigorous effort",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15550",
+    "met": 12.3,
+    "description": "Rope jumping, fast pace, 120-160 skips/min",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15551",
+    "met": 11.8,
+    "description": "Rope jumping, moderate pace, general, 100 to 120 skips/min, 2 foot skip, plain bounce",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15552",
+    "met": 8.3,
+    "description": "Rope jumping, slow pace, &lt; 100 skips/min, 2 foot skip, rhythm bounce",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15554",
+    "met": 10,
+    "description": "Rope jumping, double under or more",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15560",
+    "met": 8.3,
+    "description": "Rugby, union, team, competitive",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15562",
+    "met": 6.3,
+    "description": "Rugby, touch, non-competitive",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15570",
+    "met": 3,
+    "description": "Shuffleboard",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15580",
+    "met": 5,
+    "description": "Skateboarding, general, moderate effort",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15582",
+    "met": 6,
+    "description": "Skateboarding, competitive, vigorous effort",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15590",
+    "met": 7,
+    "description": "Skating, roller (Taylor Code 360)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15591",
+    "met": 7.5,
+    "description": "Roller blading, in-line skating, 14.4 km/h (9.0 mph), recreational pace",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15592",
+    "met": 9.8,
+    "description": "Roller blading, in-line skating, 17.7 km/h (11.0 mph), moderate pace, exercise training",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15593",
+    "met": 12.3,
+    "description": "Roller blading, in-line skating, 21.0 to 21.7 km/h (13.0 to 13.6 mph), fast pace, exercise training",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15594",
+    "met": 15.5,
+    "description": "Rollerblading, in-line skating, 24.0 km/h (15.0 mph), maximal effort",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15595",
+    "met": 6.8,
+    "description": "Skateboard, longboard, 13.3 km/h, slow speed",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15596",
+    "met": 8.3,
+    "description": "Skateboard, longboard, 16.2 km/h, typical speed",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15597",
+    "met": 10.5,
+    "description": "Skateboard, longboard, 18.4 km/h, fast speed",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15600",
+    "met": 3.5,
+    "description": "Skydiving, base-jumping, bungee jumping",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15605",
+    "met": 9.5,
+    "description": "Soccer, competitive",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15610",
+    "met": 7,
+    "description": "Soccer, casual, general (Taylor Code 540)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15615",
+    "met": 3.5,
+    "description": "Walking football/soccer",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15620",
+    "met": 5,
+    "description": "Softball or baseball, fast or slow pitch, general, moderate effort (Taylor Code 440)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15625",
+    "met": 4,
+    "description": "Softball, practice",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15630",
+    "met": 4,
+    "description": "Softball, officiating",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15640",
+    "met": 6,
+    "description": "Softball, pitching",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15645",
+    "met": 3.3,
+    "description": "Sports spectator, very excited, emotional, physically moving",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15650",
+    "met": 12,
+    "description": "Squash (Taylor Code 530)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15652",
+    "met": 7.3,
+    "description": "Squash, general",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15660",
+    "met": 4,
+    "description": "Table tennis, ping pong (Taylor Code 410)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15670",
+    "met": 3.3,
+    "description": "Tai chi, qi gong, general",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15672",
+    "met": 1.5,
+    "description": "Tai chi, qi gong, sitting, light effort",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15674",
+    "met": 6,
+    "description": "Tai chi chuan, Yang style",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15675",
+    "met": 6.8,
+    "description": "Tennis, general, moderate effort",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15676",
+    "met": 8,
+    "description": "Tennis, general, competitive",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15680",
+    "met": 6,
+    "description": "Tennis, doubles (Taylor Code 430)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15685",
+    "met": 4.5,
+    "description": "Tennis, doubles",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15690",
+    "met": 8,
+    "description": "Tennis, singles (Taylor Code 420)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15695",
+    "met": 5,
+    "description": "Tennis, hitting balls, non-game play, moderate effort",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15700",
+    "met": 6.3,
+    "description": "Trampoline, recreational",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15702",
+    "met": 10.3,
+    "description": "Trampoline, competitive",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15710",
+    "met": 4,
+    "description": "Volleyball (Taylor Code 400)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15711",
+    "met": 6,
+    "description": "Volleyball, competitive, in gymnasium",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15720",
+    "met": 3,
+    "description": "Volleyball, non-competitive, 6 – 9 member team, general",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15725",
+    "met": 8,
+    "description": "Volleyball, beach, in sand",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15730",
+    "met": 6,
+    "description": "Wrestling, competitive (one match = 5 minutes)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15731",
+    "met": 7,
+    "description": "Wallyball, general",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15732",
+    "met": 4,
+    "description": "Track and field (e.g., shot, discus, hammer throw)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15733",
+    "met": 6,
+    "description": "Track and field (e.g., high jump, long jump, triple jump, javelin, pole vault)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "15734",
+    "met": 10,
+    "description": "Track and field (e.g., steeplechase, hurdles)",
+    "slug": "sports",
+    "estimated": false
+  },
+  {
+    "code": "18010",
+    "met": 2.5,
+    "description": "Boating, power, driving",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18012",
+    "met": 1.3,
+    "description": "Boating, power, passenger, light",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18020",
+    "met": 4,
+    "description": "Canoeing, on camping trip (Taylor Code 270)",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18025",
+    "met": 3.3,
+    "description": "Canoeing, harvesting wild rice, knocking rice off the stalks",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18030",
+    "met": 7,
+    "description": "Canoeing, portaging",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18040",
+    "met": 2.8,
+    "description": "Canoeing, rowing, 2.0-3.9 mph, light effort",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18050",
+    "met": 5.8,
+    "description": "Canoeing, rowing, 4.0-5.9 mph, moderate effort",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18060",
+    "met": 12.5,
+    "description": "Canoeing, rowing, kayaking, competition, &gt; 6 mph, vigorous effort",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18070",
+    "met": 3.5,
+    "description": "Canoeing, rowing, for pleasure, general (Taylor Code 250)",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18080",
+    "met": 12,
+    "description": "Canoeing or rowing, in competition, crew or sculling (Taylor Code 260)",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18090",
+    "met": 3,
+    "description": "Diving, springboard or platform",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18100",
+    "met": 5,
+    "description": "Kayaking, moderate effort",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18104",
+    "met": 13.5,
+    "description": "kayaking, competition",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18106",
+    "met": 9,
+    "description": "kayaking, slalom, flat water",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18110",
+    "met": 4,
+    "description": "Paddle boat",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18112",
+    "met": 15.5,
+    "description": "Rowing, simulated crew in a water tank, single oar, 33 strokes/min,",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18114",
+    "met": 15.5,
+    "description": "Rowing, single scull, ergometer, ergometer on slides, racing speed (32+ strokes/min, &gt;10 mph)",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18120",
+    "met": 3,
+    "description": "Sailing, boat and board sailing, windsurfing, ice sailing, general (Taylor Code 235)",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18130",
+    "met": 4.5,
+    "description": "Sailing, in competition, general",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18132",
+    "met": 9.3,
+    "description": "Sailing, in competition, high effort",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18140",
+    "met": 3.3,
+    "description": "Sailing, Sunfish/Laser/Hobby Cat, Keel boats, ocean sailing, yachting, leisure",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18142",
+    "met": 2,
+    "description": "Sailing, dingy",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18150",
+    "met": 6,
+    "description": "Skiing, water or wake boarding (Taylor Code 220)",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18160",
+    "met": 7,
+    "description": "Jet skiing, driving, in water",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18180",
+    "met": 15.8,
+    "description": "Skindiving, fast",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18190",
+    "met": 11.8,
+    "description": "Skindiving, moderate",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18200",
+    "met": 7,
+    "description": "Skindiving, scuba diving, general (Taylor Code 310)",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18202",
+    "met": 5.3,
+    "description": "Scuba diving, general, light effort",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18204",
+    "met": 5.8,
+    "description": "Scuba diving, general, moderate effort",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18206",
+    "met": 5.5,
+    "description": "Scuba diving, professional diver",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18208",
+    "met": 6.8,
+    "description": "Scuba diving, recreational diver",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18210",
+    "met": 5,
+    "description": "Snorkeling (Taylor Code 320)",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18220",
+    "met": 3,
+    "description": "Surfing, body or board, general",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18221",
+    "met": 6.8,
+    "description": "Surfboard, paddling",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18222",
+    "met": 5,
+    "description": "Surfing, body or board, competitive",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18224",
+    "met": 6.5,
+    "description": "Stand up paddle boarding, general",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18225",
+    "met": 2.8,
+    "description": "Stand up Paddleboard, standing, 10-19 strokes/min",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18226",
+    "met": 3.8,
+    "description": "Stand up Paddleboard, standing, 20-29 strokes/min",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18227",
+    "met": 5,
+    "description": "Stand up Paddleboard, standing, 30-39 strokes/min",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18228",
+    "met": 9.8,
+    "description": "Stand up Paddleboard, standing, 40-49 strokes/min",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18229",
+    "met": 11,
+    "description": "Stand up Paddleboard, standing, 50-69 strokes/min",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18230",
+    "met": 9.8,
+    "description": "Swimming laps, freestyle, fast, vigorous effort",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18240",
+    "met": 5.8,
+    "description": "Swimming laps, freestyle, slow, recreational",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18250",
+    "met": 9.5,
+    "description": "Swimming, backstroke, training or competition",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18255",
+    "met": 4.8,
+    "description": "Swimming, backstroke, recreational",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18260",
+    "met": 10.3,
+    "description": "Swimming, breaststroke, general, training or  competition",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18265",
+    "met": 5.3,
+    "description": "Swimming breaststroke, recreational",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18270",
+    "met": 13.8,
+    "description": "Swimming, butterfly, general",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18280",
+    "met": 10.5,
+    "description": "Swimming, crawl, fast speed, ~75 yards/minute,  vigorous effort",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18285",
+    "met": 10.5,
+    "description": "Swimming, open water, 5k",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18290",
+    "met": 8,
+    "description": "Swimming, crawl, medium speed, ~50 yards/minute, vigorous effort",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18292",
+    "met": 5.8,
+    "description": "Swimming, crawl, slow speed, 30-45 yards/minute, moderate effort",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18294",
+    "met": 14.5,
+    "description": "Swimming, crawl, elite swimmers, competition, &gt;90 yards/minute",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18300",
+    "met": 6,
+    "description": "Swimming, lake, ocean, river (Taylor Codes 280,  295)",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18310",
+    "met": 6,
+    "description": "Swimming, leisurely, not lap swimming, general",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18320",
+    "met": 7,
+    "description": "Swimming, sidestroke, general",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18330",
+    "met": 8,
+    "description": "Swimming, synchronized",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18340",
+    "met": 9.8,
+    "description": "Swimming, treading water, fast, vigorous effort",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18350",
+    "met": 3.5,
+    "description": "Swimming, treading water, moderate effort,  general",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18352",
+    "met": 2.3,
+    "description": "Tubing, floating on a river, general",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18355",
+    "met": 5.5,
+    "description": "Water aerobics, water calisthenics, general",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18356",
+    "met": 3.8,
+    "description": "Water aerobics, resistance exercises",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18358",
+    "met": 7.5,
+    "description": "Water aerobics, high intensity",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18360",
+    "met": 10,
+    "description": "Water polo",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18365",
+    "met": 3,
+    "description": "Water volleyball",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18366",
+    "met": 9.8,
+    "description": "Water jogging, vigorous effort",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18367",
+    "met": 2.5,
+    "description": "Water walking, light effort, slow pace",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18368",
+    "met": 4.8,
+    "description": "Water walking, moderate effort, moderate pace",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18369",
+    "met": 6.8,
+    "description": "Water walking, vigorous effort, brisk pace",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18370",
+    "met": 5,
+    "description": "Whitewater rafting, kayaking, or canoeing",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18374",
+    "met": 6.5,
+    "description": "Water running, 30 steps/min, slow",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18375",
+    "met": 7.5,
+    "description": "Water running, 40 steps/min, moderate",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18376",
+    "met": 8.5,
+    "description": "Water running, 50 steps/min, fast",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18377",
+    "met": 9.8,
+    "description": "Water running, 60 steps/min, very fast",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18380",
+    "met": 5,
+    "description": "Windsurfing, not pumping for speed",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18385",
+    "met": 11,
+    "description": "Windsurfing or kitesurfing, crossing trial",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18390",
+    "met": 14,
+    "description": "Windsurfing, competition, pumping for speed",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18404",
+    "met": 2.8,
+    "description": "Aquatic cycling, 25 W, 40-50 RPM",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18408",
+    "met": 4.8,
+    "description": "Aquatic cycling, 25 W, 60-70 RPM",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18412",
+    "met": 3.8,
+    "description": "Aquatic cycling, 50 W, 40-50 RPM",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18416",
+    "met": 6,
+    "description": "Aquatic cycling,  50 W, 60-70 RPM",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18420",
+    "met": 5,
+    "description": "Aquatic cycling, 75 W, 40-50 RPM",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18424",
+    "met": 6.3,
+    "description": "Aquatic cycling, 75 W, 60-70 RPM",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18428",
+    "met": 6.3,
+    "description": "Aquatic cycling, 100 W, 40-50 RPM",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18432",
+    "met": 7.5,
+    "description": "Aquatic cycling, 100 W, 60-70 RPM",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18436",
+    "met": 8.5,
+    "description": "Aquatic cycling, 80-89 RPM",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "18440",
+    "met": 10.3,
+    "description": "Aquatic cycling, 90+ RPM",
+    "slug": "water-activities",
+    "estimated": false
+  },
+  {
+    "code": "03005",
+    "met": 6,
+    "description": "Afro-Cuban salsa (Cuban cha-cha-cha, mambo, Afro rumba, contratiempo son steps, orisha/santo movements)",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03010",
+    "met": 5,
+    "description": "Ballet, modern, or jazz general, rehearsal or class",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03011",
+    "met": 6.3,
+    "description": "Ballet exercises (plie, tendus, jetes, rond de Jambes, fondus, grand battement, grand adage, sautes, temp Leve's)",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03012",
+    "met": 6.8,
+    "description": "Ballet, modern, or jazz, performance, vigorous effort",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03014",
+    "met": 4.8,
+    "description": "Tap",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03025",
+    "met": 4.5,
+    "description": "Ethnic or cultural dancing (e.g. Greek, Middle Eastern, hula, salsa, merengue, bamba y plena,  flamenco, belly, and swing)",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03028",
+    "met": 5.5,
+    "description": "Chinese square dance, Ballet & Tibetan dance",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03029",
+    "met": 7.3,
+    "description": "Chinese square dance, aerobic dance",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03030",
+    "met": 5.5,
+    "description": "Ballroom dancing, fast (Taylor Code 125)",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03031",
+    "met": 9.8,
+    "description": "Nightclub or folk dancing, vigorous effort (e.g., nightclub, disco, folk, line dancing, Irish step dancing, polka, contra)",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03033",
+    "met": 5,
+    "description": "Folk dancing, moderate effort",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03038",
+    "met": 11.3,
+    "description": "Ballroom dancing, competitive, general",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03039",
+    "met": 13,
+    "description": "Ballroom dance, DanceSport competition (modern waltz, tango, Viennese waltz, slow fox, quick step, samba, chacha, rumba, paso doble, jive)",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03040",
+    "met": 3,
+    "description": "Ballroom, slow, examples: waltz, foxtrot, slow dancing, samba tango, rumba, 19th century dance, mambo, cha cha",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03042",
+    "met": 6,
+    "description": "Ballroom Dance, Recreational (Waltz, Foxtrot, Cha-cha, Swing)",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03050",
+    "met": 5.5,
+    "description": "Anishinaabe Jingle dancing, brisk pace, other traditional American Indian dancing performed by women, moderate effort",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03060",
+    "met": 3.5,
+    "description": "Caribbean dance (Abakua, Beguine, Bellair, Bongo, Brukin’s, Caribbean Quadrills, Dinki  Mini, Gere, Gumbay, Ibo, Jonkonnu, Kumina,  Oreisha, Jambu)",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03070",
+    "met": 3.8,
+    "description": "Contemporary dancing, general",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03072",
+    "met": 4.3,
+    "description": "Contemporary dancing, nightclub",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03075",
+    "met": 8.5,
+    "description": "Flamenco dance",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03078",
+    "met": 4.5,
+    "description": "Jazz dancing, general",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03080",
+    "met": 10.3,
+    "description": "Musical Theater, Singing/dancing",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03085",
+    "met": 5.8,
+    "description": "Polynesian dance, Hawaiian hula slow, Maori haka, Tongan",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03086",
+    "met": 7,
+    "description": "Polynesian dance, Hawaiian hula fast, Samoan sasa, Fijian style fast, Filipino Tinikling",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03087",
+    "met": 8.8,
+    "description": "Polynesian dance, Samoan slap, Tahitian",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03090",
+    "met": 4.8,
+    "description": "Salsa Dancing, with partner",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03091",
+    "met": 6.3,
+    "description": "Salsa dancing, to a video",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "03093",
+    "met": 5.5,
+    "description": "Square Dancing, American Western, country",
+    "slug": "dancing",
+    "estimated": false
+  },
+  {
+    "code": "05010",
+    "met": 3.3,
+    "description": "Cleaning, sweeping carpet or floors, general",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05011",
+    "met": 2.3,
+    "description": "Cleaning, sweeping, slow, light effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05012",
+    "met": 3.8,
+    "description": "Cleaning, sweeping, fast, moderate effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05020",
+    "met": 3.5,
+    "description": "Cleaning  heavy or major (e.g., wash car, clean garage), moderate effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05021",
+    "met": 3.5,
+    "description": "Cleaning, mopping, standing, moderate effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05022",
+    "met": 3.3,
+    "description": "Cleaning windows, washing windows, general",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05023",
+    "met": 2.5,
+    "description": "Mopping, standing, light effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05024",
+    "met": 4.5,
+    "description": "Polishing floors, standing, walking slowly, using electric polishing machine",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05025",
+    "met": 2.8,
+    "description": "Multiple household tasks all at once, light effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05026",
+    "met": 3.3,
+    "description": "Multiple household tasks all at once, moderate effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05027",
+    "met": 4.3,
+    "description": "Multiple household tasks all at once, vigorous effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05030",
+    "met": 3.3,
+    "description": "Cleaning, house or cabin, general, moderate effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05032",
+    "met": 2.5,
+    "description": "Dusting or polishing furniture, general",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05035",
+    "met": 3.3,
+    "description": "Kitchen activity, general, (e.g., cooking, washing dishes, cleaning up) moderate effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05040",
+    "met": 2.5,
+    "description": "Cleaning, general (straightening up, changing linen, carrying out trash), light effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05041",
+    "met": 2,
+    "description": "Wash dishes, standing or in general (not broken into stand/walk components)",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05042",
+    "met": 2,
+    "description": "Wash dishes, clearing dishes from table, walking, light effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05043",
+    "met": 3,
+    "description": "Vacuuming, general, moderate effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05044",
+    "met": 3,
+    "description": "Butchering animals, small",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05045",
+    "met": 6,
+    "description": "Butchering animals, large, vigorous effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05046",
+    "met": 2.3,
+    "description": "Cutting and smoking fish, drying fish or meat",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05048",
+    "met": 4,
+    "description": "Tanning hides, general",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05049",
+    "met": 3.5,
+    "description": "Cooking or food preparation, moderate effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05050",
+    "met": 2,
+    "description": "Cooking or food preparation – standing or sitting or in general (not broken into stand/walk components), manual appliances, light effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05051",
+    "met": 2.3,
+    "description": "Cooking or food preparation, walking",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05052",
+    "met": 2.3,
+    "description": "Serving food, setting/cleaning table, implied walking or standing",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05053",
+    "met": 2.5,
+    "description": "Feeding household animals",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05054",
+    "met": 3.5,
+    "description": "carrying groceries, on level ground, walking",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05055",
+    "met": 2.5,
+    "description": "Putting away groceries (e.g. carrying groceries, carrying packages)",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05056",
+    "met": 5.3,
+    "description": "Carrying groceries upstairs",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05057",
+    "met": 3,
+    "description": "Cooking Indian bread or other food on an outside stove",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05060",
+    "met": 3.3,
+    "description": "Food shopping with or without a grocery cart; carrying a 10 lb bag; standing or walking",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05065",
+    "met": 2.3,
+    "description": "Non-food shopping, with or without cart, standing or walking",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05070",
+    "met": 1.8,
+    "description": "Ironing",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05080",
+    "met": 1.3,
+    "description": "Knitting, sewing, light effort, wrapping presents, sitting",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05082",
+    "met": 2.8,
+    "description": "Sewing with a machine",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05090",
+    "met": 2.3,
+    "description": "Laundry, fold or hang clothes, put clothes in washer or dryer, packing suitcase, washing clothes by hand,  implied standing, light effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05091",
+    "met": 2,
+    "description": "Laundry, fold or hang clothes, sitting",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05092",
+    "met": 4,
+    "description": "Laundry,  moderate effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05095",
+    "met": 2,
+    "description": "Laundry,  putting away clothes, gathering clothes to pack, putting away laundry, implied walking",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05100",
+    "met": 3,
+    "description": "Making bed, changing linens",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05110",
+    "met": 5,
+    "description": "Maple syruping/sugar bushing (including carrying buckets, carrying wood)",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05120",
+    "met": 5.8,
+    "description": "Moving furniture, household items, carrying boxes",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05121",
+    "met": 5,
+    "description": "Moving, lifting light loads",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05125",
+    "met": 4.8,
+    "description": "Organizing a room",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05130",
+    "met": 3.5,
+    "description": "Scrubbing floors, on hands and knees, scrubbing bathroom, bathtub, moderate effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05131",
+    "met": 2,
+    "description": "Scrubbing floors, on hands and knees, scrubbing bathroom, bathtub, light effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05132",
+    "met": 6.5,
+    "description": "Scrubbing floors, on hands and knees, scrubbing bathroom, bathtub, vigorous effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05140",
+    "met": 3,
+    "description": "Sweeping garage, sidewalk, or outside house",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05146",
+    "met": 3.8,
+    "description": "Standing, packing/unpacking boxes, occasional lifting lightweight household items, loading or unloading items into a car, moderate effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05147",
+    "met": 3,
+    "description": "Implied walking, putting away household items, moderate effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05148",
+    "met": 2,
+    "description": "Watering  plants",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05149",
+    "met": 2.5,
+    "description": "Building a fire inside",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05150",
+    "met": 9,
+    "description": "Moving household items upstairs, carrying boxes or furniture",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05160",
+    "met": 2,
+    "description": "Standing, light effort tasks (pump gas, change light bulb, etc.)",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05165",
+    "met": 3.5,
+    "description": "Walking, moderate effort tasks, non-cleaning (readying to leave, shut/lock doors, close windows, etc.",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05170",
+    "met": 2.3,
+    "description": "Sitting, playing with child(ren), light effort, only active periods",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05171",
+    "met": 2.8,
+    "description": "Standing, playing with child(ren), light effort, only active periods",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05175",
+    "met": 3.5,
+    "description": "Walking/running, playing with child(ren), moderate effort, only active periods",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05180",
+    "met": 5.8,
+    "description": "Walking/running, playing with child(ren), vigorous effort, only active periods",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05181",
+    "met": 3,
+    "description": "Walking and carrying small child, child weighing 15 lbs or more",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05182",
+    "met": 2.5,
+    "description": "Walking and carrying small child, child weighing less than 15 lbs",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05183",
+    "met": 2,
+    "description": "Standing, holding child",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05184",
+    "met": 2.5,
+    "description": "Child care, infant, general",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05185",
+    "met": 2,
+    "description": "Child care: sitting or kneeling, dressing, bathing, grooming, feeding, occasional lifting of child-light effort, general",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05186",
+    "met": 3.5,
+    "description": "Child care: standing, dressing, bathing, grooming, feeding, occasional lifting of child- light effort",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05188",
+    "met": 1.5,
+    "description": "Reclining with baby",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05189",
+    "met": 2,
+    "description": "Breastfeeding, sitting or reclining",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05190",
+    "met": 2.5,
+    "description": "Sit, playing with animals, light, only active period",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05191",
+    "met": 2.8,
+    "description": "Stand, playing with animals, light effort, only active periods",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05192",
+    "met": 2.8,
+    "description": "Walk or run, playing with animals, general, light effort, only active periods",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05193",
+    "met": 4,
+    "description": "Walk/run, playing with animals, moderate effort, only active periods",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05194",
+    "met": 5,
+    "description": "Walk/run, playing with animals, vigorous effort, only active periods",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05195",
+    "met": 3.5,
+    "description": "Standing, bathing dog",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05197",
+    "met": 2.3,
+    "description": "Animal care, household animals, general",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05200",
+    "met": 3,
+    "description": "Elder care, disabled adult, bathing, dressing, moving into and out of bed, only active periods",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05205",
+    "met": 1.8,
+    "description": "Elder care, disabled adult, feeding, combing hair, light effort, only active periods",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "05300",
+    "met": 1.3,
+    "description": "Handwashing",
+    "slug": "home-activities",
+    "estimated": false
+  },
+  {
+    "code": "08009",
+    "met": 4.1,
+    "description": "Carrying, loading or stacking wood, loading/unloading or carrying lumber, light-to- moderate effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08010",
+    "met": 5.5,
+    "description": "Carrying, loading or stacking wood, loading/unloading or carrying lumber, moderate effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08019",
+    "met": 4.5,
+    "description": "Chopping wood, splitting logs, moderate effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08020",
+    "met": 6.5,
+    "description": "Chopping wood, splitting logs, vigorous effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08025",
+    "met": 3.5,
+    "description": "Clearing light brush, thinning garden, moderate effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08030",
+    "met": 6.3,
+    "description": "Clearing land, haul brush, undergrowth, or ground, vigorous effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08040",
+    "met": 5,
+    "description": "Digging sandbox, shoveling sand",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08045",
+    "met": 3.5,
+    "description": "Digging, spading, filling garden, composting, light-to-moderate effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08050",
+    "met": 5,
+    "description": "Digging, spading, filling garden, composting (Taylor Code 590)",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08052",
+    "met": 7.3,
+    "description": "Digging, spading, filling garden, composting, vigorous effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08055",
+    "met": 2.8,
+    "description": "Driving tractor",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08057",
+    "met": 8.3,
+    "description": "Felling trees, large size",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08058",
+    "met": 5.3,
+    "description": "Felling trees, small-medium size",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08060",
+    "met": 5.8,
+    "description": "Gardening with heavy power tools, using chain saw, tilling a garden",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08066",
+    "met": 2,
+    "description": "gardening, general",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08070",
+    "met": 4,
+    "description": "Irrigation channels, opening and closing ports",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08080",
+    "met": 6.3,
+    "description": "Laying crushed rock or gravel",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08090",
+    "met": 5,
+    "description": "Laying sod",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08095",
+    "met": 5.5,
+    "description": "Mowing lawn, general, walking, moderate effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08100",
+    "met": 2.5,
+    "description": "Mowing lawn, riding mower (Taylor Code 550)",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08110",
+    "met": 6,
+    "description": "Mowing lawn, hand mower, vigorous effort (Taylor Code 570)",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08120",
+    "met": 5,
+    "description": "Mowing lawn, walk, power mower,  moderate or vigorous effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08125",
+    "met": 4.5,
+    "description": "Mowing lawn, power mower, light or moderate effort (Taylor Code 590)",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08130",
+    "met": 2.5,
+    "description": "Operating snow blower, walking",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08135",
+    "met": 2.6,
+    "description": "Planting, potting, transplanting seedlings or plants, light effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08140",
+    "met": 4.3,
+    "description": "Planting seedlings, shrubs, stooping, moderate effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08145",
+    "met": 4.3,
+    "description": "Planting crops or garden, stooping, moderate effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08150",
+    "met": 4.5,
+    "description": "Planting trees",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08160",
+    "met": 4,
+    "description": "Raking lawn or leaves, moderate effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08165",
+    "met": 4,
+    "description": "Raking lawn (Taylor Code 600)",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08170",
+    "met": 4,
+    "description": "Raking roof with snow rake",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08180",
+    "met": 3,
+    "description": "Riding snow blower",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08190",
+    "met": 4,
+    "description": "Sacking grass, leaves",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08192",
+    "met": 5.5,
+    "description": "Shoveling dirt or mud",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08195",
+    "met": 5.3,
+    "description": "Shoveling snow, by hand, moderate effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08200",
+    "met": 6,
+    "description": "Shoveling snow, by hand (Taylor Code 610)",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08202",
+    "met": 7.5,
+    "description": "Shoveling snow, by hand, vigorous effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08210",
+    "met": 3.8,
+    "description": "Trimming shrubs or trees, manual cutter",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08215",
+    "met": 3.3,
+    "description": "Trimming shrubs or trees, power cutter, using leaf blower, edger, moderate effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08220",
+    "met": 3,
+    "description": "Walking, applying fertilizer or seeding a lawn, push applicator",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08230",
+    "met": 4,
+    "description": "Watering lawn or garden, standing or walking",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08239",
+    "met": 3.8,
+    "description": "Weeding, cultivating garden, light-to-moderate effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08240",
+    "met": 4.5,
+    "description": "Weeding, cultivating garden, moderate effort (Taylor Code 580)",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08241",
+    "met": 5,
+    "description": "Weeding, cultivating garden, using hoe moderate-to-vigorous effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08245",
+    "met": 3.8,
+    "description": "Gardening, general, moderate effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08246",
+    "met": 3.5,
+    "description": "Picking fruit or coffee from trees, moderate effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08248",
+    "met": 4.5,
+    "description": "Harvesting Produce, Picking fruit off trees, gleaning fruits, picking fruits/vegetables, climbing ladder to pick fruit, vigorous effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08250",
+    "met": 3,
+    "description": "Implied walking/standing – picking up yard, light, picking flowers or vegetables",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08251",
+    "met": 3,
+    "description": "Walking, gathering gardening tools",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08255",
+    "met": 4.8,
+    "description": "Wheel barrow, pushing garden cart or wheelbarrow, general",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08256",
+    "met": 6,
+    "description": "Wheel barrow, pushing large garden cart or heavy wheelbarrow up to 150kg",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08260",
+    "met": 2.3,
+    "description": "Yardwork, general, light effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08261",
+    "met": 4,
+    "description": "Yardwork, general, moderate effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "08262",
+    "met": 6,
+    "description": "Yardwork, general, vigorous effort",
+    "slug": "lawn-garden",
+    "estimated": false
+  },
+  {
+    "code": "11000",
+    "met": 2,
+    "description": "Active workstation, Pedal desk, balance chair/ball, General, light effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11001",
+    "met": 3.5,
+    "description": "Active workstation, Pedal desk (40 watts)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11002",
+    "met": 5.3,
+    "description": "Active workstation, Pedal desk (80 watts)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11003",
+    "met": 2,
+    "description": "Active workstation, treadmill desk, walking slowly 1.0 mph or less",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11004",
+    "met": 2.8,
+    "description": "Active workstation, treadmill desk, walking 1.0 – 2.0 mph",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11006",
+    "met": 3,
+    "description": "Airline flight attendant",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11008",
+    "met": 4.8,
+    "description": "Apple Harvesting",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11010",
+    "met": 4,
+    "description": "Bakery, general, moderate effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11015",
+    "met": 2,
+    "description": "Bakery, light effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11020",
+    "met": 2.3,
+    "description": "Bookbinding",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11030",
+    "met": 6,
+    "description": "Building road, driving heavy machinery",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11035",
+    "met": 2,
+    "description": "Building road, directing traffic, standing",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11038",
+    "met": 2.5,
+    "description": "Carpentry, general, light effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11040",
+    "met": 4.3,
+    "description": "Carpentry, general, moderate effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11042",
+    "met": 7,
+    "description": "Carpentry, general, heavy or vigorous effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11050",
+    "met": 8,
+    "description": "Carrying heavy loads (e.g., bricks, tools)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11060",
+    "met": 8,
+    "description": "Carrying moderate loads up stairs, moving  boxes, 25-49 lbs",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11070",
+    "met": 4,
+    "description": "Chambermaid, hotel housekeeper, making bed, cleaning bathroom, pushing cart",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11072",
+    "met": 4.3,
+    "description": "Cleaning, vacuuming a commercial space",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11080",
+    "met": 5.3,
+    "description": "Coal mining, drilling coal, rock",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11090",
+    "met": 5,
+    "description": "Coal mining, erecting supports",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11100",
+    "met": 5.5,
+    "description": "Coal mining, general",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11110",
+    "met": 6.3,
+    "description": "Coal mining, shoveling coal, by hand",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11115",
+    "met": 2.5,
+    "description": "Cook, chef",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11120",
+    "met": 4,
+    "description": "Construction, outside, remodeling, new structures (e.g., roof repair, miscellaneous)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11124",
+    "met": 2.3,
+    "description": "Construction, rebar, bar bending/fixing",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11125",
+    "met": 2.3,
+    "description": "Custodial work, light effort (e.g., cleaning sink and toilet, dusting, vacuuming, light cleaning)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11126",
+    "met": 3.8,
+    "description": "Custodial work, moderate effort (e.g., buffing floors with electric buffer, feathering or sweeping arena floors, mopping, taking out the trash, vacuuming)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11130",
+    "met": 3.3,
+    "description": "Electrical work (e.g., hook up wire, tapping, splicing); plumbing moved to 11516",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11135",
+    "met": 1.8,
+    "description": "Engineer (e.g., mechanical or electrical)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11145",
+    "met": 7.8,
+    "description": "Farming, vigorous effort (e.g., baling hay, cleaning barn), includes former code 11200",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11146",
+    "met": 4.8,
+    "description": "Farming, moderate effort (e.g., feeding animals, chasing cattle by walking and/or horseback, spreading manure, harvesting crops)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11147",
+    "met": 2,
+    "description": "Farming, light effort, (e.g., cleaning animal sheds, preparing animal feed)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11170",
+    "met": 2.8,
+    "description": "Farming, driving tasks (e.g., driving tractor or harvester)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11180",
+    "met": 3.5,
+    "description": "Farming, feeding small animals",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11190",
+    "met": 4.3,
+    "description": "Farming, feeding cattle, horses",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11191",
+    "met": 4.3,
+    "description": "Farming, hauling water for animals, fetching water from a well or stream",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11192",
+    "met": 4.5,
+    "description": "Farming, taking care of animals (e.g.,  grooming, brushing, shearing sheep, assisting with birthing, medical care, branding), general",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11195",
+    "met": 3.8,
+    "description": "Farming, rice, planting, grain milling activities",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11210",
+    "met": 3.5,
+    "description": "Farming, milking by hand, cleaning pails, moderate effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11220",
+    "met": 1.3,
+    "description": "Farming, milking by machine, light effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11222",
+    "met": 3,
+    "description": "Farming, milking Cows, full milking process, modern milking parlor with milking machines",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11240",
+    "met": 8,
+    "description": "Fire fighter, general",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11244",
+    "met": 6.8,
+    "description": "Firefighter, rescue victim, automobile  accident, using pike pole",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11245",
+    "met": 8,
+    "description": "Firefighter, raising and climbing ladder with full gear, simulated fire suppression",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11246",
+    "met": 9,
+    "description": "Firefighter, hauling hoses on ground, carrying/hoisting equipment, breaking down  walls etc., wearing full gear",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11247",
+    "met": 3.5,
+    "description": "Fishing, commercial, light effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11248",
+    "met": 5,
+    "description": "Fishing, commercial, moderate effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11250",
+    "met": 17.5,
+    "description": "Forestry, ax chopping, very fast, 1.25 kg axe, 51 blows/min, extremely vigorous effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11260",
+    "met": 5,
+    "description": "Forestry, ax chopping, slow, 1.25 kg axe, 19 blows/min, moderate effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11262",
+    "met": 8,
+    "description": "Forestry, ax chopping, fast, 1.25 kg axe, 35 blows/min, vigorous effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11264",
+    "met": 5,
+    "description": "Forestry, moderate effort (e.g., sawing wood with power saw, weeding, hoeing)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11266",
+    "met": 8.5,
+    "description": "Forestry, vigorous effort (e.g., barking, felling, or trimming trees, carrying or stacking logs, planting seeds, sawing lumber by hand )",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11370",
+    "met": 4.8,
+    "description": "Furriery",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11375",
+    "met": 3.8,
+    "description": "Garbage collector, walking, dumping bins into truck, street cleaning",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11378",
+    "met": 1.8,
+    "description": "Hairstylist (e.g., plaiting hair, manicure, make-up artist)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11380",
+    "met": 7.3,
+    "description": "Horse grooming, including feeding, cleaning stalls, bathing, brushing, clipping, longeing and exercising horses.",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11381",
+    "met": 4.3,
+    "description": "Horse, feeding, watering, cleaning stalls, implied walking and lifting loads",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11383",
+    "met": 4.5,
+    "description": "Horseback riding, working, cutting cows",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11390",
+    "met": 7.8,
+    "description": "Horse racing, Jockey, canter",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11400",
+    "met": 6.3,
+    "description": "Horse racing, Jockey, trotting",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11410",
+    "met": 2.3,
+    "description": "Horse racing, Jockey, walking",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11413",
+    "met": 3,
+    "description": "Kitchen maid",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11415",
+    "met": 4,
+    "description": "Lawn keeper, yardwork, general",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11416",
+    "met": 3,
+    "description": "Lawn keeper, weeding, gas powered",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11418",
+    "met": 3.3,
+    "description": "Laundry worker",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11420",
+    "met": 3,
+    "description": "Locksmith",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11430",
+    "met": 3,
+    "description": "Machine tooling (e.g., machining, working  sheet metal, machine fitter, operating lathe,  welding) light-to-moderate effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11450",
+    "met": 5,
+    "description": "Machine tooling, operating punch press, moderate effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11472",
+    "met": 1.8,
+    "description": "Manager, property",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11475",
+    "met": 2.8,
+    "description": "Manual or unskilled labor, general, light effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11476",
+    "met": 4.5,
+    "description": "Manual or unskilled labor, general, moderate effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11477",
+    "met": 6.5,
+    "description": "Manual or unskilled labor, general, vigorous effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11480",
+    "met": 4.3,
+    "description": "Masonry, concrete, moderate effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11482",
+    "met": 2.5,
+    "description": "Masonry, concrete, light effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11485",
+    "met": 5.5,
+    "description": "Massage therapist, standing",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11486",
+    "met": 2.3,
+    "description": "Mail carrier, walking to deliver mail",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11487",
+    "met": 1.5,
+    "description": "Mail delivery, motorbike",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11488",
+    "met": 3.5,
+    "description": "Mail delivery, Electronically Assisted Bicycle",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11490",
+    "met": 7.5,
+    "description": "Moving, carrying, or pushing heavy objects, 75 lbs or more, only active time (e.g., desks, moving van work)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11493",
+    "met": 8.5,
+    "description": "Mining, general services, drilling, mining support jobs (mechanical, welding, pipe installation, general construction)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11495",
+    "met": 12,
+    "description": "Skindiving or SCUBA diving as a frogman, Navy Seal",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11500",
+    "met": 2.5,
+    "description": "Operating heavy-duty equipment, automated, not driving",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11510",
+    "met": 3.5,
+    "description": "Orange grove work, picking fruit",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11514",
+    "met": 3.3,
+    "description": "Painting, house, furniture, moderate effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11516",
+    "met": 3,
+    "description": "Plumbing activities",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11520",
+    "met": 2,
+    "description": "Printing, paper industry worker, standing",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11524",
+    "met": 3.8,
+    "description": "Police Officer, Walking",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11525",
+    "met": 2.5,
+    "description": "Police, directing traffic, standing",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11526",
+    "met": 2,
+    "description": "Police, driving a squad car, sitting",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11527",
+    "met": 1.3,
+    "description": "Police, riding in a squad car, sitting",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11528",
+    "met": 4,
+    "description": "Police, making an arrest, standing",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11529",
+    "met": 9,
+    "description": "Counter terrorism maneuvers, clearing building",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11530",
+    "met": 2,
+    "description": "Shoe repair, general",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11540",
+    "met": 7.3,
+    "description": "Shoveling, digging ditches",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11550",
+    "met": 8.8,
+    "description": "Shoveling, more than 16 lbs/minute, deep digging, vigorous effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11560",
+    "met": 5,
+    "description": "Shoveling, less than 10 lbs/minute, moderate effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11570",
+    "met": 6.5,
+    "description": "Shoveling, 10 to 15 lbs/minute, vigorous effort",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11580",
+    "met": 1.5,
+    "description": "Sitting tasks, light effort (e.g., office work, chemistry lab work, light assembly repair, watch repair, reading, desk  work)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11582",
+    "met": 1.3,
+    "description": "Sitting, computer work",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11583",
+    "met": 1.3,
+    "description": "Standing workstation, typing, computer work",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11585",
+    "met": 1.3,
+    "description": "Sitting meetings, light effort, general, and/or with talking involved (e.g., eating at a business meeting)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11590",
+    "met": 2.5,
+    "description": "Sitting tasks, moderate effort (e.g. pushing heavy levers, riding mower/forklift, crane  operation)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11593",
+    "met": 2.8,
+    "description": "Sitting, teaching stretching or yoga, or light effort exercise classes",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11600",
+    "met": 1.8,
+    "description": "Standing tasks, light effort (e.g., bartending, store clerk, assembling, filing, duplicating,  librarian, putting up a Christmas tree, standing and talking at work, changing clothes when teaching physical education)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11610",
+    "met": 3.3,
+    "description": "Standing, light/moderate effort (e.g., assemble/repair heavy parts, welding, stocking  parts, auto repair, packing boxes, nursing patient care, laundry)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11615",
+    "met": 4.5,
+    "description": "Standing, moderate effort, lifting items continuously, 10 – 20 lbs, with limited walking  or resting",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11620",
+    "met": 3.8,
+    "description": "Standing, moderate effort, intermittent lifting 50 lbs, hitch or twisting ropes",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11630",
+    "met": 4.5,
+    "description": "Standing, moderate/heavy tasks (e.g., lifting more than 50 lbs, masonry, painting, paper  hanging)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11650",
+    "met": 2.3,
+    "description": "Patient care, healthcare activites",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11660",
+    "met": 3.5,
+    "description": "Patient care, room cleaning/preperation",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11708",
+    "met": 5.3,
+    "description": "Steel mill, moderate effort (e.g., fettling, forging, tipping molds)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11710",
+    "met": 8.3,
+    "description": "Steel mill, vigorous effort (e.g., hand rolling, merchant mill rolling, removing slag, tending furnace)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11720",
+    "met": 2.3,
+    "description": "Tailoring, cutting fabric",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11730",
+    "met": 2.5,
+    "description": "Tailoring, general",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11740",
+    "met": 1.8,
+    "description": "Tailoring, hand sewing",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11750",
+    "met": 2.5,
+    "description": "Tailoring, machine sewing",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11760",
+    "met": 3.5,
+    "description": "Tailoring, pressing",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11763",
+    "met": 2,
+    "description": "Tailoring, weaving, light effort (e.g., finishing operations, washing, dyeing, inspecting cloth, counting yards, paperwork)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11765",
+    "met": 4,
+    "description": "Tailoring, weaving, moderate effort (e.g., spinning and weaving operations, delivering boxes of yarn to spinners, loading of warp beam, pinwinding, conewinding, warping, cloth clutting)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11766",
+    "met": 6.5,
+    "description": "Truck driving, loading and unloading truck, tying down load, standing, walking and carrying heavy loads",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11767",
+    "met": 2,
+    "description": "Truck driving, delivery truck, taxi, shuttlebus, school bus",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11770",
+    "met": 1.3,
+    "description": "Typing, electric, manual or computer",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11780",
+    "met": 6.3,
+    "description": "Using heavy power tools such as pneumatic tools (e.g., jackhammers, drills, etc.)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11790",
+    "met": 7.8,
+    "description": "Using heavy tools (not power) such as shovel, pick, tunnel bar, spade",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11791",
+    "met": 2,
+    "description": "Walking on job, less than 2.0 mph, very slow speed, in office or lab area",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11792",
+    "met": 3.8,
+    "description": "Walking on job, 2.8 to 3.4 mph, in office, moderate speed, not carrying anything",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11793",
+    "met": 4.8,
+    "description": "Walking on job, 3.5 to 3.9 mph, in office, brisk speed, not carrying anything",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11795",
+    "met": 3.5,
+    "description": "Walking on job, 2.5 mph, slow speed, carrying light objects less than 25 lbs",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11796",
+    "met": 3,
+    "description": "Walking, gathering things at work, ready to leave",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11797",
+    "met": 3.8,
+    "description": "Walking, 2.5 mph, slow speed, carrying heavy objects more than 25 lbs",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11800",
+    "met": 4.5,
+    "description": "Walking, 3.0 mph, moderately and carrying light objects less than 25 lbs",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11805",
+    "met": 3.8,
+    "description": "Walking, pushing a wheelchair",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11810",
+    "met": 4.5,
+    "description": "Walking, 3.5 mph, briskly and carrying objects less than 25 lbs",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11820",
+    "met": 4,
+    "description": "Walking or walk downstairs or standing, carrying objects about 25 to 49 lbs",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11830",
+    "met": 5.5,
+    "description": "Walking or walk downstairs or standing, carrying objects about 50 to 74 lbs",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11840",
+    "met": 7,
+    "description": "Walking or walk downstairs or standing, carrying objects about 75 to 99 lbs",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11850",
+    "met": 7.3,
+    "description": "Walking or walk downstairs or standing, carrying objects about 100 lbs or more",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11860",
+    "met": 2.3,
+    "description": "Warehouse/Shipping Center, Loading/Unloading boxes",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11862",
+    "met": 4.3,
+    "description": "Warehouse/Shipping Center, Moving boxes (~5kg)",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11870",
+    "met": 3,
+    "description": "Working in scene shop, theater actor, backstage employee",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11880",
+    "met": 3.5,
+    "description": "Soldiers, military marching, unloaded, 1.5 to 2.5 mph",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11882",
+    "met": 4,
+    "description": "Soldiers, military marching, 1.5 to 2.5 mph, 10 to 30 kg load",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11884",
+    "met": 5,
+    "description": "Airborne Shuffle, 2.5 to 3.5 mph, 20-30 kg load",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11886",
+    "met": 6.3,
+    "description": "Soldiers, military loaded marching, varying terrain, 25-40 kg load",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11887",
+    "met": 6,
+    "description": "Soldiers, walking, 2.8 mph, 5% grade, up to 21.5 kg load",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11888",
+    "met": 8.5,
+    "description": "Soldiers, walking, 2.8 mph, 10% grade, up to 21.5 kg load",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11889",
+    "met": 11,
+    "description": "Soldiers, walking, 2.8 mph, 15% grade, up to 21.5 kg load",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "11892",
+    "met": 6,
+    "description": "Military activities, arterial field preparation, digging defensive positions",
+    "slug": "occupation",
+    "estimated": false
+  },
+  {
+    "code": "16002",
+    "met": 6.8,
+    "description": "Bicycling for transportation, moderate effort",
+    "slug": "transportation",
+    "estimated": false
+  },
+  {
+    "code": "16004",
+    "met": 9.3,
+    "description": "Bicycling for transportation, high effort",
+    "slug": "transportation",
+    "estimated": false
+  },
+  {
+    "code": "16005",
+    "met": 6.8,
+    "description": "E-bike (electrically assisted) for transportation",
+    "slug": "transportation",
+    "estimated": false
+  },
+  {
+    "code": "16010",
+    "met": 2,
+    "description": "Automobile or light truck (not a semi) driving",
+    "slug": "transportation",
+    "estimated": false
+  },
+  {
+    "code": "16015",
+    "met": 1.3,
+    "description": "Riding in a car or truck",
+    "slug": "transportation",
+    "estimated": false
+  },
+  {
+    "code": "16016",
+    "met": 1.3,
+    "description": "Riding in a bus or train",
+    "slug": "transportation",
+    "estimated": false
+  },
+  {
+    "code": "16020",
+    "met": 1.8,
+    "description": "Flying airplane or helicoptor",
+    "slug": "transportation",
+    "estimated": false
+  },
+  {
+    "code": "16030",
+    "met": 2.8,
+    "description": "Motor scooter, motorcycle",
+    "slug": "transportation",
+    "estimated": false
+  },
+  {
+    "code": "16035",
+    "met": 6.3,
+    "description": "Pulling rickshaw",
+    "slug": "transportation",
+    "estimated": false
+  },
+  {
+    "code": "16040",
+    "met": 6,
+    "description": "Pushing plane in and out of hangar",
+    "slug": "transportation",
+    "estimated": false
+  },
+  {
+    "code": "16050",
+    "met": 2.5,
+    "description": "Truck, semi, tractor, ≥1 ton, or bus, driving",
+    "slug": "transportation",
+    "estimated": false
+  },
+  {
+    "code": "16060",
+    "met": 3.5,
+    "description": "Walking for transportation, 2.8-3.2 mph, level, moderate pace, firm surface",
+    "slug": "transportation",
+    "estimated": false
+  },
+  {
+    "code": "19005",
+    "met": 7.5,
+    "description": "Dog sledding, mushing",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19006",
+    "met": 2.5,
+    "description": "Dog sledding, passenger",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19010",
+    "met": 6,
+    "description": "Moving icehouse, set up/drill holes",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19011",
+    "met": 2,
+    "description": "Ice fishing",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19018",
+    "met": 14,
+    "description": "Skating, ice dancing",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19020",
+    "met": 5.5,
+    "description": "Skating, ice, 9 mph or less",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19030",
+    "met": 7,
+    "description": "Skating, ice, general (Taylor Code 360)",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19040",
+    "met": 9,
+    "description": "Skating, ice, rapidly, more than 9 mph but not competitive",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19045",
+    "met": 9,
+    "description": "Skating Treadmill, 6 – 6.9 mph, 2% grade",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19046",
+    "met": 10,
+    "description": "Skating Treadmill, 7 – 7.9 mph, 2% grade",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19047",
+    "met": 10.5,
+    "description": "Skating Treadmill, 8 – 8.9 mph, 2% grade",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19048",
+    "met": 11,
+    "description": "Skating Treadmill, 9 – 9.9 mph, 2% grade",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19050",
+    "met": 13.8,
+    "description": "Skating, speed, competitive",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19060",
+    "met": 7,
+    "description": "Ski jumping, climb up carrying skis",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19075",
+    "met": 7,
+    "description": "Skiing, general",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19080",
+    "met": 6.8,
+    "description": "Skiing, cross country, 2.5 mph, slow or light effort, ski walking",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19090",
+    "met": 8.5,
+    "description": "Skiing, cross country, 4.0-4.9 mph, moderate speed and effort, general",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19100",
+    "met": 11.3,
+    "description": "Skiing, cross country, 5.0-7.9 mph, brisk speed, vigorous effort",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19110",
+    "met": 14,
+    "description": "Skiing, cross country, elite skier, &gt;8.0-11.9 mph, racing",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19112",
+    "met": 16,
+    "description": "Skiing, cross country, 12-16 mph, elite skier, racing",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19115",
+    "met": 9.5,
+    "description": "Skiing, cross-country skiing high-intensity training",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19130",
+    "met": 15.5,
+    "description": "Skiing, cross country, hard snow, uphill, maximum, snow mountaineering",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19135",
+    "met": 13.3,
+    "description": "Skiing, cross-country, skating",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19140",
+    "met": 13.5,
+    "description": "Skiing, cross-country, biathlon, skating technique",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19142",
+    "met": 12.8,
+    "description": "Biathlon training, 5 degree incline, 8 km/h (5 mph), with/without rifle",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19144",
+    "met": 15.8,
+    "description": "Biathlon training, 5 degree incline, 10.7 km/h (6.6 mph), with/without rifle",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19146",
+    "met": 9.3,
+    "description": "Skiing, slalom",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19150",
+    "met": 4.3,
+    "description": "Skiing, downhill, alpine or snowboarding, light effort, active time only",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19160",
+    "met": 6.3,
+    "description": "Skiing, downhill, alpine or snowboarding, moderate effort, general, active time only",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19170",
+    "met": 8,
+    "description": "Skiing, downhill, alpine or snowboarding, vigorous effort, active time only",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19174",
+    "met": 7.3,
+    "description": "Skiing, Alpine skiing high-intensity training",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19180",
+    "met": 7,
+    "description": "Sledding, tobogganing, bobsledding, luge (Taylor Code 370)",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19190",
+    "met": 5.3,
+    "description": "Snow shoeing, moderate effort",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19192",
+    "met": 10,
+    "description": "Snow shoeing, vigorous effort",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19200",
+    "met": 3.8,
+    "description": "Snowmobiling, driving, moderate pace, flat land",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19201",
+    "met": 7.5,
+    "description": "snowboarding, recreational, moderate pace, mountain",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19202",
+    "met": 2,
+    "description": "Snowmobiling, passenger, light",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19252",
+    "met": 5.3,
+    "description": "Snow shoveling, by hand, moderate effort",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19254",
+    "met": 7.5,
+    "description": "Snow shoveling, by hand, vigorous effort",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19260",
+    "met": 2.5,
+    "description": "Snow blower, walking and pushing",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19300",
+    "met": 12.5,
+    "description": "Skiing, roller, elite racers",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19305",
+    "met": 5.5,
+    "description": "Rollerskiing, 10 – 12.9 km/h, no incline",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19310",
+    "met": 6.8,
+    "description": "Rollerskiing, 13 – 16.9 km/h, no incline",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19315",
+    "met": 8.3,
+    "description": "Rollerskiing, 17 – 19.9 km/h, no incline",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19320",
+    "met": 10.5,
+    "description": "Rollerskiing, 20 – 23.9 km/h, no incline",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19325",
+    "met": 15,
+    "description": "Rollerskiing, 24 – 27.9 km/h, no incline",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19330",
+    "met": 12.5,
+    "description": "Rollerskiing, 10-15 km/h, 2-5 degree incline",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19335",
+    "met": 14.3,
+    "description": "Rollerskiing, 16-22 km/h, 2-5 degree incline",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19340",
+    "met": 12.3,
+    "description": "Rollerskiing, 6-9 km/h, 6-10 degree incline",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19345",
+    "met": 16,
+    "description": "Rollerskiing, &gt;10 km/h, 6-10 degree incline",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19400",
+    "met": 9,
+    "description": "Mountaineering, downhill climbing, walking down with rope",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "19405",
+    "met": 10.3,
+    "description": "Mountaineering, downhill climbing/cross-country skiing",
+    "slug": "winter-activities",
+    "estimated": false
+  },
+  {
+    "code": "10010",
+    "met": 1.8,
+    "description": "Accordion, sitting",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10020",
+    "met": 2.3,
+    "description": "Cello, sitting",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10030",
+    "met": 2.3,
+    "description": "Conducting orchestra, standing",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10035",
+    "met": 2.5,
+    "description": "Double bass, standing",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10040",
+    "met": 3.8,
+    "description": "Drums, sitting",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10045",
+    "met": 3,
+    "description": "Drumming (e.g., bongo, conga, benbe), moderate, sitting",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10048",
+    "met": 8.3,
+    "description": "Drumming, concert/live show",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10050",
+    "met": 2,
+    "description": "Flute, sitting",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10060",
+    "met": 1.8,
+    "description": "Horn, standing",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10070",
+    "met": 2.3,
+    "description": "Piano, sitting",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10074",
+    "met": 2,
+    "description": "Playing musical instruments, general",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10077",
+    "met": 2,
+    "description": "Organ, sitting",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10080",
+    "met": 3.5,
+    "description": "Trombone, standing",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10090",
+    "met": 2.5,
+    "description": "Trumpet, standing",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10100",
+    "met": 2.5,
+    "description": "Violin, sitting",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10110",
+    "met": 1.8,
+    "description": "Woodwind instruments, sitting",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10115",
+    "met": 1.8,
+    "description": "Brass instruments, sitting",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10120",
+    "met": 2,
+    "description": "Guitar, classical, folk, sitting",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10125",
+    "met": 3,
+    "description": "Guitar, rock and roll band, standing",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10130",
+    "met": 4,
+    "description": "Marching band, baton twirling, walking, moderate pace, general",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10131",
+    "met": 5.5,
+    "description": "Marching band, playing an instrument, walking, brisk pace, general",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "10135",
+    "met": 3.5,
+    "description": "Marching band, drum major, walking",
+    "slug": "music-playing",
+    "estimated": false
+  },
+  {
+    "code": "22040",
+    "met": 1.3,
+    "description": "Seated, video game, handheld controller (inactive)",
+    "slug": "video-games",
+    "estimated": false
+  },
+  {
+    "code": "22120",
+    "met": 1.5,
+    "description": "Video game, handheld controller (light effort)",
+    "slug": "video-games",
+    "estimated": false
+  },
+  {
+    "code": "22160",
+    "met": 2.3,
+    "description": "Video game, light effort (Wii Fit, yoga, bowling, etc.)",
+    "slug": "video-games",
+    "estimated": false
+  },
+  {
+    "code": "22200",
+    "met": 3,
+    "description": "Active video game, motion sensing game/using upper body (light to moderate effort)",
+    "slug": "video-games",
+    "estimated": false
+  },
+  {
+    "code": "22240",
+    "met": 4,
+    "description": "Active video game, motion sensing game/using total body (moderate effort)",
+    "slug": "video-games",
+    "estimated": false
+  },
+  {
+    "code": "22280",
+    "met": 5,
+    "description": "Active video game, motion sensing game/using total body (moderate-to-vigorous effort)",
+    "slug": "video-games",
+    "estimated": false
+  },
+  {
+    "code": "22320",
+    "met": 7.5,
+    "description": "Active video game, motion sensing game/using total body, exergames, workouts, dancing (vigorous effort)",
+    "slug": "video-games",
+    "estimated": false
+  },
+  {
+    "code": "22360",
+    "met": 9.8,
+    "description": "Conditioning/exercise virtual reality fitness, vigorous intensity",
+    "slug": "video-games",
+    "estimated": false
+  }
+]
