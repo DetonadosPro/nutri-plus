@@ -1,3 +1,5 @@
+import { patientAccess } from './patient-access';
+import { activitiesRouter, seedActivityCatalog } from './activities';
 import express, { type Request, type Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -43,6 +45,7 @@ import {
 } from "./domain/datetime";
 
 await migrate();
+await seedActivityCatalog();
 const tacoCount = Number(
   (
     await db
@@ -116,30 +119,6 @@ async function authUser(req: Request, res: Response) {
   return user;
 }
 
-async function patientAccess(user: AuthUser, patientId?: number) {
-  if (user.role === 'admin') return null;
-  if (user.role === "patient") {
-    const patient = await db
-      .prepare("SELECT * FROM patients WHERE user_id = ?")
-      .get<Record<string, any>>(user.id);
-    if (!patient || (patientId && Number(patient.id) !== patientId)) return null;
-    return patient;
-  }
-  if (!patientId) {
-    return (
-      (await db
-        .prepare(
-          "SELECT * FROM patients WHERE user_id = ? AND nutritionist_user_id = ?",
-        )
-        .get<Record<string, any>>(user.id, user.id)) ?? null
-    );
-  }
-  return (
-    (await db
-      .prepare("SELECT * FROM patients WHERE id = ? AND nutritionist_user_id = ?")
-      .get<Record<string, any>>(patientId, user.id)) ?? null
-  );
-}
 
 function dateOnly(value: unknown, fallback = brazilDate()) {
   const parsed = z
@@ -345,6 +324,8 @@ async function dailySummary(patientId: number, date: string) {
 function daysBetween(from: string, to: string) {
   return inclusiveDaysBetween(from, to);
 }
+
+app.use("/api/activities", activitiesRouter({ authUser, patientAccess }));
 
 app.get("/api/health", (_req, res) =>
   res.json({ ok: true, foods: tacoCount, database: databaseInfo.engine, source: "TACO", version: appConfig.release }),

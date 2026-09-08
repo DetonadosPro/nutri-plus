@@ -1,5 +1,7 @@
 'use client';
 
+import { ActivityPanel } from './activity-panel';
+import { EnergyProgress } from './energy-progress';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft,
@@ -877,9 +879,21 @@ function PatientWorkspace({
               onFeedback={() => onTab('notes')}
             />
           )}
+          {tab === 'overview' && (
+            <ActivityPanel
+              date={detail.today.date}
+              patientId={Number(profile.id)}
+              professional
+              compact
+              onProgress={() => onTab('progress')}
+            />
+          )}
           {tab === 'diary' && <PatientDiary detail={detail} />}
           {tab === 'progress' && (
-            <PatientProgress detail={detail} range={range} onRange={onRange} />
+            <>
+              <EnergyProgress patientId={Number(profile.id)} professional />
+              <PatientProgress detail={detail} range={range} onRange={onRange} />
+            </>
           )}
           {tab === 'analysis' && (
             <PatientAnalysis detail={detail} range={range} onRange={onRange} />
@@ -1133,6 +1147,7 @@ function PatientDiary({ detail }: { detail: NutritionistDetail }) {
   return (
     <div className="nutritionist-diary">
       <DateNavigator date={date} onChange={setDate} loading={loading} />
+      <ActivityPanel date={date} patientId={Number(detail.profile.id)} professional />
       <div className={`day-content-transition ${loading ? 'is-loading' : ''}`}>
         <div className="nutritionist-day-grid">
           <section className="day-composition-panel">

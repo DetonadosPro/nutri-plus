@@ -1,0 +1,2064 @@
+[
+  {
+    "code": "02050",
+    "version": "2024-pt-BR.1",
+    "name": "Musculação vigorosa, pesos livres ou máquinas",
+    "category": "Musculação e treinamento resistido",
+    "description": "Resistance (weight lifting – free weight, nautilus or universal-type), power lifting or body building, vigorous effort (Taylor Code 210)",
+    "met": 6,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Musculacao vigorosa, pesos livres ou maquinas",
+      "academia",
+      "treino de força",
+      "musculacao"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": true
+  },
+  {
+    "code": "02052",
+    "version": "2024-pt-BR.1",
+    "name": "Musculação, agachamento e levantamento terra",
+    "category": "Musculação e treinamento resistido",
+    "description": "Resistance (weight) training, squats, deadlift, slow or explosive effort",
+    "met": 5,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Musculacao, agachamento e levantamento terra",
+      "academia",
+      "treino de força",
+      "musculacao"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": true
+  },
+  {
+    "code": "02054",
+    "version": "2024-pt-BR.1",
+    "name": "Musculação, vários exercícios, 8–15 repetições",
+    "category": "Musculação e treinamento resistido",
+    "description": "Resistance (weight) training, multiple exercises, 8-15 reps at varied resistance",
+    "met": 3.5,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Musculacao, varios exercicios, 8–15 repeticoes",
+      "academia",
+      "treino de força",
+      "musculacao"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": true
+  },
+  {
+    "code": "02055",
+    "version": "2024-pt-BR.1",
+    "name": "Musculação em circuito, superséries recíprocas",
+    "category": "Musculação e treinamento resistido",
+    "description": "Resistance Training, circuit, reciprocal supersets, peripheral heart action training",
+    "met": 5.8,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Musculacao em circuito, superseries reciprocas",
+      "academia",
+      "treino de força",
+      "musculacao"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": true
+  },
+  {
+    "code": "02056",
+    "version": "2024-pt-BR.1",
+    "name": "Resistência com peso corporal, geral",
+    "category": "Musculação e treinamento resistido",
+    "description": "Body weight resistance exercises (e.g., squat, lunge, push-up, crunch), general",
+    "met": 3,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Resistencia com peso corporal, geral",
+      "academia",
+      "treino de força",
+      "musculacao"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": true
+  },
+  {
+    "code": "02057",
+    "version": "2024-pt-BR.1",
+    "name": "Resistência com peso corporal, alta intensidade",
+    "category": "Musculação e treinamento resistido",
+    "description": "Body weight resistance exercises (e.g., squat, lunge, push-up, crunch), high intensity",
+    "met": 6.5,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Resistencia com peso corporal, alta intensidade",
+      "academia",
+      "treino de força",
+      "musculacao"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": true
+  },
+  {
+    "code": "02032",
+    "version": "2024-pt-BR.1",
+    "name": "Circuito com peso corporal",
+    "category": "Musculação e treinamento resistido",
+    "description": "Circuit training, body weight exercises",
+    "met": 6,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Circuito com peso corporal",
+      "academia",
+      "treino de força",
+      "musculacao"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": true
+  },
+  {
+    "code": "02034",
+    "version": "2024-pt-BR.1",
+    "name": "Circuito leve",
+    "category": "Musculação e treinamento resistido",
+    "description": "Circuit training, light effort",
+    "met": 3.5,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Circuito leve",
+      "academia",
+      "treino de força",
+      "musculacao"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": true
+  },
+  {
+    "code": "02035",
+    "version": "2024-pt-BR.1",
+    "name": "Circuito moderado",
+    "category": "Musculação e treinamento resistido",
+    "description": "Circuit training, moderate effort",
+    "met": 5,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Circuito moderado",
+      "academia",
+      "treino de força",
+      "musculacao"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": true
+  },
+  {
+    "code": "02040",
+    "version": "2024-pt-BR.1",
+    "name": "Circuito vigoroso com kettlebell e movimentos aeróbicos, pouco descanso",
+    "category": "Musculação e treinamento resistido",
+    "description": "Circuit training, including kettlebells, some aerobic movement with minimal rest, general, vigorous intensity",
+    "met": 7.5,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Circuito vigoroso com kettlebell e movimentos aerobicos, pouco descanso",
+      "academia",
+      "treino de força",
+      "musculacao"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": true
+  },
+  {
+    "code": "02048",
+    "version": "2024-pt-BR.1",
+    "name": "Elíptico, esforço moderado",
+    "category": "Condicionamento e bem-estar",
+    "description": "Elliptical trainer, moderate effort",
+    "met": 5,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Eliptico, esforco moderado"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02049",
+    "version": "2024-pt-BR.1",
+    "name": "Elíptico, esforço vigoroso",
+    "category": "Condicionamento e bem-estar",
+    "description": "Elliptical trainer, vigorous effort",
+    "met": 9,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Eliptico, esforco vigoroso"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02065",
+    "version": "2024-pt-BR.1",
+    "name": "Escada ergométrica",
+    "category": "Condicionamento e bem-estar",
+    "description": "Stair treadmill ergometer, general",
+    "met": 9.3,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Escada ergometrica"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02070",
+    "version": "2024-pt-BR.1",
+    "name": "Remo ergométrico, geral vigoroso",
+    "category": "Condicionamento e bem-estar",
+    "description": "Rowing, stationary ergometer, general, vigorous effort",
+    "met": 7.3,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Remo ergometrico, geral vigoroso"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02071",
+    "version": "2024-pt-BR.1",
+    "name": "Remo ergométrico, menos de 100 watts, moderado",
+    "category": "Condicionamento e bem-estar",
+    "description": "Rowing, stationary ergometer, general, <100 watts,  moderate effort",
+    "met": 5,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Remo ergometrico, menos de 100 watts, moderado"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02072",
+    "version": "2024-pt-BR.1",
+    "name": "Remo ergométrico, 100–149 watts",
+    "category": "Condicionamento e bem-estar",
+    "description": "Rowing, stationary, 100 to 149 watts, vigorous effort",
+    "met": 7.5,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Remo ergometrico, 100–149 watts"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02073",
+    "version": "2024-pt-BR.1",
+    "name": "Remo ergométrico, 150–199 watts",
+    "category": "Condicionamento e bem-estar",
+    "description": "Rowing, stationary, 150 to 199 watts, vigorous effort",
+    "met": 11,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Remo ergometrico, 150–199 watts"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02000",
+    "version": "2024-pt-BR.1",
+    "name": "Ginástica aeróbica, geral",
+    "category": "Condicionamento e bem-estar",
+    "description": "Aerobic, general",
+    "met": 7.3,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Ginastica aerobica, geral"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02005",
+    "version": "2024-pt-BR.1",
+    "name": "Dança aeróbica, baixo impacto, moderada",
+    "category": "Condicionamento e bem-estar",
+    "description": "Aerobic dance, low impact, moderate effort",
+    "met": 4.8,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Danca aerobica, baixo impacto, moderada"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02006",
+    "version": "2024-pt-BR.1",
+    "name": "Dança aeróbica, alto impacto, vigorosa",
+    "category": "Condicionamento e bem-estar",
+    "description": "Aerobic dance, high impact, vigorous effort",
+    "met": 8,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Danca aerobica, alto impacto, vigorosa"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02020",
+    "version": "2024-pt-BR.1",
+    "name": "Calistenia vigorosa",
+    "category": "Condicionamento e bem-estar",
+    "description": "Calisthenics (e.g., pushups, sit ups, pull-ups, jumping jacks, burpees, battling ropes), vigorous effort",
+    "met": 7.5,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Calistenia vigorosa"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02022",
+    "version": "2024-pt-BR.1",
+    "name": "Calistenia moderada",
+    "category": "Condicionamento e bem-estar",
+    "description": "Calisthenics (e.g., pushups, sit ups, pull-ups, lunges), moderate effort",
+    "met": 3.8,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Calistenia moderada"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02024",
+    "version": "2024-pt-BR.1",
+    "name": "Calistenia leve",
+    "category": "Condicionamento e bem-estar",
+    "description": "Calisthenics (e.g., curl ups, abdominal crunches, plank),  light effort",
+    "met": 2.8,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Calistenia leve"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02101",
+    "version": "2024-pt-BR.1",
+    "name": "Alongamento leve",
+    "category": "Condicionamento e bem-estar",
+    "description": "Stretching, mild",
+    "met": 2.3,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Alongamento leve"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02103",
+    "version": "2024-pt-BR.1",
+    "name": "Pilates tradicional no solo",
+    "category": "Condicionamento e bem-estar",
+    "description": "Pilates, traditional, mat",
+    "met": 1.8,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Pilates tradicional no solo"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02105",
+    "version": "2024-pt-BR.1",
+    "name": "Pilates geral",
+    "category": "Condicionamento e bem-estar",
+    "description": "Pilates, general",
+    "met": 2.8,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Pilates geral"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02150",
+    "version": "2024-pt-BR.1",
+    "name": "Yoga Hatha",
+    "category": "Condicionamento e bem-estar",
+    "description": "Yoga, Hatha",
+    "met": 2.3,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Yoga Hatha"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02160",
+    "version": "2024-pt-BR.1",
+    "name": "Power yoga",
+    "category": "Condicionamento e bem-estar",
+    "description": "Yoga, Power",
+    "met": 4,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Power yoga"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02175",
+    "version": "2024-pt-BR.1",
+    "name": "Yoga geral",
+    "category": "Condicionamento e bem-estar",
+    "description": "Yoga, General",
+    "met": 2.3,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Yoga geral"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02185",
+    "version": "2024-pt-BR.1",
+    "name": "Yoga Vinyasa",
+    "category": "Condicionamento e bem-estar",
+    "description": "Yoga, Vinyasa",
+    "met": 2.7,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Yoga Vinyasa"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02210",
+    "version": "2024-pt-BR.1",
+    "name": "Treino intervalado de alta intensidade, esforço moderado",
+    "category": "Condicionamento e bem-estar",
+    "description": "High intensity interval exercise,  moderate effort",
+    "met": 7,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Treino intervalado de alta intensidade, esforco moderado"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02214",
+    "version": "2024-pt-BR.1",
+    "name": "HIIT vigoroso, burpees, escaladores e Tabata",
+    "category": "Condicionamento e bem-estar",
+    "description": "High intensity interval exercise,  burpees, mountain climbers, squat jumps, Tabata, vigorous effort",
+    "met": 11,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "HIIT vigoroso, burpees, escaladores e Tabata"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02310",
+    "version": "2024-pt-BR.1",
+    "name": "Zumba, aula em grupo",
+    "category": "Condicionamento e bem-estar",
+    "description": "Zumba, group class",
+    "met": 6.5,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Zumba, aula em grupo"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "02315",
+    "version": "2024-pt-BR.1",
+    "name": "Zumba, vídeo em casa",
+    "category": "Condicionamento e bem-estar",
+    "description": "Zumba, home video",
+    "met": 5.5,
+    "source": "https://pacompendium.com/conditioning-exercise/",
+    "aliases": [
+      "Zumba, video em casa"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17151",
+    "version": "2024-pt-BR.1",
+    "name": "Caminhada muito lenta, abaixo de 3,2 km/h, terreno plano",
+    "category": "Caminhada e trilhas",
+    "description": "Walking, less than 2.0 mph, level, strolling, very slow",
+    "met": 2.3,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Caminhada muito lenta, abaixo de 3,2 km/h, terreno plano",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17152",
+    "version": "2024-pt-BR.1",
+    "name": "Caminhada lenta, 3,2–3,9 km/h, terreno plano",
+    "category": "Caminhada e trilhas",
+    "description": "Walking, 2.0 to 2.4 mph, level, slow pace, firm surface",
+    "met": 2.8,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Caminhada lenta, 3,2–3,9 km/h, terreno plano",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17170",
+    "version": "2024-pt-BR.1",
+    "name": "Caminhada, 4 km/h, superfície firme e plana",
+    "category": "Caminhada e trilhas",
+    "description": "Walking, 2.5 mph, firm, level surface",
+    "met": 3,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Caminhada, 4 km/h, superficie firme e plana",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17190",
+    "version": "2024-pt-BR.1",
+    "name": "Caminhada moderada, 4,5–5,5 km/h, terreno plano",
+    "category": "Caminhada e trilhas",
+    "description": "Walking, 2.8 to 3.4 mph, level, moderate pace, firm surface",
+    "met": 3.8,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Caminhada moderada, 4,5–5,5 km/h, terreno plano",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17200",
+    "version": "2024-pt-BR.1",
+    "name": "Caminhada rápida, 5,6–6,3 km/h, terreno plano",
+    "category": "Caminhada e trilhas",
+    "description": "Walking, 3.5 to 3.9 mph, level, brisk, firm surface, walking for exercise",
+    "met": 4.8,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Caminhada rapida, 5,6–6,3 km/h, terreno plano",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17220",
+    "version": "2024-pt-BR.1",
+    "name": "Caminhada muito rápida, 6,4–7,1 km/h, terreno plano",
+    "category": "Caminhada e trilhas",
+    "description": "Walking, 4.0 to 4.4 mph (6.4 to 7.1 km/h), level, firm surface, very brisk pace",
+    "met": 5.5,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Caminhada muito rapida, 6,4–7,1 km/h, terreno plano",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17160",
+    "version": "2024-pt-BR.1",
+    "name": "Caminhada por lazer",
+    "category": "Caminhada e trilhas",
+    "description": "Walking for pleasure (Taylor Code 010)",
+    "met": 3.5,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Caminhada por lazer",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17165",
+    "version": "2024-pt-BR.1",
+    "name": "Passear com cachorro",
+    "category": "Caminhada e trilhas",
+    "description": "Walking the dog",
+    "met": 3,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Passear com cachorro",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17080",
+    "version": "2024-pt-BR.1",
+    "name": "Trilha em terreno variado",
+    "category": "Caminhada e trilhas",
+    "description": "Hiking, cross country (Taylor Code 040)",
+    "met": 6,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Trilha em terreno variado",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17081",
+    "version": "2024-pt-BR.1",
+    "name": "Trilha lenta, campos e colinas, sem carga",
+    "category": "Caminhada e trilhas",
+    "description": "Hiking slowly or ambling through fields and hillsides, no load",
+    "met": 3.8,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Trilha lenta, campos e colinas, sem carga",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17082",
+    "version": "2024-pt-BR.1",
+    "name": "Trilha em ritmo normal, campos e colinas, sem carga",
+    "category": "Caminhada e trilhas",
+    "description": "Hiking or walking at a normal pace through fields and hillsides, no load",
+    "met": 5.3,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Trilha em ritmo normal, campos e colinas, sem carga",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17010",
+    "version": "2024-pt-BR.1",
+    "name": "Trilha com mochila cargueira",
+    "category": "Caminhada e trilhas",
+    "description": "Backpacking (Taylor Code 050)",
+    "met": 7,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Trilha com mochila cargueira",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17034",
+    "version": "2024-pt-BR.1",
+    "name": "Caminhada em subida de 1–5%, ritmo moderado a rápido",
+    "category": "Caminhada e trilhas",
+    "description": "Climbing hills, no load, 1 to 5% grade, moderate-to-brisk pace",
+    "met": 5.3,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Caminhada em subida de 1–5%, ritmo moderado a rapido",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17035",
+    "version": "2024-pt-BR.1",
+    "name": "Caminhada em subida de 6–10%, ritmo moderado a rápido",
+    "category": "Caminhada e trilhas",
+    "description": "Climbing hills, no load, 6 to 10% grade, moderate-to-brisk pace",
+    "met": 7,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Caminhada em subida de 6–10%, ritmo moderado a rapido",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17131",
+    "version": "2024-pt-BR.1",
+    "name": "Subir escadas, geral",
+    "category": "Caminhada e trilhas",
+    "description": "Stair climbing, general",
+    "met": 6.8,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Subir escadas, geral",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17133",
+    "version": "2024-pt-BR.1",
+    "name": "Subir escadas lentamente",
+    "category": "Caminhada e trilhas",
+    "description": "Stair climbing, slow pace",
+    "met": 4.5,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Subir escadas lentamente",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17134",
+    "version": "2024-pt-BR.1",
+    "name": "Subir escadas rapidamente",
+    "category": "Caminhada e trilhas",
+    "description": "Stair climbing, fast pace, one step at a time",
+    "met": 9.3,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Subir escadas rapidamente",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17352",
+    "version": "2024-pt-BR.1",
+    "name": "Esteira, 4–4,7 km/h, sem inclinação",
+    "category": "Caminhada e trilhas",
+    "description": "Walking, treadmill, 2.5 to 2.9 mph (4.0 to 4.7 km/h), 0% grade",
+    "met": 3.5,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Esteira, 4–4,7 km/h, sem inclinacao",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17355",
+    "version": "2024-pt-BR.1",
+    "name": "Esteira, 4,8–5,5 km/h, sem inclinação",
+    "category": "Caminhada e trilhas",
+    "description": "Walking, treadmill, 3.0 to 3.4 mph (4.8 to 5.5 km/h), 0% grade",
+    "met": 3.8,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Esteira, 4,8–5,5 km/h, sem inclinacao",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "17358",
+    "version": "2024-pt-BR.1",
+    "name": "Esteira, 5,6–6,3 km/h, sem inclinação",
+    "category": "Caminhada e trilhas",
+    "description": "Walking, treadmill, 3.5 to 3.9 mph (5.6 to 6.3 km/h), 0% grade",
+    "met": 4.8,
+    "source": "https://pacompendium.com/walking/",
+    "aliases": [
+      "Esteira, 5,6–6,3 km/h, sem inclinacao",
+      "andar",
+      "caminhar"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "12020",
+    "version": "2024-pt-BR.1",
+    "name": "Trote, ritmo escolhido livremente",
+    "category": "Corrida",
+    "description": "Jogging, general, self-selected pace",
+    "met": 7.5,
+    "source": "https://pacompendium.com/running/",
+    "aliases": [
+      "Trote, ritmo escolhido livremente"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "12028",
+    "version": "2024-pt-BR.1",
+    "name": "Corrida, 6,4–6,8 km/h",
+    "category": "Corrida",
+    "description": "Running, 4 to 4.2 mph (13 min/mile)",
+    "met": 6.5,
+    "source": "https://pacompendium.com/running/",
+    "aliases": [
+      "Corrida, 6,4–6,8 km/h"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "12030",
+    "version": "2024-pt-BR.1",
+    "name": "Corrida, 8–8,4 km/h",
+    "category": "Corrida",
+    "description": "Running, 5.0 to 5.2 mph (12 min/mile)",
+    "met": 8.5,
+    "source": "https://pacompendium.com/running/",
+    "aliases": [
+      "Corrida, 8–8,4 km/h"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "12050",
+    "version": "2024-pt-BR.1",
+    "name": "Corrida, 9,7–10,1 km/h",
+    "category": "Corrida",
+    "description": "Running, 6-6.3 mph (10 min/mile)",
+    "met": 9.3,
+    "source": "https://pacompendium.com/running/",
+    "aliases": [
+      "Corrida, 9,7–10,1 km/h"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "12060",
+    "version": "2024-pt-BR.1",
+    "name": "Corrida, 10,8 km/h",
+    "category": "Corrida",
+    "description": "Running, 6.7 mph (9 min/mile)",
+    "met": 10.5,
+    "source": "https://pacompendium.com/running/",
+    "aliases": [
+      "Corrida, 10,8 km/h"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "12080",
+    "version": "2024-pt-BR.1",
+    "name": "Corrida, 12,1 km/h",
+    "category": "Corrida",
+    "description": "Running, 7.5 mph (8 min/mile)",
+    "met": 11.8,
+    "source": "https://pacompendium.com/running/",
+    "aliases": [
+      "Corrida, 12,1 km/h"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "12140",
+    "version": "2024-pt-BR.1",
+    "name": "Corrida em terreno variado",
+    "category": "Corrida",
+    "description": "Running, cross country",
+    "met": 9.3,
+    "source": "https://pacompendium.com/running/",
+    "aliases": [
+      "Corrida em terreno variado"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "01010",
+    "version": "2024-pt-BR.1",
+    "name": "Bicicleta por lazer, menos de 16 km/h",
+    "category": "Ciclismo",
+    "description": "Bicycling, <10 mph, leisure, to work or for pleasure (Taylor Code 115)",
+    "met": 4,
+    "source": "https://pacompendium.com/bicycling/",
+    "aliases": [
+      "Bicicleta por lazer, menos de 16 km/h"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "01009",
+    "version": "2024-pt-BR.1",
+    "name": "Mountain bike, geral",
+    "category": "Ciclismo",
+    "description": "Bicycling, mountain, general",
+    "met": 8.5,
+    "source": "https://pacompendium.com/bicycling/",
+    "aliases": [
+      "Mountain bike, geral"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "01015",
+    "version": "2024-pt-BR.1",
+    "name": "Bicicleta em ritmo leve escolhido livremente",
+    "category": "Ciclismo",
+    "description": "Bicycling, self-selected easy pace",
+    "met": 4.3,
+    "source": "https://pacompendium.com/bicycling/",
+    "aliases": [
+      "Bicicleta em ritmo leve escolhido livremente"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "01016",
+    "version": "2024-pt-BR.1",
+    "name": "Bicicleta em ritmo moderado escolhido livremente",
+    "category": "Ciclismo",
+    "description": "Bicycling, self-selected moderate pace",
+    "met": 7,
+    "source": "https://pacompendium.com/bicycling/",
+    "aliases": [
+      "Bicicleta em ritmo moderado escolhido livremente"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "01017",
+    "version": "2024-pt-BR.1",
+    "name": "Bicicleta em ritmo vigoroso escolhido livremente",
+    "category": "Ciclismo",
+    "description": "Bicycling, self-selected vigorous pace",
+    "met": 9,
+    "source": "https://pacompendium.com/bicycling/",
+    "aliases": [
+      "Bicicleta em ritmo vigoroso escolhido livremente"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "01020",
+    "version": "2024-pt-BR.1",
+    "name": "Bicicleta, 16–19,2 km/h",
+    "category": "Ciclismo",
+    "description": "Bicycling, 10-11.9 mph, leisure, slow, light effort",
+    "met": 6.8,
+    "source": "https://pacompendium.com/bicycling/",
+    "aliases": [
+      "Bicicleta, 16–19,2 km/h"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "01030",
+    "version": "2024-pt-BR.1",
+    "name": "Bicicleta, 19,3–22,4 km/h",
+    "category": "Ciclismo",
+    "description": "Bicycling, 12-13.9 mph, leisure, moderate effort",
+    "met": 8,
+    "source": "https://pacompendium.com/bicycling/",
+    "aliases": [
+      "Bicicleta, 19,3–22,4 km/h"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "01040",
+    "version": "2024-pt-BR.1",
+    "name": "Bicicleta, 22,5–25,6 km/h",
+    "category": "Ciclismo",
+    "description": "Bicycling, 14-15.9 mph, racing or leisure, fast, vigorous effort",
+    "met": 10,
+    "source": "https://pacompendium.com/bicycling/",
+    "aliases": [
+      "Bicicleta, 22,5–25,6 km/h"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "01200",
+    "version": "2024-pt-BR.1",
+    "name": "Bicicleta ergométrica, geral",
+    "category": "Ciclismo",
+    "description": "Bicycling, stationary, general",
+    "met": 6.8,
+    "source": "https://pacompendium.com/bicycling/",
+    "aliases": [
+      "Bicicleta ergometrica, geral"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "01210",
+    "version": "2024-pt-BR.1",
+    "name": "Bicicleta ergométrica, 25–30 watts",
+    "category": "Ciclismo",
+    "description": "Bicycling, stationary, 25-30 watts, very light to light effort",
+    "met": 3.5,
+    "source": "https://pacompendium.com/bicycling/",
+    "aliases": [
+      "Bicicleta ergometrica, 25–30 watts"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "01214",
+    "version": "2024-pt-BR.1",
+    "name": "Bicicleta ergométrica, 50 watts",
+    "category": "Ciclismo",
+    "description": "Bicycling, stationary, 50 watts, light effort",
+    "met": 4,
+    "source": "https://pacompendium.com/bicycling/",
+    "aliases": [
+      "Bicicleta ergometrica, 50 watts"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "01220",
+    "version": "2024-pt-BR.1",
+    "name": "Bicicleta ergométrica, 90–100 watts",
+    "category": "Ciclismo",
+    "description": "Bicycling, stationary, 90-100 watts,  moderate to vigorous",
+    "met": 6,
+    "source": "https://pacompendium.com/bicycling/",
+    "aliases": [
+      "Bicicleta ergometrica, 90–100 watts"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "01228",
+    "version": "2024-pt-BR.1",
+    "name": "Bicicleta ergométrica, 126–150 watts",
+    "category": "Ciclismo",
+    "description": "Bicycling, stationary, 126-150 watts",
+    "met": 8,
+    "source": "https://pacompendium.com/bicycling/",
+    "aliases": [
+      "Bicicleta ergometrica, 126–150 watts"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "01232",
+    "version": "2024-pt-BR.1",
+    "name": "Bicicleta ergométrica, 151–199 watts",
+    "category": "Ciclismo",
+    "description": "Bicycling, stationary, 151-199 watts",
+    "met": 10.3,
+    "source": "https://pacompendium.com/bicycling/",
+    "aliases": [
+      "Bicicleta ergometrica, 151–199 watts"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "01270",
+    "version": "2024-pt-BR.1",
+    "name": "Spinning, aula de bicicleta",
+    "category": "Ciclismo",
+    "description": "Bicycling, stationary, RPM/Spin bike class",
+    "met": 9,
+    "source": "https://pacompendium.com/bicycling/",
+    "aliases": [
+      "Spinning, aula de bicicleta"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "18230",
+    "version": "2024-pt-BR.1",
+    "name": "Natação livre, rápida, vigorosa",
+    "category": "Atividades aquáticas",
+    "description": "Swimming laps, freestyle, fast, vigorous effort",
+    "met": 9.8,
+    "source": "https://pacompendium.com/water-activities/",
+    "aliases": [
+      "Natacao livre, rapida, vigorosa"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "18240",
+    "version": "2024-pt-BR.1",
+    "name": "Natação livre, lenta, recreativa",
+    "category": "Atividades aquáticas",
+    "description": "Swimming laps, freestyle, slow, recreational",
+    "met": 5.8,
+    "source": "https://pacompendium.com/water-activities/",
+    "aliases": [
+      "Natacao livre, lenta, recreativa"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "18255",
+    "version": "2024-pt-BR.1",
+    "name": "Natação de costas, recreativa",
+    "category": "Atividades aquáticas",
+    "description": "Swimming, backstroke, recreational",
+    "met": 4.8,
+    "source": "https://pacompendium.com/water-activities/",
+    "aliases": [
+      "Natacao de costas, recreativa"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "18265",
+    "version": "2024-pt-BR.1",
+    "name": "Natação de peito, recreativa",
+    "category": "Atividades aquáticas",
+    "description": "Swimming breaststroke, recreational",
+    "met": 5.3,
+    "source": "https://pacompendium.com/water-activities/",
+    "aliases": [
+      "Natacao de peito, recreativa"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "18270",
+    "version": "2024-pt-BR.1",
+    "name": "Natação borboleta",
+    "category": "Atividades aquáticas",
+    "description": "Swimming, butterfly, general",
+    "met": 13.8,
+    "source": "https://pacompendium.com/water-activities/",
+    "aliases": [
+      "Natacao borboleta"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "18290",
+    "version": "2024-pt-BR.1",
+    "name": "Natação crawl, velocidade média",
+    "category": "Atividades aquáticas",
+    "description": "Swimming, crawl, medium speed, ~50 yards/minute, vigorous effort",
+    "met": 8,
+    "source": "https://pacompendium.com/water-activities/",
+    "aliases": [
+      "Natacao crawl, velocidade media"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "18355",
+    "version": "2024-pt-BR.1",
+    "name": "Hidroginástica geral",
+    "category": "Atividades aquáticas",
+    "description": "Water aerobics, water calisthenics, general",
+    "met": 5.5,
+    "source": "https://pacompendium.com/water-activities/",
+    "aliases": [
+      "Hidroginastica geral"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "18356",
+    "version": "2024-pt-BR.1",
+    "name": "Hidroginástica, exercícios resistidos",
+    "category": "Atividades aquáticas",
+    "description": "Water aerobics, resistance exercises",
+    "met": 3.8,
+    "source": "https://pacompendium.com/water-activities/",
+    "aliases": [
+      "Hidroginastica, exercicios resistidos"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "18358",
+    "version": "2024-pt-BR.1",
+    "name": "Hidroginástica de alta intensidade",
+    "category": "Atividades aquáticas",
+    "description": "Water aerobics, high intensity",
+    "met": 7.5,
+    "source": "https://pacompendium.com/water-activities/",
+    "aliases": [
+      "Hidroginastica de alta intensidade"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "18368",
+    "version": "2024-pt-BR.1",
+    "name": "Caminhada na água, moderada",
+    "category": "Atividades aquáticas",
+    "description": "Water walking, moderate effort, moderate pace",
+    "met": 4.8,
+    "source": "https://pacompendium.com/water-activities/",
+    "aliases": [
+      "Caminhada na agua, moderada"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "18100",
+    "version": "2024-pt-BR.1",
+    "name": "Caiaque, esforço moderado",
+    "category": "Atividades aquáticas",
+    "description": "Kayaking, moderate effort",
+    "met": 5,
+    "source": "https://pacompendium.com/water-activities/",
+    "aliases": [
+      "Caiaque, esforco moderado"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "18220",
+    "version": "2024-pt-BR.1",
+    "name": "Surfe geral",
+    "category": "Atividades aquáticas",
+    "description": "Surfing, body or board, general",
+    "met": 3,
+    "source": "https://pacompendium.com/water-activities/",
+    "aliases": [
+      "Surfe geral"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "18224",
+    "version": "2024-pt-BR.1",
+    "name": "Stand up paddle geral",
+    "category": "Atividades aquáticas",
+    "description": "Stand up paddle boarding, general",
+    "met": 6.5,
+    "source": "https://pacompendium.com/water-activities/",
+    "aliases": [
+      "Stand up paddle geral"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15040",
+    "version": "2024-pt-BR.1",
+    "name": "Basquete, partida",
+    "category": "Esportes",
+    "description": "Basketball, game (Taylor Code 490)",
+    "met": 8,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Basquete, partida"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15050",
+    "version": "2024-pt-BR.1",
+    "name": "Basquete recreativo, fora de partida",
+    "category": "Esportes",
+    "description": "Basketball, non-game, general (Taylor Code 480)",
+    "met": 6,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Basquete recreativo, fora de partida"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15195",
+    "version": "2024-pt-BR.1",
+    "name": "Futsal",
+    "category": "Esportes",
+    "description": "Futsal",
+    "met": 7.8,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Futsal"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15605",
+    "version": "2024-pt-BR.1",
+    "name": "Futebol competitivo",
+    "category": "Esportes",
+    "description": "Soccer, competitive",
+    "met": 9.5,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Futebol competitivo"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15610",
+    "version": "2024-pt-BR.1",
+    "name": "Futebol recreativo",
+    "category": "Esportes",
+    "description": "Soccer, casual, general (Taylor Code 540)",
+    "met": 7,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Futebol recreativo"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15711",
+    "version": "2024-pt-BR.1",
+    "name": "Vôlei competitivo em quadra",
+    "category": "Esportes",
+    "description": "Volleyball, competitive, in gymnasium",
+    "met": 6,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Volei competitivo em quadra"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15720",
+    "version": "2024-pt-BR.1",
+    "name": "Vôlei recreativo, equipes de 6–9 pessoas",
+    "category": "Esportes",
+    "description": "Volleyball, non-competitive, 6 – 9 member team, general",
+    "met": 3,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Volei recreativo, equipes de 6–9 pessoas"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15725",
+    "version": "2024-pt-BR.1",
+    "name": "Vôlei de praia",
+    "category": "Esportes",
+    "description": "Volleyball, beach, in sand",
+    "met": 8,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Volei de praia"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15675",
+    "version": "2024-pt-BR.1",
+    "name": "Tênis, esforço moderado",
+    "category": "Esportes",
+    "description": "Tennis, general, moderate effort",
+    "met": 6.8,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Tenis, esforco moderado"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15690",
+    "version": "2024-pt-BR.1",
+    "name": "Tênis simples",
+    "category": "Esportes",
+    "description": "Tennis, singles (Taylor Code 420)",
+    "met": 8,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Tenis simples"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15680",
+    "version": "2024-pt-BR.1",
+    "name": "Tênis em duplas",
+    "category": "Esportes",
+    "description": "Tennis, doubles (Taylor Code 430)",
+    "met": 6,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Tenis em duplas"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15425",
+    "version": "2024-pt-BR.1",
+    "name": "Artes marciais, prática lenta de iniciantes",
+    "category": "Esportes",
+    "description": "Martial Arts, different types, slower pace, novice performers, practice",
+    "met": 5.3,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Artes marciais, pratica lenta de iniciantes"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15430",
+    "version": "2024-pt-BR.1",
+    "name": "Artes marciais, ritmo moderado",
+    "category": "Esportes",
+    "description": "Martial Arts, different types, moderate pace (e.g., judo, jujitsu, karate, kick boxing, tae kwon do, tai-bo, Muay Thai boxing)",
+    "met": 10.3,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Artes marciais, ritmo moderado",
+      "jiu-jitsu",
+      "karatê",
+      "muay thai",
+      "taekwondo"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15433",
+    "version": "2024-pt-BR.1",
+    "name": "Judô",
+    "category": "Esportes",
+    "description": "Judo",
+    "met": 11.3,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Judo"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15110",
+    "version": "2024-pt-BR.1",
+    "name": "Boxe, saco de pancadas",
+    "category": "Esportes",
+    "description": "Boxing, punching bag",
+    "met": 5.8,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Boxe, saco de pancadas"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15457",
+    "version": "2024-pt-BR.1",
+    "name": "Kickboxing",
+    "category": "Esportes",
+    "description": "Kickboxing",
+    "met": 7.3,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Kickboxing"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15660",
+    "version": "2024-pt-BR.1",
+    "name": "Tênis de mesa, pingue-pongue",
+    "category": "Esportes",
+    "description": "Table tennis, ping pong (Taylor Code 410)",
+    "met": 4,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Tenis de mesa, pingue-pongue"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15300",
+    "version": "2024-pt-BR.1",
+    "name": "Ginástica geral",
+    "category": "Esportes",
+    "description": "Gymnastics, general",
+    "met": 3.8,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Ginastica geral"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15537",
+    "version": "2024-pt-BR.1",
+    "name": "Escalada, dificuldade baixa a moderada",
+    "category": "Esportes",
+    "description": "Rock climbing, ascending or traversing rock, low-to-moderate difficulty",
+    "met": 5.8,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Escalada, dificuldade baixa a moderada"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15580",
+    "version": "2024-pt-BR.1",
+    "name": "Skate, esforço moderado",
+    "category": "Esportes",
+    "description": "Skateboarding, general, moderate effort",
+    "met": 5,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Skate, esforco moderado"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "15590",
+    "version": "2024-pt-BR.1",
+    "name": "Patinação sobre rodas",
+    "category": "Esportes",
+    "description": "Skating, roller (Taylor Code 360)",
+    "met": 7,
+    "source": "https://pacompendium.com/sports/",
+    "aliases": [
+      "Patinacao sobre rodas"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "03010",
+    "version": "2024-pt-BR.1",
+    "name": "Balé, dança moderna ou jazz, aula ou ensaio",
+    "category": "Dança",
+    "description": "Ballet, modern, or jazz general, rehearsal or class",
+    "met": 5,
+    "source": "https://pacompendium.com/dancing/",
+    "aliases": [
+      "Bale, danca moderna ou jazz, aula ou ensaio"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "03012",
+    "version": "2024-pt-BR.1",
+    "name": "Balé, dança moderna ou jazz, apresentação vigorosa",
+    "category": "Dança",
+    "description": "Ballet, modern, or jazz, performance, vigorous effort",
+    "met": 6.8,
+    "source": "https://pacompendium.com/dancing/",
+    "aliases": [
+      "Bale, danca moderna ou jazz, apresentacao vigorosa"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "03030",
+    "version": "2024-pt-BR.1",
+    "name": "Dança de salão rápida",
+    "category": "Dança",
+    "description": "Ballroom dancing, fast (Taylor Code 125)",
+    "met": 5.5,
+    "source": "https://pacompendium.com/dancing/",
+    "aliases": [
+      "Danca de salao rapida"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "03040",
+    "version": "2024-pt-BR.1",
+    "name": "Dança de salão lenta",
+    "category": "Dança",
+    "description": "Ballroom, slow, examples: waltz, foxtrot, slow dancing, samba tango, rumba, 19th century dance, mambo, cha cha",
+    "met": 3,
+    "source": "https://pacompendium.com/dancing/",
+    "aliases": [
+      "Danca de salao lenta"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "03070",
+    "version": "2024-pt-BR.1",
+    "name": "Dança contemporânea geral",
+    "category": "Dança",
+    "description": "Contemporary dancing, general",
+    "met": 3.8,
+    "source": "https://pacompendium.com/dancing/",
+    "aliases": [
+      "Danca contemporanea geral"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "03090",
+    "version": "2024-pt-BR.1",
+    "name": "Salsa em dupla",
+    "category": "Dança",
+    "description": "Salsa Dancing, with partner",
+    "met": 4.8,
+    "source": "https://pacompendium.com/dancing/",
+    "aliases": [
+      "Salsa em dupla"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "05011",
+    "version": "2024-pt-BR.1",
+    "name": "Varrer lentamente, esforço leve",
+    "category": "Atividades domésticas",
+    "description": "Cleaning, sweeping, slow, light effort",
+    "met": 2.3,
+    "source": "https://pacompendium.com/home-activities/",
+    "aliases": [
+      "Varrer lentamente, esforco leve"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "05012",
+    "version": "2024-pt-BR.1",
+    "name": "Varrer rapidamente, esforço moderado",
+    "category": "Atividades domésticas",
+    "description": "Cleaning, sweeping, fast, moderate effort",
+    "met": 3.8,
+    "source": "https://pacompendium.com/home-activities/",
+    "aliases": [
+      "Varrer rapidamente, esforco moderado"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "05025",
+    "version": "2024-pt-BR.1",
+    "name": "Tarefas domésticas combinadas, leves",
+    "category": "Atividades domésticas",
+    "description": "Multiple household tasks all at once, light effort",
+    "met": 2.8,
+    "source": "https://pacompendium.com/home-activities/",
+    "aliases": [
+      "Tarefas domesticas combinadas, leves"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "05026",
+    "version": "2024-pt-BR.1",
+    "name": "Tarefas domésticas combinadas, moderadas",
+    "category": "Atividades domésticas",
+    "description": "Multiple household tasks all at once, moderate effort",
+    "met": 3.3,
+    "source": "https://pacompendium.com/home-activities/",
+    "aliases": [
+      "Tarefas domesticas combinadas, moderadas"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "05027",
+    "version": "2024-pt-BR.1",
+    "name": "Tarefas domésticas combinadas, vigorosas",
+    "category": "Atividades domésticas",
+    "description": "Multiple household tasks all at once, vigorous effort",
+    "met": 4.3,
+    "source": "https://pacompendium.com/home-activities/",
+    "aliases": [
+      "Tarefas domesticas combinadas, vigorosas"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "05043",
+    "version": "2024-pt-BR.1",
+    "name": "Aspirar a casa, esforço moderado",
+    "category": "Atividades domésticas",
+    "description": "Vacuuming, general, moderate effort",
+    "met": 3,
+    "source": "https://pacompendium.com/home-activities/",
+    "aliases": [
+      "Aspirar a casa, esforco moderado"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "05050",
+    "version": "2024-pt-BR.1",
+    "name": "Cozinhar, esforço leve",
+    "category": "Atividades domésticas",
+    "description": "Cooking or food preparation – standing or sitting or in general (not broken into stand/walk components), manual appliances, light effort",
+    "met": 2,
+    "source": "https://pacompendium.com/home-activities/",
+    "aliases": [
+      "Cozinhar, esforco leve"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "05090",
+    "version": "2024-pt-BR.1",
+    "name": "Lavar, dobrar ou pendurar roupas, em pé, esforço leve",
+    "category": "Atividades domésticas",
+    "description": "Laundry, fold or hang clothes, put clothes in washer or dryer, packing suitcase, washing clothes by hand,  implied standing, light effort",
+    "met": 2.3,
+    "source": "https://pacompendium.com/home-activities/",
+    "aliases": [
+      "Lavar, dobrar ou pendurar roupas, em pe, esforco leve"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "05120",
+    "version": "2024-pt-BR.1",
+    "name": "Mover móveis e carregar caixas",
+    "category": "Atividades domésticas",
+    "description": "Moving furniture, household items, carrying boxes",
+    "met": 5.8,
+    "source": "https://pacompendium.com/home-activities/",
+    "aliases": [
+      "Mover moveis e carregar caixas"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "08066",
+    "version": "2024-pt-BR.1",
+    "name": "Jardinagem geral",
+    "category": "Jardinagem",
+    "description": "gardening, general",
+    "met": 2,
+    "source": "https://pacompendium.com/lawn-garden/",
+    "aliases": [
+      "Jardinagem geral"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "08239",
+    "version": "2024-pt-BR.1",
+    "name": "Retirar ervas daninhas, esforço leve a moderado",
+    "category": "Jardinagem",
+    "description": "Weeding, cultivating garden, light-to-moderate effort",
+    "met": 3.8,
+    "source": "https://pacompendium.com/lawn-garden/",
+    "aliases": [
+      "Retirar ervas daninhas, esforco leve a moderado"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "08240",
+    "version": "2024-pt-BR.1",
+    "name": "Retirar ervas daninhas, esforço moderado",
+    "category": "Jardinagem",
+    "description": "Weeding, cultivating garden, moderate effort (Taylor Code 580)",
+    "met": 4.5,
+    "source": "https://pacompendium.com/lawn-garden/",
+    "aliases": [
+      "Retirar ervas daninhas, esforco moderado"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "08230",
+    "version": "2024-pt-BR.1",
+    "name": "Regar jardim, em pé ou caminhando",
+    "category": "Jardinagem",
+    "description": "Watering lawn or garden, standing or walking",
+    "met": 4,
+    "source": "https://pacompendium.com/lawn-garden/",
+    "aliases": [
+      "Regar jardim, em pe ou caminhando"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "08110",
+    "version": "2024-pt-BR.1",
+    "name": "Cortar grama com cortador manual, vigoroso",
+    "category": "Jardinagem",
+    "description": "Mowing lawn, hand mower, vigorous effort (Taylor Code 570)",
+    "met": 6,
+    "source": "https://pacompendium.com/lawn-garden/",
+    "aliases": [
+      "Cortar grama com cortador manual, vigoroso"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "11475",
+    "version": "2024-pt-BR.1",
+    "name": "Trabalho manual, esforço leve",
+    "category": "Trabalho ativo",
+    "description": "Manual or unskilled labor, general, light effort",
+    "met": 2.8,
+    "source": "https://pacompendium.com/occupation/",
+    "aliases": [
+      "Trabalho manual, esforco leve"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "11476",
+    "version": "2024-pt-BR.1",
+    "name": "Trabalho manual, esforço moderado",
+    "category": "Trabalho ativo",
+    "description": "Manual or unskilled labor, general, moderate effort",
+    "met": 4.5,
+    "source": "https://pacompendium.com/occupation/",
+    "aliases": [
+      "Trabalho manual, esforco moderado"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "11477",
+    "version": "2024-pt-BR.1",
+    "name": "Trabalho manual, esforço vigoroso",
+    "category": "Trabalho ativo",
+    "description": "Manual or unskilled labor, general, vigorous effort",
+    "met": 6.5,
+    "source": "https://pacompendium.com/occupation/",
+    "aliases": [
+      "Trabalho manual, esforco vigoroso"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "11792",
+    "version": "2024-pt-BR.1",
+    "name": "Caminhar no trabalho, 4,5–5,5 km/h, sem carga",
+    "category": "Trabalho ativo",
+    "description": "Walking on job, 2.8 to 3.4 mph, in office, moderate speed, not carrying anything",
+    "met": 3.8,
+    "source": "https://pacompendium.com/occupation/",
+    "aliases": [
+      "Caminhar no trabalho, 4,5–5,5 km/h, sem carga"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "16002",
+    "version": "2024-pt-BR.1",
+    "name": "Bicicleta como transporte, esforço moderado",
+    "category": "Transporte ativo",
+    "description": "Bicycling for transportation, moderate effort",
+    "met": 6.8,
+    "source": "https://pacompendium.com/transportation/",
+    "aliases": [
+      "Bicicleta como transporte, esforco moderado"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "16004",
+    "version": "2024-pt-BR.1",
+    "name": "Bicicleta como transporte, esforço alto",
+    "category": "Transporte ativo",
+    "description": "Bicycling for transportation, high effort",
+    "met": 9.3,
+    "source": "https://pacompendium.com/transportation/",
+    "aliases": [
+      "Bicicleta como transporte, esforco alto"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "16060",
+    "version": "2024-pt-BR.1",
+    "name": "Caminhada como transporte, 4,5–5,1 km/h, terreno plano",
+    "category": "Transporte ativo",
+    "description": "Walking for transportation, 2.8-3.2 mph, level, moderate pace, firm surface",
+    "met": 3.5,
+    "source": "https://pacompendium.com/transportation/",
+    "aliases": [
+      "Caminhada como transporte, 4,5–5,1 km/h, terreno plano"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "19030",
+    "version": "2024-pt-BR.1",
+    "name": "Patinação no gelo geral",
+    "category": "Esportes de inverno",
+    "description": "Skating, ice, general (Taylor Code 360)",
+    "met": 7,
+    "source": "https://pacompendium.com/winter-activities/",
+    "aliases": [
+      "Patinacao no gelo geral"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "19075",
+    "version": "2024-pt-BR.1",
+    "name": "Esqui geral",
+    "category": "Esportes de inverno",
+    "description": "Skiing, general",
+    "met": 7,
+    "source": "https://pacompendium.com/winter-activities/",
+    "aliases": [
+      "Esqui geral"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "10040",
+    "version": "2024-pt-BR.1",
+    "name": "Tocar bateria sentado",
+    "category": "Música",
+    "description": "Drums, sitting",
+    "met": 3.8,
+    "source": "https://pacompendium.com/music-playing/",
+    "aliases": [
+      "Tocar bateria sentado"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "22240",
+    "version": "2024-pt-BR.1",
+    "name": "Videogame ativo com o corpo todo, esforço moderado",
+    "category": "Jogos ativos",
+    "description": "Active video game, motion sensing game/using total body (moderate effort)",
+    "met": 4,
+    "source": "https://pacompendium.com/video-games/",
+    "aliases": [
+      "Videogame ativo com o corpo todo, esforco moderado"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  },
+  {
+    "code": "22320",
+    "version": "2024-pt-BR.1",
+    "name": "Videogame ativo, treino ou dança, esforço vigoroso",
+    "category": "Jogos ativos",
+    "description": "Active video game, motion sensing game/using total body, exergames, workouts, dancing (vigorous effort)",
+    "met": 7.5,
+    "source": "https://pacompendium.com/video-games/",
+    "aliases": [
+      "Videogame ativo, treino ou danca, esforco vigoroso"
+    ],
+    "notes": "Compendium Adulto 2024, referência populacional de 19–59 anos. Consultar as referências do código na fonte.",
+    "resistance": false
+  }
+]

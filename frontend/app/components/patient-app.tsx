@@ -35,6 +35,8 @@ import { DailyJournal, NutritionSummary } from './daily-journal';
 import { EditEntryDialog } from './edit-entry-dialog';
 import { FoodEntrySheet } from './food-entry-sheet';
 import { MacroDistributionSummary } from './macro-distribution';
+import { ActivityPanel, activityChanged } from './activity-panel';
+import { EnergyProgress } from './energy-progress';
 import { PatientDayHome } from './patient-day-home';
 import { UserIdentity } from './user-identity';
 import { ProfileDisclosure } from './profile-disclosure';
@@ -210,6 +212,7 @@ export function PatientApp({
     setAddOpen(true);
   }
   function success(title: string) {
+    activityChanged();
     toast.add({ title, type: 'success' });
   }
 
@@ -359,8 +362,18 @@ export function PatientApp({
               ) : (
                 <ContentSkeleton rows={5} />
               ))}
+            {(active === 'today' || active === 'diary') && (
+              <ActivityPanel
+                date={active === 'today' ? homeDate : diaryDate}
+                compact={active === 'today'}
+                onProgress={() => navigate({ active: 'progress' })}
+              />
+            )}
             {active === 'progress' && (
-              <ProgressArea history={history} summary={summary} />
+              <>
+                <EnergyProgress />
+                <ProgressArea history={history} summary={summary} />
+              </>
             )}
             {!professionalMode && active === 'guidance' && (
               <GuidanceArea items={orientationInbox?.items ?? null} />

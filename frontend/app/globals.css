@@ -2999,3 +2999,363 @@
     border-top: 1px solid #cfe2de;
   }
 }
+/* Activity diary: shared by patient and professional, with compact daily totals. */
+.activity-panel,
+.energy-progress {
+  margin: 1.25rem 0;
+  padding: 1.25rem;
+  border: 1px solid #e1e8e0;
+  border-radius: 1.25rem;
+  background: #fcfdf9;
+  min-width: 0;
+  color: #34453b;
+}
+.activity-panel,
+.energy-progress,
+.activity-dialog {
+  font-family: var(--font-sans-app, Arial, sans-serif);
+}
+.activity-panel > header,
+.energy-progress > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+.activity-panel h2,
+.energy-progress h2 {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 1.15rem;
+  font-weight: 650;
+}
+.activity-muted,
+.activity-method,
+.activity-selection {
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: #58685d;
+}
+.activity-method {
+  margin-top: 1rem;
+}
+.activity-method p {
+  margin: 0.65rem 0;
+}
+.activity-method a,
+.activity-selection a {
+  color: #396b54;
+  text-decoration: underline;
+}
+.activity-panel summary,
+.energy-progress summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0.55rem 0;
+  font-size: 0.85rem;
+}
+.energy-numbers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.8rem;
+  margin: 0.75rem 0;
+}
+.energy-numbers dt {
+  font-size: 0.75rem;
+  color: #5c6b61;
+}
+.energy-numbers dd {
+  font-size: 0.92rem;
+  font-weight: 600;
+  margin-top: 0.2rem;
+}
+.energy-balance-value {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin: 0.8rem 0;
+}
+.energy-balance-value strong {
+  font-size: 1.05rem;
+}
+.energy-balance-value span {
+  font-size: 0.8rem;
+  color: #58685d;
+}
+.activity-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.8rem 0;
+}
+.activity-list li {
+  padding: 0.8rem 0;
+  border-top: 1px solid #e6ebe3;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+}
+.activity-session-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  text-align: left;
+  flex: 1;
+  min-width: 180px;
+}
+.activity-session-title span {
+  font-size: 0.78rem;
+  color: #58685d;
+}
+.activity-row-actions {
+  display: flex;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.activity-row-actions > button:not([data-slot]) {
+  font-size: 0.8rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0.4rem 0;
+}
+.activity-footer {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  border-top: 1px solid #e6ebe3;
+  padding-top: 0.9rem;
+  margin-top: 0.5rem;
+}
+.activity-footer label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.activity-footer > button {
+  text-decoration: underline;
+}
+.activity-dialog {
+  width: min(740px, calc(100vw - 1.5rem)) !important;
+  max-width: 740px !important;
+  max-height: 90dvh;
+  overflow-y: auto;
+}
+.activity-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  min-width: 0;
+}
+.activity-form label,
+.activity-period label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  font-weight: 550;
+  min-width: 0;
+}
+.activity-form input:not([type="checkbox"]),
+.activity-form select,
+.activity-form textarea,
+.activity-period input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #cdd9ce;
+  border-radius: 0.55rem;
+  background: white;
+  color: #34453b;
+  padding: 0.6rem;
+  font-size: 0.88rem;
+  font-weight: 400;
+}
+.activity-form textarea {
+  min-height: 75px;
+}
+.activity-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.activity-form .activity-checkbox {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.5rem;
+  line-height: 1.5;
+}
+.activity-checkbox input {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+}
+.activity-catalog {
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #dfe7dc;
+  border-radius: 0.65rem;
+}
+.activity-catalog > div {
+  display: flex;
+  border-bottom: 1px solid #e7ece5;
+}
+.activity-catalog > div[data-selected="true"] {
+  background: #eaf2e6;
+}
+.activity-catalog button {
+  padding: 0.65rem;
+  text-align: left;
+}
+.activity-catalog button:first-child {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+.activity-catalog button:first-child strong {
+  font-weight: 500;
+}
+.activity-catalog button span {
+  white-space: nowrap;
+  font-size: 0.75rem;
+}
+.strength-details fieldset {
+  padding: 0.8rem;
+  border: 1px solid #dfe7dc;
+  border-radius: 0.7rem;
+  margin: 0.5rem 0;
+}
+.strength-details legend {
+  font-size: 0.8rem;
+}
+.strength-details fieldset > label {
+  margin-bottom: 0.5rem;
+}
+.activity-error {
+  background: #fff0eb;
+  color: #8f392c;
+  padding: 0.7rem;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+}
+.activity-error button {
+  text-decoration: underline;
+}
+.activity-period {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: end;
+  margin-bottom: 1rem;
+}
+.energy-period-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.energy-period-summary > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.energy-period-summary span {
+  font-size: 0.78rem;
+  color: #58685d;
+}
+.energy-period-summary strong {
+  font-size: 0.92rem;
+}
+.energy-chart {
+  margin: 1.5rem 0;
+  min-width: 0;
+}
+.energy-chart h3 {
+  font-weight: 600;
+  font-size: 0.88rem;
+  margin-bottom: 0.7rem;
+}
+.energy-chart .recharts-wrapper {
+  font-size: 0.7rem;
+}
+.energy-table-wrap {
+  overflow: auto;
+  max-height: 460px;
+}
+.energy-table {
+  width: 100%;
+  font-size: 0.75rem;
+  text-align: left;
+  border-collapse: collapse;
+}
+.energy-table caption {
+  padding: 0.5rem;
+  text-align: left;
+  color: #58685d;
+}
+.energy-table th,
+.energy-table td {
+  padding: 0.6rem;
+  border-bottom: 1px solid #e1e8e0;
+  min-width: 75px;
+}
+.energy-table td:last-child {
+  min-width: 170px;
+}
+.energy-table button {
+  color: #316a50;
+  text-decoration: underline;
+}
+.energy-settings {
+  border: 1px solid #d9e2d5;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  margin: 1rem 0;
+}
+.energy-settings p {
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.activity-panel button:focus-visible,
+.energy-progress button:focus-visible,
+.activity-form :focus-visible {
+  outline: 2px solid #3c7857;
+  outline-offset: 3px;
+}
+@media (max-width: 560px) {
+  .activity-panel,
+  .energy-progress {
+    padding: 1rem;
+  }
+  .energy-period-summary {
+    grid-template-columns: 1fr;
+  }
+  .activity-form-grid {
+    gap: 0.5rem;
+  }
+  .activity-panel > header {
+    gap: 0.6rem;
+  }
+  .activity-dialog {
+    padding: 1rem !important;
+  }
+  .energy-numbers {
+    grid-template-columns: 1fr 1fr;
+  }
+  .activity-period {
+    gap: 0.65rem;
+  }
+  .activity-period label {
+    flex: 1;
+  }
+  .activity-period > .activity-row-actions {
+    width: 100%;
+  }
+}
