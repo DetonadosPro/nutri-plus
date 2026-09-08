@@ -4,7 +4,7 @@
   font-family: var(--font-sans-app, Arial, sans-serif);
 }
 .patient-day-dashboard {
-  grid-template-areas: 'energy' 'movement' 'macros' 'insights' 'meals';
+  grid-template-areas: 'energy' 'macros' 'insights' 'meals' 'movement';
 }
 .patient-day-dashboard > .activity-panel {
   grid-area: movement;
@@ -636,7 +636,7 @@
 }
 @media (min-width: 1100px) {
   .patient-day-dashboard {
-    grid-template-areas: 'energy movement' 'macros movement' 'insights insights' 'meals meals';
+    grid-template-areas: 'energy insights' 'macros insights' 'meals meals' 'movement movement';
     align-items: start;
   }
   .patient-day-insights {
@@ -646,16 +646,19 @@
 }
 @media (max-width: 600px) {
   .movement-dialog {
-    width: 100%;
-    max-width: 100%;
-    height: 100dvh;
-    max-height: 100dvh;
-    border: 0;
-    border-radius: 0;
-    top: 0;
-    left: 0;
-    translate: 0 0;
-    transform: none;
+    inset: max(0.75rem, env(safe-area-inset-top)) 0.75rem max(0.75rem, env(safe-area-inset-bottom));
+    top: max(0.75rem, env(safe-area-inset-top));
+    right: 0.75rem;
+    bottom: max(0.75rem, env(safe-area-inset-bottom));
+    left: 0.75rem;
+    width: auto;
+    max-width: none;
+    height: auto;
+    max-height: none;
+    border: 1px solid #e2e8df;
+    border-radius: 24px;
+    translate: none !important;
+    transform: none !important;
   }
   .movement-dialog-heading {
     padding-top: max(1rem, env(safe-area-inset-top));

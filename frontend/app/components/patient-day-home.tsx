@@ -109,7 +109,6 @@ export function PatientDayHome({
         aria-busy={loading}
       >
         <DailyEnergyCard summary={summary} date={date} />
-        <ActivityPanel date={date} compact onProgress={onProgress} />
 
         <section className="patient-macro-grid" aria-label="Macronutrientes">
           {macros.map((macro) => {
@@ -268,6 +267,8 @@ export function PatientDayHome({
             onCopy={onCopy}
           />
         </section>
+
+        <ActivityPanel date={date} compact onProgress={onProgress} />
       </div>
     </div>
   );
