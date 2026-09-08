@@ -115,8 +115,8 @@ export function EnergyNumbers({ day }: { day: EnergyDay }) {
         </strong>
         <span>
           {day.foodComplete
-            ? 'Alimentação marcada como completa.'
-            : 'Balanço parcial: alimentação ainda não confirmada como completa.'}
+            ? 'Atualizado automaticamente pelos alimentos registrados.'
+            : 'Nenhum alimento com energia disponível foi registrado.'}
         </span>
       </p>
       {day.missingFoodEnergy > 0 && (
@@ -213,21 +213,6 @@ export function ActivityPanel({
       setBusy(false);
     }
   }
-  async function complete() {
-    if (!day) return;
-    setBusy(true);
-    try {
-      await api(`/activities/food-status?${query}`, {
-        method: 'PUT',
-        body: JSON.stringify({ date, complete: !day.foodComplete }),
-      });
-      activityChanged();
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  }
   return (
     <section className="activity-panel">
       <header>
@@ -307,17 +292,6 @@ export function ActivityPanel({
                 : 'Sobre os registros do dia'}
             </summary>
             {professional && <EnergyNumbers day={day} />}
-            <div className="activity-footer">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={day.foodComplete}
-                  disabled={busy || day.missingFoodEnergy > 0}
-                  onChange={() => void complete()}
-                />{' '}
-                Registrei toda a alimentação deste dia
-              </label>
-            </div>
             <EnergyMethod />
           </details>
           {professional && (

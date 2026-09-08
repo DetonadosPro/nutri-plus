@@ -4,13 +4,13 @@
 
 Reformulação local do frontend. Preserva alimentos, metas, autenticação e registros anteriores.
 
-- Home/Diário: calorias ingeridas e saldo com sinal no mesmo card. Rótulos “Déficit estimado”, “Superávit estimado” ou “Neutro estimado”. Um toque abre a explicação e permite confirmar que toda a alimentação foi registrada. Enquanto incompleto, o resumo diz “Parcial até agora”: compara o consumo registrado ao gasto do dia inteiro, não a uma medição instantânea.
+- Home/Diário: calorias ingeridas e saldo com sinal no mesmo card. Rótulos “Déficit estimado”, “Superávit estimado” ou “Neutro estimado”. O saldo e a Evolução são atualizados automaticamente quando alimentos ou exercícios mudam; não existe confirmação manual de encerramento do dia.
 - Atividades ficam próximas do resumo do dia. Uma linha por sessão, com nome, duração e gasto aproximado. Abrir a linha permite editar ou excluir; o menu também permite duplicar.
 - Registro: escolher uma categoria visual, informar duração/intensidade, salvar. Data fica em “Mais opções”; horário, observações e campos científicos não aparecem no fluxo do paciente.
 - Recentes reutilizam modalidade, duração, intensidade e descanso, mas calculam a nova sessão com o peso disponível na data nova. Favoritos ficam disponíveis sem ocupar o fluxo principal.
 - Yoga/Pilates, Dança, Esportes e Outras atividades abrem modalidades específicas. Busca sem acentos acessa todos os 142 registros de 15 categorias do catálogo existente.
 - Musculação: tempo total, intensidade e descanso opcional por faixa. Séries antigas são mantidas ao editar a mesma modalidade e continuam consultáveis nos detalhes; cadastrar séries não é requisito.
-- Evolução: 7 dias, 30 dias ou personalizado (até 366 dias). Um único gráfico de saldo dos dias completos e sua média. Dias incompletos são lacunas, não zeros. Lista de dias, atividades e médias de ingestão/gasto são expansíveis. Outros indicadores nutricionais também ficam em uma seção expansível.
+- Evolução: 7 dias, 30 dias ou personalizado (até 366 dias). Um único gráfico de saldo dos dias com alimentação registrada e sua média. Dias sem alimentação são lacunas, não zeros. Lista de dias, atividades e médias de ingestão/gasto são expansíveis. Outros indicadores nutricionais também ficam em uma seção expansível.
 - O nutricionista consulta e altera as mesmas sessões. Configuração da metodologia e recálculo histórico continuam restritos ao profissional. Administrador não acessa informações clínicas.
 
 ## Catálogo, intensidade e descanso
@@ -55,7 +55,7 @@ Peso, MET, versão e fonte continuam no snapshot. Editar duração/modalidade pe
 
 A base histórica permanece congelada na primeira consolidação. O recálculo profissional exige motivo e preserva a versão anterior em `energy_base_revisions`. A base de hoje acompanha os dados atuais do perfil.
 
-Sem alimentos e sem confirmação, ingestão é ausente, não zero. Alimento sem energia torna o saldo indisponível. Inserir, alterar ou excluir alimentos invalida a conclusão do dia. Médias e acumulados usam somente dias completos.
+Sem alimentos, ingestão é ausente, não zero. Alimento sem energia torna o saldo indisponível. Inserir, alterar ou excluir alimentos atualiza automaticamente o saldo. Médias e acumulados usam dias que possuem alimentação com energia disponível.
 
 Mudanças de atividade e alimento notificam componentes montados e outras abas na mesma origem; os dados são revalidados no foco. Não há promessa de sincronização por push entre dispositivos.
 

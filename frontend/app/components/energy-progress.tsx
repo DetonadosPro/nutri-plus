@@ -196,13 +196,13 @@ export function EnergyProgress({
             </p>
             <small>
               {mean == null
-                ? 'Complete os registros de um dia para começar.'
-                : `${Math.abs(mean) < 0.5 ? 'Equilíbrio' : mean > 0 ? 'Superávit' : 'Déficit'} estimado · ${complete.length} dias completos`}
+                ? 'Registre alimentos para começar.'
+                : `${Math.abs(mean) < 0.5 ? 'Equilíbrio' : mean > 0 ? 'Superávit' : 'Déficit'} estimado · ${complete.length} dias registrados`}
             </small>
           </div>
           <div
             className="energy-chart"
-            aria-label="Gráfico de balanço energético dos dias completos"
+            aria-label="Gráfico de balanço energético dos dias registrados"
           >
             <ResponsiveContainer
               width="100%"
@@ -258,7 +258,7 @@ export function EnergyProgress({
             </ResponsiveContainer>
           </div>
           <p className="activity-muted">
-            Dias incompletos ficam em aberto no gráfico.
+            Dias sem alimentação registrada ficam em aberto no gráfico.
           </p>
           <details className="movement-disclosure">
             <summary>
@@ -278,7 +278,7 @@ export function EnergyProgress({
                     {formatDate(d.date, { day: '2-digit', month: 'short' })}
                     <small>
                       {d.activities.length} atividades
-                      {!d.foodComplete ? ' · parcial' : ''}
+                      {!d.foodComplete ? ' · sem alimentação' : ''}
                     </small>
                   </span>
                   <strong>{signedEnergy(d.balanceKcal)} kcal</strong>
@@ -335,7 +335,7 @@ export function EnergyProgress({
               </div>
             </dl>
             <p className="activity-muted">
-              As médias e o saldo usam apenas dias completos. O tempo inclui
+              As médias e o saldo usam dias com alimentação registrada. O tempo inclui
               todas as atividades do período.
             </p>
             <ul className="movement-period-activities">
