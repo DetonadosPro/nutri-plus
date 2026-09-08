@@ -407,6 +407,14 @@
   flex-wrap: wrap;
   gap: 0.5rem;
 }
+.movement-change-activity {
+  justify-self: start;
+  min-height: 40px;
+  margin-top: -0.85rem;
+  padding-inline: 0;
+  color: #527061;
+  font-size: 0.875rem;
+}
 .movement-options {
   display: grid;
   gap: 1rem;

@@ -83,11 +83,11 @@ export function ActivityEditor({
   const [day, setDay] = useState(
     duplicate ? date : (session?.activity_date ?? date),
   );
-  const [time, setTime] = useState(
+  const [time] = useState(
     duplicate ? '' : (session?.local_time?.slice(0, 5) ?? ''),
   );
   const [outside, setOutside] = useState(session?.outside_base ?? false);
-  const [note, setNote] = useState(session?.note ?? '');
+  const [note] = useState(session?.note ?? '');
   const [busy, setBusy] = useState(false),
     [options, setOptions] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -552,6 +552,19 @@ export function ActivityEditor({
                   </div>
                 </fieldset>
               )}
+              {quick && (
+                <button
+                  type="button"
+                  className="movement-text-button movement-change-activity"
+                  onClick={() => {
+                    setGroup(quick);
+                    setChosen(null);
+                    setQuick(null);
+                  }}
+                >
+                  Escolher outra modalidade
+                </button>
+              )}
               {selected?.resistance && (
                 <fieldset>
                   <legend>
@@ -588,81 +601,7 @@ export function ActivityEditor({
                       onChange={(e) => setDay(e.target.value)}
                     />
                   </label>
-                  <label>
-                    Horário de início <small>opcional</small>
-                    <input
-                      type="time"
-                      value={time}
-                      onChange={(e) => setTime(e.target.value)}
-                    />
-                  </label>
-                  <label className="movement-check">
-                    <input
-                      type="checkbox"
-                      checked={outside}
-                      onChange={(e) => setOutside(e.target.checked)}
-                    />
-                    Exercício extra à minha rotina cotidiana
-                  </label>
-                  <label>
-                    Observação
-                    <textarea
-                      maxLength={3000}
-                      value={note}
-                      onChange={(e) => setNote(e.target.value)}
-                    />
-                  </label>
-                  {quick && (
-                    <button
-                      type="button"
-                      className="movement-text-button"
-                      onClick={() => {
-                        setGroup(quick);
-                        setChosen(null);
-                        setQuick(null);
-                      }}
-                    >
-                      Escolher outra modalidade desta atividade
-                    </button>
-                  )}
                 </div>
-              </details>
-              <details className="movement-disclosure">
-                <summary>Como calculamos isso?</summary>
-                <p>
-                  Usamos a atividade escolhida, o tempo e seu peso registrado. O
-                  resultado é uma estimativa.
-                </p>
-                {selected && (
-                  <p>
-                    {selected.name}. Referência:{' '}
-                    <a href={selected.source} target="_blank" rel="noreferrer">
-                      Compendium 2024
-                    </a>{' '}
-                    ({selected.met} MET).
-                  </p>
-                )}
-                {!quick && (
-                  <p>
-                    A intensidade registra como você se sentiu. Para mudar a
-                    estimativa, escolha a modalidade que melhor descreve a
-                    atividade.
-                  </p>
-                )}
-                {selected?.resistance && (
-                  <p>
-                    A duração inclui as pausas. O descanso é registrado sem
-                    multiplicadores de calorias. Esforços leves e moderados usam
-                    a mesma referência de sessão geral.
-                  </p>
-                )}
-                {editing && (
-                  <p>
-                    Ao salvar mudanças de duração ou modalidade, recalculamos
-                    com o peso original. Mudar a data usa o peso disponível
-                    naquela data.
-                  </p>
-                )}
               </details>
             </form>
           )}

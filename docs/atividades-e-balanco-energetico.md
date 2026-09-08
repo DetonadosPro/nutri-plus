@@ -6,7 +6,7 @@ Reformulação local do frontend. Preserva alimentos, metas, autenticação e re
 
 - Home/Diário: calorias ingeridas e saldo com sinal no mesmo card. Rótulos “Déficit estimado”, “Superávit estimado” ou “Neutro estimado”. Um toque abre a explicação e permite confirmar que toda a alimentação foi registrada. Enquanto incompleto, o resumo diz “Parcial até agora”: compara o consumo registrado ao gasto do dia inteiro, não a uma medição instantânea.
 - Atividades ficam próximas do resumo do dia. Uma linha por sessão, com nome, duração e gasto aproximado. Abrir a linha permite editar ou excluir; o menu também permite duplicar.
-- Registro: escolher uma categoria visual, informar duração/intensidade, salvar. Sem horário obrigatório nem campos científicos na tela principal. Horário, data e observações ficam em “Mais opções”.
+- Registro: escolher uma categoria visual, informar duração/intensidade, salvar. Data fica em “Mais opções”; horário, observações e campos científicos não aparecem no fluxo do paciente.
 - Recentes reutilizam modalidade, duração, intensidade e descanso, mas calculam a nova sessão com o peso disponível na data nova. Favoritos ficam disponíveis sem ocupar o fluxo principal.
 - Yoga/Pilates, Dança, Esportes e Outras atividades abrem modalidades específicas. Busca sem acentos acessa todos os 142 registros de 15 categorias do catálogo existente.
 - Musculação: tempo total, intensidade e descanso opcional por faixa. Séries antigas são mantidas ao editar a mesma modalidade e continuam consultáveis nos detalhes; cadastrar séries não é requisito.
@@ -17,7 +17,7 @@ Reformulação local do frontend. Preserva alimentos, metas, autenticação e re
 
 As escolhas rápidas em `activity-choices.tsx` apontam para códigos reais da versão `2024-pt-BR.1`. Não há multiplicação arbitrária por intensidade. Para caminhada/corrida, os botões indicam as faixas de velocidade; ciclismo, natação e futebol apontam para modalidades operacionais correspondentes. O usuário pode escolher outro subtipo em “Mais opções”.
 
-Musculação leve e moderada usam a referência geral 02054 (3,5 MET); intensa usa 02050 (6 MET). A referência geral não permite inventar um valor menor exclusivo para “leve”. Isso é explicado em “Como calculamos isso?”. Descanso é somente descritivo: o MET representa a sessão inteira, incluindo pausas. Não existe bônus por intervalos curtos ou EPOC.
+Musculação leve e moderada usam a referência geral 02054 (3,5 MET); intensa usa 02050 (6 MET). A referência geral não permite inventar um valor menor exclusivo para “leve”. Descanso é somente descritivo: o MET representa a sessão inteira, incluindo pausas. Não existe bônus por intervalos curtos ou EPOC.
 
 Quando uma modalidade específica é escolhida pela busca, a intensidade é um relato subjetivo, sem alterar o MET daquela modalidade. Para modificar a estimativa, troca-se a modalidade. A explicação permanece disponível nos detalhes.
 
@@ -35,7 +35,7 @@ Cada registro do catálogo mantém sua própria fonte oficial. Códigos e METs s
 1. Repouso estimado por Mifflin–St Jeor. Base = repouso × fator. Os fatores habituais existentes são preservados. Dados ausentes, faixa etária fora de 19–59 anos ou avaliação clínica suspensa deixam a base indisponível.
 2. Padrão conservador: `habitual_includes_exercise`. O fator já inclui exercícios e nenhuma sessão aumenta o gasto total. A meta alimentar é independente desse cálculo.
 3. O nutricionista pode configurar `base_plus_net`, documentando uma base sem os exercícios que serão registrados. Só sessões elegíveis (`outside_base`) acrescentam gasto líquido.
-4. No fluxo novo, exercícios escolhidos têm “Exercício extra à minha rotina cotidiana” selecionado; atividades domésticas, jardinagem, trabalho, transporte e música começam desmarcadas. O controle está em “Mais opções” e pode ser corrigido. Essa sugestão não modifica a configuração profissional e não causa acréscimo no modo habitual. Registros existentes e recentes mantêm o escopo armazenado.
+4. No fluxo do paciente, exercícios escolhidos são classificados automaticamente como extras à rotina; atividades domésticas, jardinagem, trabalho, transporte e música não são. Essa classificação não modifica a configuração profissional e não causa acréscimo no modo habitual. Registros existentes e recentes mantêm o escopo armazenado.
 5. Bruto = MET × kg × horas. Líquido = (MET − 1) × kg × horas. O líquido pressupõe substituição de repouso; sua inclusão depende da definição profissional de base.
 6. Gasto total = base + adicional elegível; saldo = ingestão − gasto total. Os valores exibidos são arredondados, preservando a precisão nos dados.
 7. Entrada manual permanece em Outras atividades e exige origem/tipo do gasto. Calorias ativas já são líquidas. Totais descontam repouso uma vez. Tipo desconhecido não vira adicional zero.
