@@ -19,6 +19,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { NutrientDetails } from "./nutrient-details";
+import { FoodPhotoReview } from './food-photo-review';
 
 export function FoodEntrySheet({
   open,
@@ -39,6 +40,7 @@ export function FoodEntrySheet({
   const historyReady = useRef(false);
   const closing = useRef(false);
   const [search, setSearch] = useState("");
+  const [photoMode, setPhotoMode] = useState(false);
   const [foods, setFoods] = useState<Food[]>([]);
   const [selected, setSelected] = useState<Food | null>(null);
   const [grams, setGrams] = useState("");
@@ -130,6 +132,7 @@ export function FoodEntrySheet({
   }
 
   function resetTransientState() {
+    setPhotoMode(false);
     setSearch("");
     setFoods([]);
     setSelected(null);
@@ -238,7 +241,7 @@ export function FoodEntrySheet({
         className="food-entry-sheet left-0 right-0 h-[96dvh] max-h-[96dvh] w-full max-w-2xl translate-x-0 gap-0 overflow-hidden rounded-t-[28px] border-x sm:data-[side=bottom]:inset-auto sm:data-[side=bottom]:left-1/2 sm:data-[side=bottom]:top-1/2 sm:data-[side=bottom]:h-[min(760px,calc(100dvh-3rem))] sm:data-[side=bottom]:max-h-[calc(100dvh-3rem)] sm:data-[side=bottom]:w-[min(48rem,calc(100vw-3rem))] sm:data-[side=bottom]:max-w-none sm:data-[side=bottom]:[transform:translate(-50%,-50%)] sm:rounded-[28px] sm:border"
       >
         <SheetHeader className="border-b px-5 py-5 sm:px-7">
-          <SheetTitle className="font-display text-xl font-semibold">Registrar alimento</SheetTitle>
+          <SheetTitle className="font-display text-xl font-semibold">{photoMode ? 'Reconhecer por foto' : 'Registrar alimento'}</SheetTitle>
           <SheetDescription>
             {fixedMeal
               ? `Refeição selecionada: ${fixedMeal.label}.`
@@ -248,8 +251,9 @@ export function FoodEntrySheet({
           </SheetDescription>
         </SheetHeader>
         <div ref={scrollRef} className="food-entry-scroll min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-7">
-          {!selected ? (
+          {photoMode ? <FoodPhotoReview date={date} initialMealType={initialMealType} onBack={() => setPhotoMode(false)} onAdded={onAdded} /> : !selected ? (
             <div className="animate-content-in">
+              <Button className="mb-4 h-14 w-full rounded-2xl" variant="outline" onClick={() => setPhotoMode(true)}><Sparkles /> Reconhecer por foto</Button>
               <div className="food-search-row flex gap-2">
                 <div className="relative min-w-0 flex-1">
                   <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -475,7 +479,7 @@ export function FoodEntrySheet({
           <Button variant="ghost" onClick={closeSheet}>
             {selected ? 'Cancelar' : 'Fechar'}
           </Button>
-          {selected && <Button
+          {!photoMode && selected && <Button
             onClick={add}
             disabled={
               !selected ||

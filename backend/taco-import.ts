@@ -32,9 +32,8 @@ type TacoDataset = {
   foods: TacoFood[];
 };
 
-export function normalizeSearch(value: string) {
-  return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-}
+import { normalizeFoodName } from '../shared/food-recognition';
+export const normalizeSearch = normalizeFoodName;
 
 export function validateTacoDataset(dataset: TacoDataset) {
   if (dataset.metadata?.source !== 'TACO' || dataset.metadata.reference_amount !== 100 || dataset.metadata.reference_unit !== 'g') throw new Error('Metadados TACO inválidos.');

@@ -21,6 +21,7 @@
     "nodemailer": "^7.0.13",
     "pg": "^8.23.0",
     "read-excel-file": "^9.3.10",
+    "sharp": "^0.34.5",
     "zod": "^4.5.4"
   },
   "devDependencies": {
