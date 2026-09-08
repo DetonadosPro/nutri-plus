@@ -37,7 +37,7 @@ Cada registro do catálogo mantém sua própria fonte oficial. Códigos e METs s
 3. O nutricionista pode configurar outro fator ou usar `habitual_includes_exercise` quando a base prescrita já incorporar exercícios. Nesse modo, as sessões permanecem no histórico, mas não são somadas novamente.
 4. No fluxo do paciente, exercícios escolhidos são classificados automaticamente como extras à rotina; atividades domésticas, jardinagem, trabalho, transporte e música não são. Essa classificação não modifica a configuração profissional e não causa acréscimo no modo habitual. Registros existentes e recentes mantêm o escopo armazenado.
 5. Bruto = MET × kg × horas. Líquido = (MET − 1) × kg × horas. O líquido pressupõe substituição de repouso; sua inclusão depende da definição profissional de base.
-6. Gasto total do dia = base + gasto líquido dos exercícios registrados naquele dia; saldo do dia = ingestão − gasto total. Sem exercício registrado, o adicional é zero e nenhum treino é presumido. Os valores exibidos são arredondados, preservando a precisão nos dados.
+6. Gasto total = base + adicional elegível; saldo = ingestão − gasto total. Os valores exibidos são arredondados, preservando a precisão nos dados.
 7. Entrada manual permanece em Outras atividades e exige origem/tipo do gasto. Calorias ativas já são líquidas. Totais descontam repouso uma vez. Tipo desconhecido não vira adicional zero.
 8. Não se geram metas de déficit nem projeções de peso. A API legada mantém `theoreticalKg` sob suas restrições etárias/clínicas, mas essa equivalência não é exibida no frontend novo.
 
