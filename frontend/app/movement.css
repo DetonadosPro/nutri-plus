@@ -657,7 +657,7 @@
     max-height: none;
     border: 1px solid #e2e8df;
     border-radius: 24px;
-    translate: none !important;
+    translate: 0 0 !important;
     transform: none !important;
   }
   .movement-dialog-heading {
