@@ -108,6 +108,7 @@ export function PatientDayHome({
         className={`patient-day-dashboard day-content-transition${loading ? ' is-loading' : ''}`}
         aria-busy={loading}
       >
+        <div className="diary-overview">
         <DailyEnergyCard summary={summary} date={date} />
 
         <section className="patient-macro-grid" aria-label="Macronutrientes">
@@ -247,6 +248,8 @@ export function PatientDayHome({
           </article>
         </aside>
 
+        </div>
+        <div className="diary-records">
         <section className="patient-meals-section">
           <header className="patient-section-heading">
             <div>
@@ -269,6 +272,7 @@ export function PatientDayHome({
         </section>
 
         <ActivityPanel date={date} compact onProgress={onProgress} />
+        </div>
       </div>
     </div>
   );

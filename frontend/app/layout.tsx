@@ -5,6 +5,7 @@ import { LargeScreenScale } from './components/large-screen-scale';
 import { PwaRegister } from './components/pwa-register';
 import './globals.css';
 import './movement.css';
+import './diary-desktop.css';
 
 const sans = DM_Sans({ variable: '--font-sans-app', subsets: ['latin'] });
 const display = Manrope({ variable: '--font-display-app', subsets: ['latin'] });

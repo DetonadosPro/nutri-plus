@@ -137,6 +137,7 @@ export function ActivityPanel({
   date,
   patientId,
   professional = false,
+  compact = false,
   onProgress,
 }: {
   date: string;
@@ -214,13 +215,19 @@ export function ActivityPanel({
     }
   }
   return (
-    <section className="activity-panel">
+    <section className={`activity-panel${compact ? ' diary-movement' : ''}`}>
       <header>
         <div>
           <p className="eyebrow">Seu movimento</p>
           <h2>
             <Activity size={19} /> Atividades do dia
           </h2>
+          {compact && day && day.activities.length > 0 && (
+            <p className="diary-movement-summary">
+              {day.activities.length} {day.activities.length === 1 ? 'atividade' : 'atividades'}
+              {' · '}{formatNumber(day.activities.reduce((total, item) => total + item.duration_minutes, 0))} min registrados
+            </p>
+          )}
         </div>
       </header>
       {error && (
@@ -233,7 +240,7 @@ export function ActivityPanel({
       {day && (
         <>
           {!day.activities.length ? (
-            <p className="activity-muted">
+            <p className="activity-muted diary-movement-empty">
               Caminhou, treinou, dançou? Registre aqui.
             </p>
           ) : (
