@@ -263,7 +263,7 @@ export function ActivityEditor({
         if (!o && !busy) onClose();
       }}
     >
-      <DialogContent className="movement-dialog">
+      <DialogContent className="movement-dialog" centered={false}>
         <DialogHeader className="movement-dialog-heading">
           <button
             type="button"
