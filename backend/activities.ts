@@ -25,7 +25,7 @@ const positiveId = z.coerce.number().int().positive();
 export const activityInput = z
   .object({
     date,
-    time: z.string().refine(isClockTime),
+    time: z.string().refine(isClockTime).nullable(),
     duration: z.number().positive().max(1440),
     intensity: z.enum(["light", "moderate", "vigorous", "unspecified"]),
     outsideBase: z.boolean(),
@@ -54,6 +54,8 @@ export const activityInput = z
     note: z.string().max(3000),
     revision: z.number().int().positive().optional(),
     recalculate: z.boolean().default(false),
+    preserveWeight: z.boolean().default(false),
+    restPeriod: z.enum(["under30", "30to60", "1to2", "2to3", "over3"]).nullable().optional(),
   })
   .superRefine((p, ctx) => {
     if (!!p.code === !!p.manual || (p.code && !p.version))
@@ -172,7 +174,8 @@ export async function energyHistory(patient: Row, from: string, to: string) {
     days.push({
       date: day,
       base,
-      habitualKcal: base.baseKcal == null || base.restingKcal == null ? null : base.baseKcal - base.restingKcal,
+      habitualKcal:
+        base.baseKcal == null || base.restingKcal == null ? null : base.baseKcal - base.restingKcal,
       activities,
       intakeKcal,
       knownIntakeKcal: ingestion?.kcal ?? null,
@@ -270,6 +273,17 @@ export function activitiesRouter(deps: {
         .run(res.locals.user.id, p.code, p.version);
     res.sendStatus(204);
   });
+  router.get("/recent", async (_req, res) => {
+    res.json(
+      await db
+        .prepare(`SELECT * FROM (
+      SELECT DISTINCT ON (snapshot->>'code',snapshot->>'catalogVersion') *
+      FROM activity_sessions WHERE patient_id=? AND snapshot->>'method'='met'
+      ORDER BY snapshot->>'code',snapshot->>'catalogVersion',activity_date DESC,id DESC
+    ) recent ORDER BY activity_date DESC,id DESC LIMIT 8`)
+        .all(res.locals.patient.id),
+    );
+  });
   router.get("/history", async (req, res) => {
     const to = date.parse(req.query.to ?? brazilDate()),
       from = date.parse(req.query.from ?? addCalendarDays(to, -6));
@@ -365,20 +379,34 @@ export function activitiesRouter(deps: {
       if (id && !old) throw new ActivityError(404, "Registro não encontrado.");
       if (old && p.revision !== old.revision)
         throw new ActivityError(409, "O registro mudou. Reabra antes de editar.");
-      const start = Number(p.time.slice(0, 2)) * 60 + Number(p.time.slice(3));
-      if (start + p.duration > 1440)
+      const start =
+        p.time == null ? null : Number(p.time.slice(0, 2)) * 60 + Number(p.time.slice(3));
+      if (start != null && start + p.duration > 1440)
         throw new ActivityError(
           400,
           "Divida sessões que atravessam a meia-noite em dois registros.",
         );
-      const overlap = await db
-        .prepare(`SELECT id FROM activity_sessions WHERE patient_id=? AND activity_date=? AND id<>?
+      const overlap =
+        start == null
+          ? null
+          : await db
+              .prepare(`SELECT id FROM activity_sessions WHERE patient_id=? AND activity_date=? AND id<>?
         AND EXTRACT(EPOCH FROM local_time)/60 < ? AND EXTRACT(EPOCH FROM local_time)/60+duration_minutes > ?`)
-        .get(patient.id, p.date, id ?? 0, start + p.duration, start);
+              .get(patient.id, p.date, id ?? 0, start + p.duration, start);
       if (overlap)
         throw new ActivityError(
           409,
           "Já existe atividade nesse horário. Ajuste o horário para evitar contagem duplicada.",
+        );
+      const total = await db
+        .prepare(
+          "SELECT COALESCE(SUM(duration_minutes),0) AS minutes FROM activity_sessions WHERE patient_id=? AND activity_date=? AND id<>?",
+        )
+        .get(patient.id, p.date, id ?? 0);
+      if (total!.minutes + p.duration > 1440)
+        throw new ActivityError(
+          400,
+          "As atividades excedem a duração deste dia. Revise seus registros.",
         );
       let snapshot = old?.snapshot;
       const changed =
@@ -398,11 +426,13 @@ export function activitiesRouter(deps: {
         );
       if (changed || p.recalculate) {
         const weight =
-          (await db
-            .prepare(
-              "SELECT weight_kg,weighed_at FROM weight_history WHERE patient_id=? AND weighed_at<=? ORDER BY weighed_at DESC LIMIT 1",
-            )
-            .get<Row>(patient.id, p.date)) ?? null;
+          p.preserveWeight && old && p.date === old.activity_date
+            ? old.snapshot.weight
+            : ((await db
+                .prepare(
+                  "SELECT weight_kg,weighed_at FROM weight_history WHERE patient_id=? AND weighed_at<=? ORDER BY weighed_at DESC LIMIT 1",
+                )
+                .get<Row>(patient.id, p.date)) ?? null);
         const catalog = p.code
           ? await db
               .prepare("SELECT * FROM activity_catalog WHERE code=? AND version=?")
@@ -439,6 +469,11 @@ export function activitiesRouter(deps: {
       }
       if (p.details.length && !snapshot.resistance)
         throw new ActivityError(400, "Detalhes de séries exigem uma atividade resistida.");
+      const restPeriod = p.restPeriod === undefined ? (old?.rest_period ?? null) : p.restPeriod;
+      if (restPeriod && !snapshot.resistance)
+        throw new ActivityError(400, "Descanso entre séries exige uma atividade de musculação.");
+      // Rest is descriptive. Compendium session MET already includes pauses;
+      // there is no defensible universal multiplier based on rest duration.
       if (old) {
         await db
           .prepare(
@@ -447,7 +482,7 @@ export function activitiesRouter(deps: {
           .run(id, old.revision, JSON.stringify(old), res.locals.user.id);
         return db
           .prepare(
-            `UPDATE activity_sessions SET activity_date=?,local_time=?,duration_minutes=?,intensity=?,outside_base=?,snapshot=?::jsonb,details=?::jsonb,note=?,revision=revision+1,updated_at=CURRENT_TIMESTAMP WHERE id=? AND patient_id=? RETURNING *`,
+            `UPDATE activity_sessions SET activity_date=?,local_time=?,duration_minutes=?,intensity=?,outside_base=?,snapshot=?::jsonb,details=?::jsonb,note=?,rest_period=?,revision=revision+1,updated_at=CURRENT_TIMESTAMP WHERE id=? AND patient_id=? RETURNING *`,
           )
           .get(
             p.date,
@@ -458,13 +493,14 @@ export function activitiesRouter(deps: {
             JSON.stringify(snapshot),
             JSON.stringify(p.details),
             p.note,
+            restPeriod,
             id,
             patient.id,
           );
       }
       return db
         .prepare(
-          `INSERT INTO activity_sessions(patient_id,recorded_by,activity_date,local_time,duration_minutes,intensity,outside_base,snapshot,details,note) VALUES(?,?,?,?,?,?,?,?::jsonb,?::jsonb,?) RETURNING *`,
+          `INSERT INTO activity_sessions(patient_id,recorded_by,activity_date,local_time,duration_minutes,intensity,outside_base,snapshot,details,note,rest_period) VALUES(?,?,?,?,?,?,?,?::jsonb,?::jsonb,?,?) RETURNING *`,
         )
         .get(
           patient.id,
@@ -477,6 +513,7 @@ export function activitiesRouter(deps: {
           JSON.stringify(snapshot),
           JSON.stringify(p.details),
           p.note,
+          restPeriod,
         );
     });
     res.status(id ? 200 : 201).json(result);

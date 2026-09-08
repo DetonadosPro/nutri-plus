@@ -35,6 +35,7 @@ import { DailyJournal, NutritionSummary } from './daily-journal';
 import { EditEntryDialog } from './edit-entry-dialog';
 import { FoodEntrySheet } from './food-entry-sheet';
 import { MacroDistributionSummary } from './macro-distribution';
+import { DailyEnergyCard } from './daily-energy-card';
 import { ActivityPanel, activityChanged } from './activity-panel';
 import { EnergyProgress } from './energy-progress';
 import { PatientDayHome } from './patient-day-home';
@@ -101,11 +102,14 @@ export function PatientApp({
   onProfessionalBack?: () => void;
 }) {
   const today = brazilNow().date;
-  const [navigation, navigate] = useNavigationState(professionalMode ? 'nutritionist-self' : 'patient', {
-    active: 'today' as PatientArea,
-    homeDate: today,
-    diaryDate: today,
-  });
+  const [navigation, navigate] = useNavigationState(
+    professionalMode ? 'nutritionist-self' : 'patient',
+    {
+      active: 'today' as PatientArea,
+      homeDate: today,
+      diaryDate: today,
+    },
+  );
   const { active, homeDate, diaryDate } = navigation;
   const [summary, setSummary] = useState<Summary | null>(null);
   const [homeSummary, setHomeSummary] = useState<Summary | null>(null);
@@ -238,7 +242,11 @@ export function PatientApp({
     <main className="app-canvas patient-app-shell pb-[calc(6rem+env(safe-area-inset-bottom))] lg:pb-0">
       <header className="mobile-topbar patient-mobile-topbar lg:hidden">
         {professionalMode && onProfessionalBack ? (
-          <button onClick={onProfessionalBack} className="secondary-action" aria-label="Voltar à área profissional">
+          <button
+            onClick={onProfessionalBack}
+            className="secondary-action"
+            aria-label="Voltar à área profissional"
+          >
             <ArrowLeft className="size-4" /> Área profissional
           </button>
         ) : (
@@ -362,17 +370,16 @@ export function PatientApp({
               ) : (
                 <ContentSkeleton rows={5} />
               ))}
-            {(active === 'today' || active === 'diary') && (
+            {active === 'diary' && (
               <ActivityPanel
-                date={active === 'today' ? homeDate : diaryDate}
-                compact={active === 'today'}
+                date={diaryDate}
                 onProgress={() => navigate({ active: 'progress' })}
               />
             )}
             {active === 'progress' && (
               <>
                 <EnergyProgress />
-                <ProgressArea history={history} summary={summary} />
+                <NutritionHistory history={history} summary={summary} />
               </>
             )}
             {!professionalMode && active === 'guidance' && (
@@ -554,7 +561,11 @@ function DiaryArea({
     <div className="animate-content-in">
       <DateNavigator date={date} onChange={onDate} loading={loading} />
       <div className={`day-content-transition ${loading ? 'is-loading' : ''}`}>
-        <NutritionSummary summary={summary} />
+        <DailyEnergyCard summary={summary} date={date} />
+        <details className="movement-disclosure">
+          <summary>Nutrientes do dia</summary>
+          <NutritionSummary summary={summary} />
+        </details>
         <div className="mt-9 grid grid-cols-[minmax(0,1fr)] gap-8 xl:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)]">
           <DailyJournal
             summary={summary}
@@ -570,16 +581,20 @@ function DiaryArea({
                 description="Contexto que ajuda seu nutricionista."
               />
               <div className="mt-4 space-y-4">
-                <div>
-                  <Label htmlFor="training">Treino ou atividade</Label>
-                  <Input
-                    id="training"
-                    value={training}
-                    onChange={(event) => setTraining(event.target.value)}
-                    className="mt-2"
-                    placeholder="Ex.: caminhada, musculação…"
-                  />
-                </div>
+                {training && (
+                  <div>
+                    <Label htmlFor="training">
+                      Anotação de treino anterior
+                    </Label>
+                    <Input
+                      id="training"
+                      value={training}
+                      onChange={(event) => setTraining(event.target.value)}
+                      className="mt-2"
+                      placeholder="Anotação anterior"
+                    />
+                  </div>
+                )}
                 <div>
                   <Label htmlFor="day-note">Observação</Label>
                   <Textarea
@@ -605,6 +620,25 @@ function DiaryArea({
   );
 }
 
+function NutritionHistory({
+  history,
+  summary,
+}: {
+  history: History | null;
+  summary: Summary;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <details
+      className="movement-disclosure nutrition-history"
+      onToggle={(e) => setOpen(e.currentTarget.open)}
+    >
+      <summary>Peso e outros indicadores nutricionais</summary>
+      {open && <ProgressArea history={history} summary={summary} />}
+    </details>
+  );
+}
+
 function ProgressArea({
   history,
   summary,
@@ -615,7 +649,9 @@ function ProgressArea({
   if (!history)
     return (
       <div>
-        <p className="patient-progress-caption">Registros reais dos últimos 30 dias.</p>
+        <p className="patient-progress-caption">
+          Registros reais dos últimos 30 dias.
+        </p>
         <ContentSkeleton rows={5} />
       </div>
     );
@@ -634,7 +670,9 @@ function ProgressArea({
     : 'Sem CG e energia suficientes';
   return (
     <div className="animate-content-in">
-      <p className="patient-progress-caption">Registros reais dos últimos 30 dias.</p>
+      <p className="patient-progress-caption">
+        Registros reais dos últimos 30 dias.
+      </p>
       <div className="metric-grid">
         <Metric
           label="Dias registrados"
@@ -932,7 +970,12 @@ function ProfileArea({
               </summary>
               <div className="profile-bmi-ranges">
                 {bmiRanges.map(([label, range]) => (
-                  <div key={label} data-current={label === currentBmiBand.label ? 'true' : 'false'}>
+                  <div
+                    key={label}
+                    data-current={
+                      label === currentBmiBand.label ? 'true' : 'false'
+                    }
+                  >
                     <strong>{label}</strong>
                     <span>{range}</span>
                   </div>
@@ -962,9 +1005,19 @@ function ProfileArea({
             <ProfileDisclosure
               title="Dados pessoais"
               items={[
-                ['Nascimento', p.birth_date ? String(p.birth_date).split('-').reverse().join('/') : 'Não informado'],
+                [
+                  'Nascimento',
+                  p.birth_date
+                    ? String(p.birth_date).split('-').reverse().join('/')
+                    : 'Não informado',
+                ],
                 ['Idade', p.age == null ? 'Não informada' : `${p.age} anos`],
-                ['Altura', p.height_cm ? `${formatNumber(Number(p.height_cm))} cm` : 'Não informada'],
+                [
+                  'Altura',
+                  p.height_cm
+                    ? `${formatNumber(Number(p.height_cm))} cm`
+                    : 'Não informada',
+                ],
               ]}
             />
             <ProfileDisclosure
@@ -977,8 +1030,14 @@ function ProfileArea({
             <ProfileDisclosure
               title="Informações alimentares"
               items={[
-                ['Preferências alimentares', String(p.food_preferences || 'Não informadas')],
-                ['Restrições', String(p.food_restrictions || 'Nenhuma informada')],
+                [
+                  'Preferências alimentares',
+                  String(p.food_preferences || 'Não informadas'),
+                ],
+                [
+                  'Restrições',
+                  String(p.food_restrictions || 'Nenhuma informada'),
+                ],
                 ['Alergias', String(p.allergies || 'Nenhuma informada')],
                 ['Rotina alimentar', String(p.meal_routine || 'Não informada')],
               ]}
@@ -991,13 +1050,17 @@ function ProfileArea({
 }
 
 function activityLevelLabel(value: string | number | null) {
-  return ({
-    sedentary: 'Sedentário',
-    light: 'Leve',
-    moderate: 'Moderado',
-    active: 'Ativo',
-    very_active: 'Muito ativo',
-  } as Record<string, string>)[String(value)] ?? String(value || 'Não informado');
+  return (
+    (
+      {
+        sedentary: 'Sedentário',
+        light: 'Leve',
+        moderate: 'Moderado',
+        active: 'Ativo',
+        very_active: 'Muito ativo',
+      } as Record<string, string>
+    )[String(value)] ?? String(value || 'Não informado')
+  );
 }
 
 function WeightDialog({
