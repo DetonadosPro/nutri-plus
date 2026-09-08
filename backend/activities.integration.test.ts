@@ -455,11 +455,15 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
         (await request("/sessions", "POST", payload({ time: null, restPeriod: "1to2" }))).status,
       ).toBe(400);
     });
-    it("não calcula MET adulto para menores e valida datas e valores", async () => {
+    it("usa a referência juvenil sem reutilizar o MET adulto e valida entradas", async () => {
       await database.db
         .prepare("UPDATE patients SET birth_date='2015-01-01' WHERE id=?")
         .run(otherId);
-      expect((await request("/sessions", "POST", payload(), "other")).status).toBe(400);
+      const youthSession = await request("/sessions", "POST", payload(), "other");
+      expect(youthSession.status).toBe(201);
+      expect(youthSession.body.snapshot.referenceKind).toBe("youth-mety");
+      expect(youthSession.body.snapshot.met).not.toBe(3.8);
+      await request(`/sessions/${youthSession.body.id}?revision=1`, "DELETE", undefined, "other");
       expect((await request("/sessions", "POST", payload({ date: "2026-02-30" }))).status).toBe(
         400,
       );

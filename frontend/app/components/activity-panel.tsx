@@ -49,7 +49,7 @@ export function EnergyMethod() {
     <details className="activity-method">
       <summary>Como estimamos o gasto</summary>
       <p>
-        Repouso estimado por Mifflin–St Jeor × fator definido pelo nutricionista
+        Repouso estimado pela fórmula adequada à idade × fator definido pelo nutricionista
         = rotina diária estimada. Esse fator já contempla indiretamente o efeito
         térmico dos alimentos (TEF), por isso ele não é somado novamente. A meta
         alimentar é uma prescrição distinta do gasto.
@@ -57,7 +57,7 @@ export function EnergyMethod() {
       <p>
         Se o fator já inclui exercícios, os registros não são somados. Na base
         sem exercícios, somente atividades marcadas como fora da base
-        acrescentam o gasto líquido: (MET − 1) × peso × horas. Tarefas habituais
+        acrescentam o gasto líquido. Tarefas habituais
         devem permanecer dentro da base.
       </p>
       <p>
@@ -71,16 +71,17 @@ export function EnergyMethod() {
         Não acrescentamos calorias de recuperação após o treino.
       </p>
       <p>
-        Estimativas populacionais, não calorimetria individual. O catálogo
-        adulto cobre 19–59 anos. Fora dessa faixa, ou quando houver necessidade
-        de avaliação clínica, o gasto de base fica indisponível.
+        Dos 6 aos 18 anos usamos o Youth Compendium e Schofield; dos 19 aos 59,
+        o Compendium Adulto; a partir dos 60, o Older Adult Compendium. Quando
+        uma modalidade não possui equivalente validado para a idade, ela não é
+        oferecida no catálogo automático.
       </p>
       <a
         href="https://pacompendium.com/adult-compendium/"
         target="_blank"
         rel="noreferrer"
       >
-        Compendium 2024
+        Referências dos Compendiums
       </a>
     </details>
   );

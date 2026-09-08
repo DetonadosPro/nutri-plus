@@ -8,8 +8,8 @@ import {
   ENERGY_VERSION,
   energyBalance,
   manualEnergy,
-  metEnergy,
 } from "./domain/activity-energy";
+import { ageSpecificEnergy, referenceForAge, schofieldRestingKcal } from "./domain/age-activity-energy";
 import {
   addCalendarDays,
   brazilDate,
@@ -150,8 +150,12 @@ export async function energyHistory(patient: Row, from: string, to: string) {
       age,
       sex: patient.sex,
     });
-    const restingKcal =
-      age == null || age < 19 || age > 59 || clinicalReview ? null : metrics.basalKcal;
+    const youthResting = age != null && age >= 6 && age <= 18 && weight && (patient.sex === "male" || patient.sex === "female")
+      ? schofieldRestingKcal(weight.weight_kg, age, patient.sex)
+      : null;
+    const restingKcal = clinicalReview || age == null || age < 6
+      ? null
+      : age <= 18 ? youthResting : metrics.basalKcal;
     const base = saved.find((s) => s.day === day)?.snapshot ?? {
       version: ENERGY_VERSION,
       restingKcal,
@@ -162,6 +166,7 @@ export async function energyHistory(patient: Row, from: string, to: string) {
       age,
       heightCm: patient.height_cm,
       sex: patient.sex,
+      restingFormula: age != null && age <= 18 ? "Schofield" : "Mifflin-St Jeor",
       clinicalReview,
       settingId: setting?.id ?? null,
       note:
@@ -227,7 +232,7 @@ export async function energyHistory(patient: Row, from: string, to: string) {
     theoreticalKg:
       completeDays.length &&
       !settings[0]?.clinical_review &&
-      days.every((d) => !d.base.clinicalReview && d.base.age >= 19 && d.base.age <= 59)
+      days.every((d) => !d.base.clinicalReview && d.base.age >= 19)
         ? accumulated / 7700
         : null,
   };
@@ -253,12 +258,17 @@ export function activitiesRouter(deps: {
     }
   });
   router.get("/catalog", async (req, res) => {
+    const catalogDay = date.parse(req.query.date ?? brazilDate());
+    const age = ageAt(res.locals.patient.birth_date, catalogDay);
     const rows = await db
       .prepare(`SELECT c.*,EXISTS(SELECT 1 FROM activity_favorites f WHERE f.user_id=? AND f.code=c.code AND f.version=c.version) AS favorite,
       (SELECT MAX(a.activity_date) FROM activity_sessions a WHERE a.patient_id=? AND a.snapshot->>'code'=c.code AND a.snapshot->>'catalogVersion'=c.version) AS recent
       FROM activity_catalog c ORDER BY c.name`)
       .all(res.locals.user.id, res.locals.patient.id);
-    res.json(rows);
+    res.json(rows.flatMap((row: Row) => {
+      const reference = referenceForAge(row.code, row.met, age);
+      return reference ? [{ ...row, met: reference.met, source: reference.source, notes: reference.notes, referenceKind: reference.referenceKind, referenceCode: reference.referenceCode, ageBand: reference.ageBand }] : [];
+    }));
   });
   router.put("/favorites", async (req, res) => {
     const p = z
@@ -449,15 +459,18 @@ export function activitiesRouter(deps: {
           : null;
         if (p.code && !catalog) throw new ActivityError(404, "Atividade não encontrada.");
         const age = ageAt(patient.birth_date, p.date);
-        if (catalog && (age == null || age < 19 || age > 59))
-          throw new ActivityError(
-            400,
-            "Este catálogo adulto cobre 19–59 anos. Use um gasto informado por fonte profissional para outras idades.",
-          );
+        const reference = catalog ? referenceForAge(catalog.code, catalog.met, age) : null;
+        if (catalog && !reference)
+          throw new ActivityError(400, age != null && age < 6
+            ? "Para menores de 6 anos, informe um gasto fornecido por um profissional."
+            : "Esta modalidade não possui referência equivalente para a idade nesta data. Escolha outra modalidade ou informe um gasto profissional.");
         if (catalog && !weight)
           throw new ActivityError(400, "Registre um peso com data igual ou anterior à atividade.");
+        const restingForActivity = catalog && age != null && age <= 18 && (patient.sex === "male" || patient.sex === "female")
+          ? schofieldRestingKcal(weight!.weight_kg, age, patient.sex)
+          : null;
         const energy = catalog
-          ? metEnergy(catalog.met, weight!.weight_kg, p.duration)
+          ? ageSpecificEnergy(reference!, weight!.weight_kg, p.duration, restingForActivity)
           : manualEnergy(p.manual!.kcal, p.manual!.kind, weight?.weight_kg ?? null, p.duration);
         snapshot = {
           version: ENERGY_VERSION,
@@ -466,9 +479,12 @@ export function activitiesRouter(deps: {
           catalogVersion: p.version,
           name: catalog?.name ?? p.manual!.name,
           category: catalog?.category ?? "Informado manualmente",
-          met: catalog?.met ?? null,
-          source: catalog?.source ?? p.manual!.source,
-          notes: catalog?.notes ?? "",
+          met: reference?.met ?? null,
+          source: reference?.source ?? p.manual!.source,
+          notes: reference?.notes ?? "",
+          referenceKind: reference?.referenceKind ?? "manual",
+          referenceCode: reference?.referenceCode ?? null,
+          referenceAgeBand: reference?.ageBand ?? null,
           resistance: catalog?.resistance ?? false,
           weight,
           manual: p.manual,

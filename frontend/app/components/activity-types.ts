@@ -11,6 +11,9 @@ export type ActivityCatalog = {
   resistance: boolean;
   favorite: boolean;
   recent: string | null;
+  referenceKind: 'adult-met' | 'youth-mety' | 'older-met60';
+  referenceCode: string;
+  ageBand: string;
 };
 export type StrengthDetail = {
   name: string;
@@ -51,6 +54,9 @@ export type ActivitySession = {
     grossKcal: number | null;
     netKcal: number | null;
     manual: ManualActivity | null;
+    referenceKind?: 'adult-met' | 'youth-mety' | 'older-met60' | 'manual';
+    referenceCode?: string | null;
+    referenceAgeBand?: string | null;
   };
 };
 export type EnergyDay = {
@@ -63,6 +69,7 @@ export type EnergyDay = {
     mode: 'habitual_includes_exercise' | 'base_plus_net';
     clinicalReview: boolean;
     note: string;
+    restingFormula?: string;
   };
   activities: ActivitySession[];
   intakeKcal: number | null;
