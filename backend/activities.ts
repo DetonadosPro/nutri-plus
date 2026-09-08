@@ -132,7 +132,13 @@ export async function energyHistory(patient: Row, from: string, to: string) {
     const weight = weights.find((w) => w.weighed_at <= day) ?? null;
     const setting = settings.find((s) => s.valid_from <= day);
     const age = ageAt(patient.birth_date, day);
-    const factor = setting?.factor ?? ACTIVITY_FACTORS[patient.activity_level] ?? null;
+    const mode = setting?.mode ?? "base_plus_net";
+    const factor =
+      setting?.factor ??
+      (mode === "base_plus_net"
+        ? ACTIVITY_FACTORS.sedentary
+        : ACTIVITY_FACTORS[patient.activity_level]) ??
+      null;
     const clinicalReview = setting?.clinical_review ?? false;
     const metrics = patientMetrics({
       weightKg: weight?.weight_kg,
@@ -147,7 +153,7 @@ export async function energyHistory(patient: Row, from: string, to: string) {
       restingKcal,
       factor,
       baseKcal: restingKcal == null || factor == null ? null : restingKcal * factor,
-      mode: setting?.mode ?? "habitual_includes_exercise",
+      mode,
       weight,
       age,
       heightCm: patient.height_cm,
@@ -156,7 +162,7 @@ export async function energyHistory(patient: Row, from: string, to: string) {
       settingId: setting?.id ?? null,
       note:
         setting?.note ??
-        "Fator habitual existente, incluindo exercícios; confirmar interpretação com o nutricionista.",
+        "Base cotidiana sem exercícios registrados; atividades elegíveis são somadas pelo gasto líquido.",
     };
     if (day < today && !saved.some((s) => s.day === day))
       freeze.push({ patient_id: id, day, snapshot: base });

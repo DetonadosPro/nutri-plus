@@ -32,9 +32,9 @@ Cada registro do catálogo mantém sua própria fonte oficial. Códigos e METs s
 
 `nutri-energy-1`:
 
-1. Repouso estimado por Mifflin–St Jeor. Base = repouso × fator. Os fatores habituais existentes são preservados. Dados ausentes, faixa etária fora de 19–59 anos ou avaliação clínica suspensa deixam a base indisponível.
-2. Padrão conservador: `habitual_includes_exercise`. O fator já inclui exercícios e nenhuma sessão aumenta o gasto total. A meta alimentar é independente desse cálculo.
-3. O nutricionista pode configurar `base_plus_net`, documentando uma base sem os exercícios que serão registrados. Só sessões elegíveis (`outside_base`) acrescentam gasto líquido.
+1. Repouso estimado por Mifflin–St Jeor. Sem configuração profissional, a base cotidiana usa fator 1,2 e não inclui exercícios registrados. Dados ausentes, faixa etária fora de 19–59 anos ou avaliação clínica suspensa deixam a base indisponível.
+2. O padrão é `base_plus_net`: exercícios elegíveis acrescentam somente o gasto líquido acima do repouso. Assim, cada exercício registrado atualiza o balanço sem somar novamente a energia que a pessoa gastaria em repouso durante o mesmo período.
+3. O nutricionista pode configurar outro fator ou usar `habitual_includes_exercise` quando a base prescrita já incorporar exercícios. Nesse modo, as sessões permanecem no histórico, mas não são somadas novamente.
 4. No fluxo do paciente, exercícios escolhidos são classificados automaticamente como extras à rotina; atividades domésticas, jardinagem, trabalho, transporte e música não são. Essa classificação não modifica a configuração profissional e não causa acréscimo no modo habitual. Registros existentes e recentes mantêm o escopo armazenado.
 5. Bruto = MET × kg × horas. Líquido = (MET − 1) × kg × horas. O líquido pressupõe substituição de repouso; sua inclusão depende da definição profissional de base.
 6. Gasto total = base + adicional elegível; saldo = ingestão − gasto total. Os valores exibidos são arredondados, preservando a precisão nos dados.

@@ -95,10 +95,10 @@ try {
   // Tour the actual app, including the food reference and secondary diary.
   await page.screenshot({ path: "outputs/activities-simple/home-empty.png", fullPage: true });
   await page.getByRole("button", { name: "Registrar alimento", exact: true }).last().click();
-  await page.locator('[role="dialog"]:not([data-slot="toast"])').waitFor();
+  await page.locator('[role="dialog"][data-open]:not([data-slot="toast"])').waitFor();
   await page.screenshot({ path: "outputs/activities-simple/food-reference.png" });
   await page.keyboard.press("Escape");
-  await page.locator('[role="dialog"]:not([data-slot="toast"])').waitFor({ state: "hidden" });
+  await page.locator('[role="dialog"][data-open]:not([data-slot="toast"])').waitFor({ state: "hidden" });
   await page
     .locator(".patient-bottom-nav")
     .getByRole("button", { name: "Perfil", exact: true })
@@ -123,7 +123,7 @@ try {
   );
   await page.screenshot({ path: "outputs/activities-simple/walking-mobile.png" });
   await page.getByRole("button", { name: "Salvar atividade", exact: true }).click();
-  await page.locator('[role="dialog"]:not([data-slot="toast"])').waitFor({ state: "hidden" });
+  await page.locator('[role="dialog"][data-open]:not([data-slot="toast"])').waitFor({ state: "hidden" });
   await page.waitForFunction(() =>
     document.querySelector(".activity-session-title")?.textContent?.includes("133"),
   );
@@ -146,7 +146,7 @@ try {
   await page.getByRole("button", { name: "Editar atividade", exact: true }).click();
   await page.getByLabel("Duração em minutos").fill("45");
   await page.getByRole("button", { name: "Salvar atividade", exact: true }).click();
-  await page.locator('[role="dialog"]:not([data-slot="toast"])').waitFor({ state: "hidden" });
+  await page.locator('[role="dialog"][data-open]:not([data-slot="toast"])').waitFor({ state: "hidden" });
   await page.waitForFunction(() =>
     document.querySelector(".activity-session-title")?.textContent?.includes("45 min"),
   );
@@ -165,7 +165,7 @@ try {
     "Recent duration reused",
   );
   await page.getByRole("button", { name: "Salvar atividade", exact: true }).click();
-  await page.locator('[role="dialog"]:not([data-slot="toast"])').waitFor({ state: "hidden" });
+  await page.locator('[role="dialog"][data-open]:not([data-slot="toast"])').waitFor({ state: "hidden" });
   await page.waitForFunction(
     () => document.querySelectorAll(".activity-session-title").length === 2,
   );
@@ -178,7 +178,7 @@ try {
   await page.getByRole("button", { name: "1–2 min", exact: true }).click();
   await page.screenshot({ path: "outputs/activities-simple/strength-mobile.png" });
   await page.getByRole("button", { name: "Salvar atividade", exact: true }).click();
-  await page.locator('[role="dialog"]:not([data-slot="toast"])').waitFor({ state: "hidden" });
+  await page.locator('[role="dialog"][data-open]:not([data-slot="toast"])').waitFor({ state: "hidden" });
   await page.waitForFunction(
     () => document.querySelectorAll(".activity-session-title").length === 3,
   );
@@ -197,7 +197,7 @@ try {
   await page.getByLabel("Quantidade em gramas").fill("5000");
   await page.locator(".meal-picker").getByRole("button", { name: "Almoço", exact: true }).click();
   await page.getByRole("button", { name: "Adicionar alimento", exact: true }).click();
-  await page.locator('[role="dialog"]:not([data-slot="toast"])').waitFor({ state: "hidden" });
+  await page.locator('[role="dialog"][data-open]:not([data-slot="toast"])').waitFor({ state: "hidden" });
   await page.waitForFunction(
     (prior: string) => document.querySelector(".daily-balance strong")?.textContent !== prior,
     beforeFood,
@@ -219,7 +219,7 @@ try {
   await page.getByRole("button", { name: "Reabrir registros do dia", exact: true }).waitFor();
   await page.screenshot({ path: "outputs/activities-simple/balance-details.png" });
   await page.keyboard.press("Escape");
-  await page.locator('[role="dialog"]:not([data-slot="toast"])').waitFor({ state: "hidden" });
+  await page.locator('[role="dialog"][data-open]:not([data-slot="toast"])').waitFor({ state: "hidden" });
   await panel.getByRole("button", { name: "Ver meu histórico →" }).click();
   await page.getByRole("heading", { name: "Seu balanço energético", exact: true }).waitFor();
   await page.getByRole("button", { name: "30 dias", exact: true }).click();
@@ -265,7 +265,7 @@ try {
   await proPage.locator(".activity-session-title").first().click();
   await proPage.getByRole("button", { name: "Excluir", exact: true }).click();
   await proPage.getByRole("button", { name: "Excluir atividade", exact: true }).click();
-  await proPage.locator('[role="dialog"]:not([data-slot="toast"])').waitFor({ state: "hidden" });
+  await proPage.locator('[role="dialog"][data-open]:not([data-slot="toast"])').waitFor({ state: "hidden" });
   await proPage.waitForFunction(
     () => document.querySelectorAll(".activity-session-title").length === 2,
   );

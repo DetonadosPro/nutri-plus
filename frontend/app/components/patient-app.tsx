@@ -36,7 +36,11 @@ import { EditEntryDialog } from './edit-entry-dialog';
 import { FoodEntrySheet } from './food-entry-sheet';
 import { MacroDistributionSummary } from './macro-distribution';
 import { DailyEnergyCard } from './daily-energy-card';
-import { ActivityPanel, activityChanged } from './activity-panel';
+import {
+  ActivityPanel,
+  activityChanged,
+  listenActivityChanges,
+} from './activity-panel';
 import { EnergyProgress } from './energy-progress';
 import { PatientDayHome } from './patient-day-home';
 import { UserIdentity } from './user-identity';
@@ -184,6 +188,10 @@ export function PatientApp({
   useEffect(() => {
     void refreshPatientData();
   }, [refreshPatientData]);
+  useEffect(
+    () => listenActivityChanges(() => void refreshPatientData()),
+    [refreshPatientData],
+  );
   useEffect(() => {
     if (professionalMode && active === 'guidance') {
       navigate({ active: 'today' });

@@ -158,7 +158,9 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
       expect(s.snapshot.grossKcal).toBe(133);
       expect(s.snapshot.netKcal).toBeCloseTo(98);
       let h = (await request(`/history?from=${today}&to=${today}`)).body;
-      expect(h.days[0].additionalKcal).toBe(0);
+      expect(h.days[0].base.mode).toBe("base_plus_net");
+      expect(h.days[0].base.factor).toBe(1.2);
+      expect(h.days[0].additionalKcal).toBeCloseTo(98);
       expect(h.days[0].intakeKcal).toBeNull();
       expect(h.completeDays).toBe(0);
       expect((await request("/sessions", "POST", payload())).status).toBe(409);
