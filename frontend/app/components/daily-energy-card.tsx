@@ -10,9 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import {
-  activityChanged,
   activityQuery,
   EnergyMethod,
   EnergyNumbers,
@@ -36,8 +34,7 @@ export function DailyEnergyCard({
 }) {
   const [data, setData] = useState<EnergyHistory | null>(null),
     [error, setError] = useState(''),
-    [open, setOpen] = useState(false),
-    [busy, setBusy] = useState(false);
+    [open, setOpen] = useState(false);
   const request = useRef(0);
   const query = activityQuery(patientId);
   const load = useCallback(async () => {
@@ -65,21 +62,6 @@ export function DailyEnergyCard({
   const day = data?.days[0]?.date === date ? data.days[0] : null;
   const consumed = summary.totals.energia_kcal ?? 0,
     goal = summary.goals?.energy_kcal;
-  async function complete() {
-    if (!day) return;
-    setBusy(true);
-    try {
-      await api(`/activities/food-status?${query}`, {
-        method: 'PUT',
-        body: JSON.stringify({ date, complete: !day.foodComplete }),
-      });
-      activityChanged();
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  }
   return (
     <>
       <section
@@ -115,9 +97,7 @@ export function DailyEnergyCard({
                   ? 'Carregando…'
                   : day.balanceKcal == null
                     ? 'Ver o que falta'
-                    : day.foodComplete
-                      ? 'Dia completo'
-                      : 'Parcial até agora'}
+                    : 'Atualizado automaticamente'}
               <ArrowUpRight size={14} />
             </small>
           </button>
@@ -154,19 +134,10 @@ export function DailyEnergyCard({
                   : `${signedEnergy(day.balanceKcal)} kcal · ${day.label}`}
               </p>
               <p className="activity-muted">
-                Enquanto você registra suas refeições, o resultado é parcial.
-                Déficit e superávit não indicam, por si só, que o dia foi bom ou
-                ruim.
+                O saldo é atualizado automaticamente conforme você registra ou
+                altera alimentos e exercícios. Déficit e superávit não indicam,
+                por si só, que o dia foi bom ou ruim.
               </p>
-              <Button
-                variant="outline"
-                disabled={busy || day.missingFoodEnergy > 0}
-                onClick={() => void complete()}
-              >
-                {day.foodComplete
-                  ? 'Reabrir registros do dia'
-                  : 'Registrei toda a alimentação'}
-              </Button>
               <details className="movement-disclosure">
                 <summary>Ver detalhes do cálculo</summary>
                 <EnergyNumbers day={day} />

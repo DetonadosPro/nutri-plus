@@ -322,17 +322,16 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
         (await request(`/history?from=${today}&to=${today}`)).body.days[0].totalKcal,
       ).toBeNull();
     });
-    it("preserva a base histórica e distingue dia incompleto, vazio e energia ausente", async () => {
+    it("preserva a base histórica e distingue dia vazio de energia indisponível", async () => {
       const h = (await request(`/history?from=${yesterday}&to=${yesterday}`)).body;
       const baseBefore = h.days[0].base;
       await database.db.prepare("UPDATE patients SET height_cm=190 WHERE id=?").run(patientId);
       expect(
         (await request(`/history?from=${yesterday}&to=${yesterday}`)).body.days[0].base,
       ).toEqual(baseBefore);
-      await request("/food-status", "PUT", { date: yesterday, complete: true });
       expect(
         (await request(`/history?from=${yesterday}&to=${yesterday}`)).body.days[0].intakeKcal,
-      ).toBe(0);
+      ).toBeNull();
       const db = database.db;
       const log = (await db
         .prepare("INSERT INTO daily_logs(patient_id,log_date) VALUES(?,?) RETURNING id")
@@ -365,6 +364,7 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
         .run(food.id);
       day = (await request(`/history?from=${yesterday}&to=${yesterday}`)).body.days[0];
       expect(day.intakeKcal).toBe(2300);
+      expect(day.foodComplete).toBe(true);
       expect(day.balanceKcal).toBeCloseTo(2300 - baseBefore.baseKcal);
     });
     it("exige recálculo profissional explícito e preserva a base anterior", async () => {

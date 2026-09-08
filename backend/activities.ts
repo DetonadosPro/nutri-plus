@@ -95,7 +95,7 @@ function ageAt(birth: string | null, day: string) {
 }
 export async function energyHistory(patient: Row, from: string, to: string) {
   const id = Number(patient.id);
-  const [sessions, weights, settings, goalFactors, food, status, saved] = [
+  const [sessions, weights, settings, goalFactors, food, saved] = [
     await db
       .prepare(
         "SELECT * FROM activity_sessions WHERE patient_id = ? AND activity_date BETWEEN ? AND ? ORDER BY activity_date DESC, local_time DESC,id DESC",
@@ -122,9 +122,6 @@ export async function energyHistory(patient: Row, from: string, to: string) {
       FROM daily_logs dl JOIN meals m ON m.daily_log_id=dl.id JOIN meal_entries me ON me.meal_id=m.id
       LEFT JOIN food_nutrients fn ON fn.food_id=me.food_id AND fn.nutrient_code='energia_kcal'
       WHERE dl.patient_id = ? AND dl.log_date BETWEEN ? AND ? GROUP BY dl.log_date`)
-      .all<Row>(id, from, to),
-    await db
-      .prepare("SELECT * FROM energy_food_status WHERE patient_id = ? AND day BETWEEN ? AND ?")
       .all<Row>(id, from, to),
     await db
       .prepare("SELECT * FROM energy_day_snapshots WHERE patient_id = ? AND day BETWEEN ? AND ?")
@@ -175,9 +172,8 @@ export async function energyHistory(patient: Row, from: string, to: string) {
       freeze.push({ patient_id: id, day, snapshot: base });
     const activities = sessions.filter((s) => s.activity_date === day);
     const ingestion = food.find((f) => f.log_date === day);
-    const complete =
-      Boolean(status.find((s) => s.day === day)?.complete) && !(ingestion?.missing > 0);
-    const intakeKcal = ingestion?.missing > 0 ? null : (ingestion?.kcal ?? (complete ? 0 : null));
+    const complete = Boolean(ingestion?.entries > 0) && !(ingestion?.missing > 0);
+    const intakeKcal = complete ? (ingestion?.kcal ?? 0) : null;
     const balance = energyBalance(
       intakeKcal,
       base.baseKcal,
