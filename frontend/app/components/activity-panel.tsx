@@ -50,7 +50,9 @@ export function EnergyMethod() {
       <summary>Como estimamos o gasto</summary>
       <p>
         Repouso estimado por Mifflin–St Jeor × fator definido pelo nutricionista
-        = gasto de base. A meta alimentar é uma prescrição distinta do gasto.
+        = rotina diária estimada. Esse fator já contempla indiretamente o efeito
+        térmico dos alimentos (TEF), por isso ele não é somado novamente. A meta
+        alimentar é uma prescrição distinta do gasto.
       </p>
       <p>
         Se o fator já inclui exercícios, os registros não são somados. Na base
@@ -91,9 +93,9 @@ export function EnergyNumbers({ day }: { day: EnergyDay }) {
           ['Ingestão registrada', day.intakeKcal],
           ['Repouso estimado', day.base.restingKcal],
           ['Rotina habitual além do repouso', day.habitualKcal],
-          ['Gasto de base', day.base.baseKcal],
+          ['Rotina diária estimada', day.base.baseKcal],
           ['Adicional contabilizado', day.additionalKcal],
-          ['Gasto total estimado', day.totalKcal],
+          ['Gasto diário estimado (TDEE)', day.totalKcal],
         ].map(([label, value]) => (
           <div key={String(label)}>
             <dt>{label}</dt>
