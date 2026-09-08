@@ -43,9 +43,11 @@ function DialogContent({
   className,
   children,
   showCloseButton = true,
+  centered = true,
   ...props
 }: DialogPrimitive.Popup.Props & {
   showCloseButton?: boolean;
+  centered?: boolean;
 }) {
   return (
     <DialogPortal>
@@ -53,7 +55,8 @@ function DialogContent({
       <DialogPrimitive.Popup
         data-slot="dialog-content"
         className={cn(
-          'fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-5 rounded-[22px] border bg-popover p-5 text-sm text-popover-foreground shadow-[0_24px_70px_oklch(0.2_0.025_160/.18)] duration-150 outline-none sm:max-w-sm sm:p-6 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
+          'fixed z-50 grid w-full max-w-[calc(100%-2rem)] gap-5 rounded-[22px] border bg-popover p-5 text-sm text-popover-foreground shadow-[0_24px_70px_oklch(0.2_0.025_160/.18)] duration-150 outline-none sm:max-w-sm sm:p-6 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
+          centered && 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
           className,
         )}
         {...props}

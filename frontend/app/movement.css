@@ -68,6 +68,10 @@
   height: 5px;
 }
 .movement-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: min(620px, calc(100vw - 2rem));
   max-width: 620px;
   max-height: min(880px, 92dvh);
@@ -657,7 +661,6 @@
     max-height: none;
     border: 1px solid #e2e8df;
     border-radius: 24px;
-    translate: 0 0 !important;
     transform: none !important;
   }
   .movement-dialog-heading {
