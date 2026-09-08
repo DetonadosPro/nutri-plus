@@ -190,7 +190,7 @@ export function EnergyProgress({
       {data && !error && (
         <div aria-busy={loading}>
           <div className="movement-period-total">
-            <span>Saldo médio por dia</span>
+            <span>Balanço médio no período</span>
             <p>
               <strong>{signedEnergy(mean)}</strong> kcal
             </p>
