@@ -375,7 +375,12 @@ app.put(
 app.post(
   "/api/auth/activation-code/identify",
   route(async (req, res) => {
-    const payload = z.object({ code: z.string().min(8).max(32) }).parse(req.body);
+    const payload = z.object({
+      code: z.string().trim().max(11).refine(
+        (value) => /^[A-HJ-NP-Z2-9]{5}-?[A-HJ-NP-Z2-9]{5}$/i.test(value),
+        "Código de convite inválido.",
+      ),
+    }).parse(req.body);
     const activation = await validAccountToken(normalizeActivationCode(payload.code), "activation");
     if (!activation)
       return res.status(400).json({ error: "Código inválido, expirado ou já utilizado." });
@@ -388,7 +393,10 @@ app.post(
   route(async (req, res) => {
     const payload = z
       .object({
-        code: z.string().min(8).max(32),
+        code: z.string().trim().max(11).refine(
+          (value) => /^[A-HJ-NP-Z2-9]{5}-?[A-HJ-NP-Z2-9]{5}$/i.test(value),
+          "Código de convite inválido.",
+        ),
         email: z.email(),
         password: z.string().min(8).max(128),
       })
