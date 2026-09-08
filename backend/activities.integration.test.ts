@@ -392,6 +392,67 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
       expect(audit!.previous_snapshot).toEqual(before);
       expect(audit!.reason).toBe("Correção de altura");
     });
+    it("registra musculação sem horário e descanso sem alterar o gasto", async () => {
+      const a = await request(
+        "/sessions",
+        "POST",
+        payload({ time: null, code: "02054", duration: 60, restPeriod: "1to2" }),
+      );
+      expect(a.status).toBe(201);
+      expect(a.body.local_time).toBeNull();
+      expect(a.body.rest_period).toBe("1to2");
+      expect(a.body.snapshot.grossKcal).toBe(3.5 * a.body.snapshot.weight.weight_kg);
+      const b = await request(
+        `/sessions/${a.body.id}`,
+        "PUT",
+        payload({ time: null, code: "02054", duration: 60, restPeriod: "under30", revision: 1 }),
+      );
+      expect(b.status).toBe(200);
+      expect(b.body.snapshot).toEqual(a.body.snapshot);
+      const recent = await request("/recent");
+      expect(recent.body.some((s: any) => s.id === a.body.id && s.rest_period === "under30")).toBe(
+        true,
+      );
+      expect((await request("/recent", "GET", undefined, "admin")).status).toBe(403);
+      await request(`/sessions/${a.body.id}?revision=2`, "DELETE");
+    });
+    it("mantém peso original ao editar duração no fluxo simples", async () => {
+      const a = await request("/sessions", "POST", payload({ time: null }));
+      expect(a.status).toBe(201);
+      const weight = a.body.snapshot.weight.weight_kg;
+      await database.db
+        .prepare("UPDATE weight_history SET weight_kg=weight_kg+10 WHERE patient_id=?")
+        .run(patientId);
+      const b = await request(
+        `/sessions/${a.body.id}`,
+        "PUT",
+        payload({ time: null, duration: 60, revision: 1, recalculate: true, preserveWeight: true }),
+      );
+      expect(b.status).toBe(200);
+      expect(b.body.snapshot.weight.weight_kg).toBe(weight);
+      expect(b.body.snapshot.grossKcal).toBeCloseTo(a.body.snapshot.grossKcal * 2);
+      await database.db
+        .prepare("UPDATE weight_history SET weight_kg=weight_kg-10 WHERE patient_id=?")
+        .run(patientId);
+      await request(`/sessions/${a.body.id}?revision=2`, "DELETE");
+    });
+    it("limita a duração diária mesmo quando o horário não foi informado", async () => {
+      const p = payload({
+        date: addCalendarDays(today, -3),
+        time: null,
+        code: null,
+        version: null,
+        duration: 1000,
+        manual: { name: "Atividade registrada", kcal: 100, kind: "net", source: "Teste" },
+      });
+      const a = await request("/sessions", "POST", p);
+      expect(a.status).toBe(201);
+      expect((await request("/sessions", "POST", { ...p, duration: 500 })).status).toBe(400);
+      await request(`/sessions/${a.body.id}?revision=1`, "DELETE");
+      expect(
+        (await request("/sessions", "POST", payload({ time: null, restPeriod: "1to2" }))).status,
+      ).toBe(400);
+    });
     it("não calcula MET adulto para menores e valida datas e valores", async () => {
       await database.db
         .prepare("UPDATE patients SET birth_date='2015-01-01' WHERE id=?")

@@ -1,14 +1,23 @@
-"use client";
+'use client';
 
-import { ChevronDown, Droplets, Flame, Minus, Plus, Utensils } from "lucide-react";
-import { formatNumber, progressPercent } from "@/lib/nutrition-format";
+import {
+  ChevronDown,
+  Droplets,
+  Flame,
+  Minus,
+  Plus,
+  Utensils,
+} from 'lucide-react';
+import { formatNumber, progressPercent } from '@/lib/nutrition-format';
 import {
   normalizedGlycemicClassificationDescription,
   normalizedGlycemicClassificationLabel,
-} from "@/lib/glycemic";
-import type { Meal, MealEntry, Summary } from "../types";
-import { PatientDaySwitcher } from "./patient-day-switcher";
-import { PatientMealList } from "./patient-meal-list";
+} from '@/lib/glycemic';
+import type { Meal, MealEntry, Summary } from '../types';
+import { PatientDaySwitcher } from './patient-day-switcher';
+import { DailyEnergyCard } from './daily-energy-card';
+import { ActivityPanel } from './activity-panel';
+import { PatientMealList } from './patient-meal-list';
 
 type PatientDayHomeProps = {
   summary: Summary;
@@ -40,48 +49,47 @@ export function PatientDayHome({
   onProgress,
 }: PatientDayHomeProps) {
   const goals = summary.goals ?? {};
-  const consumed = summary.totals.energia_kcal ?? 0;
-  const energyGoal = goals.energy_kcal ?? null;
-  const remaining = energyGoal == null ? null : energyGoal - consumed;
-  const entryCount = summary.meals.reduce((total, meal) => total + meal.entries.length, 0);
   const waterMl = summary.log.water_ml ?? 0;
   const weightKg = summary.weight?.weight_kg;
   const waterGoal =
-    summary.waterGoalMl ?? (weightKg != null && weightKg > 0 ? weightKg * 40 : null);
+    summary.waterGoalMl ??
+    (weightKg != null && weightKg > 0 ? weightKg * 40 : null);
   const glycemic = summary.glycemic;
   const normalizedLoad = glycemic.per1000Kcal ?? glycemic.normalizedGL;
   const classification = glycemic.classification;
 
   const macros = [
     {
-      label: "Proteína",
-      shortLabel: "P",
+      label: 'Proteína',
+      shortLabel: 'P',
       value: summary.totals.proteina_g ?? 0,
       goal: goals.protein_g,
       kcal: summary.energy.proteinKcal,
       kcalPercent: summary.energy.proteinPercent,
-      tone: "protein",
+      tone: 'protein',
       supporting:
-        summary.proteinPerKg == null ? null : `${formatNumber(summary.proteinPerKg, 2)} g/kg`,
+        summary.proteinPerKg == null
+          ? null
+          : `${formatNumber(summary.proteinPerKg, 2)} g/kg`,
     },
     {
-      label: "Carbo",
-      shortLabel: "C",
+      label: 'Carbo',
+      shortLabel: 'C',
       value: summary.totals.carboidrato_g ?? 0,
       goal: goals.carbohydrate_g,
       kcal: summary.energy.carbohydrateKcal,
       kcalPercent: summary.energy.carbohydratePercent,
-      tone: "carb",
+      tone: 'carb',
       supporting: null,
     },
     {
-      label: "Gordura",
-      shortLabel: "G",
+      label: 'Gordura',
+      shortLabel: 'G',
       value: summary.totals.lipideos_g ?? 0,
       goal: goals.fat_g,
       kcal: summary.energy.fatKcal,
       kcalPercent: summary.energy.fatPercent,
-      tone: "fat",
+      tone: 'fat',
       supporting: null,
     },
   ] as const;
@@ -90,56 +98,18 @@ export function PatientDayHome({
     <div className="patient-day-home animate-content-in">
       <PatientDaySwitcher
         date={date}
-        patientName={String(summary.patient.name ?? "")}
+        patientName={String(summary.patient.name ?? '')}
         loading={loading}
         onChange={onDate}
         onProgress={onProgress}
       />
 
       <div
-        className={`patient-day-dashboard day-content-transition${loading ? " is-loading" : ""}`}
+        className={`patient-day-dashboard day-content-transition${loading ? ' is-loading' : ''}`}
         aria-busy={loading}
       >
-        <section
-          className="patient-energy-card"
-          data-over={remaining != null && remaining < 0 ? "true" : "false"}
-        >
-          <p className="patient-energy-sentence">
-            {energyGoal == null ? (
-              "Energia consumida neste dia"
-            ) : (
-              <>
-                Meta diária de <strong>{formatNumber(energyGoal)} kcal</strong>
-              </>
-            )}
-          </p>
-          <div className="patient-energy-main">
-            <p className="patient-energy-number">{formatNumber(consumed)}</p>
-            <div>
-              <strong>kcal</strong>
-              <span>consumidas</span>
-            </div>
-          </div>
-          <div className="patient-energy-track" aria-hidden="true">
-            <span
-              style={{
-                width: `${progressPercent(consumed, energyGoal ?? undefined)}%`,
-              }}
-            />
-          </div>
-          <div className="patient-energy-footer">
-            <span>
-              {entryCount} {entryCount === 1 ? "alimento" : "alimentos"}
-            </span>
-            {remaining != null && (
-              <span>
-                {remaining >= 0
-                  ? `${formatNumber(remaining)} kcal restantes`
-                  : `${formatNumber(Math.abs(remaining))} kcal acima da meta`}
-              </span>
-            )}
-          </div>
-        </section>
+        <DailyEnergyCard summary={summary} date={date} />
+        <ActivityPanel date={date} compact onProgress={onProgress} />
 
         <section className="patient-macro-grid" aria-label="Macronutrientes">
           {macros.map((macro) => {
@@ -149,7 +119,7 @@ export function PatientDayHome({
                 key={macro.label}
                 className="patient-macro-card"
                 data-tone={macro.tone}
-                data-over={over ? "true" : "false"}
+                data-over={over ? 'true' : 'false'}
               >
                 <summary aria-label={`Ver detalhes de ${macro.label}`}>
                   <div className="patient-macro-label">
@@ -161,7 +131,11 @@ export function PatientDayHome({
                   </div>
                   <p>
                     <strong>{formatNumber(macro.value, 1)}</strong>
-                    <span>{macro.goal == null ? " g" : ` / ${formatNumber(macro.goal)} g`}</span>
+                    <span>
+                      {macro.goal == null
+                        ? ' g'
+                        : ` / ${formatNumber(macro.goal)} g`}
+                    </span>
                   </p>
                   <div className="patient-macro-track" aria-hidden="true">
                     <span
@@ -173,9 +147,9 @@ export function PatientDayHome({
                   <small>
                     {macro.supporting ??
                       (macro.goal == null
-                        ? "Sem meta"
+                        ? 'Sem meta'
                         : over
-                          ? "Meta ultrapassada"
+                          ? 'Meta ultrapassada'
                           : `${formatNumber((macro.value / macro.goal) * 100)}% da meta`)}
                   </small>
                 </summary>
@@ -211,7 +185,7 @@ export function PatientDayHome({
             <div className="patient-insight-value">
               <strong>{formatNumber(normalizedLoad, 1)}</strong>
               {classification && (
-                <span data-level={classification.replace(" ", "-")}>
+                <span data-level={classification.replace(' ', '-')}>
                   {normalizedGlycemicClassificationLabel[classification]}
                 </span>
               )}
@@ -220,8 +194,8 @@ export function PatientDayHome({
               {classification
                 ? normalizedGlycemicClassificationDescription[classification]
                 : glycemic.coveredEntries
-                  ? "Energia insuficiente para normalizar a CG."
-                  : "Aparece quando houver alimentos com IG disponível."}
+                  ? 'Energia insuficiente para normalizar a CG.'
+                  : 'Aparece quando houver alimentos com IG disponível.'}
             </p>
           </article>
 
@@ -232,7 +206,9 @@ export function PatientDayHome({
               </span>
               <div>
                 <p>Água</p>
-                <small>{waterGoal == null ? "registre seu peso" : "meta · 40 ml/kg"}</small>
+                <small>
+                  {waterGoal == null ? 'registre seu peso' : 'meta · 40 ml/kg'}
+                </small>
               </div>
             </div>
             <div className="patient-water-row">
@@ -240,7 +216,7 @@ export function PatientDayHome({
                 <strong>{formatNumber(waterMl / 1000, 1)}</strong>
                 <span>
                   {waterGoal == null
-                    ? " L · meta indisponível"
+                    ? ' L · meta indisponível'
                     : ` / ${formatNumber(waterGoal / 1000, 1)} L`}
                 </span>
               </p>

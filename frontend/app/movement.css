@@ -1,0 +1,686 @@
+/* Patient-first activity flow. Color communicates categories, never moral value of a balance. */
+.movement-dialog,
+.daily-energy-card {
+  font-family: var(--font-sans-app, Arial, sans-serif);
+}
+.patient-day-dashboard {
+  grid-template-areas: 'energy' 'movement' 'macros' 'insights' 'meals';
+}
+.patient-day-dashboard > .activity-panel {
+  grid-area: movement;
+  margin: 0;
+}
+.daily-energy-card {
+  padding: 1.25rem;
+}
+.daily-energy-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.daily-energy-split > * {
+  min-width: 0;
+}
+.daily-energy-label {
+  display: block;
+  font-size: 0.875rem;
+  color: #3a636b;
+}
+.daily-energy-split p {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  align-items: baseline;
+  margin: 0.4rem 0 0;
+}
+.daily-energy-split p strong {
+  font-size: clamp(1.7rem, 6.5vw, 2.7rem);
+  font-weight: 650;
+  letter-spacing: -0.055em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+.daily-energy-split p > span {
+  font-size: 0.8rem;
+  color: #456973;
+}
+.daily-balance {
+  text-align: left;
+  padding-left: 1rem;
+  border-left: 1px solid #bad6df;
+  cursor: pointer;
+}
+.daily-balance small {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  margin-top: 0.45rem;
+  font-size: 0.75rem;
+  color: #486b72;
+}
+.daily-energy-goal {
+  margin-top: 1rem;
+  color: #486b72;
+  font-size: 0.75rem;
+}
+.daily-energy-goal .patient-energy-track {
+  margin-top: 0.5rem;
+  height: 5px;
+}
+.movement-dialog {
+  width: min(620px, calc(100vw - 2rem));
+  max-width: 620px;
+  max-height: min(880px, 92dvh);
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #fffefa;
+  border-radius: 26px;
+  color: #293f3b;
+}
+.movement-dialog-heading {
+  flex-direction: row;
+  gap: 0.85rem;
+  align-items: center;
+  padding: 1.4rem 3rem 1rem 1.25rem;
+  border-bottom: 1px solid #e8ece7;
+  flex-shrink: 0;
+}
+.movement-dialog-heading [data-slot='dialog-title'] {
+  font-size: 1.3rem;
+}
+.movement-dialog-heading [data-slot='dialog-description'] {
+  font-size: 0.875rem;
+  margin-top: 0.2rem;
+  color: #667870;
+}
+.movement-back {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #e1e8e0;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.movement-dialog-scroll {
+  padding: 1.25rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  min-height: 0;
+}
+.movement-search {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: #f2f5f1;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid #e0e8df;
+  border-radius: 16px;
+  margin-bottom: 1.15rem;
+}
+.movement-search input {
+  min-width: 0;
+  width: 100%;
+  outline: none;
+  font-size: 1rem;
+  min-height: 28px;
+  background: transparent;
+}
+.movement-category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+.movement-category-grid > button {
+  min-height: 116px;
+  padding: 0.9rem 0.45rem;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: var(--movement-ink);
+  background: var(--movement-bg);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+[data-tone='violet'] {
+  --movement-bg: #eee9fa;
+  --movement-ink: #6d5395;
+}
+[data-tone='green'] {
+  --movement-bg: #e7f3e8;
+  --movement-ink: #376b4a;
+}
+[data-tone='peach'] {
+  --movement-bg: #fbeadf;
+  --movement-ink: #9c5a30;
+}
+[data-tone='blue'] {
+  --movement-bg: #e3f1f9;
+  --movement-ink: #3e7393;
+}
+[data-tone='pink'] {
+  --movement-bg: #fae6ee;
+  --movement-ink: #98516f;
+}
+[data-tone='yellow'] {
+  --movement-bg: #faf1d8;
+  --movement-ink: #846b2f;
+}
+[data-tone='neutral'] {
+  --movement-bg: #edf0eb;
+  --movement-ink: #586955;
+}
+.movement-category-grid strong {
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+.movement-category-grid small {
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+.movement-category-grid button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px #254e3910;
+}
+.movement-category-grid button:active {
+  transform: scale(0.97);
+}
+.movement-glyph {
+  width: 44px;
+  height: 44px;
+  border-radius: 15px;
+  background: var(--movement-bg, #edf0eb);
+  color: var(--movement-ink, #586955);
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.movement-glyph svg {
+  width: 25px;
+  height: 25px;
+}
+.movement-recents {
+  margin-bottom: 1.2rem;
+}
+.movement-recents h3 {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+}
+.movement-recents > div {
+  display: flex;
+  overflow-x: auto;
+  gap: 0.6rem;
+  padding-bottom: 0.35rem;
+}
+.movement-recents button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.7rem 0.5rem 0.5rem;
+  border: 1px solid #e3e9df;
+  border-radius: 18px;
+  flex-shrink: 0;
+  text-align: left;
+  font-size: 0.875rem;
+}
+.movement-recents small {
+  display: block;
+  color: #647268;
+  font-size: 0.75rem;
+}
+.movement-results {
+  display: grid;
+  gap: 0.5rem;
+}
+.movement-results > button {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  text-align: left;
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e2e8df;
+  border-radius: 18px;
+  font-size: 0.95rem;
+  min-height: 68px;
+}
+.movement-results > button > span:nth-child(2) {
+  flex: 1;
+}
+.movement-forward {
+  transform: rotate(180deg);
+  flex-shrink: 0;
+}
+.movement-entry-form {
+  display: grid;
+  gap: 1.5rem;
+}
+.movement-entry-form label {
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 550;
+}
+.movement-entry-form input:not([type='checkbox']),
+.movement-entry-form select,
+.movement-entry-form textarea {
+  border: 1px solid #d7e2d5;
+  background: white;
+  padding: 0.75rem;
+  border-radius: 13px;
+  min-width: 0;
+  width: 100%;
+  min-height: 48px;
+  font-size: 1rem;
+}
+.movement-entry-form fieldset {
+  min-width: 0;
+}
+.movement-entry-form legend {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+}
+.movement-entry-form legend small {
+  font-weight: 400;
+  font-size: 0.75rem;
+  color: #6e7c70;
+  margin-left: 0.25rem;
+}
+.movement-selected {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+}
+.movement-selected > span:nth-child(2) {
+  flex: 1;
+}
+.movement-selected button {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  color: #96752d;
+}
+.movement-duration > div:first-of-type {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+}
+.movement-duration input {
+  max-width: 155px;
+  font-size: 2.6rem !important;
+  text-align: center;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+}
+.movement-duration > div > span {
+  color: #63756b;
+}
+.movement-duration-presets {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.65rem;
+}
+.movement-duration-presets button,
+.movement-rest button {
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #dce4d7;
+  border-radius: 13px;
+  font-size: 0.875rem;
+}
+.movement-effort {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.movement-effort button {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  border: 1px solid #dde6d9;
+  border-radius: 17px;
+  padding: 0.65rem 0.25rem;
+}
+.movement-effort strong {
+  font-size: 0.875rem;
+}
+.movement-effort small {
+  font-size: 0.75rem;
+  color: #65766b;
+  line-height: 1.25;
+}
+.movement-effort-bars {
+  height: 22px;
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+}
+.movement-effort-bars i {
+  display: block;
+  width: 5px;
+  height: 8px;
+  border-radius: 2px;
+  background: #dce4d9;
+}
+.movement-effort-bars i:nth-child(2) {
+  height: 14px;
+}
+.movement-effort-bars i:nth-child(3) {
+  height: 21px;
+}
+.movement-effort-bars i[data-active='true'] {
+  background: #689477;
+}
+.movement-entry-form button[aria-pressed='true'],
+.movement-range button[aria-pressed='true'] {
+  background: #e7f1e5;
+  border-color: #6c9670;
+  color: #315c3d;
+  box-shadow: inset 0 0 0 1px #6c9670;
+}
+.movement-rest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.movement-options {
+  display: grid;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.movement-options .movement-check {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.movement-check input {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.movement-disclosure {
+  border-top: 1px solid #e4eade;
+  padding-top: 0.2rem;
+  color: #54685b;
+  font-size: 0.875rem;
+}
+.movement-disclosure summary {
+  min-height: 44px;
+  padding: 0.75rem 0;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.movement-disclosure p {
+  line-height: 1.6;
+  margin: 0.65rem 0;
+}
+.movement-disclosure a {
+  text-decoration: underline;
+}
+.movement-entry-form > .movement-disclosure {
+  margin-top: -0.5rem;
+}
+.movement-dialog-footer {
+  border-top: 1px solid #e4eade;
+  padding: 0.9rem 1.25rem max(1rem, env(safe-area-inset-bottom));
+  background: #fffefa;
+}
+.movement-dialog-footer > button {
+  min-height: 54px;
+  width: 100%;
+  font-size: 1rem;
+  border-radius: 17px;
+  background: #37634d;
+  color: white;
+}
+.activity-panel .movement-add {
+  min-height: 50px;
+  width: 100%;
+  border-radius: 16px;
+  font-size: 0.95rem;
+  background: #e8eee3;
+  color: #3b5d3d;
+  border: 1px solid #d8e3d0;
+  margin-top: 0.85rem;
+}
+.movement-text-button {
+  min-height: 44px;
+  padding: 0.65rem 0;
+  color: #547359;
+  font-size: 0.875rem;
+  text-align: left;
+}
+.activity-panel > .movement-text-button {
+  display: block;
+  margin-left: auto;
+}
+.activity-panel .activity-list {
+  gap: 0.5rem;
+}
+.activity-panel .activity-list li {
+  position: relative;
+  padding: 0.6rem;
+  border: 0;
+  border-radius: 16px;
+  background: #f3f6ef;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+}
+.activity-panel .activity-session-title {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  column-gap: 0.75rem;
+  align-items: center;
+  min-height: 50px;
+  flex: 1;
+  min-width: 0;
+}
+.activity-session-title .movement-glyph {
+  grid-row: span 2;
+}
+.activity-session-title strong {
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+.activity-session-title > span:last-child {
+  font-size: 0.8rem;
+}
+.movement-session-actions {
+  align-self: center;
+  flex-shrink: 0;
+}
+.movement-session-actions summary {
+  list-style: none;
+  width: 44px;
+  min-height: 44px;
+  text-align: center;
+}
+.movement-session-actions summary::-webkit-details-marker {
+  display: none;
+}
+.movement-session-actions .activity-row-actions {
+  position: absolute;
+  right: 0;
+  top: 90%;
+  z-index: 3;
+  background: white;
+  box-shadow: 0 8px 25px #23402a25;
+  padding: 0.5rem;
+  border: 1px solid #e0e7db;
+  border-radius: 14px;
+  flex-direction: column;
+  align-items: stretch;
+}
+.movement-session-actions .activity-row-actions button {
+  min-height: 44px;
+  text-align: left;
+  padding: 0.5rem 1rem;
+}
+.movement-range {
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.3rem;
+  background: #eef2eb;
+  border-radius: 16px;
+  margin-bottom: 1.25rem;
+}
+.movement-range button {
+  flex: 1;
+  min-height: 44px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-size: 0.875rem;
+}
+.movement-period-total {
+  padding: 0.8rem 0;
+}
+.movement-period-total > span {
+  color: #5f7568;
+  font-size: 0.875rem;
+}
+.movement-period-total p {
+  margin: 0.3rem 0;
+  font-size: 0.875rem;
+}
+.movement-period-total strong {
+  font-size: 2.5rem;
+  font-weight: 650;
+  letter-spacing: -0.045em;
+}
+.movement-period-total small {
+  color: #5f7568;
+  font-size: 0.8rem;
+}
+.movement-progress .energy-chart {
+  padding: 0;
+}
+.movement-history-days {
+  display: grid;
+  gap: 0.3rem;
+  max-height: 370px;
+  overflow: auto;
+}
+.movement-history-days button {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  border-bottom: 1px solid #e3e9df;
+  text-align: left;
+  min-height: 60px;
+}
+.movement-history-days small,
+.movement-period-activities small {
+  display: block;
+  font-size: 0.75rem;
+  color: #6b7b70;
+  margin-top: 0.2rem;
+}
+.movement-period-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 0.8rem 0;
+}
+.movement-period-details dt {
+  font-size: 0.8rem;
+}
+.movement-period-details dd {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 0.3rem;
+}
+.movement-period-activities {
+  display: grid;
+  gap: 0.5rem;
+}
+.movement-period-activities li {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.5rem 0;
+}
+.movement-dialog button:focus-visible,
+.daily-energy-card button:focus-visible,
+.movement-range button:focus-visible {
+  outline: 3px solid #619d87;
+  outline-offset: 3px;
+}
+.movement-dialog input:focus-visible {
+  outline: 2px solid #619d87;
+  outline-offset: 2px;
+}
+.nutrition-history {
+  margin: 1.5rem 0;
+}
+@media (min-width: 1100px) {
+  .patient-day-dashboard {
+    grid-template-areas: 'energy movement' 'macros movement' 'insights insights' 'meals meals';
+    align-items: start;
+  }
+  .patient-day-insights {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+  }
+}
+@media (max-width: 600px) {
+  .movement-dialog {
+    width: 100%;
+    max-width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    border: 0;
+    border-radius: 0;
+    top: 0;
+    left: 0;
+    translate: 0 0;
+    transform: none;
+  }
+  .movement-dialog-heading {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+  .movement-dialog-scroll {
+    flex: 1;
+    padding: 1rem;
+  }
+  .movement-category-grid {
+    gap: 0.5rem;
+  }
+  .movement-category-grid > button {
+    min-height: 112px;
+    border-radius: 18px;
+  }
+  .movement-dialog-footer {
+    padding: 0.75rem 1rem max(0.85rem, env(safe-area-inset-bottom));
+  }
+  .daily-energy-split {
+    gap: 0.65rem;
+  }
+  .daily-balance {
+    padding-left: 0.65rem;
+  }
+  .daily-energy-label {
+    font-size: 0.8rem;
+  }
+}

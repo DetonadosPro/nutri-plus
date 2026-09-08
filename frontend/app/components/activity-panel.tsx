@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { ActivityEditor } from './activity-editor';
+import { ActivityGlyph, quickName, restChoices } from './activity-choices';
 import type {
   ActivitySession,
   EnergyDay,
@@ -134,7 +135,6 @@ export function ActivityPanel({
   date,
   patientId,
   professional = false,
-  compact = false,
   onProgress,
 }: {
   date: string;
@@ -230,14 +230,11 @@ export function ActivityPanel({
     <section className="activity-panel">
       <header>
         <div>
-          <p className="eyebrow">Movimento e energia</p>
+          <p className="eyebrow">Seu movimento</p>
           <h2>
             <Activity size={19} /> Atividades do dia
           </h2>
         </div>
-        <Button size="sm" onClick={() => setEditor({})}>
-          <Plus /> Adicionar
-        </Button>
       </header>
       {error && (
         <p role="alert" className="activity-error">
@@ -248,36 +245,9 @@ export function ActivityPanel({
       {!data && !error && <output>Carregando atividades…</output>}
       {day && (
         <>
-          {compact ? (
-            <>
-              <p className="energy-balance-value">
-                <strong>
-                  {day.balanceKcal == null
-                    ? 'Balanço estimado indisponível'
-                    : `${formatNumber(Math.abs(day.balanceKcal))} kcal · ${day.label}`}
-                </strong>
-                <span>
-                  Ingestão {formatNumber(day.intakeKcal)} · gasto total estimado{' '}
-                  {formatNumber(day.totalKcal)} kcal
-                </span>
-                <span>
-                  {day.foodComplete
-                    ? 'Alimentação confirmada.'
-                    : 'Alimentação ainda não confirmada como completa.'}
-                </span>
-              </p>
-              <details>
-                <summary>Ver parcelas do cálculo</summary>
-                <EnergyNumbers day={day} />
-              </details>
-            </>
-          ) : (
-            <EnergyNumbers day={day} />
-          )}
           {!day.activities.length ? (
             <p className="activity-muted">
-              Nenhuma atividade registrada. Isso não significa ausência de
-              movimento.
+              Caminhou, treinou, dançou? Registre aqui.
             </p>
           ) : (
             <ul className="activity-list">
@@ -287,48 +257,67 @@ export function ActivityPanel({
                     className="activity-session-title"
                     onClick={() => setDetails(s)}
                   >
-                    <strong>{s.snapshot.name}</strong>
+                    <ActivityGlyph
+                      category={s.snapshot.category}
+                      code={s.snapshot.code}
+                    />
+                    <strong>{quickName(s.snapshot)}</strong>
                     <span>
-                      {s.local_time.slice(0, 5)} ·{' '}
-                      {formatNumber(s.duration_minutes)} min ·{' '}
-                      {s.snapshot.method === 'met'
-                        ? 'Estimativa MET'
-                        : 'Informado manualmente'}{' '}
-                      ·{' '}
+                      {formatNumber(s.duration_minutes)} min · ≈{' '}
                       {formatNumber(s.snapshot.grossKcal ?? s.snapshot.netKcal)}{' '}
                       kcal
                     </span>
                   </button>
-                  <div className="activity-row-actions">
-                    <button onClick={() => setEditor({ session: s })}>
-                      Editar
-                    </button>
-                    <button
-                      onClick={() => setEditor({ session: s, duplicate: true })}
-                    >
-                      Duplicar
-                    </button>
-                    <button onClick={() => setRemoving(s)}>Excluir</button>
-                  </div>
+                  <details className="movement-session-actions">
+                    <summary aria-label={`Opções de ${quickName(s.snapshot)}`}>
+                      •••
+                    </summary>
+                    <div className="activity-row-actions">
+                      <button onClick={() => setEditor({ session: s })}>
+                        Editar
+                      </button>
+                      <button
+                        onClick={() =>
+                          setEditor({ session: s, duplicate: true })
+                        }
+                      >
+                        Duplicar
+                      </button>
+                      <button onClick={() => setRemoving(s)}>Excluir</button>
+                    </div>
+                  </details>
                 </li>
               ))}
             </ul>
           )}
-          <div className="activity-footer">
-            <label>
-              <input
-                type="checkbox"
-                checked={day.foodComplete}
-                disabled={busy || day.missingFoodEnergy > 0}
-                onChange={() => void complete()}
-              />{' '}
-              Registrei toda a alimentação deste dia
-            </label>
-            {onProgress && (
-              <button onClick={onProgress}>Analisar na Evolução →</button>
-            )}
-          </div>
-          <EnergyMethod />
+          <Button className="movement-add" onClick={() => setEditor({})}>
+            <Plus /> Adicionar atividade
+          </Button>
+          {onProgress && (
+            <button className="movement-text-button" onClick={onProgress}>
+              Ver meu histórico →
+            </button>
+          )}
+          <details className="movement-disclosure">
+            <summary>
+              {professional
+                ? 'Resumo energético e opções'
+                : 'Sobre os registros do dia'}
+            </summary>
+            {professional && <EnergyNumbers day={day} />}
+            <div className="activity-footer">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={day.foodComplete}
+                  disabled={busy || day.missingFoodEnergy > 0}
+                  onChange={() => void complete()}
+                />{' '}
+                Registrei toda a alimentação deste dia
+              </label>
+            </div>
+            <EnergyMethod />
+          </details>
           {professional && (
             <p className="activity-muted">
               Você está consultando os mesmos registros do paciente.
@@ -454,60 +443,90 @@ export function ActivityPanel({
           {details && (
             <>
               <p>
-                {formatDate(details.activity_date)} às{' '}
-                {details.local_time.slice(0, 5)} · America/Sao_Paulo ·{' '}
-                {details.duration_minutes} min
+                {formatDate(details.activity_date)}
+                {details.local_time
+                  ? ` às ${details.local_time.slice(0, 5)}`
+                  : ''}{' '}
+                · {details.duration_minutes} min
               </p>
-              <p>
-                Esforço percebido:{' '}
-                {
-                  {
-                    light: 'leve',
-                    moderate: 'moderado',
-                    vigorous: 'vigoroso',
-                    unspecified: 'não informado',
-                  }[details.intensity]
-                }
-                .{' '}
-                {details.outside_base
-                  ? 'Marcada como fora da base.'
-                  : 'Incluída na rotina habitual.'}
-              </p>
-              <p>
-                Bruto: {formatNumber(details.snapshot.grossKcal)} kcal ·
-                Líquido: {formatNumber(details.snapshot.netKcal)} kcal
-              </p>
-              <p>
-                Peso:{' '}
-                {details.snapshot.weight
-                  ? `${details.snapshot.weight.weight_kg} kg, registrado em ${formatDate(details.snapshot.weight.weighed_at)}`
-                  : 'não disponível'}
-                . MET: {details.snapshot.met ?? 'não utilizado'}.
-              </p>
-              <p>
-                {details.snapshot.method === 'met' ? (
-                  <a
-                    href={details.snapshot.source}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Compendium · {details.snapshot.catalogVersion} · código{' '}
-                    {details.snapshot.code}
-                  </a>
-                ) : (
-                  `Origem informada: ${details.snapshot.source} (${details.snapshot.manual?.kind === 'gross' ? 'total' : details.snapshot.manual?.kind === 'net' ? 'ativo' : 'tipo desconhecido'})`
-                )}
-              </p>
-              {details.details.map((d, i) => (
-                <p key={i}>
-                  {d.name}: {d.sets} séries · {d.reps ?? '—'} repetições ·{' '}
-                  {d.loadKg ?? '—'} kg · execução/série{' '}
-                  {d.executionSeconds ?? '—'} s · descanso{' '}
-                  {d.restSeconds ?? '—'} s
+              {details.rest_period && (
+                <p>
+                  Descanso entre séries:{' '}
+                  {restChoices.find(([v]) => v === details.rest_period)?.[1]}
                 </p>
-              ))}
-              <p className="whitespace-pre-wrap">{details.note}</p>
-              <EnergyMethod />
+              )}
+              <div className="activity-row-actions">
+                <Button
+                  onClick={() => {
+                    setEditor({ session: details });
+                    setDetails(null);
+                  }}
+                >
+                  Editar atividade
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setRemoving(details);
+                    setDetails(null);
+                  }}
+                >
+                  Excluir
+                </Button>
+              </div>
+              <details className="movement-disclosure">
+                <summary>Como calculamos isso?</summary>
+                <p>
+                  Esforço percebido:{' '}
+                  {
+                    {
+                      light: 'leve',
+                      moderate: 'moderado',
+                      vigorous: 'vigoroso',
+                      unspecified: 'não informado',
+                    }[details.intensity]
+                  }
+                  .{' '}
+                  {details.outside_base
+                    ? 'Marcada como fora da base.'
+                    : 'Incluída na rotina habitual.'}
+                </p>
+                <p>
+                  Bruto: {formatNumber(details.snapshot.grossKcal)} kcal ·
+                  Líquido: {formatNumber(details.snapshot.netKcal)} kcal
+                </p>
+                <p>
+                  Peso:{' '}
+                  {details.snapshot.weight
+                    ? `${details.snapshot.weight.weight_kg} kg, registrado em ${formatDate(details.snapshot.weight.weighed_at)}`
+                    : 'não disponível'}
+                  . MET: {details.snapshot.met ?? 'não utilizado'}.
+                </p>
+                <p>
+                  {details.snapshot.method === 'met' ? (
+                    <a
+                      href={details.snapshot.source}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Compendium · {details.snapshot.catalogVersion} · código{' '}
+                      {details.snapshot.code}
+                    </a>
+                  ) : (
+                    `Origem informada: ${details.snapshot.source} (${details.snapshot.manual?.kind === 'gross' ? 'total' : details.snapshot.manual?.kind === 'net' ? 'ativo' : 'tipo desconhecido'})`
+                  )}
+                </p>
+                {details.details.map((d, i) => (
+                  <p key={i}>
+                    {d.name}: {d.sets} séries · {d.reps ?? '—'} repetições ·{' '}
+                    {d.loadKg ?? '—'} kg · execução/série{' '}
+                    {d.executionSeconds ?? '—'} s · descanso{' '}
+                    {d.restSeconds ?? '—'} s
+                  </p>
+                ))}
+                <p className="whitespace-pre-wrap">{details.note}</p>
+                <EnergyMethod />
+              </details>
             </>
           )}
         </DialogContent>

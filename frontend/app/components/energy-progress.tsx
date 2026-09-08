@@ -8,7 +8,6 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-  Legend,
   ReferenceLine,
 } from 'recharts';
 import { api } from '@/lib/client-api';
@@ -22,6 +21,8 @@ import {
   EnergyMethod,
   listenActivityChanges,
 } from './activity-panel';
+import { signedEnergy } from './daily-energy-card';
+import { ActivityGlyph, quickName } from './activity-choices';
 import type { EnergyHistory } from './activity-types';
 
 export function EnergyProgress({
@@ -34,84 +35,80 @@ export function EnergyProgress({
   const today = brazilNow().date;
   const storageKey = `nutri:energy-range:${patientId ?? 'self'}`;
   const [range, setRange] = useState(() => {
-    const fallback = { from: addDays(today, -6), to: today };
     try {
-      const stored = JSON.parse(sessionStorage.getItem(storageKey) || '');
-      return /^\d{4}-\d{2}-\d{2}$/.test(stored.from) &&
-        /^\d{4}-\d{2}-\d{2}$/.test(stored.to)
-        ? { from: String(stored.from), to: String(stored.to) }
-        : fallback;
+      const saved = JSON.parse(sessionStorage.getItem(storageKey) || '');
+      if (
+        /^\d{4}-\d{2}-\d{2}$/.test(saved.from) &&
+        /^\d{4}-\d{2}-\d{2}$/.test(saved.to)
+      )
+        return { from: String(saved.from), to: String(saved.to) };
     } catch {
-      return fallback;
+      /* Preference is optional. */
     }
+    return { from: addDays(today, -6), to: today };
   });
-  function navigate(next: Partial<typeof range>) {
-    setRange((current) => {
-      const value = { ...current, ...next };
-      sessionStorage.setItem(storageKey, JSON.stringify(value));
-      return value;
-    });
-  }
-  const [data, setData] = useState<EnergyHistory | null>(null),
-    [previous, setPrevious] = useState<EnergyHistory | null>(null),
-    [error, setError] = useState(''),
-    [loading, setLoading] = useState(false),
-    [selected, setSelected] = useState<string | null>(null),
-    [tab, setTab] = useState('day'),
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(storageKey, JSON.stringify(range));
+    } catch {
+      /* Storage may be disabled. */
+    }
+  }, [range, storageKey]);
+  const [custom, setCustom] = useState(
+      () =>
+        range.to !== today ||
+        ![addDays(today, -6), addDays(today, -29)].includes(range.from),
+    ),
+    [data, setData] = useState<EnergyHistory | null>(null);
+  const [error, setError] = useState(''),
+    [loading, setLoading] = useState(false);
+  const [selected, setSelected] = useState<string | null>(null),
     [settingOpen, setSettingOpen] = useState(false);
-  const query = activityQuery(patientId);
-  const requestId = useRef(0);
-  const reload = useCallback(async () => {
-    const id = ++requestId.current;
+  const request = useRef(0),
+    query = activityQuery(patientId);
+  const load = useCallback(async () => {
+    const id = ++request.current;
     setLoading(true);
     setError('');
     try {
       const days =
         Math.round((Date.parse(range.to) - Date.parse(range.from)) / 86400000) +
         1;
-      if (days < 1 || days > 366 || range.to > today)
-        throw new Error(
-          'Escolha um período de até 366 dias, sem datas futuras.',
-        );
-      const prevTo = addDays(range.from, -1),
-        prevFrom = addDays(prevTo, 1 - days);
-      const [current, prior] = await Promise.all([
-        api<EnergyHistory>(
-          `/activities/history?${query}from=${range.from}&to=${range.to}`,
-        ),
-        api<EnergyHistory>(
-          `/activities/history?${query}from=${prevFrom}&to=${prevTo}`,
-        ),
-      ]);
-      if (id === requestId.current) {
-        setData(current);
-        setPrevious(prior);
-      }
+      if (!Number.isFinite(days) || days < 1 || days > 366 || range.to > today)
+        throw Error('Escolha até 366 dias, sem datas futuras.');
+      const result = await api<EnergyHistory>(
+        `/activities/history?${query}from=${range.from}&to=${range.to}`,
+      );
+      if (id === request.current) setData(result);
     } catch (e) {
-      if (id === requestId.current) setError((e as Error).message);
+      if (id === request.current) {
+        setData(null);
+        setError((e as Error).message);
+      }
     } finally {
-      if (id === requestId.current) setLoading(false);
+      if (id === request.current) setLoading(false);
     }
-  }, [range.from, range.to, query, today]);
+  }, [query, range.from, range.to, today]);
   useEffect(() => {
-    void reload();
-    const stop = listenActivityChanges(() => {
-      void reload();
-    });
-    return stop;
-  }, [reload]);
-  const average = (h: EnergyHistory | null) =>
-    h?.completeDays && h.accumulatedKcal != null
-      ? h.accumulatedKcal / h.completeDays
-      : null;
-  const currentAverage = average(data),
-    previousAverage = average(previous);
+    void load();
+    return listenActivityChanges(() => void load());
+  }, [load]);
+  const complete =
+    data?.days.filter((d) => d.foodComplete && d.balanceKcal != null) ?? [];
+  const mean = complete.length
+    ? complete.reduce((s, d) => s + d.balanceKcal!, 0) / complete.length
+    : null;
+  const chart =
+    data?.days.map((d) => ({
+      ...d,
+      confirmedBalance: d.foodComplete ? d.balanceKcal : null,
+    })) ?? [];
   return (
-    <section className="energy-progress">
+    <section className="energy-progress movement-progress">
       <header>
         <div>
-          <p className="eyebrow">Evolução</p>
-          <h2>Balanço energético estimado</h2>
+          <p className="eyebrow">Um dia de cada vez</p>
+          <h2>Seu balanço energético</h2>
         </div>
         {professional && (
           <Button
@@ -122,46 +119,56 @@ export function EnergyProgress({
           </Button>
         )}
       </header>
-      <div className="activity-period">
-        <div className="activity-row-actions">
-          {[
-            [7, 'Semana'],
-            [30, 'Mês'],
-          ].map(([n, label]) => (
-            <button
-              key={n}
-              onClick={() =>
-                navigate({ from: addDays(today, 1 - Number(n)), to: today })
-              }
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-        <label>
-          De
-          <input
-            type="date"
-            value={range.from}
-            max={range.to}
-            onChange={(e) => {
-              if (e.target.value) navigate({ from: e.target.value });
+      <div className="movement-range" aria-label="Período">
+        {[7, 30].map((n) => (
+          <button
+            key={n}
+            aria-pressed={
+              !custom &&
+              range.from === addDays(today, 1 - n) &&
+              range.to === today
+            }
+            onClick={() => {
+              setCustom(false);
+              setRange({ from: addDays(today, 1 - n), to: today });
+              setSelected(null);
             }}
-          />
-        </label>
-        <label>
-          Até
-          <input
-            type="date"
-            value={range.to}
-            min={range.from}
-            max={today}
-            onChange={(e) => {
-              if (e.target.value) navigate({ to: e.target.value });
-            }}
-          />
-        </label>
+          >
+            {n} dias
+          </button>
+        ))}
+        <button aria-pressed={custom} onClick={() => setCustom(!custom)}>
+          Personalizado
+        </button>
       </div>
+      {custom && (
+        <div className="activity-period">
+          <label>
+            De
+            <input
+              type="date"
+              value={range.from}
+              max={range.to}
+              onChange={(e) => {
+                if (e.target.value)
+                  setRange({ ...range, from: e.target.value });
+              }}
+            />
+          </label>
+          <label>
+            Até
+            <input
+              type="date"
+              value={range.to}
+              min={range.from}
+              max={today}
+              onChange={(e) => {
+                if (e.target.value) setRange({ ...range, to: e.target.value });
+              }}
+            />
+          </label>
+        </div>
+      )}
       {settingOpen && professional && (
         <EnergySettings
           patientId={patientId}
@@ -171,216 +178,185 @@ export function EnergyProgress({
           }}
         />
       )}
-      {loading && <output>Atualizando período…</output>}
+      {loading && (
+        <output className="activity-muted">Atualizando período…</output>
+      )}
       {error && (
         <p role="alert" className="activity-error">
-          {error}{' '}
-          <button onClick={() => void reload()}>Tentar novamente</button>
+          {error}
+          <button onClick={() => void load()}>Tentar novamente</button>
         </p>
       )}
       {data && !error && (
-        <>
+        <div aria-busy={loading}>
+          <div className="movement-period-total">
+            <span>Saldo médio por dia</span>
+            <p>
+              <strong>{signedEnergy(mean)}</strong> kcal
+            </p>
+            <small>
+              {mean == null
+                ? 'Complete os registros de um dia para começar.'
+                : `${Math.abs(mean) < 0.5 ? 'Equilíbrio' : mean > 0 ? 'Superávit' : 'Déficit'} estimado · ${complete.length} dias completos`}
+            </small>
+          </div>
+          <div
+            className="energy-chart"
+            aria-label="Gráfico de balanço energético dos dias completos"
+          >
+            <ResponsiveContainer
+              width="100%"
+              height={220}
+              minWidth={0}
+              debounce={100}
+              initialDimension={{ width: 300, height: 220 }}
+            >
+              <LineChart
+                data={chart}
+                margin={{ top: 15, right: 22, left: 0, bottom: 0 }}
+              >
+                <CartesianGrid
+                  vertical={false}
+                  stroke="#e5ebe8"
+                  strokeDasharray="3 5"
+                />
+                <XAxis
+                  dataKey="date"
+                  tickFormatter={(s) =>
+                    s.slice(5).split('-').reverse().join('/')
+                  }
+                  minTickGap={30}
+                  tickLine={false}
+                  axisLine={false}
+                  fontSize={12}
+                />
+                <YAxis
+                  width={55}
+                  tickLine={false}
+                  axisLine={false}
+                  fontSize={12}
+                />
+                <Tooltip
+                  labelFormatter={(v) => formatDate(String(v))}
+                  formatter={(v) => [
+                    `${signedEnergy(Number(v))} kcal`,
+                    'Saldo estimado',
+                  ]}
+                />
+                <ReferenceLine y={0} stroke="#a6b6ad" />
+                <Line
+                  isAnimationActive={false}
+                  type="linear"
+                  dataKey="confirmedBalance"
+                  name="Saldo estimado"
+                  stroke="#567d78"
+                  strokeWidth={2.5}
+                  dot={{ r: 4 }}
+                  connectNulls={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
           <p className="activity-muted">
-            {data.completeDays} de {data.days.length} dias completos com cálculo
-            disponível. O acumulado considera somente esses dias; lacunas não
-            equivalem a zero.
+            Dias incompletos ficam em aberto no gráfico.
           </p>
-          <div className="energy-period-summary">
-            <div>
-              <span>Balanço acumulado dos dias completos</span>
-              <strong>
-                {data.accumulatedKcal == null
-                  ? 'Indisponível'
-                  : `${formatNumber(Math.abs(data.accumulatedKcal))} kcal · ${Math.abs(data.accumulatedKcal) < 0.5 ? 'neutro' : data.accumulatedKcal > 0 ? 'superávit' : 'déficit'} estimado`}
-              </strong>
-            </div>
-            <div>
-              <span>Comparação com período anterior</span>
-              <strong>
-                {currentAverage == null || previousAverage == null
-                  ? 'Sem dias completos suficientes'
-                  : `${formatNumber(currentAverage - previousAverage)} kcal/dia de diferença na média`}
-              </strong>
-              <span>
-                {previous?.completeDays ?? 0} dias completos no período anterior
-                ({previous?.from} a {previous?.to}). Coberturas diferentes
-                limitam a comparação.
-              </span>
-            </div>
-          </div>
-          <div className="energy-chart">
-            <h3>Ingestão e gasto total estimado (kcal)</h3>
-            <ResponsiveContainer width="100%" height={240}>
-              <LineChart data={data.days}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="date"
-                  tickFormatter={(s) =>
-                    s.slice(5).split('-').reverse().join('/')
-                  }
-                />
-                <YAxis width={50} />
-                <Tooltip />
-                <Legend />
-                <Line
-                  isAnimationActive={false}
-                  name="Ingestão registrada (pode ser parcial)"
-                  dataKey="intakeKcal"
-                  stroke="#608c78"
-                  dot={false}
-                />
-                <Line
-                  isAnimationActive={false}
-                  name="Gasto total estimado"
-                  dataKey="totalKcal"
-                  stroke="#af8356"
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="energy-chart">
-            <h3>Balanço {tab === 'day' ? 'diário' : 'acumulado'} (kcal)</h3>
-            <div className="activity-row-actions">
-              <button
-                aria-pressed={tab === 'day'}
-                onClick={() => setTab('day')}
-              >
-                Diário
-              </button>
-              <button
-                aria-pressed={tab === 'sum'}
-                onClick={() => setTab('sum')}
-              >
-                Acumulado de dias completos
-              </button>
-            </div>
-            <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={data.days}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="date"
-                  tickFormatter={(s) =>
-                    s.slice(5).split('-').reverse().join('/')
-                  }
-                />
-                <YAxis width={55} />
-                <Tooltip />
-                <ReferenceLine y={0} stroke="#888" />
-                <Line
-                  isAnimationActive={false}
-                  name={
-                    tab === 'day'
-                      ? 'Balanço diário estimado (pode ser parcial)'
-                      : 'Acumulado de dias completos'
-                  }
-                  dataKey={tab === 'day' ? 'balanceKcal' : 'accumulatedKcal'}
-                  stroke="#7285a2"
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-          <details className="activity-method">
-            <summary>Equivalência energética teórica aproximada</summary>
-            <p>
-              {data.theoreticalKg == null
-                ? 'Sem dados adequados para esta equivalência.'
-                : `${formatNumber(Math.abs(data.theoreticalKg), 2)} kg de equivalência energética teórica aproximada (${data.accumulatedKcal! > 0 ? 'superávit' : 'déficit'} acumulado ÷ 7.700 kcal/kg).`}
-            </p>
-            <p>
-              Isso não é previsão de peso. Água, glicogênio, composição corporal
-              e adaptação metabólica mudam a resposta real. Não use esta
-              equivalência para estabelecer metas, déficits ou prazos. Gestação,
-              menores e condições clínicas exigem avaliação profissional.
-            </p>
-          </details>
-          <details open>
-            <summary>Visão diária e atividades</summary>
-            <div className="energy-table-wrap">
-              <table className="energy-table">
-                <caption>
-                  Valores em kcal; selecione uma data para consultar ou editar
-                  registros
-                </caption>
-                <thead>
-                  <tr>
-                    <th>Dia</th>
-                    <th>Ingestão</th>
-                    <th>Base</th>
-                    <th>Adicional</th>
-                    <th>Total</th>
-                    <th>Balanço</th>
-                    <th>Registros</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.days.map((d) => (
-                    <tr key={d.date}>
-                      <th>
-                        <button
-                          onClick={() =>
-                            setSelected(selected === d.date ? null : d.date)
-                          }
-                        >
-                          {formatDate(d.date, {
-                            day: '2-digit',
-                            month: '2-digit',
-                          })}
-                        </button>
-                      </th>
-                      <td>{formatNumber(d.intakeKcal)}</td>
-                      <td>{formatNumber(d.base.baseKcal)}</td>
-                      <td>{formatNumber(d.additionalKcal)}</td>
-                      <td>{formatNumber(d.totalKcal)}</td>
-                      <td>
-                        {d.balanceKcal == null
-                          ? '—'
-                          : `${formatNumber(Math.abs(d.balanceKcal))} · ${d.label}`}
-                      </td>
-                      <td>
-                        {d.foodComplete
-                          ? 'Alimentação completa'
-                          : 'Alimentação incompleta ou não confirmada'}{' '}
-                        ·{' '}
-                        {d.activities.length
-                          ? `${d.activities.length} atividade(s)`
-                          : 'Sem atividade registrada; movimento não avaliado'}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </details>
-          {selected && (
-            <ActivityPanel
-              date={selected}
-              patientId={patientId}
-              professional={professional}
-            />
-          )}
-          <details>
+          <details className="movement-disclosure">
             <summary>
-              Tempo por modalidade · {data.sessions.length} sessões
+              Ver dias e atividades · {data.sessions.length} registros
             </summary>
-            {!data.modalities.length ? (
-              <p>Nenhuma atividade registrada no período.</p>
-            ) : (
-              <ul className="activity-list">
-                {data.modalities.map((m) => (
-                  <li key={m.name}>
-                    <strong>{m.name}</strong>
-                    <span>
-                      {formatNumber(m.minutes)} min · {m.sessions} sessões
-                    </span>
-                  </li>
-                ))}
-              </ul>
+            <div className="movement-history-days">
+              {[...data.days].reverse().map((d) => (
+                <button
+                  key={d.date}
+                  type="button"
+                  aria-pressed={selected === d.date}
+                  onClick={() =>
+                    setSelected(selected === d.date ? null : d.date)
+                  }
+                >
+                  <span>
+                    {formatDate(d.date, { day: '2-digit', month: 'short' })}
+                    <small>
+                      {d.activities.length} atividades
+                      {!d.foodComplete ? ' · parcial' : ''}
+                    </small>
+                  </span>
+                  <strong>{signedEnergy(d.balanceKcal)} kcal</strong>
+                </button>
+              ))}
+            </div>
+            {selected && (
+              <ActivityPanel
+                date={selected}
+                patientId={patientId}
+                professional={professional}
+              />
             )}
           </details>
-          <EnergyMethod />
-        </>
+          <details className="movement-disclosure">
+            <summary>Resumo do período</summary>
+            <dl className="movement-period-details">
+              <div>
+                <dt>Ingestão média</dt>
+                <dd>
+                  {complete.length
+                    ? formatNumber(
+                        complete.reduce((s, d) => s + d.intakeKcal!, 0) /
+                          complete.length,
+                      )
+                    : '—'}{' '}
+                  kcal
+                </dd>
+              </div>
+              <div>
+                <dt>Gasto médio estimado</dt>
+                <dd>
+                  {complete.length
+                    ? formatNumber(
+                        complete.reduce((s, d) => s + d.totalKcal!, 0) /
+                          complete.length,
+                      )
+                    : '—'}{' '}
+                  kcal
+                </dd>
+              </div>
+              <div>
+                <dt>Tempo de atividade</dt>
+                <dd>
+                  {formatNumber(
+                    data.sessions.reduce((s, a) => s + a.duration_minutes, 0),
+                  )}{' '}
+                  min
+                </dd>
+              </div>
+              <div>
+                <dt>Saldo acumulado estimado</dt>
+                <dd>{signedEnergy(data.accumulatedKcal)} kcal</dd>
+              </div>
+            </dl>
+            <p className="activity-muted">
+              As médias e o saldo usam apenas dias completos. O tempo inclui
+              todas as atividades do período.
+            </p>
+            <ul className="movement-period-activities">
+              {data.sessions.map((s) => (
+                <li key={s.id}>
+                  <ActivityGlyph
+                    category={s.snapshot.category}
+                    code={s.snapshot.code}
+                  />
+                  <span>
+                    {quickName(s.snapshot)}
+                    <small>
+                      {formatDate(s.activity_date)} · {s.duration_minutes} min
+                    </small>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </details>
+          {professional && <EnergyMethod />}
+        </div>
       )}
     </section>
   );

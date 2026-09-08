@@ -29,7 +29,8 @@ export type ManualActivity = {
 export type ActivitySession = {
   id: number;
   activity_date: string;
-  local_time: string;
+  local_time: string | null;
+  rest_period: 'under30' | '30to60' | '1to2' | '2to3' | 'over3' | null;
   duration_minutes: number;
   intensity: string;
   outside_base: boolean;
