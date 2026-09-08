@@ -110,13 +110,50 @@ export function openAiCompatibleProvider(model: string): VisionProvider {
   };
 }
 
+export function geminiProvider(model: string): VisionProvider {
+  const baseUrl = safeApiBase(process.env.NUTRI_VISION_API_BASE_URL || 'https://generativelanguage.googleapis.com/v1beta');
+  return {
+    name: 'gemini',
+    async ready() { return Boolean(apiKey() && model); },
+    async recognize(image, options) {
+      const response = await fetch(`${baseUrl}/models/${encodeURIComponent(model)}:generateContent`, {
+        method: 'POST', signal: AbortSignal.timeout(90_000),
+        headers: { 'x-goog-api-key': apiKey(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: options.systemPrompt }] },
+          contents: [{ role: 'user', parts: [
+            { text: options.userPrompt },
+            { inlineData: { mimeType: 'image/jpeg', data: image.toString('base64') } },
+          ] }],
+          generationConfig: {
+            temperature: 0,
+            maxOutputTokens: 700,
+            responseMimeType: 'application/json',
+            responseJsonSchema: options.schema,
+          },
+        }),
+      });
+      if (!response.ok) throw new Error(await responseError(response));
+      const data = await response.json() as {
+        candidates?: { finishReason?: string; content?: { parts?: { text?: string }[] } }[];
+      };
+      const candidate = data.candidates?.[0];
+      if (candidate?.finishReason === 'MAX_TOKENS') throw new Error('output_truncated');
+      const text = candidate?.content?.parts?.map(part => part.text || '').join('').trim();
+      if (!text) throw new Error('invalid_output');
+      return text;
+    },
+  };
+}
+
 export function configuredProvider() {
   const provider = process.env.NUTRI_VISION_PROVIDER || 'ollama';
-  const defaultModel = provider === 'ollama' ? 'qwen3-vl:4b-instruct' : '';
+  const defaultModel = provider === 'ollama' ? 'qwen3-vl:4b-instruct' : provider === 'gemini' ? 'gemini-2.5-flash-lite' : '';
   const model = process.env.NUTRI_VISION_MODEL || defaultModel;
   if (!model) throw new Error('Configure NUTRI_VISION_MODEL');
   if (provider === 'ollama') return ollamaProvider(model);
   if (provider === 'openai-responses') return openAiResponsesProvider(model);
   if (provider === 'openai-compatible') return openAiCompatibleProvider(model);
+  if (provider === 'gemini') return geminiProvider(model);
   throw new Error('NUTRI_VISION_PROVIDER inválido');
 }

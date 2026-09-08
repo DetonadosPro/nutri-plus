@@ -14,6 +14,11 @@ describe('vision provider configuration', () => {
     vi.stubEnv('NUTRI_VISION_API_BASE_URL', 'https://api.openai.com/v1');
     expect(configuredProvider().name).toBe('openai-responses');
   });
+  it('switches to Gemini with its stable Flash-Lite default', () => {
+    vi.stubEnv('NUTRI_VISION_PROVIDER', 'gemini');
+    vi.stubEnv('NUTRI_VISION_MODEL', '');
+    expect(configuredProvider().name).toBe('gemini');
+  });
   it('rejects unknown providers and insecure remote compatible APIs', () => {
     vi.stubEnv('NUTRI_VISION_PROVIDER', 'unknown');
     vi.stubEnv('NUTRI_VISION_MODEL', 'model');
