@@ -2120,7 +2120,7 @@ function CreatePatientDialog({
                 <div>
                   <p className="text-sm font-medium">Fator cotidiano</p>
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                    Multiplica a basal para estimar um dia comum sem treino. Exercícios registrados são somados separadamente.
+                    Multiplica a basal para estimar um dia comum sem treino e já contempla o TEF. Exercícios registrados são somados separadamente.
                   </p>
                 </div>
                 <GoalInput
@@ -2417,7 +2417,7 @@ function GoalsDialog({
           <div className="rounded-2xl border bg-surface-soft px-4 py-4 sm:col-span-2">
             <p className="text-sm font-medium">Fator cotidiano</p>
             <p className="mt-1 text-xs text-muted-foreground">
-              Multiplica a basal para estimar um dia comum sem treino. Exercícios registrados são somados separadamente.
+              Multiplica a basal para estimar um dia comum sem treino e já contempla o TEF. Exercícios registrados são somados separadamente.
             </p>
             <div className="mt-3 max-w-48">
               <GoalInput
