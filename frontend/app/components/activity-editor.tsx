@@ -102,7 +102,7 @@ export function ActivityEditor({
     setError('');
     try {
       const [rows, history] = await Promise.all([
-        api<ActivityCatalog[]>(`/activities/catalog?${query}`),
+        api<ActivityCatalog[]>(`/activities/catalog?${query}${query ? '&' : ''}date=${day}`),
         api<ActivitySession[]>(`/activities/recent?${query}`),
       ]);
       setCatalog(rows);
@@ -112,7 +112,7 @@ export function ActivityEditor({
     } finally {
       setLoading(false);
     }
-  }, [query]);
+  }, [query, day]);
   useEffect(() => {
     void load();
   }, [load]);
