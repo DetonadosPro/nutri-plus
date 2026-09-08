@@ -1134,7 +1134,7 @@ app.post(
         heightCm: z.number().positive().max(250),
         weightKg: z.number().positive().max(500),
         energyKcal: z.number().positive().max(10000),
-        dailyActivityFactor: z.number().min(1).max(2.5).default(1.2),
+        dailyActivityFactor: z.number().min(1).max(2.5).default(1),
         carbohydratePercent: z.number().min(0).max(100),
         proteinPercent: z.number().min(0).max(100),
         fatPercent: z.number().min(0).max(100),
@@ -1408,7 +1408,7 @@ app.post(
         proteinPercent: z.number().min(0).max(100),
         fatPercent: z.number().min(0).max(100),
         fiberG: z.number().positive().nullable(),
-        dailyActivityFactor: z.number().min(1).max(2.5).default(1.2),
+        dailyActivityFactor: z.number().min(1).max(2.5).default(1),
         waterMl: z.number().positive().nullable().optional(),
       })
       .refine(

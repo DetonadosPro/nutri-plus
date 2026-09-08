@@ -1815,7 +1815,7 @@ function CreatePatientDialog({
     heightCm: '170',
     weightKg: '70',
     energyKcal: '2000',
-    dailyActivityFactor: '1.2',
+    dailyActivityFactor: '1',
     carbohydratePercent: '50',
     proteinPercent: '20',
     fatPercent: '30',
@@ -1853,6 +1853,12 @@ function CreatePatientDialog({
     if (age < 0 || sexConstant == null) return null;
     return 10 * weightKg + 6.25 * heightCm - 5 * age + sexConstant;
   }, [form.birthDate, form.heightCm, form.sex, form.weightKg]);
+  const everydayKcal = useMemo(() => {
+    const factor = Number(form.dailyActivityFactor);
+    return basalKcal != null && Number.isFinite(factor) && factor >= 1
+      ? basalKcal * factor
+      : null;
+  }, [basalKcal, form.dailyActivityFactor]);
   const set = (key: string, value: string) =>
     setForm((current) => ({ ...current, [key]: value }));
   function advance() {
@@ -1943,7 +1949,7 @@ function CreatePatientDialog({
         heightCm: '170',
         weightKg: '70',
         energyKcal: '2000',
-        dailyActivityFactor: '1.2',
+        dailyActivityFactor: '1',
         carbohydratePercent: '50',
         proteinPercent: '20',
         fatPercent: '30',
@@ -2091,13 +2097,13 @@ function CreatePatientDialog({
           <section className="patient-create-field macro-goal-editor sm:col-span-2" data-active={!isMobile || step === 3}>
             <div className="mb-4 flex items-center justify-between gap-4 rounded-2xl border border-primary/15 bg-primary/5 px-4 py-3">
               <div>
-                <p className="text-sm font-semibold text-primary">Taxa metabólica basal estimada</p>
+                <p className="text-sm font-semibold text-primary">Gasto cotidiano estimado</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">
-                  Mifflin–St Jeor · referência para definir a meta, não é a meta diária.
+                  Basal de {basalKcal == null ? '—' : `${formatNumber(basalKcal)} kcal`} × fator cotidiano.
                 </p>
               </div>
               <strong className="shrink-0 font-display text-xl text-primary">
-                {basalKcal == null ? '—' : `${formatNumber(basalKcal)} kcal`}
+                {everydayKcal == null ? '—' : `${formatNumber(everydayKcal)} kcal`}
               </strong>
             </div>
             <div className="flex flex-wrap items-center justify-between gap-3">
@@ -2337,7 +2343,7 @@ function GoalsDialog({
     proteinPercent: String(goals?.protein_percent ?? 20),
     fatPercent: String(goals?.fat_percent ?? 30),
     fiberG: String(goals?.fiber_g ?? 30),
-    dailyActivityFactor: String(goals?.daily_activity_factor ?? 1.2),
+    dailyActivityFactor: String(goals?.daily_activity_factor ?? 1),
   });
   const [error, setError] = useState('');
   useEffect(() => {
@@ -2348,7 +2354,7 @@ function GoalsDialog({
         proteinPercent: String(goals.protein_percent ?? 20),
         fatPercent: String(goals.fat_percent ?? 30),
         fiberG: String(goals.fiber_g ?? 30),
-        dailyActivityFactor: String(goals.daily_activity_factor ?? 1.2),
+        dailyActivityFactor: String(goals.daily_activity_factor ?? 1),
       });
   }, [goals]);
   const set = (key: string, value: string) =>
