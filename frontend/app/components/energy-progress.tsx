@@ -95,9 +95,7 @@ export function EnergyProgress({
   }, [load]);
   const complete =
     data?.days.filter((d) => d.foodComplete && d.balanceKcal != null) ?? [];
-  const mean = complete.length
-    ? complete.reduce((s, d) => s + d.balanceKcal!, 0) / complete.length
-    : null;
+  const aggregate = data?.accumulatedKcal ?? null;
   const chart =
     data?.days.map((d) => ({
       ...d,
@@ -190,14 +188,14 @@ export function EnergyProgress({
       {data && !error && (
         <div aria-busy={loading}>
           <div className="movement-period-total">
-            <span>Balanço médio no período</span>
+            <span>Saldo acumulado no período</span>
             <p>
-              <strong>{signedEnergy(mean)}</strong> kcal
+              <strong>{signedEnergy(aggregate)}</strong> kcal
             </p>
             <small>
-              {mean == null
+              {aggregate == null
                 ? 'Registre alimentos para começar.'
-                : `${Math.abs(mean) < 0.5 ? 'Equilíbrio' : mean > 0 ? 'Superávit' : 'Déficit'} estimado · ${complete.length} dias registrados`}
+                : `${Math.abs(aggregate) < 0.5 ? 'Equilíbrio' : aggregate > 0 ? 'Superávit' : 'Déficit'} estimado · ${complete.length} dias somados`}
             </small>
           </div>
           <div
@@ -328,10 +326,6 @@ export function EnergyProgress({
                   )}{' '}
                   min
                 </dd>
-              </div>
-              <div>
-                <dt>Saldo acumulado estimado</dt>
-                <dd>{signedEnergy(data.accumulatedKcal)} kcal</dd>
               </div>
             </dl>
             <p className="activity-muted">
