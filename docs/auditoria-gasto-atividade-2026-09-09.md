@@ -12,7 +12,7 @@ O descanso continua alterando a estimativa no atalho genérico porque isso é um
 
 - Fórmula adulta do catálogo: `kcal brutas = MET × peso (kg) × duração (h)`.
 - Fórmula líquida preservada para auditoria: `(MET − 1) × peso × duração (h)`.
-- Atalho de musculação adulta: `MET escolhido (3,0; 3,5; 4,0; 6,0) × peso × horas × fator de descanso`.
+- Atalho de musculação adulta: `MET escolhido (3,0; 3,5; 4,0; 5,0) × peso × horas × fator de descanso`.
 - Modalidade específica: usa apenas o MET do código escolhido; intensidade relatada e descanso não multiplicam o MET.
 - Jovens de 6–18 anos: METy × repouso de Schofield por minuto; apenas cruzamentos explícitos.
 - Pessoas 60+: MET60+ com referência de 2,7 ml/kg/min; apenas cruzamentos explícitos.
@@ -46,7 +46,7 @@ Endpoints envolvidos: `GET /activities/catalog`, `POST /activities/estimate`, `G
 
 Antes, qualquer linha `resistance=true` usava `kcal = MET de referência × kg × h × (MET 3/3,5/6 ÷ MET de referência) × fator de descanso`. A razão cancelava o MET oficial e o substituía pelo perfil genérico; por isso uma modalidade específica podia perder seu valor publicado. O descanso variava de 0,85 a 1,15.
 
-Agora, somente o atalho explícito `quick_strength`, para referência adulta, usa `kcal = MET 3/3,5/4/6 × kg × h × fator de descanso`, com faixa de 0,95 a 1,05. O nível intenso de 4 MET é uma interpolação conservadora solicitada após a auditoria; o nível vigoroso de 6 MET corresponde ao código 02050. Toda seleção `catalog_specific` usa `kcal = MET oficial do código × kg × h`, sem segunda aplicação de intensidade ou descanso.
+Agora, somente o atalho explícito `quick_strength`, para referência adulta, usa `kcal = MET 3/3,5/4/5 × kg × h × fator de descanso`, com faixa de 0,95 a 1,05. Os níveis alto de 4 MET e intenso de 5 MET são heurísticas conservadoras solicitadas após a auditoria. A referência vigorosa de 6 MET permanece no catálogo, sem associação automática ao esforço percebido. Toda seleção `catalog_specific` usa `kcal = MET oficial do código × kg × h`, sem segunda aplicação de intensidade ou descanso.
 
 ## Problemas encontrados
 
@@ -65,10 +65,10 @@ Não há fatores globais leve/moderada/intensa. Nas escolhas rápidas de caminha
 
 | Atalho (adulto, 85 kg, 60 min) | Leve | Moderada | Intensa | Vigorosa | Origem |
 |---|---:|---:|---:|---:|---|
-| Musculação, descanso 120 s | 255,0 | 297,5 | 340,0 | 510,0 | 3/3,5/4/6; 4 é derivado e 6 vem do código 02050 |
+| Musculação, descanso 120 s | 255,0 | 297,5 | 340,0 | 425,0 | 3/3,5/4/5; 4 e 5 são metodologia Nutri+ |
 | Caminhada | 238,0 | 323,0 | 408,0 | — | códigos 17152/17190/17200 |
 | Corrida | 552,5 | 722,5 | 790,5 | — | códigos 12028/12030/12050 |
-| Ciclismo | 365,5 | 595,0 | 680,0 | 765,0 | códigos oficiais 01015/01016/01030/01017 |
+| Ciclismo | 365,5 | 595,0 | 765,0 | — | códigos oficiais 01015/01016/01017 |
 | Natação | 493,0 | 680,0 | 833,0 | — | códigos 18240/18290/18230 |
 | Em casa | 238,0 | 280,5 | 365,5 | — | códigos 05025/05026/05027 |
 | Futebol | 595,0 recreativo | — | 807,5 competitivo | — | códigos 15610/15605; não há nível intermediário equivalente |
@@ -95,8 +95,9 @@ Os valores usam 85 kg, 60 min e 3,5 MET. Há interpolação linear entre pontos,
 |---|---:|---:|---:|
 | Leve (3,0 MET) | 293,3 → 267,8 | 255,0 → 255,0 | 229,5 → 246,6 |
 | Moderada (3,5 MET) | 342,1 → 312,4 | 297,5 → 297,5 | 267,8 → 287,7 |
-| Intensa (4,0 MET, nova) | — → 357,0 | — → 340,0 | — → 328,8 |
-| Vigorosa (6,0 MET) | 586,5 → 535,5 | 510,0 → 510,0 | 459,0 → 493,2 |
+| Alto (4,0 MET, novo) | — → 357,0 | — → 340,0 | — → 328,8 |
+| Intenso (5,0 MET, novo) | — → 446,3 | — → 425,0 | — → 411,0 |
+| Vigorosa (6,0 MET histórica) | 586,5 → 535,5 | 510,0 → 510,0 | 459,0 → 493,2 |
 
 A intensidade continua tendo maior efeito que o descanso. Leve + 30 s (267,8) não supera intensa + 240 s (493,2). Duração e peso permanecem lineares no modelo MET.
 
@@ -107,7 +108,8 @@ A intensidade continua tendo maior efeito que o descanso. Leve + 30 s (267,8) n�
 | METs dos 142 códigos adultos | OFICIAL/REFERENCIADO | 2024 Adult Compendium |
 | MET 3,5 do código 02054 e 6,0 do 02050 | OFICIAL/REFERENCIADO | 2024 Adult Compendium |
 | MET 3,0 para musculação genérica leve | DERIVADO/decisão de produto | aproximação conservadora previamente definida; não é uma entrada “musculação leve” universal |
-| MET 4,0 para musculação genérica intensa | DERIVADO/decisão de produto | nível intermediário solicitado; não é um código oficial específico de musculação |
+| MET 4,0 para musculação genérica alta | HEURÍSTICA NUTRI+ | nível intermediário solicitado; não é um código oficial específico de musculação |
+| MET 5,0 para musculação genérica intensa | HEURÍSTICA NUTRI+ | evita mapear automaticamente esforço subjetivo para os 6 MET vigorosos |
 | Razão `MET escolhido / MET do código` | DERIVADO | conversão matemática para o perfil genérico; não é multiplicador clínico universal |
 | Descanso 1,05…0,95 | HEURÍSTICA DO NUTRI+ | ajuste conservador de UX; sem tabela oficial por segundos |
 | Fórmula `MET × kg × h` | DERIVADO da definição convencional do MET | aproximação populacional; não é calorimetria individual |
