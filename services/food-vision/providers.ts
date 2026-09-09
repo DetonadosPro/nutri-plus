@@ -9,6 +9,9 @@ type ProviderOptions = {
   maxOutputTokens: number;
 };
 
+type ReasoningEffort = 'none' | 'low' | 'medium' | 'high' | 'xhigh' | 'max';
+type ImageDetail = 'low' | 'high' | 'auto';
+
 export type ProviderTelemetry = { model:string;reasoningEffort:string;latencyMs:number;inputTokens:number|null;outputTokens:number|null;reasoningTokens:number|null;totalTokens:number|null };
 export type ProviderResult = { content:string;telemetry:ProviderTelemetry };
 
@@ -74,14 +77,28 @@ export function openAiResponsesProvider(model: string): VisionProvider {
     async ready() { return Boolean(apiKey() && model); },
     async recognize(image, options) {
       const started=Date.now();
-      const reasoning = model === 'gpt-5.6-luna' ? { effort: 'low' } : undefined;
+      const configuredEffort = process.env.NUTRI_VISION_REASONING_EFFORT?.trim().toLowerCase();
+      const allowedEfforts = new Set<ReasoningEffort>(['none', 'low', 'medium', 'high', 'xhigh', 'max']);
+      if (configuredEffort && !allowedEfforts.has(configuredEffort as ReasoningEffort)) {
+        throw new Error('NUTRI_VISION_REASONING_EFFORT inválido');
+      }
+      const reasoningEffort = (configuredEffort as ReasoningEffort | undefined)
+        ?? (model.startsWith('gpt-5.6-') ? 'none' : undefined);
+      const configuredDetail = process.env.NUTRI_VISION_IMAGE_DETAIL?.trim().toLowerCase();
+      const allowedDetails = new Set<ImageDetail>(['low', 'high', 'auto']);
+      if (configuredDetail && !allowedDetails.has(configuredDetail as ImageDetail)) {
+        throw new Error('NUTRI_VISION_IMAGE_DETAIL inválido');
+      }
+      const imageDetail = (configuredDetail as ImageDetail | undefined) ?? 'high';
+      const reasoning = reasoningEffort ? { effort: reasoningEffort } : undefined;
       const response = await fetch(`${baseUrl}/responses`, {
         method: 'POST', signal: AbortSignal.timeout(90_000),
         headers: { Authorization: `Bearer ${apiKey()}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ model, store: false, max_output_tokens: options.maxOutputTokens, reasoning,
+          prompt_cache_key: `nutriplus-${options.schemaName}`,
           input: [{ role: 'developer', content: [{ type: 'input_text', text: options.systemPrompt }] },
             { role: 'user', content: [{ type: 'input_text', text: options.userPrompt },
-              { type: 'input_image', image_url: `data:image/jpeg;base64,${image.toString('base64')}`, detail: 'high' }] }],
+              { type: 'input_image', image_url: `data:image/jpeg;base64,${image.toString('base64')}`, detail: imageDetail }] }],
           text: { verbosity:'low',format: { type: 'json_schema', name: options.schemaName, strict: true, schema: options.schema } } }),
       });
       if (!response.ok) throw new Error(await responseError(response));
@@ -89,7 +106,7 @@ export function openAiResponsesProvider(model: string): VisionProvider {
       if(data.status==='incomplete')throw new Error(data.incomplete_details?.reason||'output_truncated');
       const text = data.output_text || data.output?.flatMap(item => item.content || []).find(item => item.type === 'output_text')?.text;
       if (typeof text !== 'string') throw new Error('invalid_output');
-      return {content:text,telemetry:{model,reasoningEffort:reasoning?.effort||'none',latencyMs:Date.now()-started,inputTokens:data.usage?.input_tokens??null,outputTokens:data.usage?.output_tokens??null,reasoningTokens:data.usage?.output_tokens_details?.reasoning_tokens??null,totalTokens:data.usage?.total_tokens??null}};
+      return {content:text,telemetry:{model,reasoningEffort:reasoningEffort||'none',latencyMs:Date.now()-started,inputTokens:data.usage?.input_tokens??null,outputTokens:data.usage?.output_tokens??null,reasoningTokens:data.usage?.output_tokens_details?.reasoning_tokens??null,totalTokens:data.usage?.total_tokens??null}};
     },
   };
 }

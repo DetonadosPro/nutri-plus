@@ -828,10 +828,13 @@ app.post('/api/foods/recognize',
       let selectedFoodId:number|null=state==='AUTOSELECT'?matches[0].food.id:null;
       let resolutionPolicy=state==='AUTOSELECT'?initial.policy:null;
       let abstentionReason=state==='NO_EXACT_TBCA_MATCH'?(matches[0]?.materialUnknowns?.join(',')||'unresolved_variant'):null;
-      if(state==='RERANK'){
+      if(state==='RERANK'&&appConfig.vision.rerankEnabled){
         try{const reranked=await rerankPhoto(vision.image,item,plausible.map(match=>match.food.displayName));rerankLatency+=reranked.telemetry.latencyMs;inputTokens+=reranked.telemetry.inputTokens??0;outputTokens+=reranked.telemetry.outputTokens??0;reasoningTokens+=reranked.telemetry.reasoningTokens??0;totalTokens+=reranked.telemetry.totalTokens??0;
           if(!reranked.decision.uncertain&&reranked.decision.candidateIndex!=null&&reranked.decision.confidence>=MATCH_THRESHOLDS.RERANK_MIN_CONFIDENCE){selectedFoodId=plausible[reranked.decision.candidateIndex].food.id;state='RERANK'}else{state='ASK_ATTRIBUTE';abstentionReason='visual_attribute_uncertain'}
         }catch{state='ASK_ATTRIBUTE';abstentionReason='reranker_unavailable'}
+      }else if(state==='RERANK'){
+        state='ASK_ATTRIBUTE';
+        abstentionReason='fast_mode_user_confirmation';
       }
       const needsChoice=['ASK_IDENTITY','ASK_ATTRIBUTE','NO_EXACT_TBCA_MATCH'].includes(state);
       const visible=needsChoice?plausible.slice(0,MATCH_THRESHOLDS.ASK_USER_MAX_CANDIDATES):state==='NO_MATCH'?[]:matches.filter(match=>match.food.id===selectedFoodId).slice(0,1);

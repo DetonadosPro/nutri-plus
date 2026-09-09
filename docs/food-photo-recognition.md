@@ -22,9 +22,9 @@ O modelo recebe apenas a imagem normalizada e devolve nomes, alternativas e ambi
 
 O endpoint `/api/meals` mantém o contrato de um alimento e também aceita `items: [{foodId, grams}]` (1–20). O lote é validado e inserido numa transação; falha em qualquer alimento reverte todos. Data, refeição, horário e resumo usam a implementação anterior. O callback existente atualiza Diário/Evolução.
 
-Uploads JPEG/PNG/WebP até 5 MiB; máximo de 25 milhões de pixels; rejeita animação/SVG e arquivos inválidos. Sharp decodifica e regrava em JPEG removendo EXIF/localização antes da transmissão à IA. Fotos não são persistidas nem registradas em logs. O navegador mantém só uma URL temporária e a libera ao sair. A foto selecionada é enviada ao backend após escolha; nada é registrado no diário sem confirmação.
+Uploads JPEG/PNG/WebP de até 20 MiB são reduzidos no navegador para no máximo 768 px e enviados como JPEG otimizado. O backend mantém o limite final de 5 MiB e 25 milhões de pixels, rejeita animação/SVG e arquivos inválidos. Sharp decodifica e regrava a imagem removendo EXIF/localização antes da transmissão à IA. Fotos não são persistidas nem registradas em logs. O navegador mantém só uma URL temporária e a libera ao sair. A foto selecionada é enviada ao backend após escolha; nada é registrado no diário sem confirmação.
 
-Autenticação de sessão e acesso ao paciente antecedem o parser binário; administrador não pode analisar. Limite de 5 análises/minuto por usuário. Serviço local exige bearer token, comparação em tempo constante, loopback e uma requisição simultânea. Limites de inferência/backend/browser: 90/95/100 segundos. Computador desligado/túnel interrompido gera indisponibilidade e oferece busca manual. Nginx precisa permitir mais de 95 segundos para essa rota.
+Autenticação de sessão e acesso ao paciente antecedem o parser binário; administrador não pode analisar. Limite de 5 análises/minuto por usuário. O serviço exige bearer token, comparação em tempo constante e loopback. Ollama mantém uma requisição simultânea; APIs externas aceitam quatro por padrão, configuráveis por `NUTRI_VISION_MAX_CONCURRENCY`. Limites de inferência/backend/browser: 90/95/100 segundos. Computador desligado/túnel interrompido gera indisponibilidade e oferece busca manual. Nginx precisa permitir mais de 95 segundos para essa rota.
 
 ## Instalar no Windows (ação do usuário)
 
@@ -92,7 +92,7 @@ Se o 4B demorar demais ou causar falta de memória, baixe a variante 2B e altere
 
 ## Trocar o provedor sem alterar o Nutri+
 
-Frontend, backend público, correspondência TACO e revisão não conhecem o modelo. O gateway implementa quatro adaptadores: `ollama`, `gemini`, `openai-responses` e `openai-compatible`. O padrão do Gemini é `gemini-3.5-flash-lite`; o padrão da OpenAI é `gpt-5.6-luna` com raciocínio desativado para esta extração simples. Ambos recebem imagem e devolvem saída estruturada.
+Frontend, backend público, correspondência TBCA e revisão não dependem do modelo. O gateway implementa quatro adaptadores: `ollama`, `gemini`, `openai-responses` e `openai-compatible`. O padrão do Gemini é `gemini-3.5-flash-lite`; o padrão da OpenAI é `gpt-5.6-luna` com raciocínio `none`, detalhe de imagem `high` e saída estruturada. O modo rápido evita uma segunda chamada de IA: quando a TBCA ainda tiver duas opções plausíveis, o paciente escolhe entre elas. Para comparar o modo anterior, defina `NUTRI_VISION_RERANK_ENABLED=true`; `NUTRI_VISION_REASONING_EFFORT` e `NUTRI_VISION_IMAGE_DETAIL` também permitem elevar a qualidade sem alterar código.
 
 Para voltar ao Ollama:
 
