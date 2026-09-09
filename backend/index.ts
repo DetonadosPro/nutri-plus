@@ -1,5 +1,6 @@
 import { patientAccess } from './patient-access';
-import { recognizePhoto, rankFoodCandidates } from './food-recognition';
+import { deduplicateDetections,decideMatch,MATCH_THRESHOLDS,recognizePhoto,rerankPhoto,rankSemanticFoodCandidates } from './food-recognition';
+import { randomUUID } from 'node:crypto';
 import { rateLimit } from 'express-rate-limit';
 import { activitiesRouter, seedActivityCatalog } from './activities';
 import express, { type Request, type Response } from "express";
@@ -808,24 +809,37 @@ app.post('/api/foods/recognize',
   express.raw({ type: ['image/jpeg', 'image/png', 'image/webp'], limit: '5mb' }),
   route(async (req, res) => {
     if (!Buffer.isBuffer(req.body)) return res.status(400).json({ error: 'Escolha uma foto JPEG, PNG ou WebP de até 5 MB.' });
-    let detected;
-    try { detected = await recognizePhoto(req.body); }
+    let vision;
+    try { vision = await recognizePhoto(req.body); }
     catch { return res.status(503).json({ error: 'Não foi possível analisar esta foto agora. Tente outra imagem ou use a busca manual.' }); }
     const foods = await db.prepare(`SELECT id,source_code,description,description AS name,COALESCE(display_name,description) AS "displayName",search_aliases AS "searchAliases",category,source
       FROM foods WHERE active AND source='TBCA'`).all<{ id:number;source_code:string;description:string;displayName:string;searchAliases:string[];category:string;source:string }>();
-    const items = await Promise.all(detected.items.map(async item => {
-      const ranked = rankFoodCandidates(item.name, foods);
-      const alternatives = item.alternatives.flatMap(name => rankFoodCandidates(name, foods));
-      const candidates = [...new Map([...ranked, ...alternatives].map(r => [r.food.id, r.food])).values()].slice(0, 5);
-      const payload = await Promise.all(candidates.map(async food => {
-        const nutrition = await nutrientsForFood(Number(food.id));
-        return { ...food, nutrients: nutrition.values, nutrientSources: nutrition.sources, dataSources: [nutrition.source], favorite: false };
-      }));
-      return { name: item.name, needsChoice: item.uncertain || !ranked[0]?.exact, candidates: payload };
-    }));
-    res.json({ items });
+    const detected=deduplicateDetections(vision.detection.items);
+    let rerankLatency=0,inputTokens=vision.telemetry.inputTokens??0,outputTokens=vision.telemetry.outputTokens??0,reasoningTokens=vision.telemetry.reasoningTokens??0,totalTokens=vision.telemetry.totalTokens??0;
+    const decisions=[] as Array<{itemToken:string;name:string;preparation:string|null;visualConfidence:number;state:'AUTOSELECT'|'RERANK'|'ASK_USER'|'NO_MATCH';selectedFoodId:number|null;top1Score:number;top2Score:number;margin:number;candidates:any[]}>;
+    for(const item of detected){
+      const matches=rankSemanticFoodCandidates(item,foods,MATCH_THRESHOLDS.RERANK_MAX_CANDIDATES),initial=decideMatch(item,matches);let state:'AUTOSELECT'|'RERANK'|'ASK_USER'|'NO_MATCH'=initial.state,selectedFoodId:number|null=state==='AUTOSELECT'?matches[0].food.id:null;
+      if(state==='RERANK'){
+        try{const reranked=await rerankPhoto(vision.image,item,matches.map(match=>match.food.displayName));rerankLatency+=reranked.telemetry.latencyMs;inputTokens+=reranked.telemetry.inputTokens??0;outputTokens+=reranked.telemetry.outputTokens??0;reasoningTokens+=reranked.telemetry.reasoningTokens??0;totalTokens+=reranked.telemetry.totalTokens??0;
+          if(!reranked.decision.uncertain&&reranked.decision.candidateIndex!=null&&reranked.decision.confidence>=MATCH_THRESHOLDS.RERANK_MIN_CONFIDENCE){selectedFoodId=matches[reranked.decision.candidateIndex].food.id;state='RERANK'}else state='ASK_USER';
+        }catch{state='ASK_USER'}
+      }
+      const visible=state==='ASK_USER'?matches.slice(0,MATCH_THRESHOLDS.ASK_USER_MAX_CANDIDATES):state==='NO_MATCH'?[]:matches.filter(match=>match.food.id===selectedFoodId).slice(0,1);
+      const candidates=await Promise.all(visible.map(async match=>{const food=match.food,nutrition=await nutrientsForFood(Number(food.id));return{...food,nutrients:nutrition.values,nutrientSources:nutrition.sources,dataSources:[nutrition.source],favorite:false}}));
+      decisions.push({itemToken:randomUUID(),name:item.name,preparation:item.preparation,visualConfidence:item.confidence,state,selectedFoodId,top1Score:initial.top1Score,top2Score:initial.top2Score,margin:initial.margin,candidates});
+    }
+    const analysisToken=randomUUID();
+    await transaction(async()=>{const counts=(state:string)=>decisions.filter(item=>item.state===state).length;const analysis=await db.prepare(`INSERT INTO food_vision_analyses(analysis_token,model,reasoning_effort,first_latency_ms,rerank_latency_ms,input_tokens,output_tokens,reasoning_tokens,total_tokens,detected_count,autoselect_count,rerank_count,ask_user_count,no_match_count)
+      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING id`).get<{id:number}>(analysisToken,vision.telemetry.model,vision.telemetry.reasoningEffort,vision.telemetry.latencyMs,rerankLatency,inputTokens||null,outputTokens||null,reasoningTokens||null,totalTokens||null,detected.length,counts('AUTOSELECT'),counts('RERANK'),counts('ASK_USER'),counts('NO_MATCH'));
+      for(const item of decisions)await db.prepare(`INSERT INTO food_vision_predictions(analysis_id,item_token,decision_state,predicted_food_id,top1_score,top2_score,margin,visual_confidence) VALUES(?,?,?,?,?,?,?,?)`).run(analysis!.id,item.itemToken,item.state,item.selectedFoodId,item.top1Score,item.top2Score,item.margin,item.visualConfidence);
+    });
+    console.info(`[food-vision] model=${vision.telemetry.model}; effort=${vision.telemetry.reasoningEffort}; detected=${detected.length}; auto=${decisions.filter(i=>i.state==='AUTOSELECT').length}; rerank=${decisions.filter(i=>i.state==='RERANK').length}; ask=${decisions.filter(i=>i.state==='ASK_USER').length}; no_match=${decisions.filter(i=>i.state==='NO_MATCH').length}; latency_ms=${vision.telemetry.latencyMs+rerankLatency}`);
+    res.json({analysisToken,items:decisions.map(({selectedFoodId,...item})=>item)});
   }),
 );
+
+app.post('/api/foods/recognize/feedback',route(async(req,res)=>{const user=await authUser(req,res);if(!user)return;if(!await patientAccess(user))return res.status(403).json({error:'Ação não permitida.'});const payload=z.object({analysisToken:z.string().uuid(),items:z.array(z.object({itemToken:z.string().uuid(),selectedFoodId:z.number().int().positive()})).max(20)}).parse(req.body);
+  await transaction(async()=>{for(const item of payload.items){const selected=await db.prepare(`SELECT id FROM foods WHERE id=? AND source='TBCA' AND active`).get(item.selectedFoodId);if(!selected)throw new InputError('Alimento selecionado inválido.');await db.prepare(`UPDATE food_vision_predictions p SET final_food_id=?,changed=(predicted_food_id IS DISTINCT FROM ?) FROM food_vision_analyses a WHERE p.analysis_id=a.id AND a.analysis_token=? AND p.item_token=?`).run(item.selectedFoodId,item.selectedFoodId,payload.analysisToken,item.itemToken)}});res.json({ok:true});}));
 
 app.get(
   "/api/patient/orientations",
