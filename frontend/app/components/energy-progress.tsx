@@ -415,13 +415,13 @@ function EnergySettings({
             Fator habitual já inclui exercícios
           </option>
           <option value="base_plus_net">
-            Base sem exercícios + gasto líquido adicional
+            Base sem exercícios + gasto completo das atividades
           </option>
         </select>
       </label>
       <p>
         O fator cotidiano é definido em Metas. Na segunda estratégia, os
-        exercícios registrados são acrescentados pelo gasto líquido estimado.
+        exercícios registrados são acrescentados pelo gasto completo estimado.
       </p>
       <label className="activity-checkbox">
         <input

@@ -26,17 +26,17 @@ describe("gasto e balanço estimados", () => {
   it("não soma treino ao fator que já inclui atividade", () => {
     expect(
       energyBalance(2300, 2500, 0, "habitual_includes_exercise", [
-        { outside_base: true, snapshot: { netKcal: 500 } },
+        { outside_base: true, snapshot: { grossKcal: 600, netKcal: 500 } },
       ]).balanceKcal,
     ).toBe(-200);
   });
-  it("soma só líquido fora da base", () => {
+  it("soma o gasto bruto completo fora da base", () => {
     expect(
       energyBalance(2300, 2000, 0, "base_plus_net", [
-        { outside_base: true, snapshot: { netKcal: 200 } },
-        { outside_base: false, snapshot: { netKcal: 500 } },
+        { outside_base: true, snapshot: { grossKcal: 300, netKcal: 200 } },
+        { outside_base: false, snapshot: { grossKcal: 600, netKcal: 500 } },
       ]).balanceKcal,
-    ).toBe(100);
+    ).toBe(0);
   });
   it("mantém balanço neutro, positivo e negativo com rótulos", () => {
     expect(energyBalance(2000, 2000, 0, "base_plus_net", []).label).toBe("Neutro estimado");
@@ -48,7 +48,7 @@ describe("gasto e balanço estimados", () => {
     expect(energyBalance(2000, null, 0, "base_plus_net", []).totalKcal).toBeNull();
     expect(
       energyBalance(2000, 2000, 0, "base_plus_net", [
-        { outside_base: true, snapshot: { netKcal: null } },
+        { outside_base: true, snapshot: { grossKcal: null, netKcal: null } },
       ]).balanceKcal,
     ).toBeNull();
   });

@@ -62,12 +62,16 @@ export function energyBalance(
   base: number | null,
   tef: number,
   mode: EnergyMode,
-  sessions: Array<{ outside_base: boolean; snapshot: { netKcal: number | null } }>,
+  sessions: Array<{
+    outside_base: boolean;
+    snapshot: { grossKcal: number | null; netKcal: number | null };
+  }>,
 ) {
   const eligible = mode === "base_plus_net" ? sessions.filter((s) => s.outside_base) : [];
-  const additionalKcal = eligible.some((s) => s.snapshot.netKcal == null)
+  const values = eligible.map((s) => s.snapshot.grossKcal ?? s.snapshot.netKcal);
+  const additionalKcal = values.some((value) => value == null)
     ? null
-    : eligible.reduce((sum, s) => sum + s.snapshot.netKcal!, 0);
+    : values.reduce<number>((sum, value) => sum + (value ?? 0), 0);
   const totalKcal = base == null || additionalKcal == null ? null : base + tef + additionalKcal;
   const balanceKcal = intake == null || totalKcal == null ? null : intake - totalKcal;
   return {
