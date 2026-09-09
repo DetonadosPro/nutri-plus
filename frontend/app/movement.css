@@ -406,7 +406,7 @@
   height: 22px;
 }
 .movement-effort-bars i[data-active='true'] {
-  background: #689477;
+  background: #8062a8;
 }
 .movement-entry-form button[aria-pressed='true'],
 .movement-range button[aria-pressed='true'] {
@@ -414,6 +414,15 @@
   border-color: #6c9670;
   color: #315c3d;
   box-shadow: inset 0 0 0 1px #6c9670;
+}
+.movement-effort button[aria-pressed='true'] {
+  background: #eee9fa;
+  border-color: #8c72b0;
+  color: #5d467a;
+  box-shadow: inset 0 0 0 1px #8c72b0;
+}
+.movement-effort button[aria-pressed='true'] small {
+  color: #70578f;
 }
 .movement-rest {
   display: flex;
