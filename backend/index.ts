@@ -974,10 +974,6 @@ app.post(
       .object({
         date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
         mealType: z.enum(mealTypes),
-        consumedTime: z
-          .string()
-          .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
-          .default(brazilTime()),
         foodId: z.number().int().positive().optional(),
         grams: z.number().positive().max(5000).optional(),
         items: z.array(z.object({ foodId: z.number().int().positive(), grams: z.number().positive().max(5000) })).min(1).max(20).optional(),
@@ -985,7 +981,7 @@ app.post(
       .refine(value => value.items ? value.foodId == null && value.grams == null : value.foodId != null && value.grams != null)
       .parse(req.body);
     const entries = payload.items || [{ foodId: payload.foodId!, grams: payload.grams! }];
-    const consumedAt = localTimestamp(payload.date, payload.consumedTime);
+    const consumedAt = localTimestamp(payload.date, brazilTime());
     await transaction(async () => {
       for (const entry of entries) {
         const allowed = await db.prepare("SELECT id FROM foods WHERE id = ? AND source = 'TBCA' AND active FOR SHARE").get(entry.foodId);
@@ -1049,10 +1045,6 @@ app.patch(
       .object({
         grams: z.number().positive().max(5000).optional(),
         mealType: z.enum(mealTypes).optional(),
-        consumedTime: z
-          .string()
-          .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
-          .optional(),
       })
       .refine((value) => Object.keys(value).length > 0, "Informe ao menos uma alteração.")
       .parse(req.body);
@@ -1067,7 +1059,7 @@ app.patch(
       const nextMealType = (payload.mealType ?? owned.meal_type) as MealType;
       const currentTime =
         typeof owned.consumed_at === "string" ? owned.consumed_at.slice(11, 16) : brazilTime();
-      const consumedAt = localTimestamp(owned.log_date, payload.consumedTime ?? currentTime);
+      const consumedAt = localTimestamp(owned.log_date, currentTime);
       const targetMeal = await getOrCreateMeal(
         Number(owned.daily_log_id),
         nextMealType,
