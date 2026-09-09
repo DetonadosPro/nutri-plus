@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { scaleNutrients } from '../../../shared/scale-nutrients';
 import type { Food, Summary } from '../types';
 import { foodDisplayName } from '@/lib/food-name';
+import { optimizeFoodPhoto } from '@/lib/food-photo';
 
 type DetectionState = 'AUTOSELECT'|'RERANK'|'ASK_USER'|'ASK_IDENTITY'|'ASK_ATTRIBUTE'|'NO_EXACT_TBCA_MATCH'|'NO_MATCH';
 type Detection = { itemToken:string;name:string;preparation:string|null;visualConfidence:number;state:DetectionState;top1Score:number;top2Score:number;margin:number;resolutionPolicy?:string|null;abstentionReason?:string|null;candidates:Food[] };
@@ -48,7 +49,7 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
   const gallery = useRef<HTMLInputElement>(null);
   const analyzedInitialPhoto = useRef<number | undefined>(undefined);
 
-  useEffect(() => () => request.current?.abort(), []);
+  useEffect(() => () => { request.current?.abort(); request.current = null; }, []);
   useEffect(() => () => { if (preview) URL.revokeObjectURL(preview); }, [preview]);
   useEffect(() => {
     if (!editing) return;
@@ -65,17 +66,17 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
   const analyze = useCallback(async (file?: File) => {
     if (!file || saving || saved) return;
     setError('');
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) {
-      setError('Escolha uma foto JPEG, PNG ou WebP de até 5 MB.'); return;
-    }
     request.current?.abort();
     const controller = new AbortController();
     request.current = controller;
-    setPreview(URL.createObjectURL(file)); setRows([]); setAnalysisToken(''); setAnalyzed(false); setBusy(true);
+    setRows([]); setAnalysisToken(''); setAnalyzed(false); setBusy(true);
     const timeout = setTimeout(() => controller.abort(), 100_000);
     try {
+      const upload = await optimizeFoodPhoto(file, controller.signal);
+      if (request.current !== controller) return;
+      setPreview(URL.createObjectURL(upload));
       const data = await api<{ analysisToken:string;items: Detection[] }>('/foods/recognize', {
-        method: 'POST', headers: { 'Content-Type': file.type }, body: file, signal: controller.signal,
+        method: 'POST', headers: { 'Content-Type': upload.type }, body: upload, signal: controller.signal,
       });
       if (request.current !== controller) return;
       setAnalysisToken(data.analysisToken);
@@ -133,7 +134,7 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
         <p className="photo-hint">A foto é usada apenas para esta análise. Revise os alimentos antes de registrar.</p>
       </aside>
       <div className="photo-review-main">
-        {busy && <div className="photo-empty"><LoaderCircle className="animate-spin" /><output>Reconhecendo seu prato…</output><p>Isso pode levar até um minuto e meio.</p></div>}
+        {busy && <div className="photo-empty"><LoaderCircle className="animate-spin" /><output>Reconhecendo seu prato…</output><p>Preparando os alimentos para você.</p></div>}
         {error && <p role="alert" className="photo-error">{error}</p>}
         {analyzed && !rows.length && <div className="photo-empty"><Search /><strong>Nenhum alimento identificado</strong><p>Tente uma foto mais nítida ou adicione pela busca.</p></div>}
         {rows.length > 0 && <p className="photo-hint">Confira os alimentos e preencha a quantidade de cada um. Você pode incluir o que ficou faltando.</p>}
