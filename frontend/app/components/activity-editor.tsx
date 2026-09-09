@@ -175,6 +175,7 @@ export function ActivityEditor({
           version: chosen.version,
           restSeconds: selected.resistance ? rest : null,
           intensity,
+          calculationProfile: quick?.id === 'strength' ? 'quick_strength' : 'catalog_specific',
         }),
       })
         .then((result) => setEstimatedKcal(result.kcal))
@@ -186,7 +187,7 @@ export function ActivityEditor({
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [chosen, day, duration, intensity, query, rest, selected]);
+  }, [chosen, day, duration, intensity, query, quick, rest, selected]);
   const visible = useMemo(
     () =>
       catalog.filter(
@@ -322,6 +323,8 @@ export function ActivityEditor({
                 ? session.details
                 : [],
             restSeconds: selected?.resistance ? rest : null,
+            calculationProfile:
+              quick?.id === 'strength' ? 'quick_strength' : 'catalog_specific',
             note,
             revision: session?.revision,
             recalculate: true,

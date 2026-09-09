@@ -59,6 +59,7 @@ export const activityInput = z
     preserveWeight: z.boolean().default(false),
     restPeriod: z.enum(["under30", "30to60", "1to2", "2to3", "over3"]).nullable().optional(),
     restSeconds: z.number().int().min(1).max(1200).nullable().optional(),
+    calculationProfile: z.enum(["quick_strength", "catalog_specific"]).default("catalog_specific"),
   })
   .superRefine((p, ctx) => {
     if (!!p.code === !!p.manual || (p.code && !p.version))
@@ -368,6 +369,7 @@ export function activitiesRouter(deps: {
         version: z.string().max(40),
         restSeconds: z.number().int().min(1).max(1200).nullable(),
         intensity: z.enum(["light", "moderate", "vigorous", "unspecified"]),
+        calculationProfile: z.enum(["quick_strength", "catalog_specific"]).default("catalog_specific"),
       })
       .parse(req.body);
     const patient = res.locals.patient;
@@ -388,7 +390,7 @@ export function activitiesRouter(deps: {
       ? schofieldRestingKcal(weight.weight_kg, age, patient.sex)
       : null;
     const base = ageSpecificEnergy(reference, weight.weight_kg, p.duration, resting);
-    const energy = catalog.resistance
+    const energy = catalog.resistance && p.calculationProfile === "quick_strength" && reference.referenceKind === "adult-met"
       ? calculateStrengthTrainingCalories(base, p.restSeconds, p.intensity, reference.met)
       : base;
     res.json({ kcal: energy.grossKcal });
@@ -508,6 +510,7 @@ export function activitiesRouter(deps: {
         p.date !== old.activity_date ||
         p.duration !== old.duration_minutes ||
         p.intensity !== old.intensity ||
+        p.calculationProfile !== (old.snapshot.calculationProfile ?? "catalog_specific") ||
         restSeconds !== (old.rest_seconds ?? legacyRestSeconds(old.rest_period)) ||
         p.code !== old.snapshot.code ||
         p.version !== old.snapshot.catalogVersion ||
@@ -549,7 +552,7 @@ export function activitiesRouter(deps: {
         const baseEnergy = catalog
           ? ageSpecificEnergy(reference!, weight!.weight_kg, p.duration, restingForActivity)
           : manualEnergy(p.manual!.kcal, p.manual!.kind, weight?.weight_kg ?? null, p.duration);
-        const energy = catalog?.resistance
+        const energy = catalog?.resistance && p.calculationProfile === "quick_strength" && reference?.referenceKind === "adult-met"
           ? calculateStrengthTrainingCalories(
               baseEnergy as { grossKcal: number; netKcal: number },
               restSeconds,
@@ -573,6 +576,7 @@ export function activitiesRouter(deps: {
           referenceCode: reference?.referenceCode ?? null,
           referenceAgeBand: reference?.ageBand ?? null,
           resistance: catalog?.resistance ?? false,
+          calculationProfile: p.calculationProfile,
           weight,
           manual: p.manual,
           ...energy,

@@ -12,7 +12,7 @@ export const TEF_RATES = {
   carbohydrate: 0.075,
   fat: 0.015,
 } as const;
-export const STRENGTH_CALCULATION_VERSION = "strength-density-1";
+export const STRENGTH_CALCULATION_VERSION = "strength-density-2";
 export const STRENGTH_MET_BY_INTENSITY = {
   light: 3,
   moderate: 3.5,
@@ -20,13 +20,13 @@ export const STRENGTH_MET_BY_INTENSITY = {
   unspecified: 3.5,
 } as const;
 export const REST_DENSITY_POINTS = [
-  [30, 1.15],
-  [60, 1.1],
-  [90, 1.05],
+  [30, 1.05],
+  [60, 1.033],
+  [90, 1.017],
   [120, 1],
-  [180, 0.95],
-  [240, 0.9],
-  [300, 0.85],
+  [180, 0.983],
+  [240, 0.967],
+  [300, 0.95],
 ] as const;
 
 export function calculateRestDensityFactor(restSeconds: number | null) {

@@ -66,9 +66,9 @@ describe("gasto e balanço estimados", () => {
   it("ajusta musculação de forma suave e limitada pelo descanso", () => {
     expect(calculateRestDensityFactor(30)).toBeGreaterThan(calculateRestDensityFactor(120));
     expect(calculateRestDensityFactor(120)).toBeGreaterThan(calculateRestDensityFactor(240));
-    expect(calculateRestDensityFactor(1)).toBe(1.15);
-    expect(calculateRestDensityFactor(1200)).toBe(0.85);
-    expect(calculateRestDensityFactor(75)).toBeCloseTo(1.075);
+    expect(calculateRestDensityFactor(1)).toBe(1.05);
+    expect(calculateRestDensityFactor(1200)).toBe(0.95);
+    expect(calculateRestDensityFactor(75)).toBeCloseTo(1.025);
   });
   it("rejeita descansos inválidos sem produzir NaN", () => {
     for (const value of [0, -1, NaN, Infinity])
@@ -95,6 +95,22 @@ describe("gasto e balanço estimados", () => {
     expect(calculateStrengthTrainingCalories(baseAt35Met, 120, "moderate", 3.5).grossKcal).toBe(245);
     const baseAt6Met = { grossKcal: 420, netKcal: 350 };
     expect(calculateStrengthTrainingCalories(baseAt6Met, 120, "vigorous", 6).grossKcal).toBe(420);
+  });
+  it("mantém progressões seguras na matriz de musculação", () => {
+    const rests = [30, 60, 90, 120, 180, 240, 300];
+    for (const intensity of ["light", "moderate", "vigorous"] as const) {
+      const met = { light: 3, moderate: 3.5, vigorous: 6 }[intensity];
+      const values = rests.map((rest) =>
+        calculateStrengthTrainingCalories(metEnergy(met, 85, 60), rest, intensity, met).grossKcal,
+      );
+      expect(values.every(Number.isFinite)).toBe(true);
+      expect(values.every((value) => value >= 0 && value < 2_000)).toBe(true);
+      for (let index = 1; index < values.length; index++)
+        expect(values[index - 1]).toBeGreaterThan(values[index]);
+    }
+    for (const minutes of [30, 60, 90])
+      expect(metEnergy(3.5, 85, minutes).grossKcal).toBe(3.5 * 85 * minutes / 60);
+    expect(metEnergy(3.5, 90, 60).grossKcal).toBeGreaterThan(metEnergy(3.5, 85, 60).grossKcal);
   });
   it("não desconta repouso duas vezes de calorias ativas manuais", () => {
     expect(manualEnergy(100, "net", 70, 60)).toEqual({ netKcal: 100, grossKcal: null });
