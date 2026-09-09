@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft,
   Check,
-  Clock3,
   Heart,
   Layers3,
   Search,
@@ -13,7 +12,6 @@ import {
   X,
 } from 'lucide-react';
 import { api } from '@/lib/client-api';
-import { brazilNow } from '@/lib/datetime';
 import { formatNumber } from '@/lib/nutrition-format';
 import { MEAL_TYPES, type MealType } from '@/lib/meal-types';
 import type { Food, NutrientCatalogItem, Summary } from '../types';
@@ -59,7 +57,6 @@ export function FoodEntrySheet({
   const [searchLoading, setSearchLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [mealType, setMealType] = useState<MealType | ''>('');
-  const [consumedTime, setConsumedTime] = useState('');
   const [error, setError] = useState('');
   const fixedMeal =
     MEAL_TYPES.find((item) => item.value === initialMealType) ?? null;
@@ -67,7 +64,6 @@ export function FoodEntrySheet({
   useEffect(() => {
     if (!open) return;
     setPhotoMode(Boolean(initialPhoto));
-    setConsumedTime(brazilNow().time);
     setError('');
     setMealType(
       MEAL_TYPES.some((item) => item.value === initialMealType)
@@ -101,7 +97,6 @@ export function FoodEntrySheet({
     picked.every(
       (item) => Number(item.grams) > 0 && Number(item.grams) <= 5000,
     );
-  const timeValid = /^([01]\d|2[0-3]):[0-5]\d$/.test(consumedTime);
   const totals = useMemo(
     () =>
       picked.reduce(
@@ -127,7 +122,6 @@ export function FoodEntrySheet({
     setPhotoMode(false);
     setFavoritesOnly(false);
     setMealType('');
-    setConsumedTime('');
     setError('');
   }
   function close() {
@@ -154,10 +148,6 @@ export function FoodEntrySheet({
     setReviewing(true);
     scrollRef.current?.scrollTo({ top: 0, behavior: 'auto' });
   }
-  function updateMobileTime(value: string) {
-    const digits = value.replace(/\D/g, '').slice(0, 4);
-    setConsumedTime(digits.length > 2 ? `${digits.slice(0, 2)}:${digits.slice(2)}` : digits);
-  }
   async function favorite(food: Food) {
     const result = await api<{ favorite: boolean }>(`/favorites/${food.id}`, {
       method: 'POST',
@@ -169,7 +159,7 @@ export function FoodEntrySheet({
     );
   }
   async function add() {
-    if (!mealType || !consumedTime || !quantitiesValid) return;
+    if (!mealType || !quantitiesValid) return;
     setLoading(true);
     setError('');
     try {
@@ -178,7 +168,6 @@ export function FoodEntrySheet({
         body: JSON.stringify({
           date,
           mealType,
-          consumedTime,
           items: picked.map((item) => ({
             foodId: item.food.id,
             grams: Number(item.grams),
@@ -340,10 +329,10 @@ export function FoodEntrySheet({
               <section className="food-batch-settings">
                 <div className="food-batch-settings-heading">
                   <div>
-                    <small>ONDE E QUANDO</small>
-                    <h3>Dados da refeição</h3>
+                    <small>REFEIÇÃO</small>
+                    <h3>Qual foi a refeição?</h3>
                   </div>
-                  <Clock3 className="size-5" />
+                  <Layers3 className="size-5" />
                 </div>
                 {fixedMeal ? (
                   <div className="food-fixed-meal">
@@ -378,31 +367,6 @@ export function FoodEntrySheet({
                     </div>
                   </fieldset>
                 )}
-                <div className="food-time-field">
-                  <Label htmlFor="consumed-time">Horário do consumo</Label>
-                  <div>
-                    <Input
-                      id="consumed-time"
-                      className="food-time-desktop-input"
-                      type="time"
-                      value={consumedTime}
-                      onChange={(event) => setConsumedTime(event.target.value)}
-                    />
-                    <Input
-                      id="consumed-time-mobile"
-                      className="food-time-mobile-input"
-                      type="text"
-                      inputMode="numeric"
-                      autoComplete="off"
-                      maxLength={5}
-                      placeholder="HH:MM"
-                      aria-label="Horário do consumo"
-                      value={consumedTime}
-                      onChange={(event) => updateMobileTime(event.target.value)}
-                    />
-                    <Clock3 className="food-time-mobile-icon size-4" aria-hidden="true" />
-                  </div>
-                </div>
               </section>
               <div className="food-batch-totals">
                 <Preview
@@ -577,7 +541,7 @@ export function FoodEntrySheet({
             <Button
               onClick={add}
               disabled={
-                !mealType || !timeValid || !quantitiesValid || loading
+                !mealType || !quantitiesValid || loading
               }
             >
               {loading

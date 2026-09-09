@@ -1,10 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Clock3 } from "lucide-react";
+import { Check } from "lucide-react";
 import type { Meal, MealEntry, Summary } from "../types";
 import { MEAL_TYPES, type MealType } from "@/lib/meal-types";
-import { timeFromTimestamp } from "@/lib/datetime";
 import { api } from "@/lib/client-api";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,14 +28,12 @@ export function EditEntryDialog({
 }) {
   const [grams, setGrams] = useState("");
   const [mealType, setMealType] = useState<MealType>("lunch");
-  const [consumedTime, setConsumedTime] = useState("12:00");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   useEffect(() => {
     if (!value) return;
     setGrams(String(value.entry.grams_equivalent));
     setMealType(value.meal.meal_type as MealType);
-    setConsumedTime(timeFromTimestamp(value.entry.consumed_at || value.meal.eaten_at) || "12:00");
     setError("");
   }, [value]);
   const gramsValue = Number(grams);
@@ -46,7 +43,7 @@ export function EditEntryDialog({
     try {
       const next = await api<Summary>(`/meal-entries/${value.entry.id}`, {
         method: "PATCH",
-        body: JSON.stringify({ grams: gramsValue, mealType, consumedTime }),
+        body: JSON.stringify({ grams: gramsValue, mealType }),
       });
       await onSaved(next);
       onOpenChange(false);
@@ -101,19 +98,6 @@ export function EditEntryDialog({
             })}
           </div>
         </fieldset>
-        <div className="max-w-48">
-          <Label htmlFor="edit-time">Horário</Label>
-          <div className="relative mt-2">
-            <Clock3 className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              id="edit-time"
-              type="time"
-              value={consumedTime}
-              onChange={(event) => setConsumedTime(event.target.value)}
-              className="h-12 pl-10"
-            />
-          </div>
-        </div>
         {error && (
           <p role="alert" className="text-sm text-destructive">
             {error}

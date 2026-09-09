@@ -5,7 +5,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { ArrowLeft, Camera, Check, ChevronRight, ImagePlus, LoaderCircle, Minus, Plus, Search, Sparkles, Trash2, UtensilsCrossed } from 'lucide-react';
 import { api } from '@/lib/client-api';
-import { brazilNow } from '@/lib/datetime';
 import { formatNumber } from '@/lib/nutrition-format';
 import { MEAL_TYPES } from '@/lib/meal-types';
 import { Button } from '@/components/ui/button';
@@ -38,7 +37,6 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
   const [mealType, setMealType] = useState(initialMealType || '');
-  const [time, setTime] = useState(() => brazilNow().time);
   const [editing, setEditing] = useState<string | null>(null);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Food[]>([]);
@@ -108,11 +106,11 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
   function confirmRow(row:Row){if(!row.food||Number(row.grams)<=0||Number(row.grams)>5000)return;setRows(items=>items.map(item=>item.key===row.key?{...item,confirmed:true}:item))}
   function editRow(key:string){setRows(items=>items.map(item=>item.key===key?{...item,confirmed:false}:item))}
   async function save() {
-    if (!valid || !mealType || !time || saveLock.current) return;
+    if (!valid || !mealType || saveLock.current) return;
     saveLock.current = true; setSaving(true); setError('');
     try {
       const summary = await api<Summary>('/meals', { method: 'POST', body: JSON.stringify({
-        date, mealType, consumedTime: time, items: rows.map(row => ({ foodId: row.food!.id, grams: Number(row.grams) })),
+        date, mealType, items: rows.map(row => ({ foodId: row.food!.id, grams: Number(row.grams) })),
       }) });
       setSaved(true);
       if(analysisToken)void api('/foods/recognize/feedback',{method:'POST',body:JSON.stringify({analysisToken,items:rows.filter(row=>row.food).map(row=>({itemToken:row.itemToken,selectedFoodId:row.food!.id}))})}).catch(()=>undefined);
@@ -187,7 +185,7 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
       <div className="photo-final-heading"><span><Check/></span><div><p>Tudo conferido</p><h3>Sua refeição está pronta</h3></div></div>
       <div className="photo-final-list">{rows.map(row=><button key={row.key} onClick={()=>editRow(row.key)}><span>{row.food&&foodDisplayName(row.food)}</span><strong>{row.grams} g</strong><ChevronRight/></button>)}</div>
       <Button variant="outline" disabled={saving||rows.length>=20} onClick={()=>{setEditing('new');setQuery('')}}><Plus/> Faltou algum alimento?</Button>
-      <div className="photo-save"><label htmlFor="photo-meal">Refeição<select id="photo-meal" value={mealType} disabled={saving} onChange={e=>setMealType(e.target.value)}><option value="">Escolha a refeição</option>{MEAL_TYPES.map(meal=><option key={meal.value} value={meal.value}>{meal.label}</option>)}</select></label><label htmlFor="photo-time">Horário<Input id="photo-time" type="time" value={time} disabled={saving} onChange={e=>setTime(e.target.value)}/></label><Button disabled={!mealType||!time||saving} onClick={save}>{saving?'Registrando…':'Adicionar ao Diário'}</Button></div>
+      <div className="photo-save"><label htmlFor="photo-meal">Refeição<select id="photo-meal" value={mealType} disabled={saving} onChange={e=>setMealType(e.target.value)}><option value="">Escolha a refeição</option>{MEAL_TYPES.map(meal=><option key={meal.value} value={meal.value}>{meal.label}</option>)}</select></label><Button disabled={!mealType||saving} onClick={save}>{saving?'Registrando…':'Adicionar ao Diário'}</Button></div>
     </section>}
   </section>;
 }
