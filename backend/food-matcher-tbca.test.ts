@@ -45,4 +45,13 @@ describe('matcher against the complete TBCA catalog', () => {
     expect(matches[0].food.displayName.toLowerCase()).toContain('frango');
     expect(matches[0].food.displayName.toLowerCase()).toContain('grelhad');
   });
+
+  it('does not confuse the main food with an ingredient in a compound dish', () => {
+    const result = rankSemanticFoodCandidates({
+      name: 'ovo frito', preparation: 'frito', alternative: null,
+      visibleDetails: ['claras brancas', 'gemas visíveis'], confidence: 0.99,
+    }, foods, 5);
+    expect(['BRC0015J', 'BRC0028J']).toContain(result[0].food.source_code);
+    expect(result[0].food.displayName.toLowerCase()).toMatch(/^ovo/);
+  });
 });

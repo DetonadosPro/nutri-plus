@@ -818,13 +818,13 @@ app.post('/api/foods/recognize',
     let rerankLatency=0,inputTokens=vision.telemetry.inputTokens??0,outputTokens=vision.telemetry.outputTokens??0,reasoningTokens=vision.telemetry.reasoningTokens??0,totalTokens=vision.telemetry.totalTokens??0;
     const decisions=[] as Array<{itemToken:string;name:string;preparation:string|null;visualConfidence:number;state:'AUTOSELECT'|'RERANK'|'ASK_USER'|'NO_MATCH';selectedFoodId:number|null;top1Score:number;top2Score:number;margin:number;candidates:any[]}>;
     for(const item of detected){
-      const matches=rankSemanticFoodCandidates(item,foods,MATCH_THRESHOLDS.RERANK_MAX_CANDIDATES),initial=decideMatch(item,matches);let state:'AUTOSELECT'|'RERANK'|'ASK_USER'|'NO_MATCH'=initial.state,selectedFoodId:number|null=state==='AUTOSELECT'?matches[0].food.id:null;
+      const matches=rankSemanticFoodCandidates(item,foods,MATCH_THRESHOLDS.RERANK_MAX_CANDIDATES),initial=decideMatch(item,matches),nearby=matches.filter(match=>matches[0].matchConfidence-match.matchConfidence<=.10),plausible=nearby.length>=2?nearby:matches.slice(0,2);let state:'AUTOSELECT'|'RERANK'|'ASK_USER'|'NO_MATCH'=initial.state,selectedFoodId:number|null=state==='AUTOSELECT'?matches[0].food.id:null;
       if(state==='RERANK'){
-        try{const reranked=await rerankPhoto(vision.image,item,matches.map(match=>match.food.displayName));rerankLatency+=reranked.telemetry.latencyMs;inputTokens+=reranked.telemetry.inputTokens??0;outputTokens+=reranked.telemetry.outputTokens??0;reasoningTokens+=reranked.telemetry.reasoningTokens??0;totalTokens+=reranked.telemetry.totalTokens??0;
-          if(!reranked.decision.uncertain&&reranked.decision.candidateIndex!=null&&reranked.decision.confidence>=MATCH_THRESHOLDS.RERANK_MIN_CONFIDENCE){selectedFoodId=matches[reranked.decision.candidateIndex].food.id;state='RERANK'}else state='ASK_USER';
+        try{const reranked=await rerankPhoto(vision.image,item,plausible.map(match=>match.food.displayName));rerankLatency+=reranked.telemetry.latencyMs;inputTokens+=reranked.telemetry.inputTokens??0;outputTokens+=reranked.telemetry.outputTokens??0;reasoningTokens+=reranked.telemetry.reasoningTokens??0;totalTokens+=reranked.telemetry.totalTokens??0;
+          if(!reranked.decision.uncertain&&reranked.decision.candidateIndex!=null&&reranked.decision.confidence>=MATCH_THRESHOLDS.RERANK_MIN_CONFIDENCE){selectedFoodId=plausible[reranked.decision.candidateIndex].food.id;state='RERANK'}else state='ASK_USER';
         }catch{state='ASK_USER'}
       }
-      const visible=state==='ASK_USER'?matches.slice(0,MATCH_THRESHOLDS.ASK_USER_MAX_CANDIDATES):state==='NO_MATCH'?[]:matches.filter(match=>match.food.id===selectedFoodId).slice(0,1);
+      const visible=state==='ASK_USER'?plausible.slice(0,MATCH_THRESHOLDS.ASK_USER_MAX_CANDIDATES):state==='NO_MATCH'?[]:matches.filter(match=>match.food.id===selectedFoodId).slice(0,1);
       const candidates=await Promise.all(visible.map(async match=>{const food=match.food,nutrition=await nutrientsForFood(Number(food.id));return{...food,nutrients:nutrition.values,nutrientSources:nutrition.sources,dataSources:[nutrition.source],favorite:false}}));
       decisions.push({itemToken:randomUUID(),name:item.name,preparation:item.preparation,visualConfidence:item.confidence,state,selectedFoodId,top1Score:initial.top1Score,top2Score:initial.top2Score,margin:initial.margin,candidates});
     }
