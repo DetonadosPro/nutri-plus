@@ -101,6 +101,7 @@ export function FoodEntrySheet({
     picked.every(
       (item) => Number(item.grams) > 0 && Number(item.grams) <= 5000,
     );
+  const timeValid = /^([01]\d|2[0-3]):[0-5]\d$/.test(consumedTime);
   const totals = useMemo(
     () =>
       picked.reduce(
@@ -153,6 +154,10 @@ export function FoodEntrySheet({
     setReviewing(true);
     scrollRef.current?.scrollTo({ top: 0, behavior: 'auto' });
   }
+  function updateMobileTime(value: string) {
+    const digits = value.replace(/\D/g, '').slice(0, 4);
+    setConsumedTime(digits.length > 2 ? `${digits.slice(0, 2)}:${digits.slice(2)}` : digits);
+  }
   async function favorite(food: Food) {
     const result = await api<{ favorite: boolean }>(`/favorites/${food.id}`, {
       method: 'POST',
@@ -201,7 +206,7 @@ export function FoodEntrySheet({
       <SheetContent
         side="bottom"
         showCloseButton={false}
-        className="food-entry-sheet left-0 right-0 h-[96dvh] max-h-[96dvh] w-full translate-x-0 gap-0 overflow-hidden rounded-t-[28px] border-x sm:data-[side=bottom]:inset-auto sm:data-[side=bottom]:left-1/2 sm:data-[side=bottom]:top-1/2 sm:data-[side=bottom]:h-[min(820px,calc(100dvh-2rem))] sm:data-[side=bottom]:max-h-[calc(100dvh-2rem)] sm:data-[side=bottom]:w-[min(56rem,calc(100vw-2rem))] sm:data-[side=bottom]:max-w-none sm:data-[side=bottom]:[transform:translate(-50%,-50%)] sm:rounded-[28px] sm:border"
+        className="food-entry-sheet left-0 right-0 h-[96dvh] max-h-[96dvh] w-full translate-x-0 gap-0 overflow-hidden rounded-t-[28px] border-x sm:data-[side=bottom]:inset-auto sm:data-[side=bottom]:left-1/2 sm:data-[side=bottom]:top-1/2 sm:data-[side=bottom]:h-[min(720px,calc(100dvh-3rem))] sm:data-[side=bottom]:max-h-[calc(100dvh-3rem)] sm:data-[side=bottom]:w-[min(56rem,calc(100vw-2rem))] sm:data-[side=bottom]:max-w-none sm:data-[side=bottom]:[transform:translate(-50%,-50%)] sm:rounded-[28px] sm:border"
       >
         <SheetHeader className="food-entry-header relative border-b px-5 py-5 pr-16 sm:px-7 sm:pr-16">
           <button
@@ -378,9 +383,22 @@ export function FoodEntrySheet({
                   <div>
                     <Input
                       id="consumed-time"
+                      className="food-time-desktop-input"
                       type="time"
                       value={consumedTime}
                       onChange={(event) => setConsumedTime(event.target.value)}
+                    />
+                    <Input
+                      id="consumed-time-mobile"
+                      className="food-time-mobile-input"
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="off"
+                      maxLength={5}
+                      placeholder="HH:MM"
+                      aria-label="Horário do consumo"
+                      value={consumedTime}
+                      onChange={(event) => updateMobileTime(event.target.value)}
                     />
                     <Clock3 className="food-time-mobile-icon size-4" aria-hidden="true" />
                   </div>
@@ -559,7 +577,7 @@ export function FoodEntrySheet({
             <Button
               onClick={add}
               disabled={
-                !mealType || !consumedTime || !quantitiesValid || loading
+                !mealType || !timeValid || !quantitiesValid || loading
               }
             >
               {loading
