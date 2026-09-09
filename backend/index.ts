@@ -9,6 +9,7 @@ import express, { type Request, type Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { z } from "zod";
+import { foodSearchTokenVariants,normalizeFoodQuery } from '../shared/food-recognition';
 import { databaseInfo, db, migrate, transaction } from "./db";
 import {
   createAccountToken,
@@ -720,19 +721,20 @@ app.get(
     const patient = await patientAccess(user);
     let foods: Array<Record<string, any>>;
     if (favoritesOnly) {
-      const tokens = search ? search.split(/\s+/).filter(Boolean).slice(0, 5) : [];
+      const tokens = search ? foodSearchTokenVariants(search).slice(0, 5) : [];
       const where = tokens.length
-        ? `AND ${tokens.map(() => "f.normalized_search_text LIKE ?").join(" AND ")}`
+        ? `AND ${tokens.map((variants) => `(${variants.map(()=>"f.normalized_search_text LIKE ?").join(' OR ')})`).join(" AND ")}`
         : "";
       foods = await db
         .prepare(`SELECT f.id, f.source_code, f.description, f.description AS name, COALESCE(f.display_name,f.description) AS "displayName", f.category, f.scientific_name, f.brand, f.source, f.glycemic_index AS "glycemicIndex"
       FROM favorites fav JOIN foods f ON f.id = fav.food_id
       WHERE fav.user_id = ? AND f.active AND f.source = 'TBCA' ${where}
       ORDER BY COALESCE(f.display_name,f.description) LIMIT 100`)
-        .all(user.id, ...tokens.map((token) => `%${token}%`));
+        .all(user.id, ...tokens.flatMap((variants) => variants.map(token=>`%${token}%`)));
     } else if (search) {
-      const tokens = search.split(/\s+/).filter(Boolean).slice(0, 5);
-      const where = tokens.map(() => "normalized_search_text LIKE ?").join(" AND ");
+      const tokens = foodSearchTokenVariants(search).slice(0, 5);
+      const canonicalSearch=normalizeFoodQuery(search);
+      const where = tokens.map((variants) => `(${variants.map(()=>"normalized_search_text LIKE ?").join(' OR ')})`).join(" AND ");
       foods = await db
         .prepare(
           `SELECT id, source_code, description, description AS name, COALESCE(display_name,description) AS "displayName", category, scientific_name, brand, source, glycemic_index AS "glycemicIndex"
@@ -753,7 +755,7 @@ app.get(
              COALESCE(display_name,description)
            LIMIT 25`,
         )
-        .all(...tokens.map((token) => `%${token}%`), search, `${search}%`, search, `${search}%`, `%${search}%`, `%${search}%`, search, `${search}%`, `%${search}%`, search, search);
+        .all(...tokens.flatMap((variants)=>variants.map(token=>`%${token}%`)), canonicalSearch, `${canonicalSearch}%`, canonicalSearch, `${canonicalSearch}%`, `%${canonicalSearch}%`, `%${canonicalSearch}%`, canonicalSearch, `${canonicalSearch}%`, `%${canonicalSearch}%`, canonicalSearch, canonicalSearch);
     } else if (patient) {
       foods = await db
         .prepare(`SELECT f.id, f.source_code, f.description, f.description AS name, COALESCE(f.display_name,f.description) AS "displayName", f.category, f.scientific_name, f.brand, f.source, f.glycemic_index AS "glycemicIndex", MAX(me.created_at) AS last_used

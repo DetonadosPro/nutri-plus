@@ -123,7 +123,27 @@ export function normalizeFoodName(value: string) {
 }
 
 function canonicalToken(token: string) {
-  return CANONICAL_WORDS[token] ?? token;
+  return CANONICAL_WORDS[token] ?? singularFoodToken(token);
+}
+
+function singularFoodToken(token: string) {
+  if (token.length < 4 || token.endsWith('is') || token.endsWith('us')) return token;
+  if (token.endsWith('oes') || token.endsWith('aes')) return `${token.slice(0, -3)}ao`;
+  if (token.endsWith('ais')) return `${token.slice(0, -3)}al`;
+  if (token.endsWith('eis')) return `${token.slice(0, -3)}el`;
+  if (token.endsWith('ois')) return `${token.slice(0, -3)}ol`;
+  if (token.endsWith('ns')) return `${token.slice(0, -2)}m`;
+  if (/[rz]es$/.test(token)) return token.slice(0, -2);
+  if (/[aeou]s$/.test(token)) return token.slice(0, -1);
+  return token;
+}
+
+export function foodSearchTokenVariants(value: string) {
+  return normalizeFoodName(value).split(' ').filter(Boolean).map((token) => [...new Set([token, canonicalToken(token)])]);
+}
+
+export function normalizeFoodQuery(value: string) {
+  return foodSearchTokenVariants(value).map((variants) => variants.at(-1)!).join(' ');
 }
 
 function tokens(value: string) {

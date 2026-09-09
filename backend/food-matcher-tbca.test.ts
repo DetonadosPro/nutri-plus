@@ -39,6 +39,10 @@ describe('matcher against the complete TBCA catalog', () => {
     expect(codes('mussarela', null, 'queijo muçarela').length).toBeGreaterThan(0);
   });
 
+  it('finds a singular TBCA entry when vision returns a plural food name',()=>{
+    expect(codes('almôndegas','frita')[0]).toBe('BRC0004F');
+  });
+
   it('prioritizes grilled chicken candidates when preparation is visible', () => {
     const matches = rankSemanticFoodCandidates({
       name: 'frango', preparation: 'grelhado', alternative: 'filé de frango',
