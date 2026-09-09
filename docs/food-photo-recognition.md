@@ -92,7 +92,7 @@ Se o 4B demorar demais ou causar falta de memória, baixe a variante 2B e altere
 
 ## Trocar o provedor sem alterar o Nutri+
 
-Frontend, backend público, correspondência TACO e revisão não conhecem o modelo. O gateway implementa três adaptadores: `ollama`, `openai-responses` e `openai-compatible`. A API oficial da OpenAI aceita imagens e Structured Outputs pela Responses API; `gpt-4o-mini` é o padrão sugerido neste script por suportar ambos. Referência oficial: https://developers.openai.com/api/docs/models/gpt-4o-mini.
+Frontend, backend público, correspondência TACO e revisão não conhecem o modelo. O gateway implementa quatro adaptadores: `ollama`, `gemini`, `openai-responses` e `openai-compatible`. O padrão do Gemini é `gemini-3.5-flash-lite`, com entrada de imagem e saída estruturada.
 
 Para voltar ao Ollama:
 
@@ -106,10 +106,16 @@ Para OpenAI, coloque a chave sozinha em um arquivo privado fora do Git e execute
 powershell -ExecutionPolicy Bypass -File services/food-vision/configure-provider.ps1 -Provider openai-responses -ApiKeyFile 'C:\caminho-privado\openai-key.txt'
 ```
 
+Para Gemini:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File services/food-vision/configure-provider.ps1 -Provider gemini -ApiKeyFile 'C:\caminho-privado\gemini-key.txt'
+```
+
 Para outro serviço que aceite Chat Completions com imagem e `response_format: json_schema`:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File services/food-vision/configure-provider.ps1 -Provider openai-compatible -Model 'modelo-visual' -ApiBaseUrl 'https://api.exemplo.com/v1' -ApiKeyFile 'C:\caminho-privado\chave.txt'
 ```
 
-Reinicie `start.ps1`; o Lightsail e o túnel não mudam. A chave nunca vai ao frontend ou ao Lightsail: fica no PC que executa o gateway. APIs externas recebem a foto normalizada para realizar a inferência e podem gerar cobrança; revisar os termos de dados, retenção e preço do provedor escolhido antes de habilitar.
+Reinicie `start.ps1` quando o gateway estiver no PC. Em produção, o gateway pode executar no Lightsail, ouvindo somente em `127.0.0.1:11435`; nesse caso, guarde a chave em arquivo privado com permissão `600` e configure o PM2 apenas com o caminho desse arquivo. A chave nunca vai ao frontend. APIs externas recebem a foto normalizada para realizar a inferência e podem gerar cobrança; revisar os termos de dados, retenção e preço do provedor escolhido antes de habilitar.
