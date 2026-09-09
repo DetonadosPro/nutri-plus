@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/sheet";
 import { NutrientDetails } from "./nutrient-details";
 import { FoodPhotoReview } from './food-photo-review';
+import { foodDisplayName } from '@/lib/food-name';
 
 type FoodEntryHistory = { session: string; step: 'search' | 'details' };
 
@@ -318,7 +319,7 @@ export function FoodEntrySheet({
                       className="min-h-14 min-w-0 flex-1 rounded-xl px-2 py-2 text-left transition hover:bg-muted"
                     >
                       <p className="line-clamp-2 text-sm font-semibold leading-snug">
-                        {food.description}
+                        {foodDisplayName(food)}
                       </p>
                       <p className="mt-1 text-xs text-muted-foreground">
                         {food.category || "Grupo não informado"} ·{" "}
@@ -356,7 +357,7 @@ export function FoodEntrySheet({
                 <span><UtensilsCrossed className="size-5" /></span>
                 <div>
                   <small>Alimento selecionado</small>
-                  <p>{selected.description}</p>
+                  <p>{foodDisplayName(selected)}</p>
                   <em>{selected.category || 'Grupo não informado'} · código {selected.source_code}</em>
                 </div>
               </div>

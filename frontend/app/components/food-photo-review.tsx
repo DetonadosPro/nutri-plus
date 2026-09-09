@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { scaleNutrients } from '../../../shared/scale-nutrients';
 import type { Food, Summary } from '../types';
+import { foodDisplayName } from '@/lib/food-name';
 
 type Detection = { name: string; needsChoice: boolean; candidates: Food[] };
 type Row = Detection & { key: string; food: Food | null; grams: string };
@@ -82,7 +83,7 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
   }, [initialPhoto, analyze]);
 
   function choose(food: Food) {
-    if (editing === 'new') setRows(current => [...current, { key: crypto.randomUUID(), name: food.description, candidates: [], needsChoice: false, food, grams: '' }]);
+    if (editing === 'new') setRows(current => [...current, { key: crypto.randomUUID(), name: foodDisplayName(food), candidates: [], needsChoice: false, food, grams: '' }]);
     else setRows(current => current.map(row => row.key === editing ? { ...row, food, needsChoice: false } : row));
     setEditing(null); setQuery('');
   }
@@ -107,7 +108,7 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
     <Input id="photo-food-search" placeholder="Busque arroz, feijão, frango…" value={query} onChange={e => setQuery(e.target.value)} />
     {searching && <output>Buscando…</output>}
     {!searching && !results.length && <p>Nenhum alimento encontrado. Tente outro nome.</p>}
-    {results.map(food => <button className="photo-result" key={food.id} onClick={() => choose(food)}><strong>{food.description}</strong><small>{formatNumber(food.nutrients.energia_kcal)} kcal / 100 g</small></button>)}
+    {results.map(food => <button className="photo-result" key={food.id} onClick={() => choose(food)}><strong>{foodDisplayName(food)}</strong><small>{formatNumber(food.nutrients.energia_kcal)} kcal / 100 g</small></button>)}
   </section>;
 
   return <section className="photo-review">
@@ -126,8 +127,8 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
         {analyzed && !rows.length && <div className="photo-empty"><Search /><strong>Nenhum alimento identificado</strong><p>Tente uma foto mais nítida ou adicione pela busca.</p></div>}
         {rows.length > 0 && <p className="photo-hint">Confira os alimentos e preencha a quantidade de cada um. Você pode incluir o que ficou faltando.</p>}
         <div className="photo-items">{rows.map(row => <article className="photo-item" key={row.key}>
-          <div className="photo-item-heading"><strong>{row.food?.description || row.name}</strong><button disabled={saving} className="icon-button" aria-label={`Remover ${row.name}`} onClick={() => setRows(items => items.filter(item => item.key !== row.key))}><Trash2 size={18} /></button></div>
-          {!row.food && <div className="photo-candidates"><small>Escolha o alimento correspondente:</small>{row.candidates.map(food => <button key={food.id} disabled={saving} onClick={() => setRows(items => items.map(item => item.key === row.key ? { ...item, food } : item))}>{food.description}</button>)}{!row.candidates.length && <p>Encontre o alimento na busca abaixo.</p>}</div>}
+          <div className="photo-item-heading"><strong>{row.food ? foodDisplayName(row.food) : row.name}</strong><button disabled={saving} className="icon-button" aria-label={`Remover ${row.name}`} onClick={() => setRows(items => items.filter(item => item.key !== row.key))}><Trash2 size={18} /></button></div>
+          {!row.food && <div className="photo-candidates"><small>Escolha o alimento correspondente:</small>{row.candidates.map(food => <button key={food.id} disabled={saving} onClick={() => setRows(items => items.map(item => item.key === row.key ? { ...item, food } : item))}>{foodDisplayName(food)}</button>)}{!row.candidates.length && <p>Encontre o alimento na busca abaixo.</p>}</div>}
           <div className="photo-item-actions"><Button variant="ghost" disabled={saving} onClick={() => { setEditing(row.key); setQuery(row.name); }}> {row.food ? 'Trocar alimento' : 'Buscar alimento'}</Button>
             <label htmlFor={`photo-grams-${row.key}`}>Quantidade (g)<Input id={`photo-grams-${row.key}`} aria-label={`Quantidade de ${row.name} em gramas`} type="number" inputMode="decimal" min="0.1" max="5000" step="any" placeholder="Ex.: 100" value={row.grams} disabled={saving} onChange={e => setRows(items => items.map(item => item.key === row.key ? { ...item, grams: e.target.value } : item))} /></label>
           </div>

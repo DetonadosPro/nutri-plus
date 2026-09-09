@@ -6,6 +6,7 @@ import { timeFromTimestamp } from "@/lib/datetime";
 import { formatNumber } from "@/lib/nutrition-format";
 import { MEAL_TYPES, mealDefinition } from "@/lib/meal-types";
 import type { Meal, MealEntry, Summary } from "../types";
+import { foodDisplayName } from "@/lib/food-name";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -194,7 +195,7 @@ function PatientMealCard({
             {meal.entries.map((entry) => (
               <div key={entry.id} className="patient-meal-food-row">
                 <div className="min-w-0 flex-1">
-                  <p>{entry.description}</p>
+                  <p>{foodDisplayName(entry)}</p>
                   <span>
                     {formatNumber(entry.grams_equivalent)} g ·{" "}
                     {formatNumber(entry.nutrients.energia_kcal)} kcal
@@ -221,7 +222,7 @@ function PatientMealCard({
                   <DropdownMenu>
                     <DropdownMenuTrigger
                       className="patient-food-actions"
-                      aria-label={`Ações de ${entry.description}`}
+                      aria-label={`Ações de ${foodDisplayName(entry)}`}
                     >
                       <MoreHorizontal className="size-4" />
                     </DropdownMenuTrigger>
