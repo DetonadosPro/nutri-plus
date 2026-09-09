@@ -100,11 +100,13 @@ export function PatientApp({
   onLogout,
   professionalMode = false,
   onProfessionalBack,
+  selfPatientId,
 }: {
   user: User;
   onLogout: () => void;
   professionalMode?: boolean;
   onProfessionalBack?: () => void;
+  selfPatientId?: number;
 }) {
   const today = brazilNow().date;
   const [navigation, navigate] = useNavigationState(
@@ -137,6 +139,7 @@ export function PatientApp({
   } | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [weightOpen, setWeightOpen] = useState(false);
+  const [selfGoalsOpen, setSelfGoalsOpen] = useState(false);
   const refreshRequest = useRef(0);
 
   useEffect(() => {
@@ -404,6 +407,7 @@ export function PatientApp({
               <ProfileArea
                 summary={summary}
                 onWeight={() => setWeightOpen(true)}
+                onGoals={selfPatientId ? () => setSelfGoalsOpen(true) : undefined}
               />
             )}
           </div>
@@ -548,6 +552,18 @@ export function PatientApp({
           success('Peso registrado.');
         }}
       />
+      {selfPatientId && (
+        <SelfGoalsDialog
+          open={selfGoalsOpen}
+          onOpenChange={setSelfGoalsOpen}
+          patientId={selfPatientId}
+          summary={summary}
+          onSaved={async () => {
+            await refreshPatientData();
+            success('Suas metas foram atualizadas.');
+          }}
+        />
+      )}
     </main>
   );
 }
@@ -948,9 +964,11 @@ function GuidanceArea({ items }: { items: Orientation[] | null }) {
 function ProfileArea({
   summary,
   onWeight,
+  onGoals,
 }: {
   summary: Summary;
   onWeight: () => void;
+  onGoals?: () => void;
 }) {
   const p = summary.patient;
   const currentBmiBand = bmiBand(summary.metrics.bmi);
@@ -1036,6 +1054,11 @@ function ProfileArea({
               }
             />
             <MacroDistributionSummary goals={summary.goals} />
+            {onGoals && (
+              <Button className="mt-4" onClick={onGoals}>
+                Alterar minhas metas
+              </Button>
+            )}
           </section>
           <div className="profile-disclosure-list">
             <ProfileDisclosure
@@ -1096,6 +1119,133 @@ function activityLevelLabel(value: string | number | null) {
         very_active: 'Muito ativo',
       } as Record<string, string>
     )[String(value)] ?? String(value || 'Não informado')
+  );
+}
+
+function SelfGoalsDialog({
+  open,
+  onOpenChange,
+  patientId,
+  summary,
+  onSaved,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  patientId: number;
+  summary: Summary;
+  onSaved: () => void | Promise<void>;
+}) {
+  const goals = summary.goals;
+  const [form, setForm] = useState({
+    energy: String(goals?.energy_kcal ?? 2000),
+    fiber: String(goals?.fiber_g ?? 30),
+    carbohydrate: String(goals?.carbohydrate_percent ?? 50),
+    protein: String(goals?.protein_percent ?? 20),
+    fat: String(goals?.fat_percent ?? 30),
+    factor: String(goals?.daily_activity_factor ?? 1),
+  });
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  useEffect(() => {
+    if (!open) return;
+    setForm({
+      energy: String(goals?.energy_kcal ?? 2000),
+      fiber: String(goals?.fiber_g ?? 30),
+      carbohydrate: String(goals?.carbohydrate_percent ?? 50),
+      protein: String(goals?.protein_percent ?? 20),
+      fat: String(goals?.fat_percent ?? 30),
+      factor: String(goals?.daily_activity_factor ?? 1),
+    });
+    setError('');
+  }, [open, goals]);
+  const set = (key: keyof typeof form, value: string) =>
+    setForm((current) => ({ ...current, [key]: value }));
+  async function save() {
+    const carbohydrate = Number(form.carbohydrate);
+    const protein = Number(form.protein);
+    const fat = Number(form.fat);
+    const energy = Number(form.energy);
+    const fiber = Number(form.fiber);
+    const factor = Number(form.factor);
+    if (
+      ![energy, fiber, carbohydrate, protein, fat, factor].every(Number.isFinite) ||
+      energy <= 0 ||
+      fiber <= 0 ||
+      factor < 1 ||
+      factor > 2.5 ||
+      [carbohydrate, protein, fat].some((value) => value < 0 || value > 100)
+    ) {
+      setError('Revise os valores informados antes de salvar.');
+      return;
+    }
+    if (Math.abs(carbohydrate + protein + fat - 100) > 0.001) {
+      setError('Carboidratos, proteínas e gorduras precisam totalizar 100%.');
+      return;
+    }
+    setSaving(true);
+    setError('');
+    try {
+      await api(`/nutritionist/patients/${patientId}/goals`, {
+        method: 'POST',
+        body: JSON.stringify({
+          validFrom: brazilNow().date,
+          energyKcal: energy,
+          fiberG: fiber,
+          carbohydratePercent: carbohydrate,
+          proteinPercent: protein,
+          fatPercent: fat,
+          dailyActivityFactor: factor,
+        }),
+      });
+      await onSaved();
+      onOpenChange(false);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : 'Não foi possível salvar suas metas.');
+    } finally {
+      setSaving(false);
+    }
+  }
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-h-[92dvh] overflow-y-auto sm:max-w-xl">
+        <DialogHeader>
+          <DialogTitle>Minhas metas</DialogTitle>
+          <DialogDescription>
+            Ajuste suas metas alimentares e o fator usado para estimar sua rotina diária.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {([
+            ['energy', 'Energia diária (kcal)', '1'],
+            ['fiber', 'Fibras (g)', '1'],
+            ['factor', 'Fator cotidiano', '0.05'],
+            ['carbohydrate', 'Carboidratos (%)', '1'],
+            ['protein', 'Proteínas (%)', '1'],
+            ['fat', 'Gorduras (%)', '1'],
+          ] as const).map(([key, label, step]) => (
+            <div key={key} className="space-y-2">
+              <Label htmlFor={`self-goal-${key}`}>{label}</Label>
+              <Input
+                id={`self-goal-${key}`}
+                type="number"
+                min={key === 'factor' ? 1 : 0}
+                max={key === 'factor' ? 2.5 : undefined}
+                step={step}
+                value={form[key]}
+                onChange={(event) => set(key, event.target.value)}
+              />
+            </div>
+          ))}
+        </div>
+        <p className="text-xs text-muted-foreground">
+          O fator cotidiano multiplica seu metabolismo basal para representar um dia comum sem exercícios registrados.
+        </p>
+        {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+        <Button onClick={() => void save()} disabled={saving}>
+          {saving ? 'Salvando…' : 'Salvar minhas metas'}
+        </Button>
+      </DialogContent>
+    </Dialog>
   );
 }
 

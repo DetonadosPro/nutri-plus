@@ -73,6 +73,7 @@ export type EnergyDay = {
   };
   activities: ActivitySession[];
   intakeKcal: number | null;
+  tefKcal: number;
   knownIntakeKcal: number | null;
   foodComplete: boolean;
   missingFoodEnergy: number;

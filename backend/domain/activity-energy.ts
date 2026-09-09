@@ -7,6 +7,31 @@ export const ACTIVITY_FACTORS: Record<string, number> = {
   very_active: 1.9,
 };
 export type EnergyMode = "habitual_includes_exercise" | "base_plus_net";
+export const TEF_RATES = {
+  protein: 0.25,
+  carbohydrate: 0.075,
+  fat: 0.015,
+} as const;
+
+/**
+ * Estimates TEF from the energy carried by each recorded macronutrient.
+ * The daily factor represents non-exercise routine only, so TEF is added here
+ * exactly once. Midpoints of the published ranges are used (P 20-30%, C 5-10%, F 0-3%).
+ */
+export function thermicEffectOfFood(macros: {
+  proteinG: number | null;
+  carbohydrateG: number | null;
+  fatG: number | null;
+}) {
+  const proteinKcal = (macros.proteinG ?? 0) * 4;
+  const carbohydrateKcal = (macros.carbohydrateG ?? 0) * 4;
+  const fatKcal = (macros.fatG ?? 0) * 9;
+  return (
+    proteinKcal * TEF_RATES.protein +
+    carbohydrateKcal * TEF_RATES.carbohydrate +
+    fatKcal * TEF_RATES.fat
+  );
+}
 export function metEnergy(met: number, weightKg: number, minutes: number) {
   if (![met, weightKg, minutes].every((v) => Number.isFinite(v) && v > 0))
     throw new Error("MET, peso e duração devem ser positivos.");
@@ -35,6 +60,7 @@ export function manualEnergy(
 export function energyBalance(
   intake: number | null,
   base: number | null,
+  tef: number,
   mode: EnergyMode,
   sessions: Array<{ outside_base: boolean; snapshot: { netKcal: number | null } }>,
 ) {
@@ -42,7 +68,7 @@ export function energyBalance(
   const additionalKcal = eligible.some((s) => s.snapshot.netKcal == null)
     ? null
     : eligible.reduce((sum, s) => sum + s.snapshot.netKcal!, 0);
-  const totalKcal = base == null || additionalKcal == null ? null : base + additionalKcal;
+  const totalKcal = base == null || additionalKcal == null ? null : base + tef + additionalKcal;
   const balanceKcal = intake == null || totalKcal == null ? null : intake - totalKcal;
   return {
     additionalKcal,

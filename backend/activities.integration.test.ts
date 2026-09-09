@@ -159,7 +159,7 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
       expect(s.snapshot.netKcal).toBeCloseTo(98);
       let h = (await request(`/history?from=${today}&to=${today}`)).body;
       expect(h.days[0].base.mode).toBe("base_plus_net");
-      expect(h.days[0].base.factor).toBe(1.2);
+      expect(h.days[0].base.factor).toBe(1);
       expect(h.days[0].additionalKcal).toBeCloseTo(98);
       expect(h.days[0].intakeKcal).toBeNull();
       expect(h.completeDays).toBe(0);
@@ -362,10 +362,27 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
           "INSERT INTO food_nutrients(food_id,nutrient_code,numeric_value,raw_value,status) VALUES(?,'energia_kcal',2300,'2300','numeric')",
         )
         .run(food.id);
+      await db
+        .prepare(
+          `INSERT INTO nutrients(code,name,tagname,unit,nutrient_group) VALUES
+          ('proteina_g','Proteína','PROCNT','g','macro'),
+          ('carboidrato_g','Carboidrato','CHOCDF','g','macro'),
+          ('lipideos_g','Lipídeos','FAT','g','macro')`,
+        )
+        .run();
+      await db
+        .prepare(
+          `INSERT INTO food_nutrients(food_id,nutrient_code,numeric_value,raw_value,status) VALUES
+          (?,'proteina_g',100,'100','numeric'),
+          (?,'carboidrato_g',200,'200','numeric'),
+          (?,'lipideos_g',50,'50','numeric')`,
+        )
+        .run(food.id, food.id, food.id);
       day = (await request(`/history?from=${yesterday}&to=${yesterday}`)).body.days[0];
       expect(day.intakeKcal).toBe(2300);
       expect(day.foodComplete).toBe(true);
-      expect(day.balanceKcal).toBeCloseTo(2300 - baseBefore.baseKcal);
+      expect(day.tefKcal).toBeCloseTo(166.75);
+      expect(day.balanceKcal).toBeCloseTo(2300 - baseBefore.baseKcal - 166.75);
     });
     it("exige recálculo profissional explícito e preserva a base anterior", async () => {
       const before = (await request(`/history?from=${yesterday}&to=${yesterday}`)).body.days[0]

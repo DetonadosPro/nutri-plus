@@ -91,6 +91,13 @@ export function ActivityEditor({
   const [busy, setBusy] = useState(false),
     [options, setOptions] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const overlaySession = useRef<string | undefined>(undefined);
+  const closing = useRef(false);
+  const savedAfterClose = useRef(false);
+  const onCloseRef = useRef(onClose);
+  const onSavedRef = useRef(onSaved);
+  onCloseRef.current = onClose;
+  onSavedRef.current = onSaved;
   const query = patientId ? `patientId=${patientId}` : '';
   const selected = catalog.find(
     (c) => c.code === chosen?.code && c.version === chosen.version,
@@ -116,6 +123,32 @@ export function ActivityEditor({
   useEffect(() => {
     void load();
   }, [load]);
+  useEffect(() => {
+    if (overlaySession.current) return;
+    const id = (overlaySession.current = crypto.randomUUID());
+    const base = { ...window.history.state, nutriOverlayReturn: id };
+    window.history.replaceState(base, '');
+    window.history.pushState(
+      { ...base, nutriActivityEntry: id, nutriOverlayReturn: undefined },
+      '',
+    );
+  }, []);
+  useEffect(() => {
+    const pop = () => {
+      const id = overlaySession.current;
+      if (!id) return;
+      if (overlaySession.current !== id) return;
+      overlaySession.current = undefined;
+      closing.current = true;
+      const next = { ...window.history.state };
+      if (next.nutriOverlayReturn === id) delete next.nutriOverlayReturn;
+      window.history.replaceState(next, '');
+      if (savedAfterClose.current) onSavedRef.current();
+      else onCloseRef.current();
+    };
+    window.addEventListener('popstate', pop);
+    return () => window.removeEventListener('popstate', pop);
+  }, []);
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0 });
   }, [inDetails, group]);
@@ -195,6 +228,19 @@ export function ActivityEditor({
       setError((e as Error).message);
     }
   }
+  function close(saved = false) {
+    if (closing.current) return;
+    savedAfterClose.current = saved;
+    const id = overlaySession.current;
+    if (id && window.history.state?.nutriActivityEntry === id) {
+      closing.current = true;
+      window.history.back();
+      return;
+    }
+    closing.current = true;
+    if (saved) onSaved();
+    else onClose();
+  }
   function back() {
     setError('');
     setOptions(false);
@@ -205,7 +251,7 @@ export function ActivityEditor({
     } else if (group || search) {
       setGroup(null);
       setSearch('');
-    } else onClose();
+    } else close();
   }
   async function save(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -248,7 +294,8 @@ export function ActivityEditor({
           }),
         },
       );
-      onSaved();
+      setBusy(false);
+      close(true);
     } catch (e) {
       setError((e as Error).message);
       setOptions(true);
@@ -260,7 +307,7 @@ export function ActivityEditor({
     <Dialog
       open
       onOpenChange={(o) => {
-        if (!o && !busy) onClose();
+        if (!o && !busy) close();
       }}
     >
       <DialogContent className="movement-dialog" centered={false}>

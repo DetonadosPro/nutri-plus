@@ -12,8 +12,6 @@ import {
 } from '@/components/ui/dialog';
 import {
   activityQuery,
-  EnergyMethod,
-  EnergyNumbers,
   listenActivityChanges,
 } from './activity-panel';
 import type { EnergyHistory } from './activity-types';
@@ -37,6 +35,12 @@ export function DailyEnergyCard({
     [open, setOpen] = useState(false);
   const request = useRef(0);
   const query = activityQuery(patientId);
+  const foodRefreshKey = [
+    summary.totals.energia_kcal,
+    summary.totals.proteina_g,
+    summary.totals.carboidrato_g,
+    summary.totals.lipideos_g,
+  ].join('|');
   const load = useCallback(async () => {
     const id = ++request.current;
     try {
@@ -58,7 +62,7 @@ export function DailyEnergyCard({
     setData(null);
     void load();
     return listenActivityChanges(() => void load());
-  }, [load]);
+  }, [load, foodRefreshKey]);
   const day = data?.days[0]?.date === date ? data.days[0] : null;
   const consumed = summary.totals.energia_kcal ?? 0,
     goal = summary.goals?.energy_kcal;
@@ -128,21 +132,37 @@ export function DailyEnergyCard({
           )}
           {day && (
             <>
-              <p>
+              <p className="energy-balance-value">
                 {day.balanceKcal == null
                   ? 'Faltam dados para estimar o saldo. Verifique seu peso e perfil com o nutricionista.'
                   : `${signedEnergy(day.balanceKcal)} kcal · ${day.label}`}
               </p>
+              <section aria-label="Detalhamento do gasto energético">
+                <h3 className="font-semibold">Como sua energia foi gasta</h3>
+                <dl className="energy-numbers mt-3">
+                  {[
+                    ['Seu corpo em repouso', day.base.restingKcal],
+                    ['Sua rotina cotidiana', day.habitualKcal],
+                    ['Digestão dos alimentos', day.tefKcal],
+                    ['Exercícios registrados', day.additionalKcal],
+                    ['Gasto total estimado', day.totalKcal],
+                  ].map(([label, value]) => (
+                    <div key={String(label)}>
+                      <dt>{label}</dt>
+                      <dd>
+                        {value == null
+                          ? 'Indisponível'
+                          : `${formatNumber(Number(value))} kcal`}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
               <p className="activity-muted">
                 O saldo é atualizado automaticamente conforme você registra ou
                 altera alimentos e exercícios. Déficit e superávit não indicam,
                 por si só, que o dia foi bom ou ruim.
               </p>
-              <details className="movement-disclosure">
-                <summary>Ver detalhes do cálculo</summary>
-                <EnergyNumbers day={day} />
-                <EnergyMethod />
-              </details>
             </>
           )}
         </DialogContent>
