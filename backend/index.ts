@@ -1,5 +1,5 @@
 import { patientAccess } from './patient-access';
-import { deduplicateDetections,decideMatch,MATCH_THRESHOLDS,recognizePhoto,rerankPhoto,rankSemanticFoodCandidates } from './food-recognition';
+import { deduplicateDetections,decideMatch,MATCH_THRESHOLDS,needsMeatConfirmation,recognizePhoto,rerankPhoto,rankSemanticFoodCandidates } from './food-recognition';
 import { tbcaCandidatesForDetection } from './food-identity-repository';
 import type { MatchState } from '../shared/food-recognition';
 import { randomUUID } from 'node:crypto';
@@ -802,8 +802,10 @@ app.post('/api/foods/recognize',
     try {
       const user = await authUser(req, res);
       if (!user) return;
-      if (!await patientAccess(user)) return res.status(403).json({ error: 'Ação não permitida.' });
+      const patient=await patientAccess(user);
+      if (!patient) return res.status(403).json({ error: 'Ação não permitida.' });
       res.locals.photoUser = user.id;
+      res.locals.photoPatient = patient.id;
       next();
     } catch (error) { next(error); }
   },
@@ -816,8 +818,10 @@ app.post('/api/foods/recognize',
     catch { return res.status(503).json({ error: 'Não foi possível analisar esta foto agora. Tente outra imagem ou use a busca manual.' }); }
     const detected=deduplicateDetections(vision.detection.items);
     const candidateSets=await Promise.all(detected.map(item=>tbcaCandidatesForDetection(item)));
+    const favoriteIds=new Set((await db.prepare('SELECT food_id FROM favorites WHERE user_id=?').all<{food_id:number}>(res.locals.photoUser)).map(row=>Number(row.food_id)));
+    const recentIds=new Set((await db.prepare(`SELECT me.food_id FROM meal_entries me JOIN meals m ON m.id=me.meal_id JOIN daily_logs dl ON dl.id=m.daily_log_id WHERE dl.patient_id=? GROUP BY me.food_id ORDER BY MAX(me.created_at) DESC LIMIT 30`).all<{food_id:number}>(res.locals.photoPatient)).map(row=>Number(row.food_id)));
     let rerankLatency=0,inputTokens=vision.telemetry.inputTokens??0,outputTokens=vision.telemetry.outputTokens??0,reasoningTokens=vision.telemetry.reasoningTokens??0,totalTokens=vision.telemetry.totalTokens??0;
-    const decisions=[] as Array<{itemToken:string;name:string;preparation:string|null;visualConfidence:number;state:MatchState;selectedFoodId:number|null;top1Score:number;top2Score:number;margin:number;resolutionPolicy:string|null;abstentionReason:string|null;candidates:any[]}>;
+    const decisions=[] as Array<{itemToken:string;name:string;preparation:string|null;clarificationKind:'MEAT_TYPE'|null;visualConfidence:number;state:MatchState;selectedFoodId:number|null;top1Score:number;top2Score:number;margin:number;resolutionPolicy:string|null;abstentionReason:string|null;candidates:any[]}>;
     for(const [itemIndex,item] of detected.entries()){
       const foods=candidateSets[itemIndex];
       const matches=rankSemanticFoodCandidates(item,foods,MATCH_THRESHOLDS.RERANK_MAX_CANDIDATES);
@@ -828,7 +832,9 @@ app.post('/api/foods/recognize',
       let selectedFoodId:number|null=state==='AUTOSELECT'?matches[0].food.id:null;
       let resolutionPolicy=state==='AUTOSELECT'?initial.policy:null;
       let abstentionReason=state==='NO_EXACT_TBCA_MATCH'?(matches[0]?.materialUnknowns?.join(',')||'unresolved_variant'):null;
-      if(state==='RERANK'&&appConfig.vision.rerankEnabled){
+      const meatConfirmation=needsMeatConfirmation(item);
+      if(meatConfirmation){state='ASK_IDENTITY';selectedFoodId=null;resolutionPolicy=null;abstentionReason='meat_cut_not_visually_defensible'}
+      else if(state==='RERANK'&&appConfig.vision.rerankEnabled){
         try{const reranked=await rerankPhoto(vision.image,item,plausible.map(match=>match.food.displayName));rerankLatency+=reranked.telemetry.latencyMs;inputTokens+=reranked.telemetry.inputTokens??0;outputTokens+=reranked.telemetry.outputTokens??0;reasoningTokens+=reranked.telemetry.reasoningTokens??0;totalTokens+=reranked.telemetry.totalTokens??0;
           if(!reranked.decision.uncertain&&reranked.decision.candidateIndex!=null&&reranked.decision.confidence>=MATCH_THRESHOLDS.RERANK_MIN_CONFIDENCE){selectedFoodId=plausible[reranked.decision.candidateIndex].food.id;state='RERANK'}else{state='ASK_ATTRIBUTE';abstentionReason='visual_attribute_uncertain'}
         }catch{state='ASK_ATTRIBUTE';abstentionReason='reranker_unavailable'}
@@ -837,9 +843,13 @@ app.post('/api/foods/recognize',
         abstentionReason='fast_mode_user_confirmation';
       }
       const needsChoice=['ASK_IDENTITY','ASK_ATTRIBUTE','NO_EXACT_TBCA_MATCH'].includes(state);
-      const visible=needsChoice?plausible.slice(0,MATCH_THRESHOLDS.ASK_USER_MAX_CANDIDATES):state==='NO_MATCH'?[]:matches.filter(match=>match.food.id===selectedFoodId).slice(0,1);
+      const preferred=(meatConfirmation?[...matches].sort((left,right)=>{
+        const preference=(food:any)=>(favoriteIds.has(Number(food.id))?2:0)+(recentIds.has(Number(food.id))?1:0);
+        return preference(right.food)-preference(left.food)||right.matchConfidence-left.matchConfidence;
+      }):plausible);
+      const visible=needsChoice?preferred.slice(0,meatConfirmation?5:MATCH_THRESHOLDS.ASK_USER_MAX_CANDIDATES):state==='NO_MATCH'?[]:matches.filter(match=>match.food.id===selectedFoodId).slice(0,1);
       const candidates=await Promise.all(visible.map(async match=>{const food=match.food,nutrition=await nutrientsForFood(Number(food.id));return{...food,nutrients:nutrition.values,nutrientSources:nutrition.sources,dataSources:[nutrition.source],favorite:false}}));
-      decisions.push({itemToken:randomUUID(),name:item.name,preparation:item.preparation,visualConfidence:item.confidence,state,selectedFoodId,top1Score:initial.top1Score,top2Score:initial.top2Score,margin:initial.margin,resolutionPolicy,abstentionReason,candidates});
+      decisions.push({itemToken:randomUUID(),name:item.name,preparation:item.preparation,clarificationKind:meatConfirmation?'MEAT_TYPE':null,visualConfidence:item.confidence,state,selectedFoodId,top1Score:initial.top1Score,top2Score:initial.top2Score,margin:initial.margin,resolutionPolicy,abstentionReason,candidates});
     }
     const analysisToken=randomUUID();
     await transaction(async()=>{const counts=(state:string)=>decisions.filter(item=>item.state===state).length,askCount=counts('ASK_IDENTITY')+counts('ASK_ATTRIBUTE');const analysis=await db.prepare(`INSERT INTO food_vision_analyses(analysis_token,model,reasoning_effort,first_latency_ms,rerank_latency_ms,input_tokens,output_tokens,reasoning_tokens,total_tokens,detected_count,autoselect_count,rerank_count,ask_user_count,no_match_count,ask_identity_count,ask_attribute_count,no_exact_match_count)

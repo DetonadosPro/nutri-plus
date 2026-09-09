@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { detectionSchema, rerankSchema, type DetectedFood } from '../shared/food-recognition';
 import { normalizePhoto } from './photo-image';
-export { deduplicateDetections, decideMatch, MATCH_THRESHOLDS, rankFoodCandidates, rankSemanticFoodCandidates } from '../shared/food-recognition';
+export { deduplicateDetections, decideMatch, MATCH_THRESHOLDS, needsMeatConfirmation, rankFoodCandidates, rankSemanticFoodCandidates } from '../shared/food-recognition';
 
 export type VisionTelemetry={model:string;reasoningEffort:string;latencyMs:number;inputTokens:number|null;outputTokens:number|null;reasoningTokens:number|null;totalTokens:number|null};
 function credentials(){const path=process.env.NUTRI_VISION_TOKEN_FILE;if(!path)throw new Error('unavailable');return readFileSync(path,'utf8').trim()}

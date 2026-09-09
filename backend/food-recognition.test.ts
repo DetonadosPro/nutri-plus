@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import sharp from 'sharp';
-import { canonicalQueries,deduplicateDetections,decideMatch,detectionSchema,foodRetrievalTokens,rankFoodCandidates,rankSemanticFoodCandidates,rerankSchema,validRerankIndex } from '../shared/food-recognition';
+import { canonicalQueries,deduplicateDetections,decideMatch,detectionSchema,foodRetrievalTokens,needsMeatConfirmation,rankFoodCandidates,rankSemanticFoodCandidates,rerankSchema,validRerankIndex } from '../shared/food-recognition';
 import { normalizePhoto } from './photo-image';
 
 describe('food photo boundaries', () => {
@@ -20,6 +20,16 @@ describe('food photo boundaries', () => {
     expect(rankFoodCandidates('batata frita', foods)[0].food.description).toContain('frita');
     expect(rankFoodCandidates('batata cozida', foods).some(r => r.food.description.startsWith('Carne'))).toBe(false);
     expect(rankFoodCandidates('sushi', foods)).toEqual([]);
+  });
+  it('asks which meat was used when fragmentation hides the cut',()=>{
+    const item=(name:string,details:string[]=[])=>({name,preparation:'cozida',visibleDetails:details,confidence:.8,alternative:null});
+    expect(needsMeatConfirmation(item('carne picada'))).toBe(true);
+    expect(foodRetrievalTokens(item('carne picada'))).toEqual(['carne']);
+    expect(needsMeatConfirmation(item('frango', ['em cubos dourados']))).toBe(true);
+    expect(needsMeatConfirmation(item('carne moída'))).toBe(true);
+    expect(needsMeatConfirmation(item('peito de frango em cubos'))).toBe(false);
+    expect(needsMeatConfirmation(item('bife bovino'))).toBe(false);
+    expect(needsMeatConfirmation(item('batata em cubos'))).toBe(false);
   });
   it('resolves aliases to existing candidates only', () => {
     const foods = [
