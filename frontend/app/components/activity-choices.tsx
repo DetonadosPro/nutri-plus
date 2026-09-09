@@ -21,8 +21,12 @@ export const activityChoices = [
     name: 'Musculação',
     Icon: Dumbbell,
     tone: 'violet',
-    codes: ['02054', '02054', '02050'],
-    hints: ['Cargas leves', 'Vários exercícios', 'Esforço vigoroso'],
+    efforts: [
+      { value: 'light', label: 'Leve', code: '02054', hint: 'Treino confortável' },
+      { value: 'moderate', label: 'Moderada', code: '02054', hint: 'Esforço controlado' },
+      { value: 'intense', label: 'Intensa', code: '02054', hint: 'Treino desafiador' },
+      { value: 'vigorous', label: 'Vigorosa', code: '02050', hint: 'Ritmo vigoroso' },
+    ],
     category: 'Musculação e treinamento resistido',
   },
   {
@@ -30,8 +34,11 @@ export const activityChoices = [
     name: 'Caminhada',
     Icon: Footprints,
     tone: 'green',
-    codes: ['17152', '17190', '17200'],
-    hints: ['3,2–3,9 km/h', '4,5–5,5 km/h', '5,6–6,3 km/h'],
+    efforts: [
+      { value: 'light', label: 'Leve', code: '17152', hint: '3,2–3,9 km/h' },
+      { value: 'moderate', label: 'Moderada', code: '17190', hint: '4,5–5,5 km/h' },
+      { value: 'vigorous', label: 'Intensa', code: '17200', hint: '5,6–6,3 km/h' },
+    ],
     category: 'Caminhada e trilhas',
   },
   {
@@ -39,8 +46,11 @@ export const activityChoices = [
     name: 'Corrida',
     Icon: PersonStanding,
     tone: 'peach',
-    codes: ['12028', '12030', '12050'],
-    hints: ['6,4–6,8 km/h', '8–8,4 km/h', '9,7–10,1 km/h'],
+    efforts: [
+      { value: 'light', label: 'Leve', code: '12028', hint: '6,4–6,8 km/h' },
+      { value: 'moderate', label: 'Moderada', code: '12030', hint: '8–8,4 km/h' },
+      { value: 'vigorous', label: 'Intensa', code: '12050', hint: '9,7–10,1 km/h' },
+    ],
     category: 'Corrida',
   },
   {
@@ -48,8 +58,12 @@ export const activityChoices = [
     name: 'Ciclismo',
     Icon: Bike,
     tone: 'blue',
-    codes: ['01015', '01016', '01017'],
-    hints: ['Passeio tranquilo', 'Ritmo moderado', 'Ritmo forte'],
+    efforts: [
+      { value: 'light', label: 'Leve', code: '01015', hint: 'Passeio tranquilo' },
+      { value: 'moderate', label: 'Moderada', code: '01016', hint: 'Ritmo moderado' },
+      { value: 'intense', label: 'Intensa', code: '01030', hint: '19,3–22,4 km/h' },
+      { value: 'vigorous', label: 'Vigorosa', code: '01017', hint: 'Ritmo vigoroso' },
+    ],
     category: 'Ciclismo',
   },
   {
@@ -57,8 +71,10 @@ export const activityChoices = [
     name: 'Futebol',
     Icon: Volleyball,
     tone: 'green',
-    codes: ['15610', '15610', '15605'],
-    hints: ['Recreativo', 'Recreativo', 'Competitivo'],
+    efforts: [
+      { value: 'light', label: 'Recreativa', code: '15610', hint: 'Jogo casual' },
+      { value: 'vigorous', label: 'Competitiva', code: '15605', hint: 'Partida competitiva' },
+    ],
     category: 'Esportes',
   },
   {
@@ -66,8 +82,11 @@ export const activityChoices = [
     name: 'Natação',
     Icon: Waves,
     tone: 'blue',
-    codes: ['18240', '18290', '18230'],
-    hints: ['Livre recreativo', 'Crawl médio', 'Livre rápido'],
+    efforts: [
+      { value: 'light', label: 'Leve', code: '18240', hint: 'Livre recreativo' },
+      { value: 'moderate', label: 'Moderada', code: '18290', hint: 'Crawl médio' },
+      { value: 'vigorous', label: 'Intensa', code: '18230', hint: 'Livre rápido' },
+    ],
     category: 'Atividades aquáticas',
   },
   {
@@ -75,8 +94,7 @@ export const activityChoices = [
     name: 'Yoga / Pilates',
     Icon: Flower2,
     tone: 'violet',
-    codes: [],
-    hints: [],
+    efforts: [],
     category: 'Condicionamento e bem-estar',
   },
   {
@@ -84,8 +102,7 @@ export const activityChoices = [
     name: 'Dança',
     Icon: Music2,
     tone: 'pink',
-    codes: [],
-    hints: [],
+    efforts: [],
     category: 'Dança',
   },
   {
@@ -93,8 +110,7 @@ export const activityChoices = [
     name: 'Esportes',
     Icon: Trophy,
     tone: 'peach',
-    codes: [],
-    hints: [],
+    efforts: [],
     category: 'Esportes',
   },
   {
@@ -102,8 +118,11 @@ export const activityChoices = [
     name: 'Em casa',
     Icon: House,
     tone: 'yellow',
-    codes: ['05025', '05026', '05027'],
-    hints: ['Tarefas leves', 'Tarefas moderadas', 'Tarefas intensas'],
+    efforts: [
+      { value: 'light', label: 'Leve', code: '05025', hint: 'Tarefas leves' },
+      { value: 'moderate', label: 'Moderada', code: '05026', hint: 'Tarefas moderadas' },
+      { value: 'vigorous', label: 'Intensa', code: '05027', hint: 'Tarefas intensas' },
+    ],
     category: 'Atividades domésticas',
   },
   {
@@ -111,14 +130,12 @@ export const activityChoices = [
     name: 'Outras atividades',
     Icon: CirclePlus,
     tone: 'neutral',
-    codes: [],
-    hints: [],
+    efforts: [],
     category: '',
   },
 ] as const;
 export type ActivityChoice = (typeof activityChoices)[number];
-export const effortValues = ['light', 'moderate', 'vigorous'] as const;
-export const effortLabels = ['Leve', 'Moderada', 'Intensa'];
+export type ActivityEffort = 'light' | 'moderate' | 'intense' | 'vigorous';
 export const restChoices = [
   [30, '30 s'],
   [60, '1 min'],
@@ -138,7 +155,7 @@ export function choiceFor(
 ): ActivityChoice {
   return (
     activityChoices.find((c) =>
-      (c.codes as readonly string[]).includes(code ?? ''),
+      c.efforts.some((effort) => effort.code === code),
     ) ??
     activityChoices.find((c) => c.category === category) ??
     activityChoices[10]
@@ -164,7 +181,7 @@ export function quickName(row: {
   code: string | null;
 }) {
   const c = activityChoices.find((c) =>
-    (c.codes as readonly string[]).includes(row.code ?? ''),
+    c.efforts.some((effort) => effort.code === row.code),
   );
   return c?.name ?? row.name;
 }

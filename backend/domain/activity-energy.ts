@@ -16,6 +16,7 @@ export const STRENGTH_CALCULATION_VERSION = "strength-density-2";
 export const STRENGTH_MET_BY_INTENSITY = {
   light: 3,
   moderate: 3.5,
+  intense: 4,
   vigorous: 6,
   unspecified: 3.5,
 } as const;

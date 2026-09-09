@@ -361,6 +361,9 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.5rem;
 }
+.movement-effort[data-count='4'] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
 .movement-effort button {
   display: flex;
   flex-direction: column;
@@ -397,7 +400,10 @@
   height: 14px;
 }
 .movement-effort-bars i:nth-child(3) {
-  height: 21px;
+  height: 18px;
+}
+.movement-effort-bars i:nth-child(4) {
+  height: 22px;
 }
 .movement-effort-bars i[data-active='true'] {
   background: #689477;

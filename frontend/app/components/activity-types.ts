@@ -60,6 +60,7 @@ export type ActivitySession = {
     intensityFactor?: number;
     effectiveMet?: number;
     strengthCalculationVersion?: string;
+    calculationProfile?: 'quick_strength' | 'catalog_specific';
     manual: ManualActivity | null;
     referenceKind?: 'adult-met' | 'youth-mety' | 'older-met60' | 'manual';
     referenceCode?: string | null;

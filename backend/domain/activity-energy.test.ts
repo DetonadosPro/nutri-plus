@@ -89,17 +89,18 @@ describe("gasto e balanço estimados", () => {
     expect(heavier).toBeGreaterThan(light120);
     expect(intense).toBeGreaterThan(light30);
   });
-  it("usa exatamente 3,0, 3,5 e 6,0 MET na musculação", () => {
+  it("usa exatamente 3,0, 3,5, 4,0 e 6,0 MET na musculação", () => {
     const baseAt35Met = { grossKcal: 245, netKcal: 175 };
     expect(calculateStrengthTrainingCalories(baseAt35Met, 120, "light", 3.5).grossKcal).toBe(210);
     expect(calculateStrengthTrainingCalories(baseAt35Met, 120, "moderate", 3.5).grossKcal).toBe(245);
+    expect(calculateStrengthTrainingCalories(baseAt35Met, 120, "intense", 3.5).grossKcal).toBe(280);
     const baseAt6Met = { grossKcal: 420, netKcal: 350 };
     expect(calculateStrengthTrainingCalories(baseAt6Met, 120, "vigorous", 6).grossKcal).toBe(420);
   });
   it("mantém progressões seguras na matriz de musculação", () => {
     const rests = [30, 60, 90, 120, 180, 240, 300];
-    for (const intensity of ["light", "moderate", "vigorous"] as const) {
-      const met = { light: 3, moderate: 3.5, vigorous: 6 }[intensity];
+    for (const intensity of ["light", "moderate", "intense", "vigorous"] as const) {
+      const met = { light: 3, moderate: 3.5, intense: 4, vigorous: 6 }[intensity];
       const values = rests.map((rest) =>
         calculateStrengthTrainingCalories(metEnergy(met, 85, 60), rest, intensity, met).grossKcal,
       );

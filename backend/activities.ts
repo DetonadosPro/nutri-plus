@@ -29,7 +29,7 @@ export const activityInput = z
     date,
     time: z.string().refine(isClockTime).nullable(),
     duration: z.number().positive().max(1440),
-    intensity: z.enum(["light", "moderate", "vigorous", "unspecified"]),
+    intensity: z.enum(["light", "moderate", "intense", "vigorous", "unspecified"]),
     outsideBase: z.boolean(),
     code: z.string().max(20).nullable(),
     version: z.string().max(40).nullable(),
@@ -368,7 +368,7 @@ export function activitiesRouter(deps: {
         code: z.string().max(20),
         version: z.string().max(40),
         restSeconds: z.number().int().min(1).max(1200).nullable(),
-        intensity: z.enum(["light", "moderate", "vigorous", "unspecified"]),
+        intensity: z.enum(["light", "moderate", "intense", "vigorous", "unspecified"]),
         calculationProfile: z.enum(["quick_strength", "catalog_specific"]).default("catalog_specific"),
       })
       .parse(req.body);

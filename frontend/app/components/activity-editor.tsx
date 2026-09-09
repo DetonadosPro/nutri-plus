@@ -15,8 +15,6 @@ import type { ActivityCatalog, ActivitySession } from './activity-types';
 import {
   activityChoices,
   ActivityGlyph,
-  effortLabels,
-  effortValues,
   matchesChoice,
   normalizeActivity,
   quickName,
@@ -62,10 +60,15 @@ export function ActivityEditor({
       : null,
   );
   const [quick, setQuick] = useState<ActivityChoice | null>(
-    () =>
-      activityChoices.find((c) =>
-        (c.codes as readonly string[]).includes(session?.snapshot.code ?? ''),
-      ) ?? null,
+    () => {
+      const match = activityChoices.find((c) =>
+        c.efforts.some((effort) => effort.code === session?.snapshot.code),
+      );
+      return match?.id === 'strength' &&
+        session?.snapshot.calculationProfile === 'catalog_specific'
+        ? null
+        : (match ?? null);
+    },
   );
   const [manual, setManual] = useState(session?.snapshot.method === 'manual');
   const [manualName, setManualName] = useState(
@@ -173,7 +176,7 @@ export function ActivityEditor({
           duration: Number(duration),
           code: chosen.code,
           version: chosen.version,
-          restSeconds: selected.resistance ? rest : null,
+          restSeconds: quick?.id === 'strength' ? rest : null,
           intensity,
           calculationProfile: quick?.id === 'strength' ? 'quick_strength' : 'catalog_specific',
         }),
@@ -204,10 +207,14 @@ export function ActivityEditor({
     setQuick(null);
     setError('');
     if (repeated) {
+      const match = activityChoices.find((c) =>
+        c.efforts.some((effort) => effort.code === row.code),
+      );
       setQuick(
-        activityChoices.find((c) =>
-          (c.codes as readonly string[]).includes(row.code),
-        ) ?? null,
+        match?.id === 'strength' &&
+          repeated.snapshot.calculationProfile === 'catalog_specific'
+          ? null
+          : (match ?? null),
       );
       setDuration(String(repeated.duration_minutes));
       setIntensity(repeated.intensity);
@@ -227,22 +234,23 @@ export function ActivityEditor({
     }
   }
   function chooseGroup(c: ActivityChoice) {
-    if (c.codes.length) {
-      const row = catalog.find((r) => r.code === c.codes[1]);
+    if (c.efforts.length) {
+      const initial = c.efforts.find((effort) => effort.value === 'moderate') ?? c.efforts[0];
+      const row = catalog.find((r) => r.code === initial.code);
       if (row) {
         select(row);
         setQuick(c);
-        setIntensity(c.codes[0] === c.codes[1] ? 'light' : 'moderate');
+        setIntensity(initial.value);
         return;
       }
     }
     setSearch('');
     setGroup(c);
   }
-  function effort(index: number) {
-    setIntensity(effortValues[index]);
+  function effort(selectedEffort: ActivityChoice['efforts'][number]) {
+    setIntensity(selectedEffort.value);
     if (quick) {
-      const row = catalog.find((r) => r.code === quick.codes[index]);
+      const row = catalog.find((r) => r.code === selectedEffort.code);
       if (row) setChosen({ code: row.code, version: row.version });
     }
   }
@@ -322,7 +330,7 @@ export function ActivityEditor({
               chosen?.code === session.snapshot.code
                 ? session.details
                 : [],
-            restSeconds: selected?.resistance ? rest : null,
+            restSeconds: quick?.id === 'strength' ? rest : null,
             calculationProfile:
               quick?.id === 'strength' ? 'quick_strength' : 'catalog_specific',
             note,
@@ -611,35 +619,34 @@ export function ActivityEditor({
                   ))}
                 </div>
               </fieldset>
-              {!manual && (
+              {!manual && quick && (
                 <fieldset>
                   <legend>Intensidade</legend>
-                  <div className="movement-effort">
-                    {effortLabels.map((label, i) =>
-                      quick &&
-                      (quick.codes as readonly string[]).indexOf(quick.codes[i]) !== i ? null : (
+                  <div className="movement-effort" data-count={quick?.efforts.length ?? 0}>
+                    {(quick?.efforts ?? []).map((item, i) =>
+                      (
                       <button
-                        key={label}
+                        key={item.value}
                         type="button"
-                        aria-pressed={intensity === effortValues[i]}
-                        onClick={() => effort(i)}
+                        aria-pressed={intensity === item.value}
+                        onClick={() => effort(item)}
                       >
                         <span
                           className="movement-effort-bars"
                           aria-hidden="true"
                         >
-                          {[0, 1, 2].map((b) => (
+                          {item.value === 'intense' || item.value === 'vigorous'
+                            ? [0, 1, 2, 3].map((b) => (
+                                <i key={b} data-active={b <= i} />
+                              ))
+                            : [0, 1, 2].map((b) => (
                             <i key={b} data-active={b <= i} />
-                          ))}
+                              ))}
                         </span>
                         <strong>
-                          {quick?.id === 'football'
-                            ? i === 0
-                              ? 'Recreativa'
-                              : 'Competitiva'
-                            : label}
+                          {item.label}
                         </strong>
-                        {quick?.hints[i] && <small>{quick.hints[i]}</small>}
+                        {item.hint && <small>{item.hint}</small>}
                       </button>
                     ))}
                   </div>
@@ -658,7 +665,7 @@ export function ActivityEditor({
                   Escolher outra modalidade
                 </button>
               )}
-              {selected?.resistance && (
+              {quick?.id === 'strength' && (
                 <fieldset>
                   <legend>
                     Descanso entre séries <small>opcional</small>
