@@ -13,6 +13,16 @@ export const detectedFoodSchema = z
 export const detectionSchema = z.object({ items: z.array(detectedFoodSchema).max(15) }).strict();
 export type DetectedFood = z.infer<typeof detectedFoodSchema>;
 
+const MEAT_WORDS = /\b(carne|bovin[oa]|boi|bife|frango|galinha|suin[oa]|porco|costela)\b/;
+const CHOPPED_MEAT_WORDS = /\b(picado|picada|cubos?|pedacos?|tiras?|iscas?|desfiado|desfiada|moido|moida)\b/;
+const SPECIFIC_MEAT_CUTS = /\b(acem|alcatra|contrafile|coxao|maminha|picanha|patinho|lagarto|paleta|peito|coxa|sobrecoxa|asa|lombo|pernil|tilapia|salmao|pescada|merluza|atum|bacalhau)\b/;
+
+/** A foto de carne fragmentada não sustenta a escolha automática de um corte TBCA. */
+export function needsMeatConfirmation(item: DetectedFood) {
+  const description = normalizeFoodName([item.name, item.preparation ?? '', ...item.visibleDetails].join(' '));
+  return MEAT_WORDS.test(description) && CHOPPED_MEAT_WORDS.test(description) && !SPECIFIC_MEAT_CUTS.test(description);
+}
+
 export const rerankSchema = z
   .object({
     candidateIndex: z.number().int().min(0).max(4).nullable(),
@@ -67,6 +77,8 @@ const CANONICAL_WORDS: Record<string, string> = {
   fritas: 'frito', fritos: 'frito', grelhada: 'grelhado', grelhadas: 'grelhado', grelhados: 'grelhado',
   inteira: 'inteiro', inteiras: 'inteiro', inteiros: 'inteiro', macaxeira: 'mandioca', massa: 'macarrao',
   massas: 'macarrao', mussarela: 'mucarela', ovos: 'ovo', palitos: 'palito', pedacos: 'pedaco',
+  cubos: 'cubo', desfiada: 'desfiado', desfiadas: 'desfiado', desfiados: 'desfiado', iscas: 'isca',
+  moida: 'moido', moidas: 'moido', moidos: 'moido', picada: 'picado', picadas: 'picado', picados: 'picado', tiras: 'tira',
   chips: 'chip', milanesa: 'empanado', polido: 'branco', refinada: 'refinado', rodelas: 'rodela', sementes: 'semente',
   vegetais: 'vegetal',
   refogada: 'refogado', refogadas: 'refogado', refogados: 'refogado', roxa: 'roxo', roxas: 'roxo',
@@ -85,6 +97,7 @@ const RECIPE_MARKERS = new Set([
 ]);
 
 const OBSERVABLE_TOKENS = new Set(['caldo']);
+const PRESENTATION_TOKENS = new Set(['cubo', 'desfiado', 'isca', 'moido', 'pedaco', 'picado', 'tira']);
 
 const AXES = [
   { identities: ['arroz'], values: ['integral', 'branco', 'creme', 'glutinoso'] },
@@ -154,7 +167,7 @@ function detectionProfile(item: DetectedFood): DetectionProfile {
     evidence.delete('clara'); evidence.delete('gema'); evidence.add('inteiro'); evidence.add('galinha');
   }
   if (/molho (vermelho|de tomate)/.test(rawText)) { evidence.add('molho'); evidence.add('tomate'); }
-  const identity = new Set(nameTokens.filter((token) => !STOP_WORDS.has(token) && !PREPARATIONS.has(token)));
+  const identity = new Set(nameTokens.filter((token) => !STOP_WORDS.has(token) && !PREPARATIONS.has(token) && !PRESENTATION_TOKENS.has(token)));
   return { identity, evidence, preparations: new Set(preparationTokens), alternative: new Set(tokens(item.alternative ?? '').filter((token) => !STOP_WORDS.has(token))), rawText };
 }
 
