@@ -89,6 +89,7 @@ export function ActivityEditor({
     session?.rest_seconds ?? legacyRestSeconds(session?.rest_period),
   );
   const [estimatedKcal, setEstimatedKcal] = useState<number | null>(null);
+  const [effortKcal, setEffortKcal] = useState<Record<string, number>>({});
   const [day, setDay] = useState(
     duplicate ? date : (session?.activity_date ?? date),
   );
@@ -164,33 +165,57 @@ export function ActivityEditor({
   useEffect(() => {
     if (!selected || !chosen || !(Number(duration) > 0)) {
       setEstimatedKcal(null);
+      setEffortKcal({});
       return;
     }
     const controller = new AbortController();
     const timer = window.setTimeout(() => {
-      void api<{ kcal: number }>(`/activities/estimate?${query}`, {
-        method: 'POST',
-        signal: controller.signal,
-        body: JSON.stringify({
-          date: day,
-          duration: Number(duration),
-          code: chosen.code,
-          version: chosen.version,
-          restSeconds: quick?.id === 'strength' ? rest : null,
-          intensity,
-          calculationProfile: quick?.id === 'strength' ? 'quick_strength' : 'catalog_specific',
-        }),
-      })
-        .then((result) => setEstimatedKcal(result.kcal))
-        .catch((reason) => {
-          if ((reason as Error).name !== 'AbortError') setEstimatedKcal(null);
+      const estimate = (code: string, version: string, effort: string) =>
+        api<{ kcal: number }>(`/activities/estimate?${query}`, {
+          method: 'POST',
+          signal: controller.signal,
+          body: JSON.stringify({
+            date: day,
+            duration: Number(duration),
+            code,
+            version,
+            restSeconds: quick?.id === 'strength' ? rest : null,
+            intensity: effort,
+            calculationProfile:
+              quick?.id === 'strength' ? 'quick_strength' : 'catalog_specific',
+          }),
         });
+      if (quick) {
+        void Promise.allSettled(
+          quick.efforts.map(async (item) => {
+            const row = catalog.find((entry) => entry.code === item.code);
+            if (!row) throw new Error('Modalidade indisponível para esta idade.');
+            return [item.value, (await estimate(row.code, row.version, item.value)).kcal] as const;
+          }),
+        ).then((results) => {
+          if (controller.signal.aborted) return;
+          const values = Object.fromEntries(
+            results.flatMap((result) => (result.status === 'fulfilled' ? [result.value] : [])),
+          );
+          setEffortKcal(values);
+          setEstimatedKcal(values[intensity] ?? null);
+        });
+      } else {
+        void estimate(chosen.code, chosen.version, intensity)
+          .then((result) => {
+            setEffortKcal({});
+            setEstimatedKcal(result.kcal);
+          })
+          .catch((reason) => {
+            if ((reason as Error).name !== 'AbortError') setEstimatedKcal(null);
+          });
+      }
     }, 180);
     return () => {
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [chosen, day, duration, intensity, query, quick, rest, selected]);
+  }, [catalog, chosen, day, duration, intensity, query, quick, rest, selected]);
   const visible = useMemo(
     () =>
       catalog.filter(
@@ -647,6 +672,11 @@ export function ActivityEditor({
                           {item.label}
                         </strong>
                         {item.hint && <small>{item.hint}</small>}
+                        {effortKcal[item.value] != null && (
+                          <span className="movement-effort-kcal">
+                            ≈ {Math.round(effortKcal[item.value])} kcal
+                          </span>
+                        )}
                       </button>
                     ))}
                   </div>
