@@ -415,7 +415,7 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
       const preview = await request(
         "/estimate",
         "POST",
-        { date: today, duration: 60, code: "02054", version: "2024-pt-BR.1", restSeconds: 30 },
+        { date: today, duration: 60, code: "02054", version: "2024-pt-BR.1", restSeconds: 30, intensity: "moderate" },
       );
       expect(preview.status).toBe(200);
       const a = await request(

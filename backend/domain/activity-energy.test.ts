@@ -89,6 +89,13 @@ describe("gasto e balanço estimados", () => {
     expect(heavier).toBeGreaterThan(light120);
     expect(intense).toBeGreaterThan(light30);
   });
+  it("usa exatamente 3,0, 3,5 e 6,0 MET na musculação", () => {
+    const baseAt35Met = { grossKcal: 245, netKcal: 175 };
+    expect(calculateStrengthTrainingCalories(baseAt35Met, 120, "light", 3.5).grossKcal).toBe(210);
+    expect(calculateStrengthTrainingCalories(baseAt35Met, 120, "moderate", 3.5).grossKcal).toBe(245);
+    const baseAt6Met = { grossKcal: 420, netKcal: 350 };
+    expect(calculateStrengthTrainingCalories(baseAt6Met, 120, "vigorous", 6).grossKcal).toBe(420);
+  });
   it("não desconta repouso duas vezes de calorias ativas manuais", () => {
     expect(manualEnergy(100, "net", 70, 60)).toEqual({ netKcal: 100, grossKcal: null });
     expect(manualEnergy(170, "gross", 70, 60).netKcal).toBe(100);
