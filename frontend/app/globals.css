@@ -2846,8 +2846,25 @@
   .food-batch-number { color:#3e8a7b; font-family:var(--font-display-app); font-size:.68rem; font-weight:800; }.food-batch-info { min-width:0; }.food-batch-info p,.food-batch-info small { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }.food-batch-info p { font-size:.75rem; font-weight:750; }.food-batch-info small,.food-batch-energy small { color:var(--patient-muted); font-size:.6rem; }
   .food-grams-field label { font-size:.6rem; }.food-grams-field > div,.food-time-field > div { position:relative; margin-top:.2rem; }.food-grams-field input { height:2.5rem; padding-right:1.75rem; }.food-grams-field > div span { position:absolute; right:.65rem; top:50%; transform:translateY(-50%); color:var(--patient-muted); font-size:.7rem; }
   .food-batch-energy strong { display:block; font-size:.7rem; }.food-batch-remove { display:grid; width:2.25rem; height:2.25rem; place-items:center; border-radius:.65rem; color:#a65a55; }.food-batch-remove:hover { background:#fae9e6; }
-  .food-batch-settings { margin-top:1rem; display:grid; grid-template-columns:minmax(0,1fr) 11rem; gap:.8rem; border:1px solid #dce9e6; border-radius:1rem; background:#f1f8f6; padding:1rem; }.food-batch-settings-heading { grid-column:1/-1; display:flex; justify-content:space-between; color:#377f70; }.food-batch-settings fieldset { min-width:0; }.food-batch-settings legend { margin-bottom:.4rem; font-size:.65rem; font-weight:700; }.food-time-field svg { position:absolute; left:.75rem; top:50%; transform:translateY(-50%); color:var(--patient-muted); }.food-time-field input { height:2.65rem; padding-left:2.2rem; background:white; }.food-fixed-meal { display:flex; align-items:center; gap:.65rem; border:1px solid #c8ded9; border-radius:.8rem; background:white; padding:.65rem; color:#377f70; }.food-fixed-meal span small,.food-fixed-meal span strong { display:block; font-size:.62rem; }
+  .food-batch-settings { margin-top:1rem; display:grid; grid-template-columns:minmax(0,1fr) 11rem; gap:.8rem; border:1px solid #dce9e6; border-radius:1rem; background:#f1f8f6; padding:1rem; }.food-batch-settings-heading { grid-column:1/-1; display:flex; justify-content:space-between; color:#377f70; }.food-batch-settings fieldset { min-width:0; }.food-batch-settings legend { margin-bottom:.4rem; font-size:.65rem; font-weight:700; }.food-time-field input { height:2.65rem; padding-inline:.8rem; background:white; font-variant-numeric:tabular-nums; }.food-fixed-meal { display:flex; align-items:center; gap:.65rem; border:1px solid #c8ded9; border-radius:.8rem; background:white; padding:.65rem; color:#377f70; }.food-fixed-meal span small,.food-fixed-meal span strong { display:block; font-size:.62rem; }
   .food-batch-totals { margin-top:.8rem; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.55rem; }.food-batch-totals > div { border-radius:.8rem; background:#fff1e5; padding:.7rem; color:#a95e37; }.food-batch-totals > div[data-tone="protein"] { background:#e5f3f3;color:#287b7e; }.food-batch-totals > div[data-tone="carb"] { background:#fff3d9;color:#a56b12; }.food-batch-totals > div[data-tone="fat"] { background:#fae9e6;color:#a65047; }.food-batch-totals small,.food-batch-totals strong { display:block; }.food-batch-totals small { font-size:.58rem; }.food-batch-totals strong { margin-top:.15rem; font-size:.78rem; }
+  @media (min-width: 640px) {
+    .food-entry-title-row [data-slot="sheet-title"] { font-size:1.45rem; }
+    .food-entry-title-row [data-slot="sheet-description"] { margin-top:.15rem; font-size:.82rem; }
+    .food-entry-steps { font-size:.76rem; }
+    .food-batch-heading h3,.food-batch-settings-heading h3 { font-size:1.35rem; }
+    .food-batch-heading > span { font-size:.72rem; }
+    .food-batch-item { grid-template-columns:2rem minmax(0,1fr) 8.25rem 5.5rem 2.25rem; gap:.8rem; padding:.85rem; }
+    .food-batch-number { font-size:.76rem; }
+    .food-batch-info p { font-size:.88rem; }
+    .food-batch-info small,.food-batch-energy small { font-size:.67rem; }
+    .food-grams-field label,.food-time-field label { font-size:.72rem; }
+    .food-grams-field input,.food-time-field input { font-size:.88rem; }
+    .food-batch-energy strong { margin-top:.12rem; font-size:.8rem; }
+    .food-batch-settings legend { font-size:.75rem; }
+    .food-fixed-meal span small { font-size:.67rem; }.food-fixed-meal span strong { font-size:.8rem; }
+    .food-batch-totals > div { padding:.85rem; }.food-batch-totals small { font-size:.66rem; }.food-batch-totals strong { font-size:.9rem; }
+  }
   .food-search-input {
     border-color: #b9d7d1;
     box-shadow: 0 8px 24px rgb(38 93 82 / 7%);
