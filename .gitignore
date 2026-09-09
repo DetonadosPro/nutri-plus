@@ -42,6 +42,11 @@ dist/
 /tests/food-vision-benchmark/images/
 /tests/food-vision-benchmark/cases.json
 /tests/food-vision-benchmark/predictions*.json
+/tests/food-vision-benchmark/labels.review.*
+/tests/food-vision-benchmark/label-candidates.review.json
+/tests/food-vision-benchmark/preview-*.jpg
+/tests/food-vision-benchmark/report-baseline.json
+/tests/food-vision-benchmark/dataset-audit.json
 !/tests/food-vision-benchmark/predictions.example.json
 /work/
 /tmp/
