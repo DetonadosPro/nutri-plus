@@ -34,6 +34,7 @@ export type ActivitySession = {
   activity_date: string;
   local_time: string | null;
   rest_period: 'under30' | '30to60' | '1to2' | '2to3' | 'over3' | null;
+  rest_seconds: number | null;
   duration_minutes: number;
   intensity: string;
   outside_base: boolean;
@@ -53,6 +54,10 @@ export type ActivitySession = {
     weight: { weight_kg: number; weighed_at: string } | null;
     grossKcal: number | null;
     netKcal: number | null;
+    baseGrossKcal?: number | null;
+    baseNetKcal?: number | null;
+    restDensityFactor?: number;
+    strengthCalculationVersion?: string;
     manual: ManualActivity | null;
     referenceKind?: 'adult-met' | 'youth-mety' | 'older-met60' | 'manual';
     referenceCode?: string | null;

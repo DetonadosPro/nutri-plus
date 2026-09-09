@@ -17,7 +17,7 @@ Reformulação local do frontend. Preserva alimentos, metas, autenticação e re
 
 As escolhas rápidas em `activity-choices.tsx` apontam para códigos reais da versão `2024-pt-BR.1`. Não há multiplicação arbitrária por intensidade. Para caminhada/corrida, os botões indicam as faixas de velocidade; ciclismo, natação e futebol apontam para modalidades operacionais correspondentes. O usuário pode escolher outro subtipo em “Mais opções”.
 
-Musculação leve e moderada usam a referência geral 02054 (3,5 MET); intensa usa 02050 (6 MET). A referência geral não permite inventar um valor menor exclusivo para “leve”. Descanso é somente descritivo: o MET representa a sessão inteira, incluindo pausas. Não existe bônus por intervalos curtos ou EPOC.
+Musculação leve e moderada usam a referência geral 02054 (3,5 MET); intensa usa 02050 (6 MET). A referência geral não permite inventar um valor menor exclusivo para “leve”. O gasto base da sessão é ajustado secundariamente pela densidade indicada pelo descanso: 30 s = 1,15; 60 s = 1,10; 90 s = 1,05; 120 s = 1,00; 180 s = 0,95; 240 s = 0,90; 300 s ou mais = 0,85, com interpolação linear e limites fixos. Não se acrescenta EPOC.
 
 Quando uma modalidade específica é escolhida pela busca, a intensidade é um relato subjetivo, sem alterar o MET daquela modalidade. Para modificar a estimativa, troca-se a modalidade. A explicação permanece disponível nos detalhes.
 
@@ -48,6 +48,8 @@ Cada registro do catálogo mantém sua própria fonte oficial. Códigos e METs s
 Migrations 008–010 permanecem intactas. A migration transacional `011_simple_activity_entry.sql`:
 - permite `local_time=NULL`, para sessões sem hora informada;
 - adiciona `rest_period` opcional, com validação das cinco faixas.
+
+A migration `018_strength_rest_seconds.sql` preserva as faixas antigas e adiciona o intervalo exato em segundos. O snapshot `strength-density-1` guarda gasto base, fator aplicado e gasto final, portanto futuras mudanças não alteram registros históricos silenciosamente.
 
 Sem horário, não se inventa uma hora para satisfazer a API. Sobreposição é validada entre sessões com horários conhecidos; somas de duração acima de 1.440 minutos são recusadas em todos os casos. Não é possível inferir sobreposição temporal de sessões sem horário.
 

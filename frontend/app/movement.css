@@ -414,6 +414,16 @@
   flex-wrap: wrap;
   gap: 0.5rem;
 }
+.movement-calorie-preview {
+  display: block;
+  margin-top: 0.75rem;
+  padding: 0.8rem 1rem;
+  border-radius: 14px;
+  background: #f0eafa;
+  color: #5d467a;
+  font-weight: 650;
+  text-align: center;
+}
 .movement-change-activity {
   justify-self: start;
   min-height: 40px;

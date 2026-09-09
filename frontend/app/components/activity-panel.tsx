@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { ActivityEditor } from './activity-editor';
-import { ActivityGlyph, quickName, restChoices } from './activity-choices';
+import { ActivityGlyph, quickName } from './activity-choices';
 import type {
   ActivitySession,
   EnergyDay,
@@ -43,6 +43,23 @@ export function listenActivityChanges(reload: () => void) {
 }
 export function activityQuery(patientId?: number) {
   return patientId ? `patientId=${patientId}&` : '';
+}
+function restLabel(session: ActivitySession) {
+  const seconds = session.rest_seconds;
+  if (seconds != null)
+    return seconds >= 240
+      ? '4 min ou mais'
+      : seconds % 60 === 0
+        ? `${seconds / 60} min`
+        : `${seconds} s`;
+  if (!session.rest_period) return null;
+  return {
+      under30: 'Até 30 s',
+      '30to60': '30–60 s',
+      '1to2': '1–2 min',
+      '2to3': '2–3 min',
+      over3: 'Mais de 3 min',
+    }[session.rest_period];
 }
 export function EnergyMethod() {
   return (
@@ -434,10 +451,10 @@ export function ActivityPanel({
                   : ''}{' '}
                 · {details.duration_minutes} min
               </p>
-              {details.rest_period && (
+              {restLabel(details) && (
                 <p>
                   Descanso entre séries:{' '}
-                  {restChoices.find(([v]) => v === details.rest_period)?.[1]}
+                  {restLabel(details)}
                 </p>
               )}
               <div className="activity-row-actions">

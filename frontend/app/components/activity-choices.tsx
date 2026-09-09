@@ -120,11 +120,12 @@ export type ActivityChoice = (typeof activityChoices)[number];
 export const effortValues = ['light', 'moderate', 'vigorous'] as const;
 export const effortLabels = ['Leve', 'Moderada', 'Intensa'];
 export const restChoices = [
-  ['under30', 'Até 30 s'],
-  ['30to60', '30–60 s'],
-  ['1to2', '1–2 min'],
-  ['2to3', '2–3 min'],
-  ['over3', 'Mais de 3 min'],
+  [30, '30 s'],
+  [60, '1 min'],
+  [90, '1 min 30 s'],
+  [120, '2 min'],
+  [180, '3 min'],
+  [240, '4 min+'],
 ] as const;
 export const normalizeActivity = (value: string) =>
   value
