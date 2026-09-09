@@ -3,7 +3,7 @@ import '../food-photo.css';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { ArrowLeft, Camera, Check, ImagePlus, LoaderCircle, Plus, Search, Trash2 } from 'lucide-react';
+import { ArrowLeft, Camera, Check, ChevronRight, ImagePlus, LoaderCircle, Minus, Plus, Search, Sparkles, Trash2, UtensilsCrossed } from 'lucide-react';
 import { api } from '@/lib/client-api';
 import { brazilNow } from '@/lib/datetime';
 import { formatNumber } from '@/lib/nutrition-format';
@@ -17,7 +17,7 @@ import { optimizeFoodPhoto } from '@/lib/food-photo';
 
 type DetectionState = 'AUTOSELECT'|'RERANK'|'ASK_USER'|'ASK_IDENTITY'|'ASK_ATTRIBUTE'|'NO_EXACT_TBCA_MATCH'|'NO_MATCH';
 type Detection = { itemToken:string;name:string;preparation:string|null;clarificationKind:'MEAT_TYPE'|null;visualConfidence:number;state:DetectionState;top1Score:number;top2Score:number;margin:number;resolutionPolicy?:string|null;abstentionReason?:string|null;candidates:Food[] };
-type Row = Detection & { key: string; food: Food | null; grams: string };
+type Row = Detection & { key: string; food: Food | null; grams: string; confirmed: boolean };
 
 function choiceMessage(state:DetectionState){
   if(state==='NO_MATCH')return 'Não encontramos uma opção segura. Busque manualmente:';
@@ -80,7 +80,7 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
       });
       if (request.current !== controller) return;
       setAnalysisToken(data.analysisToken);
-      setRows(data.items.map(item => ({ ...item, key: crypto.randomUUID(), food: ['AUTOSELECT','RERANK'].includes(item.state) ? item.candidates[0] || null : null, grams: '' })));
+      setRows(data.items.map(item => ({ ...item, key: crypto.randomUUID(), food: ['AUTOSELECT','RERANK'].includes(item.state) ? item.candidates[0] || null : null, grams: '', confirmed: false })));
       setAnalyzed(true);
     } catch (reason) {
       if (request.current === controller) setError(controller.signal.aborted ? 'A análise demorou mais que o esperado. Você pode usar a busca manual.' : reason instanceof Error ? reason.message : 'Reconhecimento indisponível. Use a busca manual.');
@@ -94,11 +94,19 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
   }, [initialPhoto, analyze]);
 
   function choose(food: Food) {
-    if (editing === 'new') setRows(current => [...current, { key: crypto.randomUUID(),itemToken:crypto.randomUUID(),name:foodDisplayName(food),preparation:null,clarificationKind:null,visualConfidence:1,state:'ASK_ATTRIBUTE',top1Score:0,top2Score:0,margin:0,candidates:[],food,grams:'' }]);
-    else setRows(current => current.map(row => row.key === editing ? { ...row, food } : row));
+    if (editing === 'new') setRows(current => [...current, { key: crypto.randomUUID(),itemToken:crypto.randomUUID(),name:foodDisplayName(food),preparation:null,clarificationKind:null,visualConfidence:1,state:'ASK_ATTRIBUTE',top1Score:0,top2Score:0,margin:0,candidates:[],food,grams:'',confirmed:false }]);
+    else setRows(current => current.map(row => row.key === editing ? { ...row, food, confirmed:false } : row));
     setEditing(null); setQuery('');
   }
-  const valid = rows.length > 0 && rows.every(row => row.food && Number(row.grams) > 0 && Number(row.grams) <= 5000);
+  const valid = rows.length > 0 && rows.every(row => row.confirmed && row.food && Number(row.grams) > 0 && Number(row.grams) <= 5000);
+  const activeRow=rows.find(row=>!row.confirmed);
+  const activeIndex=activeRow?rows.findIndex(row=>row.key===activeRow.key):-1;
+  const completed=rows.filter(row=>row.confirmed).length;
+
+  function updateGrams(key:string,value:string){setRows(items=>items.map(item=>item.key===key?{...item,grams:value}:item))}
+  function adjustGrams(row:Row,amount:number){const current=Number(row.grams)||0;updateGrams(row.key,String(Math.max(0,Math.min(5000,current+amount))))}
+  function confirmRow(row:Row){if(!row.food||Number(row.grams)<=0||Number(row.grams)>5000)return;setRows(items=>items.map(item=>item.key===row.key?{...item,confirmed:true}:item))}
+  function editRow(key:string){setRows(items=>items.map(item=>item.key===key?{...item,confirmed:false}:item))}
   async function save() {
     if (!valid || !mealType || !time || saveLock.current) return;
     saveLock.current = true; setSaving(true); setError('');
@@ -123,32 +131,63 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
     {results.map(food => <button className="photo-result" key={food.id} onClick={() => choose(food)}><strong>{foodDisplayName(food)}</strong><small>{formatNumber(food.nutrients.energia_kcal)} kcal / 100 g</small></button>)}
   </section>;
 
-  return <section className="photo-review">
-    <Button variant="ghost" onClick={onBack} disabled={saving}><ArrowLeft /> Busca manual</Button>
-    <div className="photo-review-layout">
-      <aside className="photo-capture">
-        {preview ? <Image src={preview} unoptimized width={600} height={400} alt="Foto do prato para revisar" className="photo-preview" /> : <div className="photo-placeholder"><Camera /><strong>Seu prato, em poucos toques</strong><span>Tire uma foto e depois informe as quantidades.</span></div>}
-        <input ref={camera} className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={e => { void analyze(e.target.files?.[0]); e.target.value = ''; }} />
-        <input ref={gallery} className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" onChange={e => { void analyze(e.target.files?.[0]); e.target.value = ''; }} />
-        <div className="photo-capture-actions"><Button variant="outline" disabled={busy || saving} onClick={() => camera.current?.click()}><Camera /> Tirar foto</Button><Button variant="outline" disabled={busy || saving} onClick={() => gallery.current?.click()}><ImagePlus /> Galeria</Button></div>
-        <p className="photo-hint">A foto é usada apenas para esta análise. Revise os alimentos antes de registrar.</p>
-      </aside>
-      <div className="photo-review-main">
-        {busy && <div className="photo-empty"><LoaderCircle className="animate-spin" /><output>Reconhecendo seu prato…</output><p>Preparando os alimentos para você.</p></div>}
-        {error && <p role="alert" className="photo-error">{error}</p>}
-        {analyzed && !rows.length && <div className="photo-empty"><Search /><strong>Nenhum alimento identificado</strong><p>Tente uma foto mais nítida ou adicione pela busca.</p></div>}
-        {rows.length > 0 && <p className="photo-hint">Confira os alimentos e preencha a quantidade de cada um. Você pode incluir o que ficou faltando.</p>}
-        <div className="photo-items">{rows.map(row => <article className="photo-item" key={row.key}>
-          <div className="photo-item-heading"><strong>{row.food ? <><Check className="inline size-4 text-primary"/> {foodDisplayName(row.food)}</> : row.name}</strong><button disabled={saving} className="icon-button" aria-label={`Remover ${row.name}`} onClick={() => setRows(items => items.filter(item => item.key !== row.key))}><Trash2 size={18} /></button></div>
-          {!row.food && <div className={`photo-candidates ${row.clarificationKind==='MEAT_TYPE'?'photo-meat-question':''}`}><strong>{row.clarificationKind==='MEAT_TYPE'?'Qual carne você usou?':choiceMessage(row.state)}</strong>{row.clarificationKind==='MEAT_TYPE'&&<small>A foto não permite confirmar o corte com segurança.</small>}{row.candidates.map(food => <button key={food.id} disabled={saving} onClick={() => setRows(items => items.map(item => item.key === row.key ? { ...item, food } : item))}>{foodDisplayName(food)}</button>)}{!row.candidates.length && <p>Use “Buscar alimento” para encontrar a opção correta.</p>}</div>}
-          <div className="photo-item-actions"><Button variant="ghost" disabled={saving} onClick={() => { setEditing(row.key); setQuery(row.name); }}> {row.food ? 'Trocar alimento' : row.clarificationKind==='MEAT_TYPE'?'Não sei / buscar outra':'Buscar alimento'}</Button>
-            <label htmlFor={`photo-grams-${row.key}`}>Quantidade (g)<Input id={`photo-grams-${row.key}`} aria-label={`Quantidade de ${row.name} em gramas`} type="number" inputMode="decimal" min="0.1" max="5000" step="any" placeholder="Ex.: 100" value={row.grams} disabled={saving} onChange={e => setRows(items => items.map(item => item.key === row.key ? { ...item, grams: e.target.value } : item))} /></label>
-          </div>
-          {row.food && Number(row.grams) > 0 && <p className="photo-hint">{formatNumber(scaleNutrients(row.food.nutrients, Number(row.grams)).values.energia_kcal)} kcal · {formatNumber(scaleNutrients(row.food.nutrients, Number(row.grams)).values.proteina_g, 1)} g proteína</p>}
-        </article>)}</div>
-        {!busy && <Button variant="outline" disabled={saving || rows.length >= 20} onClick={() => { setEditing('new'); setQuery(''); }}><Plus /> Adicionar alimento</Button>}
-        {rows.length > 0 && <div className="photo-save"><label htmlFor="photo-meal">Refeição<select id="photo-meal" value={mealType} disabled={saving} onChange={e => setMealType(e.target.value)}><option value="">Escolha a refeição</option>{MEAL_TYPES.map(meal => <option key={meal.value} value={meal.value}>{meal.label}</option>)}</select></label><label htmlFor="photo-time">Horário<Input id="photo-time" type="time" value={time} disabled={saving} onChange={e => setTime(e.target.value)} /></label><Button disabled={!valid || !mealType || !time || saving} onClick={save}>{saving ? 'Registrando…' : 'Confirmar refeição'}</Button></div>}
+  return <section className="photo-review photo-flow">
+    <header className="photo-flow-header">
+      <Button variant="ghost" onClick={onBack} disabled={saving}><ArrowLeft /> Busca manual</Button>
+      {!!rows.length&&<span>{completed} de {rows.length} prontos</span>}
+    </header>
+    <div className="photo-scene">
+      <div className="photo-scene-image">
+        {preview?<Image src={preview} unoptimized width={800} height={520} alt="Foto do prato para revisar" className="photo-preview"/>:<Camera/>}
+        {preview&&<div className="photo-scene-badge"><Sparkles/> {rows.length} {rows.length===1?'alimento':'alimentos'}</div>}
       </div>
+      <input ref={camera} className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={e=>{void analyze(e.target.files?.[0]);e.target.value=''}}/>
+      <input ref={gallery} className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>{void analyze(e.target.files?.[0]);e.target.value=''}}/>
+      <div className="photo-scene-actions"><button disabled={busy||saving} onClick={()=>camera.current?.click()}><Camera/> Nova foto</button><button disabled={busy||saving} onClick={()=>gallery.current?.click()}><ImagePlus/> Galeria</button></div>
     </div>
+
+    {busy&&<div className="photo-empty photo-loading"><LoaderCircle className="animate-spin"/><output>Reconhecendo seu prato…</output><p>Separando os alimentos para você.</p></div>}
+    {error&&<p role="alert" className="photo-error">{error}</p>}
+    {analyzed&&!rows.length&&<div className="photo-empty"><Search/><strong>Nenhum alimento identificado</strong><p>Tente uma foto mais nítida ou use a busca.</p><Button variant="outline" onClick={()=>{setEditing('new');setQuery('')}}><Plus/> Adicionar alimento</Button></div>}
+
+    {activeRow&&<div className="photo-step" aria-live="polite">
+      <div className="photo-progress"><span style={{width:`${((activeIndex+1)/rows.length)*100}%`}}/></div>
+      <p className="photo-step-count">Alimento {activeIndex+1} de {rows.length}</p>
+      <article className="photo-focus-card">
+        <div className="photo-focus-icon"><UtensilsCrossed/></div>
+        <button disabled={saving} className="photo-remove" aria-label={`Remover ${activeRow.name}`} onClick={()=>setRows(items=>items.filter(item=>item.key!==activeRow.key))}><Trash2/></button>
+        <p className="photo-focus-label">{activeRow.food?'Encontramos':'Precisamos confirmar'}</p>
+        <h3>{activeRow.food?foodDisplayName(activeRow.food):activeRow.name}</h3>
+        {activeRow.food&&<button className="photo-change" onClick={()=>{setEditing(activeRow.key);setQuery(activeRow.name)}}>Não é esse? Trocar</button>}
+
+        {!activeRow.food&&<div className={`photo-candidates ${activeRow.clarificationKind==='MEAT_TYPE'?'photo-meat-question':''}`}>
+          <strong>{activeRow.clarificationKind==='MEAT_TYPE'?'Qual carne você usou?':choiceMessage(activeRow.state)}</strong>
+          {activeRow.clarificationKind==='MEAT_TYPE'&&<small>A foto não mostra o corte com segurança.</small>}
+          {activeRow.candidates.map(food=><button key={food.id} disabled={saving} onClick={()=>setRows(items=>items.map(item=>item.key===activeRow.key?{...item,food}:item))}>{foodDisplayName(food)}<ChevronRight/></button>)}
+          <button className="photo-search-choice" onClick={()=>{setEditing(activeRow.key);setQuery(activeRow.name)}}><Search/> {activeRow.clarificationKind==='MEAT_TYPE'?'Não sei / buscar outra':'Buscar alimento'}</button>
+        </div>}
+
+        {activeRow.food&&<div className="photo-quantity">
+          <label htmlFor={`photo-grams-${activeRow.key}`}>Quanto você comeu?</label>
+          <div className="photo-quantity-control">
+            <button aria-label="Diminuir 10 gramas" onClick={()=>adjustGrams(activeRow,-10)}><Minus/></button>
+            <div><Input id={`photo-grams-${activeRow.key}`} aria-label={`Quantidade de ${activeRow.name} em gramas`} type="number" inputMode="decimal" min="0.1" max="5000" step="any" placeholder="0" value={activeRow.grams} disabled={saving} onChange={e=>updateGrams(activeRow.key,e.target.value)}/><span>g</span></div>
+            <button aria-label="Aumentar 10 gramas" onClick={()=>adjustGrams(activeRow,10)}><Plus/></button>
+          </div>
+          <div className="photo-portions" aria-label="Quantidades rápidas">{[50,100,150,200].map(value=><button key={value} aria-pressed={Number(activeRow.grams)===value} onClick={()=>updateGrams(activeRow.key,String(value))}>{value} g</button>)}</div>
+          {Number(activeRow.grams)>0&&<p className="photo-nutrition-preview">≈ {formatNumber(scaleNutrients(activeRow.food.nutrients,Number(activeRow.grams)).values.energia_kcal)} kcal</p>}
+          <Button className="photo-next" disabled={Number(activeRow.grams)<=0||Number(activeRow.grams)>5000} onClick={()=>confirmRow(activeRow)}><Check/> {activeIndex===rows.length-1?'Concluir revisão':'Confirmar e continuar'} <ChevronRight/></Button>
+        </div>}
+      </article>
+    </div>}
+
+    {!!completed&&!valid&&<div className="photo-done-strip"><p><Check/> Já conferidos</p><div>{rows.filter(row=>row.confirmed).map(row=><button key={row.key} onClick={()=>editRow(row.key)}><strong>{row.food&&foodDisplayName(row.food)}</strong><span>{row.grams} g</span></button>)}</div></div>}
+
+    {valid&&<section className="photo-final">
+      <div className="photo-final-heading"><span><Check/></span><div><p>Tudo conferido</p><h3>Sua refeição está pronta</h3></div></div>
+      <div className="photo-final-list">{rows.map(row=><button key={row.key} onClick={()=>editRow(row.key)}><span>{row.food&&foodDisplayName(row.food)}</span><strong>{row.grams} g</strong><ChevronRight/></button>)}</div>
+      <Button variant="outline" disabled={saving||rows.length>=20} onClick={()=>{setEditing('new');setQuery('')}}><Plus/> Faltou algum alimento?</Button>
+      <div className="photo-save"><label htmlFor="photo-meal">Refeição<select id="photo-meal" value={mealType} disabled={saving} onChange={e=>setMealType(e.target.value)}><option value="">Escolha a refeição</option>{MEAL_TYPES.map(meal=><option key={meal.value} value={meal.value}>{meal.label}</option>)}</select></label><label htmlFor="photo-time">Horário<Input id="photo-time" type="time" value={time} disabled={saving} onChange={e=>setTime(e.target.value)}/></label><Button disabled={!mealType||!time||saving} onClick={save}>{saving?'Registrando…':'Adicionar ao Diário'}</Button></div>
+    </section>}
   </section>;
 }
