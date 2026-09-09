@@ -6,7 +6,7 @@
 
 A primeira chamada retorna somente `name`, `preparation`, até seis `visibleDetails`, `confidence` visual e no máximo uma `alternative`. Structured Outputs rejeita IDs, códigos, quantidades e nutrientes. O backend deduplica conceitos equivalentes, cria consultas canônicas apenas com preparação e características permitidas e resolve todos os IDs e dados nutricionais na TBCA.
 
-RERANK envia a mesma imagem sanitizada, a detecção e de três a cinco nomes amigáveis. Os candidatos recebem índices temporários; o modelo nunca vê IDs. Resposta incerta ou índice inválido vira ASK_USER. NO_MATCH não força candidato.
+RERANK envia a mesma imagem sanitizada, a detecção e de dois a cinco nomes amigáveis plausíveis. Os candidatos recebem índices temporários; o modelo nunca vê IDs. Resposta incerta ou índice inválido vira ASK_USER. NO_MATCH não força candidato.
 
 ## Prompt de detecção
 
