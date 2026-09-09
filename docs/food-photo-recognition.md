@@ -92,7 +92,7 @@ Se o 4B demorar demais ou causar falta de memória, baixe a variante 2B e altere
 
 ## Trocar o provedor sem alterar o Nutri+
 
-Frontend, backend público, correspondência TACO e revisão não conhecem o modelo. O gateway implementa quatro adaptadores: `ollama`, `gemini`, `openai-responses` e `openai-compatible`. O padrão do Gemini é `gemini-3.5-flash-lite`, com entrada de imagem e saída estruturada.
+Frontend, backend público, correspondência TACO e revisão não conhecem o modelo. O gateway implementa quatro adaptadores: `ollama`, `gemini`, `openai-responses` e `openai-compatible`. O padrão do Gemini é `gemini-3.5-flash-lite`; o padrão da OpenAI é `gpt-5.6-luna` com raciocínio desativado para esta extração simples. Ambos recebem imagem e devolvem saída estruturada.
 
 Para voltar ao Ollama:
 

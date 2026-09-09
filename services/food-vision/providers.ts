@@ -67,10 +67,11 @@ export function openAiResponsesProvider(model: string): VisionProvider {
     name: 'openai-responses',
     async ready() { return Boolean(apiKey() && model); },
     async recognize(image, options) {
+      const reasoning = model === 'gpt-5.6-luna' ? { effort: 'none' } : undefined;
       const response = await fetch(`${baseUrl}/responses`, {
         method: 'POST', signal: AbortSignal.timeout(90_000),
         headers: { Authorization: `Bearer ${apiKey()}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model, store: false, max_output_tokens: 700,
+        body: JSON.stringify({ model, store: false, max_output_tokens: 700, reasoning,
           input: [{ role: 'developer', content: [{ type: 'input_text', text: options.systemPrompt }] },
             { role: 'user', content: [{ type: 'input_text', text: options.userPrompt },
               { type: 'input_image', image_url: `data:image/jpeg;base64,${image.toString('base64')}`, detail: 'high' }] }],
