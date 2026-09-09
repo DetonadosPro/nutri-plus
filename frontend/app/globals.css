@@ -1226,12 +1226,15 @@
     background: var(--patient-blue-soft);
   }
   .patient-meal-list {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    align-items: start;
+    display: flex;
+    flex-direction: column;
     gap: 0.5rem;
   }
+  .patient-meal-column {
+    display: contents;
+  }
   .patient-meal-card {
+    order: var(--meal-order);
     min-width: 0;
     overflow: hidden;
     border: 1px solid var(--patient-line);
@@ -1244,7 +1247,7 @@
   }
   .patient-meal-card.is-expanded {
     border-color: #bfdad7;
-    box-shadow: 0 12px 32px rgb(25 57 54 / 7%);
+    box-shadow: 0 14px 36px rgb(25 57 54 / 9%);
   }
   .patient-meal-summary {
     display: grid;
@@ -1342,20 +1345,50 @@
   }
   .patient-meal-details {
     border-top: 1px solid var(--patient-line);
+    background: linear-gradient(180deg, #f7fbfa 0, #fff 9rem);
+    padding: 0.75rem;
     animation: patient-reveal 180ms ease-out both;
   }
   .patient-meal-macros {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    border-bottom: 1px solid var(--patient-line);
-    background: #f8faf9;
+    gap: 0.5rem;
   }
   .patient-meal-macros > div {
+    display: flex;
     min-width: 0;
-    padding: 0.55rem 0.75rem;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid #dbe9e7;
+    border-radius: 0.8rem;
+    background: #eef7f6;
+    padding: 0.6rem;
   }
-  .patient-meal-macros > div + div {
-    border-left: 1px solid var(--patient-line);
+  .patient-meal-macros > div > span {
+    display: grid;
+    width: 1.75rem;
+    height: 1.75rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 0.55rem;
+    background: var(--patient-protein);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 850;
+  }
+  .patient-meal-macros > div[data-tone="carb"] {
+    border-color: #f2dfbb;
+    background: #fff8e9;
+  }
+  .patient-meal-macros > div[data-tone="carb"] > span {
+    background: var(--patient-carb);
+  }
+  .patient-meal-macros > div[data-tone="fat"] {
+    border-color: #efd8d4;
+    background: #fff3f1;
+  }
+  .patient-meal-macros > div[data-tone="fat"] > span {
+    background: var(--patient-fat);
   }
   .patient-meal-macros small,
   .patient-meal-macros strong {
@@ -1369,17 +1402,31 @@
     font-size: 0.625rem;
   }
   .patient-meal-macros strong {
-    margin-top: 0.15rem;
-    font-size: 0.7rem;
+    margin-top: 0.05rem;
+    font-size: 0.75rem;
+  }
+  .patient-meal-foods {
+    margin-top: 0.75rem;
+    display: grid;
+    gap: 0.5rem;
   }
   .patient-meal-food-row {
     display: flex;
     min-width: 0;
-    gap: 0.5rem;
+    align-items: flex-start;
+    gap: 0.65rem;
+    border: 1px solid #e1eae8;
+    border-radius: 0.9rem;
+    background: rgb(255 255 255 / 92%);
     padding: 0.75rem;
+    box-shadow: 0 4px 12px rgb(25 57 54 / 3%);
   }
-  .patient-meal-food-row + .patient-meal-food-row {
-    border-top: 1px solid var(--patient-line);
+  .patient-food-index {
+    padding-top: 0.1rem;
+    color: var(--patient-blue);
+    font-family: var(--font-display-app);
+    font-size: 0.65rem;
+    font-weight: 800;
   }
   .patient-meal-food-row p {
     overflow: hidden;
@@ -1389,11 +1436,26 @@
     line-height: 1.35;
     white-space: nowrap;
   }
-  .patient-meal-food-row > div > span {
-    margin-top: 0.15rem;
-    display: block;
-    color: var(--patient-muted);
+  .patient-food-serving {
+    margin-top: 0.3rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .patient-food-serving span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    border-radius: 999px;
+    background: #f0f5f4;
+    padding: 0.2rem 0.45rem;
+    color: #516562;
     font-size: 0.625rem;
+    font-weight: 650;
+  }
+  .patient-food-serving span:last-child {
+    background: #fff1e6;
+    color: #b8623c;
   }
   .patient-food-nutrients {
     margin-top: 0.45rem;
@@ -1408,6 +1470,18 @@
     color: #526562;
     font-size: 0.625rem;
     font-weight: 650;
+  }
+  .patient-food-nutrients small[data-tone="protein"] {
+    background: #e7f4f4;
+    color: #287b7e;
+  }
+  .patient-food-nutrients small[data-tone="carb"] {
+    background: #fff3d9;
+    color: #a56b12;
+  }
+  .patient-food-nutrients small[data-tone="fat"] {
+    background: #fae9e6;
+    color: #a65047;
   }
   .patient-food-actions {
     display: grid;
@@ -1424,7 +1498,8 @@
   .patient-meal-footer {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    border-top: 1px solid var(--patient-line);
+    gap: 0.5rem;
+    margin-top: 0.75rem;
   }
   .patient-meal-footer button {
     display: flex;
@@ -1432,13 +1507,20 @@
     align-items: center;
     justify-content: center;
     gap: 0.35rem;
+    border: 1px solid #d9e6e4;
+    border-radius: 0.75rem;
+    background: white;
     color: var(--patient-muted);
     font-size: 0.625rem;
     font-weight: 720;
   }
   .patient-meal-footer button + button {
-    border-left: 1px solid var(--patient-line);
+    border-color: #b9dcda;
+    background: var(--patient-blue-soft);
     color: var(--patient-blue);
+  }
+  .patient-meal-footer button:hover {
+    border-color: var(--patient-blue);
   }
   .patient-bottom-nav {
     grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -1611,6 +1693,18 @@
   .patient-meal-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.75rem;
+  }
+  .patient-meal-list {
+    display: grid;
+  }
+  .patient-meal-column {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .patient-meal-card {
+    order: initial;
   }
   .patient-macro-expanded {
     grid-template-columns: 2rem minmax(0, 1fr) auto;

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { ChevronDown, Copy, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { ChevronDown, Copy, Flame, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import { timeFromTimestamp } from "@/lib/datetime";
 import { formatNumber } from "@/lib/nutrition-format";
 import { MEAL_TYPES, mealDefinition } from "@/lib/meal-types";
@@ -71,18 +71,25 @@ export function PatientMealList({
 
   return (
     <div className="patient-meal-list">
-      {slots.map(({ key, definition, meal }) => (
-        <PatientMealCard
-          key={key}
-          meal={meal}
-          definition={definition}
-          expanded={expandedMeal === key}
-          onToggle={() => meal && setExpandedMeal((current) => (current === key ? null : key))}
-          onAdd={onAdd ? () => onAdd(definition.value) : undefined}
-          onEdit={onEdit}
-          onDelete={onDelete}
-          onCopy={onCopy}
-        />
+      {[0, 1].map((column) => (
+        <div className="patient-meal-column" key={column}>
+          {slots.map(({ key, definition, meal }, index) =>
+            index % 2 === column ? (
+              <PatientMealCard
+                key={key}
+                order={index}
+                meal={meal}
+                definition={definition}
+                expanded={expandedMeal === key}
+                onToggle={() => meal && setExpandedMeal((current) => (current === key ? null : key))}
+                onAdd={onAdd ? () => onAdd(definition.value) : undefined}
+                onEdit={onEdit}
+                onDelete={onDelete}
+                onCopy={onCopy}
+              />
+            ) : null,
+          )}
+        </div>
       ))}
     </div>
   );
@@ -91,6 +98,7 @@ export function PatientMealList({
 function PatientMealCard({
   meal,
   definition,
+  order,
   expanded,
   onToggle,
   onAdd,
@@ -100,6 +108,7 @@ function PatientMealCard({
 }: {
   meal?: Meal;
   definition: ReturnType<typeof mealDefinition>;
+  order: number;
   expanded: boolean;
   onToggle: () => void;
   onAdd?: () => void;
@@ -117,6 +126,7 @@ function PatientMealCard({
   return (
     <article
       className={`patient-meal-card${expanded ? " is-expanded" : ""}`}
+      style={{ "--meal-order": order } as CSSProperties}
       data-tone={mealTone(definition.value)}
       data-patient-meal={definition.value}
     >
@@ -186,29 +196,30 @@ function PatientMealCard({
       {meal && expanded && (
         <div className="patient-meal-details">
           <div className="patient-meal-macros" aria-label="Resumo da refeição">
-            <MealMacro label="Proteína" value={meal.totals.proteina_g} unit="g" />
-            <MealMacro label="Carboidrato" value={meal.totals.carboidrato_g} unit="g" />
-            <MealMacro label="Gordura" value={meal.totals.lipideos_g} unit="g" />
+            <MealMacro tone="protein" shortLabel="P" label="Proteína" value={meal.totals.proteina_g} unit="g" />
+            <MealMacro tone="carb" shortLabel="C" label="Carboidrato" value={meal.totals.carboidrato_g} unit="g" />
+            <MealMacro tone="fat" shortLabel="G" label="Gordura" value={meal.totals.lipideos_g} unit="g" />
           </div>
 
           <div className="patient-meal-foods">
-            {meal.entries.map((entry) => (
+            {meal.entries.map((entry, index) => (
               <div key={entry.id} className="patient-meal-food-row">
+                <span className="patient-food-index">{String(index + 1).padStart(2, "0")}</span>
                 <div className="min-w-0 flex-1">
                   <p>{foodDisplayName(entry)}</p>
-                  <span>
-                    {formatNumber(entry.grams_equivalent)} g ·{" "}
-                    {formatNumber(entry.nutrients.energia_kcal)} kcal
-                  </span>
+                  <div className="patient-food-serving">
+                    <span>{formatNumber(entry.grams_equivalent)} g</span>
+                    <span><Flame className="size-3" />{formatNumber(entry.nutrients.energia_kcal)} kcal</span>
+                  </div>
                   <div className="patient-food-nutrients">
                     {entry.nutrients.proteina_g != null && (
-                      <small>P {formatNumber(entry.nutrients.proteina_g, 1)} g</small>
+                      <small data-tone="protein">P {formatNumber(entry.nutrients.proteina_g, 1)} g</small>
                     )}
                     {entry.nutrients.carboidrato_g != null && (
-                      <small>C {formatNumber(entry.nutrients.carboidrato_g, 1)} g</small>
+                      <small data-tone="carb">C {formatNumber(entry.nutrients.carboidrato_g, 1)} g</small>
                     )}
                     {entry.nutrients.lipideos_g != null && (
-                      <small>G {formatNumber(entry.nutrients.lipideos_g, 1)} g</small>
+                      <small data-tone="fat">G {formatNumber(entry.nutrients.lipideos_g, 1)} g</small>
                     )}
                     {entry.glycemicIndex != null && (
                       <small>IG {formatNumber(entry.glycemicIndex)}</small>
@@ -269,20 +280,25 @@ function PatientMealCard({
 }
 
 function MealMacro({
+  tone,
+  shortLabel,
   label,
   value,
   unit,
 }: {
+  tone: "protein" | "carb" | "fat";
+  shortLabel: string;
   label: string;
   value: number | null | undefined;
   unit: string;
 }) {
   return (
-    <div>
-      <small>{label}</small>
-      <strong>
-        {formatNumber(value, 1)} {unit}
-      </strong>
+    <div data-tone={tone}>
+      <span>{shortLabel}</span>
+      <div>
+        <small>{label}</small>
+        <strong>{formatNumber(value, 1)} {unit}</strong>
+      </div>
     </div>
   );
 }
