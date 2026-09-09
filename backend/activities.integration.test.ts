@@ -468,8 +468,8 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
       const strength = await Promise.all([
         (await request("/estimate", "POST", { date: today, duration: 60, code: "02054", version: "2024-pt-BR.1", restSeconds: null, intensity: "light", calculationProfile: "quick_strength" })).body.kcal,
         (await request("/estimate", "POST", { date: today, duration: 60, code: "02054", version: "2024-pt-BR.1", restSeconds: null, intensity: "moderate", calculationProfile: "quick_strength" })).body.kcal,
+        (await request("/estimate", "POST", { date: today, duration: 60, code: "02054", version: "2024-pt-BR.1", restSeconds: null, intensity: "high", calculationProfile: "quick_strength" })).body.kcal,
         (await request("/estimate", "POST", { date: today, duration: 60, code: "02054", version: "2024-pt-BR.1", restSeconds: null, intensity: "intense", calculationProfile: "quick_strength" })).body.kcal,
-        (await request("/estimate", "POST", { date: today, duration: 60, code: "02050", version: "2024-pt-BR.1", restSeconds: null, intensity: "vigorous", calculationProfile: "quick_strength" })).body.kcal,
       ]);
       expect(strength[0]).toBeLessThan(strength[1]);
       expect(strength[1]).toBeLessThan(strength[2]);

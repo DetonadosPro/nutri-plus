@@ -12,11 +12,14 @@ export const TEF_RATES = {
   carbohydrate: 0.075,
   fat: 0.015,
 } as const;
-export const STRENGTH_CALCULATION_VERSION = "strength-density-2";
+export const STRENGTH_CALCULATION_VERSION = "strength-effort-3";
 export const STRENGTH_MET_BY_INTENSITY = {
   light: 3,
   moderate: 3.5,
-  intense: 4,
+  high: 4,
+  intense: 5,
+  // Legacy value retained so historical payloads remain readable. The patient
+  // UI no longer maps perceived effort directly to the 6-MET vigorous entry.
   vigorous: 6,
   unspecified: 3.5,
 } as const;

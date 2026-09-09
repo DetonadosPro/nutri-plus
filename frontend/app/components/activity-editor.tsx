@@ -635,7 +635,7 @@ export function ActivityEditor({
                           className="movement-effort-bars"
                           aria-hidden="true"
                         >
-                          {item.value === 'intense' || item.value === 'vigorous'
+                          {quick.efforts.length === 4
                             ? [0, 1, 2, 3].map((b) => (
                                 <i key={b} data-active={b <= i} />
                               ))

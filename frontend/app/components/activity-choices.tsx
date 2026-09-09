@@ -24,8 +24,8 @@ export const activityChoices = [
     efforts: [
       { value: 'light', label: 'Leve', code: '02054', hint: 'Treino confortável' },
       { value: 'moderate', label: 'Moderada', code: '02054', hint: 'Esforço controlado' },
-      { value: 'intense', label: 'Intensa', code: '02054', hint: 'Treino desafiador' },
-      { value: 'vigorous', label: 'Vigorosa', code: '02050', hint: 'Ritmo vigoroso' },
+      { value: 'high', label: 'Alto', code: '02054', hint: 'Treino puxado' },
+      { value: 'intense', label: 'Intenso', code: '02054', hint: 'Muito exigente' },
     ],
     category: 'Musculação e treinamento resistido',
   },
@@ -61,8 +61,7 @@ export const activityChoices = [
     efforts: [
       { value: 'light', label: 'Leve', code: '01015', hint: 'Passeio tranquilo' },
       { value: 'moderate', label: 'Moderada', code: '01016', hint: 'Ritmo moderado' },
-      { value: 'intense', label: 'Intensa', code: '01030', hint: '19,3–22,4 km/h' },
-      { value: 'vigorous', label: 'Vigorosa', code: '01017', hint: 'Ritmo vigoroso' },
+      { value: 'vigorous', label: 'Intensa', code: '01017', hint: 'Ritmo vigoroso' },
     ],
     category: 'Ciclismo',
   },
@@ -135,7 +134,7 @@ export const activityChoices = [
   },
 ] as const;
 export type ActivityChoice = (typeof activityChoices)[number];
-export type ActivityEffort = 'light' | 'moderate' | 'intense' | 'vigorous';
+export type ActivityEffort = 'light' | 'moderate' | 'high' | 'intense' | 'vigorous';
 export const restChoices = [
   [30, '30 s'],
   [60, '1 min'],
