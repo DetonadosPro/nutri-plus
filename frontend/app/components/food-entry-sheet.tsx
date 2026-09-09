@@ -256,9 +256,18 @@ export function FoodEntrySheet({
     <Sheet open={open} onOpenChange={(nextOpen) => (nextOpen ? onOpenChange(true) : closeSheet())}>
       <SheetContent
         side="bottom"
+        showCloseButton={false}
         className="food-entry-sheet left-0 right-0 h-[96dvh] max-h-[96dvh] w-full max-w-2xl translate-x-0 gap-0 overflow-hidden rounded-t-[28px] border-x sm:data-[side=bottom]:inset-auto sm:data-[side=bottom]:left-1/2 sm:data-[side=bottom]:top-1/2 sm:data-[side=bottom]:h-[min(760px,calc(100dvh-3rem))] sm:data-[side=bottom]:max-h-[calc(100dvh-3rem)] sm:data-[side=bottom]:w-[min(48rem,calc(100vw-3rem))] sm:data-[side=bottom]:max-w-none sm:data-[side=bottom]:[transform:translate(-50%,-50%)] sm:rounded-[28px] sm:border"
       >
-        <SheetHeader className="border-b px-5 py-5 sm:px-7">
+        <SheetHeader className="relative border-b px-5 py-5 pr-16 sm:px-7 sm:pr-16">
+          <button
+            type="button"
+            onClick={closeSheet}
+            aria-label="Fechar registro de alimento"
+            className="absolute right-4 top-4 grid size-10 place-items-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:right-5"
+          >
+            <X className="size-5" />
+          </button>
           <SheetTitle className="font-display text-xl font-semibold">{photoMode ? 'Reconhecer por foto' : 'Registrar alimento'}</SheetTitle>
           <SheetDescription>
             {fixedMeal
