@@ -46,7 +46,8 @@ app.post('/recognize', express.raw({ type: 'image/jpeg', limit: '5mb' }), async 
     const code = error instanceof Error && ['TimeoutError', 'AbortError'].includes(error.name)
       ? 'timeout' : stage === 'validation' ? 'invalid_output' : stage === 'output_truncated' ? 'output_truncated' : 'unavailable';
     const seconds = Math.round((Date.now() - started) / 1000);
-    console.error(`[food-vision] ${code}; stage=${stage}; seconds=${seconds}`);
+    const detail = error instanceof Error ? error.message.slice(0, 500).replace(/[\r\n]/g, ' ') : 'unknown_error';
+    console.error(`[food-vision] ${code}; stage=${stage}; seconds=${seconds}; detail=${detail}`);
     res.status(503).json({ error: code, stage, seconds });
   }
   finally { busy = false; }
