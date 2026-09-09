@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft,
   Check,
@@ -49,6 +49,7 @@ export function FoodEntrySheet({
   initialPhoto?: { file: File; token: number };
   onAdded: (summary: Summary) => void | Promise<void>;
 }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [search, setSearch] = useState('');
   const [foods, setFoods] = useState<Food[]>([]);
   const [picked, setPicked] = useState<Picked[]>([]);
@@ -148,6 +149,10 @@ export function FoodEntrySheet({
       ),
     );
   }
+  function beginReview() {
+    setReviewing(true);
+    scrollRef.current?.scrollTo({ top: 0, behavior: 'auto' });
+  }
   async function favorite(food: Food) {
     const result = await api<{ favorite: boolean }>(`/favorites/${food.id}`, {
       method: 'POST',
@@ -196,7 +201,7 @@ export function FoodEntrySheet({
       <SheetContent
         side="bottom"
         showCloseButton={false}
-        className="food-entry-sheet left-0 right-0 h-[96dvh] max-h-[96dvh] w-full translate-x-0 gap-0 overflow-hidden rounded-t-[28px] border-x sm:data-[side=bottom]:inset-auto sm:data-[side=bottom]:left-1/2 sm:data-[side=bottom]:top-1/2 sm:data-[side=bottom]:h-[min(820px,calc(100dvh-2rem))] sm:data-[side=bottom]:max-h-[calc(100dvh-2rem)] sm:data-[side=bottom]:w-[min(64rem,calc(100vw-2rem))] sm:data-[side=bottom]:max-w-none sm:data-[side=bottom]:[transform:translate(-50%,-50%)] sm:rounded-[28px] sm:border"
+        className="food-entry-sheet left-0 right-0 h-[96dvh] max-h-[96dvh] w-full translate-x-0 gap-0 overflow-hidden rounded-t-[28px] border-x sm:data-[side=bottom]:inset-auto sm:data-[side=bottom]:left-1/2 sm:data-[side=bottom]:top-1/2 sm:data-[side=bottom]:h-[min(820px,calc(100dvh-2rem))] sm:data-[side=bottom]:max-h-[calc(100dvh-2rem)] sm:data-[side=bottom]:w-[min(56rem,calc(100vw-2rem))] sm:data-[side=bottom]:max-w-none sm:data-[side=bottom]:[transform:translate(-50%,-50%)] sm:rounded-[28px] sm:border"
       >
         <SheetHeader className="food-entry-header relative border-b px-5 py-5 pr-16 sm:px-7 sm:pr-16">
           <button
@@ -240,7 +245,7 @@ export function FoodEntrySheet({
             </div>
           )}
         </SheetHeader>
-        <div className="food-entry-scroll min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-7">
+        <div ref={scrollRef} className="food-entry-scroll min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-7">
           {photoMode ? (
             <FoodPhotoReview
               date={date}
@@ -371,7 +376,6 @@ export function FoodEntrySheet({
                 <div className="food-time-field">
                   <Label htmlFor="consumed-time">Horário do consumo</Label>
                   <div>
-                    <Clock3 className="size-4" />
                     <Input
                       id="consumed-time"
                       type="time"
@@ -544,7 +548,7 @@ export function FoodEntrySheet({
           </Button>
           {!photoMode && !reviewing && (
             <Button
-              onClick={() => setReviewing(true)}
+              onClick={beginReview}
               disabled={!picked.length}
             >
               Informar quantidades {picked.length > 0 && `(${picked.length})`}
