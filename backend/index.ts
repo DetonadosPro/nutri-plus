@@ -1,5 +1,7 @@
 import { patientAccess } from './patient-access';
 import { deduplicateDetections,decideMatch,MATCH_THRESHOLDS,recognizePhoto,rerankPhoto,rankSemanticFoodCandidates } from './food-recognition';
+import { tbcaCandidatesForDetection } from './food-identity-repository';
+import type { MatchState } from '../shared/food-recognition';
 import { randomUUID } from 'node:crypto';
 import { rateLimit } from 'express-rate-limit';
 import { activitiesRouter, seedActivityCatalog } from './activities';
@@ -812,28 +814,36 @@ app.post('/api/foods/recognize',
     let vision;
     try { vision = await recognizePhoto(req.body); }
     catch { return res.status(503).json({ error: 'Não foi possível analisar esta foto agora. Tente outra imagem ou use a busca manual.' }); }
-    const foods = await db.prepare(`SELECT id,source_code,description,description AS name,COALESCE(display_name,description) AS "displayName",search_aliases AS "searchAliases",category,source
-      FROM foods WHERE active AND source='TBCA'`).all<{ id:number;source_code:string;description:string;displayName:string;searchAliases:string[];category:string;source:string }>();
     const detected=deduplicateDetections(vision.detection.items);
+    const candidateSets=await Promise.all(detected.map(item=>tbcaCandidatesForDetection(item)));
     let rerankLatency=0,inputTokens=vision.telemetry.inputTokens??0,outputTokens=vision.telemetry.outputTokens??0,reasoningTokens=vision.telemetry.reasoningTokens??0,totalTokens=vision.telemetry.totalTokens??0;
-    const decisions=[] as Array<{itemToken:string;name:string;preparation:string|null;visualConfidence:number;state:'AUTOSELECT'|'RERANK'|'ASK_USER'|'NO_MATCH';selectedFoodId:number|null;top1Score:number;top2Score:number;margin:number;candidates:any[]}>;
-    for(const item of detected){
-      const matches=rankSemanticFoodCandidates(item,foods,MATCH_THRESHOLDS.RERANK_MAX_CANDIDATES),initial=decideMatch(item,matches),nearby=matches.filter(match=>matches[0].matchConfidence-match.matchConfidence<=.10),plausible=nearby.length>=2?nearby:matches.slice(0,2);let state:'AUTOSELECT'|'RERANK'|'ASK_USER'|'NO_MATCH'=initial.state,selectedFoodId:number|null=state==='AUTOSELECT'?matches[0].food.id:null;
+    const decisions=[] as Array<{itemToken:string;name:string;preparation:string|null;visualConfidence:number;state:MatchState;selectedFoodId:number|null;top1Score:number;top2Score:number;margin:number;resolutionPolicy:string|null;abstentionReason:string|null;candidates:any[]}>;
+    for(const [itemIndex,item] of detected.entries()){
+      const foods=candidateSets[itemIndex];
+      const matches=rankSemanticFoodCandidates(item,foods,MATCH_THRESHOLDS.RERANK_MAX_CANDIDATES);
+      const initial=decideMatch(item,matches);
+      const nearby=matches[0]?matches.filter(match=>matches[0].matchConfidence-match.matchConfidence<=.10):[];
+      const plausible=nearby.length>=2?nearby:matches.slice(0,2);
+      let state:MatchState=initial.state;
+      let selectedFoodId:number|null=state==='AUTOSELECT'?matches[0].food.id:null;
+      let resolutionPolicy=state==='AUTOSELECT'?initial.policy:null;
+      let abstentionReason=state==='NO_EXACT_TBCA_MATCH'?(matches[0]?.materialUnknowns?.join(',')||'unresolved_variant'):null;
       if(state==='RERANK'){
         try{const reranked=await rerankPhoto(vision.image,item,plausible.map(match=>match.food.displayName));rerankLatency+=reranked.telemetry.latencyMs;inputTokens+=reranked.telemetry.inputTokens??0;outputTokens+=reranked.telemetry.outputTokens??0;reasoningTokens+=reranked.telemetry.reasoningTokens??0;totalTokens+=reranked.telemetry.totalTokens??0;
-          if(!reranked.decision.uncertain&&reranked.decision.candidateIndex!=null&&reranked.decision.confidence>=MATCH_THRESHOLDS.RERANK_MIN_CONFIDENCE){selectedFoodId=plausible[reranked.decision.candidateIndex].food.id;state='RERANK'}else state='ASK_USER';
-        }catch{state='ASK_USER'}
+          if(!reranked.decision.uncertain&&reranked.decision.candidateIndex!=null&&reranked.decision.confidence>=MATCH_THRESHOLDS.RERANK_MIN_CONFIDENCE){selectedFoodId=plausible[reranked.decision.candidateIndex].food.id;state='RERANK'}else{state='ASK_ATTRIBUTE';abstentionReason='visual_attribute_uncertain'}
+        }catch{state='ASK_ATTRIBUTE';abstentionReason='reranker_unavailable'}
       }
-      const visible=state==='ASK_USER'?plausible.slice(0,MATCH_THRESHOLDS.ASK_USER_MAX_CANDIDATES):state==='NO_MATCH'?[]:matches.filter(match=>match.food.id===selectedFoodId).slice(0,1);
+      const needsChoice=['ASK_IDENTITY','ASK_ATTRIBUTE','NO_EXACT_TBCA_MATCH'].includes(state);
+      const visible=needsChoice?plausible.slice(0,MATCH_THRESHOLDS.ASK_USER_MAX_CANDIDATES):state==='NO_MATCH'?[]:matches.filter(match=>match.food.id===selectedFoodId).slice(0,1);
       const candidates=await Promise.all(visible.map(async match=>{const food=match.food,nutrition=await nutrientsForFood(Number(food.id));return{...food,nutrients:nutrition.values,nutrientSources:nutrition.sources,dataSources:[nutrition.source],favorite:false}}));
-      decisions.push({itemToken:randomUUID(),name:item.name,preparation:item.preparation,visualConfidence:item.confidence,state,selectedFoodId,top1Score:initial.top1Score,top2Score:initial.top2Score,margin:initial.margin,candidates});
+      decisions.push({itemToken:randomUUID(),name:item.name,preparation:item.preparation,visualConfidence:item.confidence,state,selectedFoodId,top1Score:initial.top1Score,top2Score:initial.top2Score,margin:initial.margin,resolutionPolicy,abstentionReason,candidates});
     }
     const analysisToken=randomUUID();
-    await transaction(async()=>{const counts=(state:string)=>decisions.filter(item=>item.state===state).length;const analysis=await db.prepare(`INSERT INTO food_vision_analyses(analysis_token,model,reasoning_effort,first_latency_ms,rerank_latency_ms,input_tokens,output_tokens,reasoning_tokens,total_tokens,detected_count,autoselect_count,rerank_count,ask_user_count,no_match_count)
-      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING id`).get<{id:number}>(analysisToken,vision.telemetry.model,vision.telemetry.reasoningEffort,vision.telemetry.latencyMs,rerankLatency,inputTokens||null,outputTokens||null,reasoningTokens||null,totalTokens||null,detected.length,counts('AUTOSELECT'),counts('RERANK'),counts('ASK_USER'),counts('NO_MATCH'));
-      for(const item of decisions)await db.prepare(`INSERT INTO food_vision_predictions(analysis_id,item_token,decision_state,predicted_food_id,top1_score,top2_score,margin,visual_confidence) VALUES(?,?,?,?,?,?,?,?)`).run(analysis!.id,item.itemToken,item.state,item.selectedFoodId,item.top1Score,item.top2Score,item.margin,item.visualConfidence);
+    await transaction(async()=>{const counts=(state:string)=>decisions.filter(item=>item.state===state).length,askCount=counts('ASK_IDENTITY')+counts('ASK_ATTRIBUTE');const analysis=await db.prepare(`INSERT INTO food_vision_analyses(analysis_token,model,reasoning_effort,first_latency_ms,rerank_latency_ms,input_tokens,output_tokens,reasoning_tokens,total_tokens,detected_count,autoselect_count,rerank_count,ask_user_count,no_match_count,ask_identity_count,ask_attribute_count,no_exact_match_count)
+      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING id`).get<{id:number}>(analysisToken,vision.telemetry.model,vision.telemetry.reasoningEffort,vision.telemetry.latencyMs,rerankLatency,inputTokens||null,outputTokens||null,reasoningTokens||null,totalTokens||null,detected.length,counts('AUTOSELECT'),counts('RERANK'),askCount,counts('NO_MATCH'),counts('ASK_IDENTITY'),counts('ASK_ATTRIBUTE'),counts('NO_EXACT_TBCA_MATCH'));
+      for(const item of decisions)await db.prepare(`INSERT INTO food_vision_predictions(analysis_id,item_token,decision_state,predicted_food_id,top1_score,top2_score,margin,visual_confidence,resolution_policy,abstention_reason) VALUES(?,?,?,?,?,?,?,?,?,?)`).run(analysis!.id,item.itemToken,item.state,item.selectedFoodId,item.top1Score,item.top2Score,item.margin,item.visualConfidence,item.resolutionPolicy,item.abstentionReason);
     });
-    console.info(`[food-vision] model=${vision.telemetry.model}; effort=${vision.telemetry.reasoningEffort}; detected=${detected.length}; auto=${decisions.filter(i=>i.state==='AUTOSELECT').length}; rerank=${decisions.filter(i=>i.state==='RERANK').length}; ask=${decisions.filter(i=>i.state==='ASK_USER').length}; no_match=${decisions.filter(i=>i.state==='NO_MATCH').length}; latency_ms=${vision.telemetry.latencyMs+rerankLatency}`);
+    console.info(`[food-vision] model=${vision.telemetry.model}; effort=${vision.telemetry.reasoningEffort}; detected=${detected.length}; auto=${decisions.filter(i=>i.state==='AUTOSELECT').length}; rerank=${decisions.filter(i=>i.state==='RERANK').length}; ask=${decisions.filter(i=>['ASK_IDENTITY','ASK_ATTRIBUTE'].includes(i.state)).length}; no_exact=${decisions.filter(i=>i.state==='NO_EXACT_TBCA_MATCH').length}; no_match=${decisions.filter(i=>i.state==='NO_MATCH').length}; latency_ms=${vision.telemetry.latencyMs+rerankLatency}`);
     res.json({analysisToken,items:decisions.map(({selectedFoodId,...item})=>item)});
   }),
 );

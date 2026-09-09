@@ -8,6 +8,7 @@ type RawFood = {
   nome_original: string;
   nome_exibicao: string;
   aliases_busca: string[];
+  grupo: string;
 };
 
 const foods = (JSON.parse(readFileSync(projectPath('data', 'tbca', 'tbca completa normalizada.json'), 'utf8')) as RawFood[])
@@ -16,6 +17,7 @@ const foods = (JSON.parse(readFileSync(projectPath('data', 'tbca', 'tbca complet
     description: food.nome_original,
     displayName: food.nome_exibicao,
     searchAliases: food.aliases_busca,
+    category: food.grupo,
   }));
 
 function codes(name: string, preparation: string | null, alternative: string | null = null, visibleDetails: string[] = []) {
@@ -53,5 +55,13 @@ describe('matcher against the complete TBCA catalog', () => {
     }, foods, 5);
     expect(['BRC0015J', 'BRC0028J']).toContain(result[0].food.source_code);
     expect(result[0].food.displayName.toLowerCase()).toMatch(/^ovo/);
+  });
+
+  it.each([
+    ['batata frita', 'frita', ['palitos dourados'], 'BRC0118B'],
+    ['espaguete', 'cozido', ['fios longos', 'molho vermelho'], 'BRC0218A'],
+    ['filé de peixe', 'grelhado', ['filé com marcas de grelha'], 'BRC0104E'],
+  ])('keeps incompatible recipes out of the first position for %s', (name, preparation, visibleDetails, expected) => {
+    expect(codes(name, preparation, null, visibleDetails)[0]).toBe(expected);
   });
 });

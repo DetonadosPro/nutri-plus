@@ -14,8 +14,16 @@ import { scaleNutrients } from '../../../shared/scale-nutrients';
 import type { Food, Summary } from '../types';
 import { foodDisplayName } from '@/lib/food-name';
 
-type Detection = { itemToken:string;name:string;preparation:string|null;visualConfidence:number;state:'AUTOSELECT'|'RERANK'|'ASK_USER'|'NO_MATCH';top1Score:number;top2Score:number;margin:number;candidates:Food[] };
+type DetectionState = 'AUTOSELECT'|'RERANK'|'ASK_USER'|'ASK_IDENTITY'|'ASK_ATTRIBUTE'|'NO_EXACT_TBCA_MATCH'|'NO_MATCH';
+type Detection = { itemToken:string;name:string;preparation:string|null;visualConfidence:number;state:DetectionState;top1Score:number;top2Score:number;margin:number;resolutionPolicy?:string|null;abstentionReason?:string|null;candidates:Food[] };
 type Row = Detection & { key: string; food: Food | null; grams: string };
+
+function choiceMessage(state:DetectionState){
+  if(state==='NO_MATCH')return 'Não encontramos uma opção segura. Busque manualmente:';
+  if(state==='NO_EXACT_TBCA_MATCH')return 'A foto não mostra detalhes suficientes. Escolha uma opção se souber:';
+  if(state==='ASK_IDENTITY')return 'Qual alimento aparece na foto?';
+  return 'Qual destas opções corresponde ao alimento?';
+}
 
 export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, onAdded }: {
   date: string; initialMealType?: string; initialPhoto?: { file: File; token: number }; onBack: () => void; onAdded: (summary: Summary) => void | Promise<void>;
@@ -85,7 +93,7 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
   }, [initialPhoto, analyze]);
 
   function choose(food: Food) {
-    if (editing === 'new') setRows(current => [...current, { key: crypto.randomUUID(),itemToken:crypto.randomUUID(),name:foodDisplayName(food),preparation:null,visualConfidence:1,state:'ASK_USER',top1Score:0,top2Score:0,margin:0,candidates:[],food,grams:'' }]);
+    if (editing === 'new') setRows(current => [...current, { key: crypto.randomUUID(),itemToken:crypto.randomUUID(),name:foodDisplayName(food),preparation:null,visualConfidence:1,state:'ASK_ATTRIBUTE',top1Score:0,top2Score:0,margin:0,candidates:[],food,grams:'' }]);
     else setRows(current => current.map(row => row.key === editing ? { ...row, food } : row));
     setEditing(null); setQuery('');
   }
@@ -131,7 +139,7 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
         {rows.length > 0 && <p className="photo-hint">Confira os alimentos e preencha a quantidade de cada um. Você pode incluir o que ficou faltando.</p>}
         <div className="photo-items">{rows.map(row => <article className="photo-item" key={row.key}>
           <div className="photo-item-heading"><strong>{row.food ? <><Check className="inline size-4 text-primary"/> {foodDisplayName(row.food)}</> : row.name}</strong><button disabled={saving} className="icon-button" aria-label={`Remover ${row.name}`} onClick={() => setRows(items => items.filter(item => item.key !== row.key))}><Trash2 size={18} /></button></div>
-          {!row.food && <div className="photo-candidates"><small>{row.state==='NO_MATCH'?'Não encontramos uma opção segura. Busque manualmente:':'Escolha o alimento correspondente:'}</small>{row.candidates.map(food => <button key={food.id} disabled={saving} onClick={() => setRows(items => items.map(item => item.key === row.key ? { ...item, food } : item))}>{foodDisplayName(food)}</button>)}{!row.candidates.length && <p>Use “Buscar alimento” para encontrar a opção correta.</p>}</div>}
+          {!row.food && <div className="photo-candidates"><small>{choiceMessage(row.state)}</small>{row.candidates.map(food => <button key={food.id} disabled={saving} onClick={() => setRows(items => items.map(item => item.key === row.key ? { ...item, food } : item))}>{foodDisplayName(food)}</button>)}{!row.candidates.length && <p>Use “Buscar alimento” para encontrar a opção correta.</p>}</div>}
           <div className="photo-item-actions"><Button variant="ghost" disabled={saving} onClick={() => { setEditing(row.key); setQuery(row.name); }}> {row.food ? 'Trocar alimento' : 'Buscar alimento'}</Button>
             <label htmlFor={`photo-grams-${row.key}`}>Quantidade (g)<Input id={`photo-grams-${row.key}`} aria-label={`Quantidade de ${row.name} em gramas`} type="number" inputMode="decimal" min="0.1" max="5000" step="any" placeholder="Ex.: 100" value={row.grams} disabled={saving} onChange={e => setRows(items => items.map(item => item.key === row.key ? { ...item, grams: e.target.value } : item))} /></label>
           </div>
