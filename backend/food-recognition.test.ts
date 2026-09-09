@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import sharp from 'sharp';
-import { canonicalQueries,deduplicateDetections,decideMatch,detectionSchema,rankFoodCandidates,rankSemanticFoodCandidates,rerankSchema,validRerankIndex } from '../shared/food-recognition';
+import { canonicalQueries,deduplicateDetections,decideMatch,detectionSchema,foodRetrievalTokens,rankFoodCandidates,rankSemanticFoodCandidates,rerankSchema,validRerankIndex } from '../shared/food-recognition';
 import { normalizePhoto } from './photo-image';
 
 describe('food photo boundaries', () => {
@@ -53,6 +53,25 @@ describe('food photo boundaries', () => {
     expect(canonicalQueries(base).join(' ')).toContain('peito');expect(canonicalQueries(base).join(' ')).not.toContain('bonito');
     expect(deduplicateDetections([base,{...base,name:'frango grelhado',confidence:.7}])).toHaveLength(1);
     expect(deduplicateDetections([base,{...base,name:'arroz',confidence:.9}])).toHaveLength(2);
+  });
+  it('normalizes aliases and grammatical gender for retrieval',()=>{
+    expect(foodRetrievalTokens({name:'espaguete',preparation:'cozido',visibleDetails:[],confidence:.9,alternative:null})).toEqual(['macarrao']);
+    const raw={description:'Alface crua',displayName:'Alface crua'};
+    const result=rankSemanticFoodCandidates({name:'alface',preparation:'cru',visibleDetails:[],confidence:.9,alternative:null},[raw]);
+    expect(result[0]?.contradictions).toEqual([]);
+  });
+  it('uses a versioned salt policy only for otherwise equivalent variants',()=>{
+    const item={name:'feijão preto',preparation:'cozido',visibleDetails:[],confidence:.95,alternative:null};
+    const withSalt={description:'Feijão preto cozido sem óleo com sal',displayName:'Feijão preto cozido sem óleo com sal',source_code:'WITH'};
+    const withoutSalt={description:'Feijão preto cozido sem óleo sem sal',displayName:'Feijão preto cozido sem óleo sem sal',source_code:'WITHOUT'};
+    const matches=rankSemanticFoodCandidates(item,[withoutSalt,withSalt]);
+    expect(matches[0].food).toBe(withSalt);
+    expect(decideMatch(item,matches)).toMatchObject({state:'AUTOSELECT',policy:'salt_default'});
+  });
+  it('abstains when the TBCA candidate requires an unseen recipe',()=>{
+    const item={name:'omelete',preparation:'frita',visibleDetails:['dobrada e dourada'],confidence:.95,alternative:null};
+    const candidates=[{description:'Omelete com vegetais e queijo',displayName:'Omelete com vegetais e queijo'}];
+    expect(decideMatch(item,rankSemanticFoodCandidates(item,candidates))).toMatchObject({state:'NO_EXACT_TBCA_MATCH'});
   });
   it('rejects disguised non-images and strips metadata from valid photos', async () => {
     await expect(normalizePhoto(Buffer.from('<svg></svg>'))).rejects.toThrow();
