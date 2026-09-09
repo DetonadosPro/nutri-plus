@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import sharp from 'sharp';
-import { canonicalQueries,deduplicateDetections,decideMatch,detectionSchema,foodRetrievalTokens,needsMeatConfirmation,rankFoodCandidates,rankSemanticFoodCandidates,rerankSchema,validRerankIndex } from '../shared/food-recognition';
+import { canonicalQueries,deduplicateDetections,decideMatch,detectionSchema,foodRetrievalTokens,foodSearchTokenVariants,needsMeatConfirmation,normalizeFoodQuery,rankFoodCandidates,rankSemanticFoodCandidates,rerankSchema,validRerankIndex } from '../shared/food-recognition';
 import { normalizePhoto } from './photo-image';
 
 describe('food photo boundaries', () => {
@@ -69,6 +69,13 @@ describe('food photo boundaries', () => {
     const raw={description:'Alface crua',displayName:'Alface crua'};
     const result=rankSemanticFoodCandidates({name:'alface',preparation:'cru',visibleDetails:[],confidence:.9,alternative:null},[raw]);
     expect(result[0]?.contradictions).toEqual([]);
+  });
+  it('matches common Portuguese food plurals without losing the original form',()=>{
+    expect(normalizeFoodQuery('almôndegas')).toBe('almondega');
+    expect(normalizeFoodQuery('pães e feijões')).toBe('pao e feijao');
+    expect(normalizeFoodQuery('carnes tomates vegetais')).toBe('carne tomate vegetal');
+    expect(foodSearchTokenVariants('almôndegas')).toEqual([['almondegas','almondega']]);
+    expect(rankFoodCandidates('almôndegas',[{description:'Almôndega de carne bovina cozida'},{description:'Arroz cozido'}])[0].food.description).toContain('Almôndega');
   });
   it('uses a versioned salt policy only for otherwise equivalent variants',()=>{
     const item={name:'feijão preto',preparation:'cozido',visibleDetails:[],confidence:.95,alternative:null};
