@@ -159,7 +159,7 @@ export function ActivityEditor({
     scrollRef.current?.scrollTo({ top: 0 });
   }, [inDetails, group]);
   useEffect(() => {
-    if (!selected?.resistance || !chosen || !(Number(duration) > 0)) {
+    if (!selected || !chosen || !(Number(duration) > 0)) {
       setEstimatedKcal(null);
       return;
     }
@@ -173,7 +173,7 @@ export function ActivityEditor({
           duration: Number(duration),
           code: chosen.code,
           version: chosen.version,
-          restSeconds: rest,
+          restSeconds: selected.resistance ? rest : null,
           intensity,
         }),
       })
@@ -186,7 +186,7 @@ export function ActivityEditor({
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [chosen, day, duration, intensity, query, rest, selected?.resistance]);
+  }, [chosen, day, duration, intensity, query, rest, selected]);
   const visible = useMemo(
     () =>
       catalog.filter(
@@ -231,7 +231,7 @@ export function ActivityEditor({
       if (row) {
         select(row);
         setQuick(c);
-        setIntensity('moderate');
+        setIntensity(c.codes[0] === c.codes[1] ? 'light' : 'moderate');
         return;
       }
     }
@@ -612,7 +612,9 @@ export function ActivityEditor({
                 <fieldset>
                   <legend>Intensidade</legend>
                   <div className="movement-effort">
-                    {effortLabels.map((label, i) => (
+                    {effortLabels.map((label, i) =>
+                      quick &&
+                      (quick.codes as readonly string[]).indexOf(quick.codes[i]) !== i ? null : (
                       <button
                         key={label}
                         type="button"
@@ -627,7 +629,13 @@ export function ActivityEditor({
                             <i key={b} data-active={b <= i} />
                           ))}
                         </span>
-                        <strong>{label}</strong>
+                        <strong>
+                          {quick?.id === 'football'
+                            ? i === 0
+                              ? 'Recreativa'
+                              : 'Competitiva'
+                            : label}
+                        </strong>
                         {quick?.hints[i] && <small>{quick.hints[i]}</small>}
                       </button>
                     ))}
@@ -667,12 +675,12 @@ export function ActivityEditor({
                   <p className="activity-muted">
                     O intervalo entre as séries ajuda a estimar a intensidade e a densidade do treino.
                   </p>
-                  {estimatedKcal != null && (
-                    <output className="movement-calorie-preview">
-                      Gasto estimado · ≈ {Math.round(estimatedKcal)} kcal
-                    </output>
-                  )}
                 </fieldset>
+              )}
+              {!manual && estimatedKcal != null && (
+                <output className="movement-calorie-preview">
+                  Gasto estimado · ≈ {Math.round(estimatedKcal)} kcal
+                </output>
               )}
               <details
                 className="movement-disclosure"

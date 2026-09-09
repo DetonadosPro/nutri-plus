@@ -448,6 +448,31 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
       expect((await request("/recent", "GET", undefined, "admin")).status).toBe(403);
       await request(`/sessions/${a.body.id}?revision=2`, "DELETE");
     });
+    it("estima METs diferentes para as intensidades das modalidades rápidas", async () => {
+      const estimate = async (code: string, intensity: string) =>
+        (await request("/estimate", "POST", {
+          date: today,
+          duration: 60,
+          code,
+          version: "2024-pt-BR.1",
+          restSeconds: null,
+          intensity,
+        })).body.kcal;
+      const walking = await Promise.all([
+        estimate("17152", "light"),
+        estimate("17190", "moderate"),
+        estimate("17200", "vigorous"),
+      ]);
+      expect(walking[0]).toBeLessThan(walking[1]);
+      expect(walking[1]).toBeLessThan(walking[2]);
+      const strength = await Promise.all([
+        estimate("02054", "light"),
+        estimate("02054", "moderate"),
+        estimate("02050", "vigorous"),
+      ]);
+      expect(strength[0]).toBeLessThan(strength[1]);
+      expect(strength[1]).toBeLessThan(strength[2]);
+    });
     it("mantém peso original ao editar duração no fluxo simples", async () => {
       const a = await request("/sessions", "POST", payload({ time: null }));
       expect(a.status).toBe(201);
