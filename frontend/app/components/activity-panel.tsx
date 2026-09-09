@@ -260,7 +260,7 @@ export function ActivityPanel({
                     <strong>{quickName(s.snapshot)}</strong>
                     <span>
                       {formatNumber(s.duration_minutes)} min · ≈{' '}
-                      {formatNumber(s.snapshot.grossKcal ?? s.snapshot.netKcal)}{' '}
+                      {formatNumber(s.snapshot.netKcal ?? s.snapshot.grossKcal)}{' '}
                       kcal
                     </span>
                   </button>
