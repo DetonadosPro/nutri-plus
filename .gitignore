@@ -39,6 +39,10 @@ next-env.d.ts
 dist/
 .wrangler/
 /outputs/
+/tests/food-vision-benchmark/images/
+/tests/food-vision-benchmark/cases.json
+/tests/food-vision-benchmark/predictions*.json
+!/tests/food-vision-benchmark/predictions.example.json
 /work/
 /tmp/
 

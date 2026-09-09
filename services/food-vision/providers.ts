@@ -3,14 +3,19 @@ import { readFileSync } from 'node:fs';
 type JsonSchema = Record<string, unknown>;
 type ProviderOptions = {
   schema: JsonSchema;
+  schemaName: string;
   systemPrompt: string;
   userPrompt: string;
+  maxOutputTokens: number;
 };
+
+export type ProviderTelemetry = { model:string;reasoningEffort:string;latencyMs:number;inputTokens:number|null;outputTokens:number|null;reasoningTokens:number|null;totalTokens:number|null };
+export type ProviderResult = { content:string;telemetry:ProviderTelemetry };
 
 export type VisionProvider = {
   name: string;
   ready(): Promise<boolean>;
-  recognize(image: Buffer, options: ProviderOptions): Promise<string>;
+  recognize(image: Buffer, options: ProviderOptions): Promise<ProviderResult>;
 };
 
 async function responseError(response: Response) {
@@ -30,18 +35,19 @@ export function ollamaProvider(model: string): VisionProvider {
       return Boolean(data.models?.some(item => item.name === model));
     },
     async recognize(image, options) {
+      const started=Date.now();
       const response = await fetch(`${baseUrl}/api/chat`, {
         method: 'POST', signal: AbortSignal.timeout(90_000), headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ model, stream: false, think: false, keep_alive: 0, format: options.schema,
-          options: { temperature: 0, num_ctx: 4096, num_predict: 700 },
+          options: { temperature: 0, num_ctx: 4096, num_predict: options.maxOutputTokens },
           messages: [{ role: 'system', content: options.systemPrompt },
             { role: 'user', content: options.userPrompt, images: [image.toString('base64')] }] }),
       });
       if (!response.ok) throw new Error(await responseError(response));
-      const data = await response.json() as { message?: { content?: string }; done_reason?: string };
+      const data = await response.json() as { message?: { content?: string }; done_reason?: string;prompt_eval_count?:number;eval_count?:number };
       if (data.done_reason === 'length') throw new Error('output_truncated');
       if (typeof data.message?.content !== 'string') throw new Error('invalid_output');
-      return data.message.content;
+      return {content:data.message.content,telemetry:{model,reasoningEffort:'none',latencyMs:Date.now()-started,inputTokens:data.prompt_eval_count??null,outputTokens:data.eval_count??null,reasoningTokens:null,totalTokens:(data.prompt_eval_count??0)+(data.eval_count??0)||null}};
     },
   };
 }
@@ -67,21 +73,23 @@ export function openAiResponsesProvider(model: string): VisionProvider {
     name: 'openai-responses',
     async ready() { return Boolean(apiKey() && model); },
     async recognize(image, options) {
-      const reasoning = model === 'gpt-5.6-luna' ? { effort: 'none' } : undefined;
+      const started=Date.now();
+      const reasoning = model === 'gpt-5.6-luna' ? { effort: 'low' } : undefined;
       const response = await fetch(`${baseUrl}/responses`, {
         method: 'POST', signal: AbortSignal.timeout(90_000),
         headers: { Authorization: `Bearer ${apiKey()}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model, store: false, max_output_tokens: 700, reasoning,
+        body: JSON.stringify({ model, store: false, max_output_tokens: options.maxOutputTokens, reasoning,
           input: [{ role: 'developer', content: [{ type: 'input_text', text: options.systemPrompt }] },
             { role: 'user', content: [{ type: 'input_text', text: options.userPrompt },
               { type: 'input_image', image_url: `data:image/jpeg;base64,${image.toString('base64')}`, detail: 'high' }] }],
-          text: { format: { type: 'json_schema', name: 'food_detection', strict: true, schema: options.schema } } }),
+          text: { verbosity:'low',format: { type: 'json_schema', name: options.schemaName, strict: true, schema: options.schema } } }),
       });
       if (!response.ok) throw new Error(await responseError(response));
-      const data = await response.json() as { output_text?: string; output?: { content?: { type?: string; text?: string }[] }[] };
+      const data = await response.json() as { status?:string;incomplete_details?:{reason?:string};output_text?: string; output?: { content?: { type?: string; text?: string }[] }[];usage?:{input_tokens?:number;output_tokens?:number;total_tokens?:number;output_tokens_details?:{reasoning_tokens?:number}} };
+      if(data.status==='incomplete')throw new Error(data.incomplete_details?.reason||'output_truncated');
       const text = data.output_text || data.output?.flatMap(item => item.content || []).find(item => item.type === 'output_text')?.text;
       if (typeof text !== 'string') throw new Error('invalid_output');
-      return text;
+      return {content:text,telemetry:{model,reasoningEffort:reasoning?.effort||'none',latencyMs:Date.now()-started,inputTokens:data.usage?.input_tokens??null,outputTokens:data.usage?.output_tokens??null,reasoningTokens:data.usage?.output_tokens_details?.reasoning_tokens??null,totalTokens:data.usage?.total_tokens??null}};
     },
   };
 }
@@ -92,21 +100,22 @@ export function openAiCompatibleProvider(model: string): VisionProvider {
     name: 'openai-compatible',
     async ready() { return Boolean(apiKey() && model); },
     async recognize(image, options) {
+      const started=Date.now();
       const response = await fetch(`${baseUrl}/chat/completions`, {
         method: 'POST', signal: AbortSignal.timeout(90_000),
         headers: { Authorization: `Bearer ${apiKey()}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model, temperature: 0, max_tokens: 700,
-          response_format: { type: 'json_schema', json_schema: { name: 'food_detection', strict: true, schema: options.schema } },
+        body: JSON.stringify({ model, temperature: 0, max_tokens: options.maxOutputTokens,
+          response_format: { type: 'json_schema', json_schema: { name: options.schemaName, strict: true, schema: options.schema } },
           messages: [{ role: 'system', content: options.systemPrompt }, { role: 'user', content: [
             { type: 'text', text: options.userPrompt },
             { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${image.toString('base64')}` } },
           ] }] }),
       });
       if (!response.ok) throw new Error(await responseError(response));
-      const data = await response.json() as { choices?: { message?: { content?: string } }[] };
+      const data = await response.json() as { choices?: { message?: { content?: string } }[];usage?:{prompt_tokens?:number;completion_tokens?:number;total_tokens?:number} };
       const text = data.choices?.[0]?.message?.content;
       if (typeof text !== 'string') throw new Error('invalid_output');
-      return text;
+      return {content:text,telemetry:{model,reasoningEffort:'none',latencyMs:Date.now()-started,inputTokens:data.usage?.prompt_tokens??null,outputTokens:data.usage?.completion_tokens??null,reasoningTokens:null,totalTokens:data.usage?.total_tokens??null}};
     },
   };
 }
@@ -117,6 +126,7 @@ export function geminiProvider(model: string): VisionProvider {
     name: 'gemini',
     async ready() { return Boolean(apiKey() && model); },
     async recognize(image, options) {
+      const started=Date.now();
       const response = await fetch(`${baseUrl}/models/${encodeURIComponent(model)}:generateContent`, {
         method: 'POST', signal: AbortSignal.timeout(90_000),
         headers: { 'x-goog-api-key': apiKey(), 'Content-Type': 'application/json' },
@@ -128,7 +138,7 @@ export function geminiProvider(model: string): VisionProvider {
           ] }],
           generationConfig: {
             temperature: 0,
-            maxOutputTokens: 700,
+            maxOutputTokens: options.maxOutputTokens,
             responseMimeType: 'application/json',
             responseJsonSchema: options.schema,
           },
@@ -137,12 +147,13 @@ export function geminiProvider(model: string): VisionProvider {
       if (!response.ok) throw new Error(await responseError(response));
       const data = await response.json() as {
         candidates?: { finishReason?: string; content?: { parts?: { text?: string }[] } }[];
+        usageMetadata?:{promptTokenCount?:number;candidatesTokenCount?:number;thoughtsTokenCount?:number;totalTokenCount?:number};
       };
       const candidate = data.candidates?.[0];
       if (candidate?.finishReason === 'MAX_TOKENS') throw new Error('output_truncated');
       const text = candidate?.content?.parts?.map(part => part.text || '').join('').trim();
       if (!text) throw new Error('invalid_output');
-      return text;
+      return {content:text,telemetry:{model,reasoningEffort:'provider-default',latencyMs:Date.now()-started,inputTokens:data.usageMetadata?.promptTokenCount??null,outputTokens:data.usageMetadata?.candidatesTokenCount??null,reasoningTokens:data.usageMetadata?.thoughtsTokenCount??null,totalTokens:data.usageMetadata?.totalTokenCount??null}};
     },
   };
 }

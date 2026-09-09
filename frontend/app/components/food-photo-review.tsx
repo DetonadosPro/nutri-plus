@@ -3,7 +3,7 @@ import '../food-photo.css';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { ArrowLeft, Camera, ImagePlus, LoaderCircle, Plus, Search, Trash2 } from 'lucide-react';
+import { ArrowLeft, Camera, Check, ImagePlus, LoaderCircle, Plus, Search, Trash2 } from 'lucide-react';
 import { api } from '@/lib/client-api';
 import { brazilNow } from '@/lib/datetime';
 import { formatNumber } from '@/lib/nutrition-format';
@@ -14,7 +14,7 @@ import { scaleNutrients } from '../../../shared/scale-nutrients';
 import type { Food, Summary } from '../types';
 import { foodDisplayName } from '@/lib/food-name';
 
-type Detection = { name: string; needsChoice: boolean; candidates: Food[] };
+type Detection = { itemToken:string;name:string;preparation:string|null;visualConfidence:number;state:'AUTOSELECT'|'RERANK'|'ASK_USER'|'NO_MATCH';top1Score:number;top2Score:number;margin:number;candidates:Food[] };
 type Row = Detection & { key: string; food: Food | null; grams: string };
 
 export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, onAdded }: {
@@ -22,6 +22,7 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
 }) {
   const [preview, setPreview] = useState('');
   const [rows, setRows] = useState<Row[]>([]);
+  const [analysisToken,setAnalysisToken]=useState('');
   const [analyzed, setAnalyzed] = useState(false);
   const [busy, setBusy] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -62,14 +63,15 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
     request.current?.abort();
     const controller = new AbortController();
     request.current = controller;
-    setPreview(URL.createObjectURL(file)); setRows([]); setAnalyzed(false); setBusy(true);
+    setPreview(URL.createObjectURL(file)); setRows([]); setAnalysisToken(''); setAnalyzed(false); setBusy(true);
     const timeout = setTimeout(() => controller.abort(), 100_000);
     try {
-      const data = await api<{ items: Detection[] }>('/foods/recognize', {
+      const data = await api<{ analysisToken:string;items: Detection[] }>('/foods/recognize', {
         method: 'POST', headers: { 'Content-Type': file.type }, body: file, signal: controller.signal,
       });
       if (request.current !== controller) return;
-      setRows(data.items.map(item => ({ ...item, key: crypto.randomUUID(), food: item.needsChoice ? null : item.candidates[0] || null, grams: '' })));
+      setAnalysisToken(data.analysisToken);
+      setRows(data.items.map(item => ({ ...item, key: crypto.randomUUID(), food: ['AUTOSELECT','RERANK'].includes(item.state) ? item.candidates[0] || null : null, grams: '' })));
       setAnalyzed(true);
     } catch (reason) {
       if (request.current === controller) setError(controller.signal.aborted ? 'A análise demorou mais que o esperado. Você pode usar a busca manual.' : reason instanceof Error ? reason.message : 'Reconhecimento indisponível. Use a busca manual.');
@@ -83,8 +85,8 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
   }, [initialPhoto, analyze]);
 
   function choose(food: Food) {
-    if (editing === 'new') setRows(current => [...current, { key: crypto.randomUUID(), name: foodDisplayName(food), candidates: [], needsChoice: false, food, grams: '' }]);
-    else setRows(current => current.map(row => row.key === editing ? { ...row, food, needsChoice: false } : row));
+    if (editing === 'new') setRows(current => [...current, { key: crypto.randomUUID(),itemToken:crypto.randomUUID(),name:foodDisplayName(food),preparation:null,visualConfidence:1,state:'ASK_USER',top1Score:0,top2Score:0,margin:0,candidates:[],food,grams:'' }]);
+    else setRows(current => current.map(row => row.key === editing ? { ...row, food } : row));
     setEditing(null); setQuery('');
   }
   const valid = rows.length > 0 && rows.every(row => row.food && Number(row.grams) > 0 && Number(row.grams) <= 5000);
@@ -96,6 +98,7 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
         date, mealType, consumedTime: time, items: rows.map(row => ({ foodId: row.food!.id, grams: Number(row.grams) })),
       }) });
       setSaved(true);
+      if(analysisToken)void api('/foods/recognize/feedback',{method:'POST',body:JSON.stringify({analysisToken,items:rows.filter(row=>row.food).map(row=>({itemToken:row.itemToken,selectedFoodId:row.food!.id}))})}).catch(()=>undefined);
       await onAdded(summary);
     } catch (reason) { setError(reason instanceof Error ? reason.message : 'Não foi possível salvar.'); }
     finally { setSaving(false); saveLock.current = false; }
@@ -127,8 +130,8 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
         {analyzed && !rows.length && <div className="photo-empty"><Search /><strong>Nenhum alimento identificado</strong><p>Tente uma foto mais nítida ou adicione pela busca.</p></div>}
         {rows.length > 0 && <p className="photo-hint">Confira os alimentos e preencha a quantidade de cada um. Você pode incluir o que ficou faltando.</p>}
         <div className="photo-items">{rows.map(row => <article className="photo-item" key={row.key}>
-          <div className="photo-item-heading"><strong>{row.food ? foodDisplayName(row.food) : row.name}</strong><button disabled={saving} className="icon-button" aria-label={`Remover ${row.name}`} onClick={() => setRows(items => items.filter(item => item.key !== row.key))}><Trash2 size={18} /></button></div>
-          {!row.food && <div className="photo-candidates"><small>Escolha o alimento correspondente:</small>{row.candidates.map(food => <button key={food.id} disabled={saving} onClick={() => setRows(items => items.map(item => item.key === row.key ? { ...item, food } : item))}>{foodDisplayName(food)}</button>)}{!row.candidates.length && <p>Encontre o alimento na busca abaixo.</p>}</div>}
+          <div className="photo-item-heading"><strong>{row.food ? <><Check className="inline size-4 text-primary"/> {foodDisplayName(row.food)}</> : row.name}</strong><button disabled={saving} className="icon-button" aria-label={`Remover ${row.name}`} onClick={() => setRows(items => items.filter(item => item.key !== row.key))}><Trash2 size={18} /></button></div>
+          {!row.food && <div className="photo-candidates"><small>{row.state==='NO_MATCH'?'Não encontramos uma opção segura. Busque manualmente:':'Escolha o alimento correspondente:'}</small>{row.candidates.map(food => <button key={food.id} disabled={saving} onClick={() => setRows(items => items.map(item => item.key === row.key ? { ...item, food } : item))}>{foodDisplayName(food)}</button>)}{!row.candidates.length && <p>Use “Buscar alimento” para encontrar a opção correta.</p>}</div>}
           <div className="photo-item-actions"><Button variant="ghost" disabled={saving} onClick={() => { setEditing(row.key); setQuery(row.name); }}> {row.food ? 'Trocar alimento' : 'Buscar alimento'}</Button>
             <label htmlFor={`photo-grams-${row.key}`}>Quantidade (g)<Input id={`photo-grams-${row.key}`} aria-label={`Quantidade de ${row.name} em gramas`} type="number" inputMode="decimal" min="0.1" max="5000" step="any" placeholder="Ex.: 100" value={row.grams} disabled={saving} onChange={e => setRows(items => items.map(item => item.key === row.key ? { ...item, grams: e.target.value } : item))} /></label>
           </div>

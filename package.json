@@ -21,7 +21,8 @@
     "taco:import": "npm run taco:import --workspace @nutri/backend",
     "tbca:import": "npm run tbca:import --workspace @nutri/backend",
     "ig:import": "npm run ig:import --workspace @nutri/backend",
-    "audit": "npm run audit --workspace @nutri/backend"
+    "audit": "npm run audit --workspace @nutri/backend",
+    "vision:benchmark": "tsx tests/food-vision-benchmark/run.ts"
   },
   "devDependencies": { "concurrently": "^10.0.5", "typescript": "5.9.3" }
 }
