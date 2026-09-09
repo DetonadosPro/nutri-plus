@@ -74,7 +74,7 @@ export function LoginScreen({
           </p>
           <div className="mt-10 grid gap-4 text-sm text-foreground/80 sm:grid-cols-2">
             {[
-              "TACO 4ª edição com 597 alimentos",
+              "TBCA completa com 5.874 alimentos",
               "Metas definidas pelo nutricionista",
               "Histórico de peso e nutrientes",
               "Dados separados por perfil",

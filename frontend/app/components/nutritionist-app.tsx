@@ -527,9 +527,9 @@ function NutritionistOverview({
           detail="referências individuais"
         />
         <Metric
-          label="Base TACO"
-          value="597"
-          detail="alimentos da 4ª edição"
+          label="Base TBCA"
+          value="5.874"
+          detail="alimentos cadastrados"
           tone="amber"
         />
       </div>
