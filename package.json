@@ -19,6 +19,7 @@
     "db:setup": "npm run db:setup --workspace @nutri/backend",
     "taco:extract": "npm run taco:extract --workspace @nutri/backend",
     "taco:import": "npm run taco:import --workspace @nutri/backend",
+    "tbca:import": "npm run tbca:import --workspace @nutri/backend",
     "ig:import": "npm run ig:import --workspace @nutri/backend",
     "audit": "npm run audit --workspace @nutri/backend"
   },

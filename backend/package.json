@@ -9,6 +9,7 @@
     "db:setup": "tsx setup.ts",
     "taco:extract": "python scripts/extract-taco-pdf.py",
     "taco:import": "tsx taco-import.ts",
+    "tbca:import": "tsx tbca-import.ts",
     "ig:import": "tsx ig-import.ts",
     "audit": "tsx audit.ts"
   },

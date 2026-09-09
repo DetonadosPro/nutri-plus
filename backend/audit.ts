@@ -6,12 +6,13 @@ const all = async (sql: string) => db.prepare(sql).all();
 
 const report = {
   database: databaseInfo,
-  tacoFoods: await one(`SELECT COUNT(*)::int AS count FROM foods WHERE source = 'TACO' AND active`),
-  uniqueTacoCodes: await one(
-    `SELECT COUNT(DISTINCT source_code)::int AS count FROM foods WHERE source = 'TACO'`,
+  tbcaFoods: await one(`SELECT COUNT(*)::int AS count FROM foods WHERE source = 'TBCA' AND active`),
+  inactiveLegacyTacoFoods: await one(`SELECT COUNT(*)::int AS count FROM foods WHERE source = 'TACO' AND NOT active`),
+  uniqueTbcaCodes: await one(
+    `SELECT COUNT(DISTINCT source_code)::int AS count FROM foods WHERE source = 'TBCA'`,
   ),
-  duplicateTacoCodes: await one(
-    `SELECT COUNT(*)::int AS count FROM (SELECT source_code FROM foods GROUP BY source_code HAVING COUNT(*) > 1) d`,
+  duplicateSourceCodes: await one(
+    `SELECT COUNT(*)::int AS count FROM (SELECT source,source_code FROM foods GROUP BY source,source_code HAVING COUNT(*) > 1) d`,
   ),
   nutrients: await one(`SELECT COUNT(*)::int AS count FROM nutrients`),
   nutrientValues: await one(`SELECT COUNT(*)::int AS count FROM food_nutrients`),
@@ -25,15 +26,15 @@ const report = {
     `SELECT COUNT(*)::int AS count FROM food_nutrients WHERE (status='numeric') <> (numeric_value IS NOT NULL)`,
   ),
   incompleteFoods: await one(
-    `SELECT COUNT(*)::int AS count FROM (SELECT food_id FROM food_nutrients GROUP BY food_id HAVING COUNT(*) <> 26) x`,
+    `SELECT COUNT(*)::int AS count FROM (SELECT f.id FROM foods f LEFT JOIN food_nutrients fn ON fn.food_id=f.id WHERE f.source='TBCA' AND f.active GROUP BY f.id HAVING COUNT(fn.*) <> 41) x`,
   ),
   glycemicIndex: {
-    numeric: await one(`SELECT COUNT(glycemic_index)::int AS count FROM foods WHERE source='TACO'`),
+    numeric: await one(`SELECT COUNT(glycemic_index)::int AS count FROM foods WHERE source='TBCA'`),
     unavailable: await one(
-      `SELECT COUNT(*)::int AS count FROM foods WHERE source='TACO' AND glycemic_index IS NULL`,
+      `SELECT COUNT(*)::int AS count FROM foods WHERE source='TBCA' AND glycemic_index IS NULL`,
     ),
     invalid: await one(
-      `SELECT COUNT(*)::int AS count FROM foods WHERE source='TACO' AND (glycemic_index < 0 OR glycemic_index > 200)`,
+      `SELECT COUNT(*)::int AS count FROM foods WHERE source='TBCA' AND (glycemic_index < 0 OR glycemic_index > 200)`,
     ),
   },
   macroDistributions: {
@@ -56,7 +57,7 @@ const report = {
     favorites: await one(`SELECT COUNT(*)::int AS count FROM favorites`),
   },
   latestImport: await one(
-    `SELECT * FROM nutrition_import_runs WHERE source='TACO' ORDER BY id DESC LIMIT 1`,
+    `SELECT * FROM nutrition_import_runs WHERE source='TBCA' ORDER BY id DESC LIMIT 1`,
   ),
 };
 

@@ -20,11 +20,11 @@ export type Food = {
   category: string | null;
   scientific_name?: string | null;
   brand?: string | null;
-  source: 'TACO';
+  source: 'TACO' | 'TBCA';
   favorite: boolean;
   glycemicIndex?: number | null;
   nutrients: NutrientMap;
-  nutrientSources: Record<string, 'TACO'>;
+  nutrientSources: Record<string, 'TACO' | 'TBCA'>;
   dataSources: string[];
 };
 export type MealEntry = {
@@ -32,14 +32,14 @@ export type MealEntry = {
   food_id: number;
   description: string;
   category: string | null;
-  source: 'TACO';
+  source: 'TACO' | 'TBCA';
   glycemicIndex: number | null;
   amount: number;
   unit: string;
   grams_equivalent: number;
   consumed_at?: string | null;
   nutrients: NutrientMap;
-  nutrientSources: Record<string, 'TACO'>;
+  nutrientSources: Record<string, 'TACO' | 'TBCA'>;
   dataSources: string[];
   /** CG absoluta da porção, quando IG e carboidrato estão disponíveis. */
   glycemicLoad?: number | null;

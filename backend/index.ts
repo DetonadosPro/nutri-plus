@@ -48,16 +48,16 @@ import {
 
 await migrate();
 await seedActivityCatalog();
-const tacoCount = Number(
+const tbcaCount = Number(
   (
     await db
-      .prepare(`SELECT COUNT(*)::int AS count FROM foods WHERE source = 'TACO' AND active`)
+      .prepare(`SELECT COUNT(*)::int AS count FROM foods WHERE source = 'TBCA' AND active`)
       .get<{ count: number }>()
   )?.count ?? 0,
 );
-if (tacoCount !== 597)
+if (tbcaCount !== 5874)
   throw new Error(
-    "A TACO 4ª edição ainda não foi importada corretamente. Execute npm run taco:import.",
+    "A TBCA ainda não foi importada corretamente. Execute npm run tbca:import.",
   );
 
 const app = express();
@@ -157,7 +157,7 @@ async function activeGoals(patientId: number, onDate: string) {
   );
 }
 
-type FoodSource = "TACO";
+type FoodSource = "TACO" | "TBCA";
 type ResolvedNutrition = {
   values: NutrientMap;
   sources: Record<string, FoodSource>;
@@ -191,7 +191,12 @@ async function nutrientCatalog() {
   if (!catalogCache)
     catalogCache = await db
       .prepare(
-        `SELECT code, name, unit, nutrient_group AS "nutrientGroup", sort_order AS "sortOrder" FROM nutrients ORDER BY sort_order, name`,
+        `SELECT DISTINCT n.code, n.name, n.unit, n.nutrient_group AS "nutrientGroup", n.sort_order AS "sortOrder"
+         FROM nutrients n
+         JOIN food_nutrients fn ON fn.nutrient_code = n.code
+         JOIN foods f ON f.id = fn.food_id
+         WHERE f.source = 'TBCA' AND f.active
+         ORDER BY n.sort_order, n.name`,
       )
       .all();
   return catalogCache;
@@ -335,7 +340,7 @@ function daysBetween(from: string, to: string) {
 app.use("/api/activities", activitiesRouter({ authUser, patientAccess }));
 
 app.get("/api/health", (_req, res) =>
-  res.json({ ok: true, foods: tacoCount, database: databaseInfo.engine, source: "TACO", version: appConfig.release }),
+  res.json({ ok: true, foods: tbcaCount, database: databaseInfo.engine, source: "TBCA", version: appConfig.release }),
 );
 
 app.get(
@@ -349,7 +354,7 @@ app.get(
         .json({ error: "Apenas o nutricionista responsável pela base pode editar o IG." });
     const foods = await db
       .prepare(`SELECT id, source_code, description, category, glycemic_index AS "glycemicIndex"
-    FROM foods WHERE active AND source = 'TACO' ORDER BY category, description`)
+    FROM foods WHERE active AND source = 'TBCA' ORDER BY category, description`)
       .all();
     const completed = foods.filter((food) => food.glycemicIndex != null).length;
     res.json({ foods, completed, total: foods.length });
@@ -371,10 +376,10 @@ app.put(
       .parse(req.body);
     const food = await db
       .prepare(`UPDATE foods SET glycemic_index = ?, updated_at = CURRENT_TIMESTAMP
-    WHERE id = ? AND active AND source = 'TACO'
+    WHERE id = ? AND active AND source = 'TBCA'
     RETURNING id, source_code, description, category, glycemic_index AS "glycemicIndex"`)
       .get(payload.glycemicIndex, foodId);
-    if (!food) return res.status(404).json({ error: "Alimento TACO não encontrado." });
+    if (!food) return res.status(404).json({ error: "Alimento TBCA não encontrado." });
     res.json(food);
   }),
 );
@@ -715,7 +720,7 @@ app.get(
       foods = await db
         .prepare(`SELECT f.id, f.source_code, f.description, f.category, f.scientific_name, f.brand, f.source, f.glycemic_index AS "glycemicIndex"
       FROM favorites fav JOIN foods f ON f.id = fav.food_id
-      WHERE fav.user_id = ? AND f.active AND f.source = 'TACO' ${where}
+      WHERE fav.user_id = ? AND f.active AND f.source = 'TBCA' ${where}
       ORDER BY f.description LIMIT 100`)
         .all(user.id, ...tokens.map((token) => `%${token}%`));
     } else if (search) {
@@ -723,26 +728,26 @@ app.get(
       const where = tokens.map(() => "normalized_name LIKE ?").join(" AND ");
       foods = await db
         .prepare(
-          `SELECT id, source_code, description, category, scientific_name, brand, source, glycemic_index AS "glycemicIndex" FROM foods WHERE active AND source = 'TACO' AND ${where} ORDER BY (normalized_name LIKE ?) DESC, similarity(normalized_name, ?) DESC, description LIMIT 25`,
+          `SELECT id, source_code, description, category, scientific_name, brand, source, glycemic_index AS "glycemicIndex" FROM foods WHERE active AND source = 'TBCA' AND ${where} ORDER BY (normalized_name LIKE ?) DESC, similarity(normalized_name, ?) DESC, description LIMIT 25`,
         )
         .all(...tokens.map((token) => `%${token}%`), `${search}%`, search);
     } else if (patient) {
       foods = await db
         .prepare(`SELECT f.id, f.source_code, f.description, f.category, f.scientific_name, f.brand, f.source, f.glycemic_index AS "glycemicIndex", MAX(me.created_at) AS last_used
       FROM meal_entries me JOIN foods f ON f.id = me.food_id JOIN meals m ON m.id = me.meal_id JOIN daily_logs dl ON dl.id = m.daily_log_id
-      WHERE dl.patient_id = ? AND f.active AND f.source = 'TACO' GROUP BY f.id ORDER BY last_used DESC LIMIT 12`)
+      WHERE dl.patient_id = ? AND f.active AND f.source = 'TBCA' GROUP BY f.id ORDER BY last_used DESC LIMIT 12`)
         .all(patient.id);
       if (!foods.length) {
         foods = await db
           .prepare(
-            `SELECT id, source_code, description, category, scientific_name, brand, source, glycemic_index AS "glycemicIndex" FROM foods WHERE active AND source = 'TACO' ORDER BY description LIMIT 20`,
+            `SELECT id, source_code, description, category, scientific_name, brand, source, glycemic_index AS "glycemicIndex" FROM foods WHERE active AND source = 'TBCA' ORDER BY description LIMIT 20`,
           )
           .all();
       }
     } else {
       foods = await db
         .prepare(
-          `SELECT id, source_code, description, category, scientific_name, brand, source, glycemic_index AS "glycemicIndex" FROM foods WHERE active AND source = 'TACO' ORDER BY description LIMIT 20`,
+          `SELECT id, source_code, description, category, scientific_name, brand, source, glycemic_index AS "glycemicIndex" FROM foods WHERE active AND source = 'TBCA' ORDER BY description LIMIT 20`,
         )
         .all();
     }
@@ -786,7 +791,7 @@ app.post('/api/foods/recognize',
     let detected;
     try { detected = await recognizePhoto(req.body); }
     catch { return res.status(503).json({ error: 'Não foi possível analisar esta foto agora. Tente outra imagem ou use a busca manual.' }); }
-    const foods = await db.prepare("SELECT id, source_code, description, category, source FROM foods WHERE active AND source = 'TACO'").all<{ id: number; source_code: string; description: string; category: string; source: string }>();
+    const foods = await db.prepare("SELECT id, source_code, description, category, source FROM foods WHERE active AND source = 'TBCA'").all<{ id: number; source_code: string; description: string; category: string; source: string }>();
     const items = await Promise.all(detected.items.map(async item => {
       const ranked = rankFoodCandidates(item.name, foods);
       const alternatives = item.alternatives.flatMap(name => rankFoodCandidates(name, foods));
@@ -923,8 +928,8 @@ app.post(
     const consumedAt = localTimestamp(payload.date, payload.consumedTime);
     await transaction(async () => {
       for (const entry of entries) {
-        const allowed = await db.prepare("SELECT id FROM foods WHERE id = ? AND source = 'TACO' AND active FOR SHARE").get(entry.foodId);
-        if (!allowed) throw new InputError('Selecione um alimento ativo da TACO.');
+        const allowed = await db.prepare("SELECT id FROM foods WHERE id = ? AND source = 'TBCA' AND active FOR SHARE").get(entry.foodId);
+        if (!allowed) throw new InputError('Selecione um alimento ativo da TBCA.');
       }
       await db
         .prepare(
@@ -1551,6 +1556,6 @@ app.use((error: unknown, _req: Request, res: Response, _next: express.NextFuncti
 
 app.listen(port, appConfig.apiHost, () => {
   console.log(
-    `Nutri+ API: ${appConfig.apiHost}:${port}; ambiente=${appConfig.environment}; configuração=${appConfig.secretsSource}; alimentos=${tacoCount}`,
+    `Nutri+ API: ${appConfig.apiHost}:${port}; ambiente=${appConfig.environment}; configuração=${appConfig.secretsSource}; alimentos=${tbcaCount}`,
   );
 });
