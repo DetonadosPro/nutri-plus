@@ -411,7 +411,13 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
       expect(audit!.previous_snapshot).toEqual(before);
       expect(audit!.reason).toBe("Correção de altura");
     });
-    it("registra musculação sem horário e descanso sem alterar o gasto", async () => {
+    it("registra musculação, estima e preserva o gasto ajustado por descanso", async () => {
+      const preview = await request(
+        "/estimate",
+        "POST",
+        { date: today, duration: 60, code: "02054", version: "2024-pt-BR.1", restSeconds: 30 },
+      );
+      expect(preview.status).toBe(200);
       const a = await request(
         "/sessions",
         "POST",
@@ -420,14 +426,21 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
       expect(a.status).toBe(201);
       expect(a.body.local_time).toBeNull();
       expect(a.body.rest_period).toBe("1to2");
-      expect(a.body.snapshot.grossKcal).toBe(3.5 * a.body.snapshot.weight.weight_kg);
+      expect(a.body.rest_seconds).toBe(90);
+      expect(a.body.snapshot.restDensityFactor).toBe(1.05);
+      expect(a.body.snapshot.grossKcal).toBe(3.5 * a.body.snapshot.weight.weight_kg * 1.05);
+      expect(preview.body.kcal).toBeGreaterThan(a.body.snapshot.grossKcal);
       const b = await request(
         `/sessions/${a.body.id}`,
         "PUT",
-        payload({ time: null, code: "02054", duration: 60, restPeriod: "under30", revision: 1 }),
+        payload({ time: null, code: "02054", duration: 60, restSeconds: 30, revision: 1, recalculate: true }),
       );
       expect(b.status).toBe(200);
-      expect(b.body.snapshot).toEqual(a.body.snapshot);
+      expect(b.body.snapshot.grossKcal).toBeGreaterThan(a.body.snapshot.grossKcal);
+      const revision = await database.db
+        .prepare("SELECT previous_record FROM activity_revisions WHERE session_id=? AND revision=1")
+        .get(a.body.id);
+      expect(revision!.previous_record.snapshot.grossKcal).toBe(a.body.snapshot.grossKcal);
       const recent = await request("/recent");
       expect(recent.body.some((s: any) => s.id === a.body.id && s.rest_period === "under30")).toBe(
         true,

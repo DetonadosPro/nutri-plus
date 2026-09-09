@@ -12,6 +12,50 @@ export const TEF_RATES = {
   carbohydrate: 0.075,
   fat: 0.015,
 } as const;
+export const STRENGTH_CALCULATION_VERSION = "strength-density-1";
+export const REST_DENSITY_POINTS = [
+  [30, 1.15],
+  [60, 1.1],
+  [90, 1.05],
+  [120, 1],
+  [180, 0.95],
+  [240, 0.9],
+  [300, 0.85],
+] as const;
+
+export function calculateRestDensityFactor(restSeconds: number | null) {
+  if (restSeconds == null) return 1;
+  if (!Number.isFinite(restSeconds) || restSeconds <= 0)
+    throw new Error("Intervalo entre séries inválido.");
+  const bounded = Math.min(300, restSeconds);
+  if (bounded <= REST_DENSITY_POINTS[0][0]) return REST_DENSITY_POINTS[0][1];
+  for (let index = 1; index < REST_DENSITY_POINTS.length; index++) {
+    const [rightSeconds, rightFactor] = REST_DENSITY_POINTS[index];
+    if (bounded <= rightSeconds) {
+      const [leftSeconds, leftFactor] = REST_DENSITY_POINTS[index - 1];
+      const position = (bounded - leftSeconds) / (rightSeconds - leftSeconds);
+      return leftFactor + (rightFactor - leftFactor) * position;
+    }
+  }
+  return REST_DENSITY_POINTS.at(-1)![1];
+}
+
+export function calculateStrengthTrainingCalories(
+  base: { grossKcal: number; netKcal: number },
+  restSeconds: number | null,
+) {
+  if (![base.grossKcal, base.netKcal].every((value) => Number.isFinite(value) && value >= 0))
+    throw new Error("Gasto base da musculação inválido.");
+  const restDensityFactor = calculateRestDensityFactor(restSeconds);
+  return {
+    grossKcal: base.grossKcal * restDensityFactor,
+    netKcal: base.netKcal * restDensityFactor,
+    baseGrossKcal: base.grossKcal,
+    baseNetKcal: base.netKcal,
+    restDensityFactor,
+    strengthCalculationVersion: STRENGTH_CALCULATION_VERSION,
+  };
+}
 
 /**
  * Estimates TEF from the energy carried by each recorded macronutrient.

@@ -1,6 +1,13 @@
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
-import { energyBalance, manualEnergy, metEnergy, thermicEffectOfFood } from "./activity-energy";
+import {
+  calculateRestDensityFactor,
+  calculateStrengthTrainingCalories,
+  energyBalance,
+  manualEnergy,
+  metEnergy,
+  thermicEffectOfFood,
+} from "./activity-energy";
 describe("gasto e balanço estimados", () => {
   it("preserva códigos e METs da fonte oficial versionada", () => {
     const catalog = JSON.parse(
@@ -55,6 +62,32 @@ describe("gasto e balanço estimados", () => {
   it("calcula o TEF pelos macronutrientes registrados e o soma ao gasto", () => {
     expect(thermicEffectOfFood({ proteinG: 100, carbohydrateG: 200, fatG: 50 })).toBeCloseTo(166.75);
     expect(energyBalance(2300, 2000, 100, "base_plus_net", []).totalKcal).toBe(2100);
+  });
+  it("ajusta musculação de forma suave e limitada pelo descanso", () => {
+    expect(calculateRestDensityFactor(30)).toBeGreaterThan(calculateRestDensityFactor(120));
+    expect(calculateRestDensityFactor(120)).toBeGreaterThan(calculateRestDensityFactor(240));
+    expect(calculateRestDensityFactor(1)).toBe(1.15);
+    expect(calculateRestDensityFactor(1200)).toBe(0.85);
+    expect(calculateRestDensityFactor(75)).toBeCloseTo(1.075);
+  });
+  it("rejeita descansos inválidos sem produzir NaN", () => {
+    for (const value of [0, -1, NaN, Infinity])
+      expect(() => calculateRestDensityFactor(value)).toThrow();
+  });
+  it("preserva zero e responde a peso, duração e intensidade antes do ajuste secundário", () => {
+    expect(calculateStrengthTrainingCalories({ grossKcal: 0, netKcal: 0 }, 30).grossKcal).toBe(0);
+    expect(() => calculateStrengthTrainingCalories({ grossKcal: -1, netKcal: 0 }, 30)).toThrow();
+    const light30 = calculateStrengthTrainingCalories({ grossKcal: 210, netKcal: 150 }, 30).grossKcal;
+    const light120 = calculateStrengthTrainingCalories({ grossKcal: 210, netKcal: 150 }, 120).grossKcal;
+    const light240 = calculateStrengthTrainingCalories({ grossKcal: 210, netKcal: 150 }, 240).grossKcal;
+    const doubleDuration = calculateStrengthTrainingCalories({ grossKcal: 420, netKcal: 300 }, 120).grossKcal;
+    const heavier = calculateStrengthTrainingCalories({ grossKcal: 240, netKcal: 170 }, 120).grossKcal;
+    const intense = calculateStrengthTrainingCalories({ grossKcal: 360, netKcal: 300 }, 120).grossKcal;
+    expect(light30).toBeGreaterThan(light120);
+    expect(light120).toBeGreaterThan(light240);
+    expect(doubleDuration).toBeGreaterThan(light30);
+    expect(heavier).toBeGreaterThan(light120);
+    expect(intense).toBeGreaterThan(light30);
   });
   it("não desconta repouso duas vezes de calorias ativas manuais", () => {
     expect(manualEnergy(100, "net", 70, 60)).toEqual({ netKcal: 100, grossKcal: null });

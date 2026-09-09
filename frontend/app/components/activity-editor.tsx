@@ -24,6 +24,11 @@ import {
   type ActivityChoice,
 } from './activity-choices';
 
+function legacyRestSeconds(value?: ActivitySession['rest_period']) {
+  if (!value) return null;
+  return { under30: 30, '30to60': 45, '1to2': 90, '2to3': 150, over3: 240 }[value];
+}
+
 export function ActivityEditor({
   date,
   patientId,
@@ -77,9 +82,10 @@ export function ActivityEditor({
     String(session?.duration_minutes ?? 30),
   );
   const [intensity, setIntensity] = useState(session?.intensity ?? 'moderate');
-  const [rest, setRest] = useState<ActivitySession['rest_period']>(
-    session?.rest_period ?? null,
+  const [rest, setRest] = useState<number | null>(
+    session?.rest_seconds ?? legacyRestSeconds(session?.rest_period),
   );
+  const [estimatedKcal, setEstimatedKcal] = useState<number | null>(null);
   const [day, setDay] = useState(
     duplicate ? date : (session?.activity_date ?? date),
   );
@@ -152,6 +158,34 @@ export function ActivityEditor({
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0 });
   }, [inDetails, group]);
+  useEffect(() => {
+    if (!selected?.resistance || !chosen || !(Number(duration) > 0)) {
+      setEstimatedKcal(null);
+      return;
+    }
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => {
+      void api<{ kcal: number }>(`/activities/estimate?${query}`, {
+        method: 'POST',
+        signal: controller.signal,
+        body: JSON.stringify({
+          date: day,
+          duration: Number(duration),
+          code: chosen.code,
+          version: chosen.version,
+          restSeconds: rest,
+        }),
+      })
+        .then((result) => setEstimatedKcal(result.kcal))
+        .catch((reason) => {
+          if ((reason as Error).name !== 'AbortError') setEstimatedKcal(null);
+        });
+    }, 180);
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
+  }, [chosen, day, duration, query, rest, selected?.resistance]);
   const visible = useMemo(
     () =>
       catalog.filter(
@@ -175,7 +209,7 @@ export function ActivityEditor({
       );
       setDuration(String(repeated.duration_minutes));
       setIntensity(repeated.intensity);
-      setRest(repeated.rest_period);
+      setRest(repeated.rest_seconds ?? legacyRestSeconds(repeated.rest_period));
       setOutside(repeated.outside_base);
     } else {
       setOutside(
@@ -286,7 +320,7 @@ export function ActivityEditor({
               chosen?.code === session.snapshot.code
                 ? session.details
                 : [],
-            restPeriod: selected?.resistance ? rest : null,
+            restSeconds: selected?.resistance ? rest : null,
             note,
             revision: session?.revision,
             recalculate: true,
@@ -629,6 +663,14 @@ export function ActivityEditor({
                       </button>
                     ))}
                   </div>
+                  <p className="activity-muted">
+                    O intervalo entre as séries ajuda a estimar a intensidade e a densidade do treino.
+                  </p>
+                  {estimatedKcal != null && (
+                    <output className="movement-calorie-preview">
+                      Gasto estimado · ≈ {Math.round(estimatedKcal)} kcal
+                    </output>
+                  )}
                 </fieldset>
               )}
               <details

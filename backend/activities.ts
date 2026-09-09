@@ -5,6 +5,7 @@ import { db, transaction } from "./db";
 import type { AuthUser } from "./auth";
 import {
   ACTIVITY_FACTORS,
+  calculateStrengthTrainingCalories,
   ENERGY_VERSION,
   energyBalance,
   manualEnergy,
@@ -57,6 +58,7 @@ export const activityInput = z
     recalculate: z.boolean().default(false),
     preserveWeight: z.boolean().default(false),
     restPeriod: z.enum(["under30", "30to60", "1to2", "2to3", "over3"]).nullable().optional(),
+    restSeconds: z.number().int().min(1).max(1200).nullable().optional(),
   })
   .superRefine((p, ctx) => {
     if (!!p.code === !!p.manual || (p.code && !p.version))
@@ -76,6 +78,24 @@ class ActivityError extends Error {
   ) {
     super(message);
   }
+}
+function legacyRestSeconds(value: Row["rest_period"]): number | null {
+  const values: Record<string, number> = {
+    under30: 30,
+    "30to60": 45,
+    "1to2": 90,
+    "2to3": 150,
+    over3: 240,
+  };
+  return typeof value === "string" ? (values[value] ?? null) : null;
+}
+function restPeriodForSeconds(seconds: number | null) {
+  if (seconds == null) return null;
+  if (seconds <= 30) return "under30";
+  if (seconds <= 60) return "30to60";
+  if (seconds <= 120) return "1to2";
+  if (seconds <= 180) return "2to3";
+  return "over3";
 }
 export async function seedActivityCatalog() {
   const rows = JSON.parse(
@@ -339,6 +359,39 @@ export function activitiesRouter(deps: {
       .run(res.locals.patient.id, p.date, p.complete);
     res.sendStatus(204);
   });
+  router.post("/estimate", async (req, res) => {
+    const p = z
+      .object({
+        date,
+        duration: z.number().positive().max(1440),
+        code: z.string().max(20),
+        version: z.string().max(40),
+        restSeconds: z.number().int().min(1).max(1200).nullable(),
+      })
+      .parse(req.body);
+    const patient = res.locals.patient;
+    const weight = await db
+      .prepare(
+        "SELECT weight_kg,weighed_at FROM weight_history WHERE patient_id=? AND weighed_at<=? ORDER BY weighed_at DESC LIMIT 1",
+      )
+      .get<Row>(patient.id, p.date);
+    if (!weight) throw new ActivityError(400, "Registre um peso com data igual ou anterior à atividade.");
+    const catalog = await db
+      .prepare("SELECT * FROM activity_catalog WHERE code=? AND version=?")
+      .get<Row>(p.code, p.version);
+    if (!catalog) throw new ActivityError(404, "Atividade não encontrada.");
+    const age = ageAt(patient.birth_date, p.date);
+    const reference = referenceForAge(catalog.code, catalog.met, age);
+    if (!reference) throw new ActivityError(400, "Esta modalidade não possui referência para a idade nesta data.");
+    const resting = age != null && age <= 18 && (patient.sex === "male" || patient.sex === "female")
+      ? schofieldRestingKcal(weight.weight_kg, age, patient.sex)
+      : null;
+    const base = ageSpecificEnergy(reference, weight.weight_kg, p.duration, resting);
+    const energy = catalog.resistance
+      ? calculateStrengthTrainingCalories(base, p.restSeconds)
+      : base;
+    res.json({ kcal: energy.grossKcal });
+  });
   router.post("/recalculate-base", async (req, res) => {
     if (res.locals.user.role !== "nutritionist")
       throw new ActivityError(403, "Recálculo exclusivo do nutricionista.");
@@ -445,11 +498,15 @@ export function activitiesRouter(deps: {
           400,
           "As atividades excedem a duração deste dia. Revise seus registros.",
         );
+      const restSeconds = p.restSeconds === undefined
+        ? (legacyRestSeconds(p.restPeriod) ?? old?.rest_seconds ?? legacyRestSeconds(old?.rest_period))
+        : p.restSeconds;
       let snapshot = old?.snapshot;
       const changed =
         !old ||
         p.date !== old.activity_date ||
         p.duration !== old.duration_minutes ||
+        restSeconds !== (old.rest_seconds ?? legacyRestSeconds(old.rest_period)) ||
         p.code !== old.snapshot.code ||
         p.version !== old.snapshot.catalogVersion ||
         p.manual?.name !== old.snapshot.manual?.name ||
@@ -487,9 +544,12 @@ export function activitiesRouter(deps: {
         const restingForActivity = catalog && age != null && age <= 18 && (patient.sex === "male" || patient.sex === "female")
           ? schofieldRestingKcal(weight!.weight_kg, age, patient.sex)
           : null;
-        const energy = catalog
+        const baseEnergy = catalog
           ? ageSpecificEnergy(reference!, weight!.weight_kg, p.duration, restingForActivity)
           : manualEnergy(p.manual!.kcal, p.manual!.kind, weight?.weight_kg ?? null, p.duration);
+        const energy = catalog?.resistance
+          ? calculateStrengthTrainingCalories(baseEnergy as { grossKcal: number; netKcal: number }, restSeconds)
+          : baseEnergy;
         snapshot = {
           version: ENERGY_VERSION,
           method: catalog ? "met" : "manual",
@@ -512,7 +572,9 @@ export function activitiesRouter(deps: {
       }
       if (p.details.length && !snapshot.resistance)
         throw new ActivityError(400, "Detalhes de séries exigem uma atividade resistida.");
-      const restPeriod = p.restPeriod === undefined ? (old?.rest_period ?? null) : p.restPeriod;
+      const restPeriod = p.restPeriod === undefined
+        ? restPeriodForSeconds(restSeconds)
+        : p.restPeriod;
       if (restPeriod && !snapshot.resistance)
         throw new ActivityError(400, "Descanso entre séries exige uma atividade de musculação.");
       // Rest is descriptive. Compendium session MET already includes pauses;
@@ -525,7 +587,7 @@ export function activitiesRouter(deps: {
           .run(id, old.revision, JSON.stringify(old), res.locals.user.id);
         return db
           .prepare(
-            `UPDATE activity_sessions SET activity_date=?,local_time=?,duration_minutes=?,intensity=?,outside_base=?,snapshot=?::jsonb,details=?::jsonb,note=?,rest_period=?,revision=revision+1,updated_at=CURRENT_TIMESTAMP WHERE id=? AND patient_id=? RETURNING *`,
+            `UPDATE activity_sessions SET activity_date=?,local_time=?,duration_minutes=?,intensity=?,outside_base=?,snapshot=?::jsonb,details=?::jsonb,note=?,rest_period=?,rest_seconds=?,revision=revision+1,updated_at=CURRENT_TIMESTAMP WHERE id=? AND patient_id=? RETURNING *`,
           )
           .get(
             p.date,
@@ -537,13 +599,14 @@ export function activitiesRouter(deps: {
             JSON.stringify(p.details),
             p.note,
             restPeriod,
+            restSeconds,
             id,
             patient.id,
           );
       }
       return db
         .prepare(
-          `INSERT INTO activity_sessions(patient_id,recorded_by,activity_date,local_time,duration_minutes,intensity,outside_base,snapshot,details,note,rest_period) VALUES(?,?,?,?,?,?,?,?::jsonb,?::jsonb,?,?) RETURNING *`,
+          `INSERT INTO activity_sessions(patient_id,recorded_by,activity_date,local_time,duration_minutes,intensity,outside_base,snapshot,details,note,rest_period,rest_seconds) VALUES(?,?,?,?,?,?,?,?::jsonb,?::jsonb,?,?,?) RETURNING *`,
         )
         .get(
           patient.id,
@@ -557,6 +620,7 @@ export function activitiesRouter(deps: {
           JSON.stringify(p.details),
           p.note,
           restPeriod,
+          restSeconds,
         );
     });
     res.status(id ? 200 : 201).json(result);
