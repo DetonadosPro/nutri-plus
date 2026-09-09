@@ -27,6 +27,7 @@ export function FoodEntrySheet({
   date,
   catalog,
   initialMealType,
+  initialPhoto,
   onAdded,
 }: {
   open: boolean;
@@ -34,6 +35,7 @@ export function FoodEntrySheet({
   date: string;
   catalog: NutrientCatalogItem[];
   initialMealType?: string;
+  initialPhoto?: { file: File; token: number };
   onAdded: (summary: Summary) => void | Promise<void>;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -55,6 +57,7 @@ export function FoodEntrySheet({
 
   useEffect(() => {
     if (!open) return;
+    setPhotoMode(Boolean(initialPhoto));
     setConsumedTime(brazilNow().time);
     setMealType(
       MEAL_TYPES.some((item) => item.value === initialMealType)
@@ -63,7 +66,7 @@ export function FoodEntrySheet({
     );
     scrollRef.current?.scrollTo({ top: 0, behavior: "auto" });
     setError("");
-  }, [open, initialMealType]);
+  }, [open, initialMealType, initialPhoto]);
 
   useEffect(() => {
     if (!open) {
@@ -251,7 +254,7 @@ export function FoodEntrySheet({
           </SheetDescription>
         </SheetHeader>
         <div ref={scrollRef} className="food-entry-scroll min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-7">
-          {photoMode ? <FoodPhotoReview date={date} initialMealType={initialMealType} onBack={() => setPhotoMode(false)} onAdded={onAdded} /> : !selected ? (
+          {photoMode ? <FoodPhotoReview date={date} initialMealType={initialMealType} initialPhoto={initialPhoto} onBack={() => setPhotoMode(false)} onAdded={onAdded} /> : !selected ? (
             <div className="animate-content-in">
               <Button className="mb-4 h-14 w-full rounded-2xl" variant="outline" onClick={() => setPhotoMode(true)}><Sparkles /> Reconhecer por foto</Button>
               <div className="food-search-row flex gap-2">

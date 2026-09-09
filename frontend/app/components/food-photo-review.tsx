@@ -1,7 +1,7 @@
 'use client';
 import '../food-photo.css';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { ArrowLeft, Camera, ImagePlus, LoaderCircle, Plus, Search, Trash2 } from 'lucide-react';
 import { api } from '@/lib/client-api';
@@ -16,8 +16,8 @@ import type { Food, Summary } from '../types';
 type Detection = { name: string; needsChoice: boolean; candidates: Food[] };
 type Row = Detection & { key: string; food: Food | null; grams: string };
 
-export function FoodPhotoReview({ date, initialMealType, onBack, onAdded }: {
-  date: string; initialMealType?: string; onBack: () => void; onAdded: (summary: Summary) => void | Promise<void>;
+export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, onAdded }: {
+  date: string; initialMealType?: string; initialPhoto?: { file: File; token: number }; onBack: () => void; onAdded: (summary: Summary) => void | Promise<void>;
 }) {
   const [preview, setPreview] = useState('');
   const [rows, setRows] = useState<Row[]>([]);
@@ -36,6 +36,7 @@ export function FoodPhotoReview({ date, initialMealType, onBack, onAdded }: {
   const saveLock = useRef(false);
   const camera = useRef<HTMLInputElement>(null);
   const gallery = useRef<HTMLInputElement>(null);
+  const analyzedInitialPhoto = useRef<number | undefined>(undefined);
 
   useEffect(() => () => request.current?.abort(), []);
   useEffect(() => () => { if (preview) URL.revokeObjectURL(preview); }, [preview]);
@@ -51,7 +52,7 @@ export function FoodPhotoReview({ date, initialMealType, onBack, onAdded }: {
     return () => { clearTimeout(timer); controller.abort(); };
   }, [editing, query]);
 
-  async function analyze(file?: File) {
+  const analyze = useCallback(async (file?: File) => {
     if (!file || saving || saved) return;
     setError('');
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) {
@@ -72,7 +73,13 @@ export function FoodPhotoReview({ date, initialMealType, onBack, onAdded }: {
     } catch (reason) {
       if (request.current === controller) setError(controller.signal.aborted ? 'A análise demorou mais que o esperado. Você pode usar a busca manual.' : reason instanceof Error ? reason.message : 'Reconhecimento indisponível. Use a busca manual.');
     } finally { clearTimeout(timeout); if (request.current === controller) setBusy(false); }
-  }
+  }, [saved, saving]);
+
+  useEffect(() => {
+    if (!initialPhoto || analyzedInitialPhoto.current === initialPhoto.token) return;
+    analyzedInitialPhoto.current = initialPhoto.token;
+    void analyze(initialPhoto.file);
+  }, [initialPhoto, analyze]);
 
   function choose(food: Food) {
     if (editing === 'new') setRows(current => [...current, { key: crypto.randomUUID(), name: food.description, candidates: [], needsChoice: false, food, grams: '' }]);

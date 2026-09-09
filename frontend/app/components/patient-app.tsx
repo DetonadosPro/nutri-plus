@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ArrowLeft,
   BarChart3,
+  Camera,
   ChevronDown,
   CircleUserRound,
   ClipboardList,
@@ -123,6 +124,8 @@ export function PatientApp({
     useState<OrientationInbox | null>(null);
   const [loading, setLoading] = useState(true);
   const [addOpen, setAddOpen] = useState(false);
+  const [cameraCapture, setCameraCapture] = useState<{ file: File; token: number }>();
+  const cameraInput = useRef<HTMLInputElement>(null);
   const [initialMealType, setInitialMealType] = useState<string>();
   const [homeMealReveal, setHomeMealReveal] = useState<{
     mealType: string;
@@ -220,8 +223,12 @@ export function PatientApp({
     };
   }, [active, professionalMode]);
   function openAdd(mealType?: string) {
+    setCameraCapture(undefined);
     setInitialMealType(mealType);
     setAddOpen(true);
+  }
+  function openCamera() {
+    cameraInput.current?.click();
   }
   function success(title: string) {
     activityChanged();
@@ -423,12 +430,29 @@ export function PatientApp({
         <button
           type="button"
           className="patient-primary-action"
-          onClick={() => openAdd()}
-          aria-label="Registrar alimento"
+          onClick={openCamera}
+          aria-label="Fotografar alimento"
         >
-          <Plus className="size-7" />
-          <span>Registrar</span>
+          <Camera className="size-7" />
+          <span>Foto</span>
         </button>
+        <input
+          ref={cameraInput}
+          className="sr-only"
+          type="file"
+          accept="image/*"
+          capture="environment"
+          aria-hidden="true"
+          tabIndex={-1}
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            event.target.value = '';
+            if (!file) return;
+            setInitialMealType(undefined);
+            setCameraCapture({ file, token: Date.now() });
+            setAddOpen(true);
+          }}
+        />
         {navItems
           .filter(
             ([id]) =>
@@ -454,12 +478,16 @@ export function PatientApp({
       </nav>
       <FoodEntrySheet
         open={addOpen}
-        onOpenChange={setAddOpen}
+        onOpenChange={(open) => {
+          setAddOpen(open);
+          if (!open) setCameraCapture(undefined);
+        }}
         date={
           active === 'diary' ? diaryDate : active === 'today' ? homeDate : today
         }
         catalog={summary.nutrientCatalog}
         initialMealType={initialMealType}
+        initialPhoto={cameraCapture}
         onAdded={(nextSummary) => {
           const previousSummary =
             homeSummary?.date === nextSummary.date
