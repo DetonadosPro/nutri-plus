@@ -4,7 +4,7 @@ import { closeDatabase, db, migrate, projectPath, transaction } from './db';
 import { normalizeSearch, type NutrientStatus } from './taco-import';
 
 type RawNutrient = { componente: string; tagname: string; unidade: string; valor_100g: unknown };
-type RawFood = { codigo: string; grupo: string | null; marca?: string | null; nome: string; nome_cientifico?: string | null; url?: string | null; nutrientes: RawNutrient[] };
+export type RawFood = { codigo: string; grupo: string | null; marca?: string | null; nome: string; nome_original: string; nome_exibicao: string; aliases_busca: string[]; nome_cientifico?: string | null; url?: string | null; nutrientes: RawNutrient[] };
 
 const definitions = [
   ['vitamina_e_mg','Vitamina E','TOCPHA','mg','vitamin'], ['acucar_adicao_g','Açúcar de adição','TBCA_ADDED_SUGAR','g','macro'],
@@ -42,7 +42,10 @@ export function validateTbcaDataset(dataset: RawFood[]) {
   if (codes.size !== 5874 || [...codes].some(code => !/^BRC[0-9A-Z]+$/.test(code))) throw new Error('Códigos TBCA inválidos ou duplicados.');
   let missing = 0, trace = 0, zero = 0;
   for (const food of dataset) {
-    if (!food.nome?.trim() || food.nutrientes?.length !== definitions.length) throw new Error(`Estrutura incompleta no alimento TBCA ${food.codigo}.`);
+    if (!food.nome_original?.trim() || !food.nome_exibicao?.trim() || !Array.isArray(food.aliases_busca) || food.nutrientes?.length !== definitions.length)
+      throw new Error(`Estrutura incompleta no alimento TBCA ${food.codigo}.`);
+    if (food.nome !== food.nome_original) throw new Error(`Nome original divergente no alimento TBCA ${food.codigo}.`);
+    if (food.aliases_busca.some(alias => typeof alias !== 'string' || !alias.trim())) throw new Error(`Alias inválido no alimento TBCA ${food.codigo}.`);
     food.nutrientes.forEach((nutrient, index) => {
       const definition = definitions[index];
       const expectedTag = definition[2].startsWith('TBCA_') ? '—' : definition[2];
@@ -55,10 +58,10 @@ export function validateTbcaDataset(dataset: RawFood[]) {
   return { foods: dataset.length, values: dataset.length * definitions.length, missing, trace, zero };
 }
 
-export async function importTbca(filePath = projectPath('data','tbca','tbca_completa_normalizada_v2.json')) {
-  await migrate();
+export async function importTbca(filePath = projectPath('data','tbca','tbca completa normalizada.json')) {
   const dataset = JSON.parse(readFileSync(filePath,'utf8')) as RawFood[];
   const audit = validateTbcaDataset(dataset);
+  await migrate();
   const existingFoods = new Set((await db.prepare(`SELECT source_code FROM foods WHERE source='TBCA'`).all<{source_code:string}>()).map(r => r.source_code));
   const existingValues = Number((await db.prepare(`SELECT COUNT(*)::int count FROM food_nutrients fn JOIN foods f ON f.id=fn.food_id WHERE f.source='TBCA'`).get<{count:number}>())?.count ?? 0);
   const report = { foodsProcessed:audit.foods, foodsCreated:audit.foods-existingFoods.size, foodsUpdated:existingFoods.size, nutrients:definitions.length,
@@ -68,10 +71,15 @@ export async function importTbca(filePath = projectPath('data','tbca','tbca_comp
     await db.prepare(`INSERT INTO nutrients(code,name,tagname,unit,nutrient_group,sort_order)
       SELECT x.code,x.name,x.tagname,x.unit,x.nutrient_group,x.sort_order FROM jsonb_to_recordset(?::jsonb) x(code text,name text,tagname text,unit text,nutrient_group text,sort_order int)
       ON CONFLICT(code) DO UPDATE SET name=excluded.name,tagname=excluded.tagname,unit=excluded.unit,nutrient_group=excluded.nutrient_group,sort_order=excluded.sort_order`).run(JSON.stringify(nutrientRows));
-    const foods = dataset.map(f => ({source_code:f.codigo,description:f.nome,normalized_name:normalizeSearch(f.nome),category:f.grupo,scientific_name:f.nome_cientifico ?? null,brand:f.marca ?? null,source_url:f.url ?? null}));
-    for (let offset=0; offset<foods.length; offset+=1000) await db.prepare(`INSERT INTO foods(source,source_code,description,normalized_name,category,scientific_name,brand,source_url,active,updated_at)
-      SELECT 'TBCA',x.source_code,x.description,x.normalized_name,x.category,x.scientific_name,x.brand,x.source_url,true,CURRENT_TIMESTAMP FROM jsonb_to_recordset(?::jsonb) x(source_code text,description text,normalized_name text,category text,scientific_name text,brand text,source_url text)
-      ON CONFLICT(source,source_code) DO UPDATE SET description=excluded.description,normalized_name=excluded.normalized_name,category=excluded.category,scientific_name=excluded.scientific_name,brand=excluded.brand,source_url=excluded.source_url,active=true,updated_at=CURRENT_TIMESTAMP`).run(JSON.stringify(foods.slice(offset,offset+1000)));
+    const foods = dataset.map(f => {
+      const normalizedAliases = [...new Set(f.aliases_busca.map(normalizeSearch).filter(Boolean))];
+      const normalizedName = normalizeSearch(f.nome_original);
+      const normalizedDisplayName = normalizeSearch(f.nome_exibicao);
+      return {source_code:f.codigo,description:f.nome_original,display_name:f.nome_exibicao,search_aliases:f.aliases_busca,normalized_name:normalizedName,normalized_display_name:normalizedDisplayName,normalized_search_aliases:normalizedAliases,normalized_search_text:[normalizedDisplayName,normalizedName,...normalizedAliases].join(' '),category:f.grupo,scientific_name:f.nome_cientifico ?? null,brand:f.marca ?? null,source_url:f.url ?? null};
+    });
+    for (let offset=0; offset<foods.length; offset+=1000) await db.prepare(`INSERT INTO foods(source,source_code,description,display_name,search_aliases,normalized_name,normalized_display_name,normalized_search_aliases,normalized_search_text,category,scientific_name,brand,source_url,active,updated_at)
+      SELECT 'TBCA',x.source_code,x.description,x.display_name,x.search_aliases,x.normalized_name,x.normalized_display_name,x.normalized_search_aliases,x.normalized_search_text,x.category,x.scientific_name,x.brand,x.source_url,true,CURRENT_TIMESTAMP FROM jsonb_to_recordset(?::jsonb) x(source_code text,description text,display_name text,search_aliases text[],normalized_name text,normalized_display_name text,normalized_search_aliases text[],normalized_search_text text,category text,scientific_name text,brand text,source_url text)
+      ON CONFLICT(source,source_code) DO UPDATE SET description=excluded.description,display_name=excluded.display_name,search_aliases=excluded.search_aliases,normalized_name=excluded.normalized_name,normalized_display_name=excluded.normalized_display_name,normalized_search_aliases=excluded.normalized_search_aliases,normalized_search_text=excluded.normalized_search_text,category=excluded.category,scientific_name=excluded.scientific_name,brand=excluded.brand,source_url=excluded.source_url,active=true,updated_at=CURRENT_TIMESTAMP`).run(JSON.stringify(foods.slice(offset,offset+1000)));
     const ids = new Map((await db.prepare(`SELECT id,source_code FROM foods WHERE source='TBCA'`).all<{id:number;source_code:string}>()).map(r => [r.source_code,r.id]));
     const rows: Record<string,unknown>[] = [];
     dataset.forEach(food => food.nutrientes.forEach((nutrient,index) => rows.push({food_id:ids.get(food.codigo),nutrient_code:definitions[index][0],...parsedValue(nutrient.valor_100g)})));
