@@ -148,7 +148,7 @@ export function geminiProvider(model: string): VisionProvider {
 
 export function configuredProvider() {
   const provider = process.env.NUTRI_VISION_PROVIDER || 'ollama';
-  const defaultModel = provider === 'ollama' ? 'qwen3-vl:4b-instruct' : provider === 'gemini' ? 'gemini-2.5-flash-lite' : '';
+  const defaultModel = provider === 'ollama' ? 'qwen3-vl:4b-instruct' : provider === 'gemini' ? 'gemini-3.5-flash-lite' : '';
   const model = process.env.NUTRI_VISION_MODEL || defaultModel;
   if (!model) throw new Error('Configure NUTRI_VISION_MODEL');
   if (provider === 'ollama') return ollamaProvider(model);
