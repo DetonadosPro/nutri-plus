@@ -21,6 +21,8 @@ import {
 import { NutrientDetails } from "./nutrient-details";
 import { FoodPhotoReview } from './food-photo-review';
 
+type FoodEntryHistory = { session: string; step: 'search' | 'details' };
+
 export function FoodEntrySheet({
   open,
   onOpenChange,
@@ -41,6 +43,7 @@ export function FoodEntrySheet({
   const scrollRef = useRef<HTMLDivElement>(null);
   const historyReady = useRef(false);
   const closing = useRef(false);
+  const historySession = useRef('');
   const [search, setSearch] = useState("");
   const [photoMode, setPhotoMode] = useState(false);
   const [foods, setFoods] = useState<Food[]>([]);
@@ -74,7 +77,14 @@ export function FoodEntrySheet({
       return;
     }
     if (!historyReady.current) {
-      window.history.pushState({ ...window.history.state, nutriFoodEntry: "search" }, "");
+      const baseState = { ...window.history.state };
+      delete baseState.nutriFoodEntry;
+      window.history.replaceState(baseState, '');
+      historySession.current = crypto.randomUUID();
+      window.history.pushState({
+        ...baseState,
+        nutriFoodEntry: { session: historySession.current, step: 'search' },
+      }, '');
       historyReady.current = true;
     }
   }, [open]);
@@ -84,33 +94,28 @@ export function FoodEntrySheet({
       open &&
       selected &&
       historyReady.current &&
-      window.history.state?.nutriFoodEntry !== "details"
+      (window.history.state?.nutriFoodEntry as FoodEntryHistory | undefined)?.step !== 'details'
     ) {
-      window.history.pushState({ ...window.history.state, nutriFoodEntry: "details" }, "");
+      window.history.pushState({
+        ...window.history.state,
+        nutriFoodEntry: { session: historySession.current, step: 'details' },
+      }, '');
     }
   }, [open, selected]);
 
   useEffect(() => {
     if (!open) return;
     const onPopState = (event: PopStateEvent) => {
-      const step = event.state?.nutriFoodEntry;
-      if (closing.current) {
-        if (step) {
-          window.history.back();
-          return;
-        }
+      const entry = event.state?.nutriFoodEntry as FoodEntryHistory | undefined;
+      if (entry?.session === historySession.current && entry.step === 'search') {
         closing.current = false;
-        historyReady.current = false;
-        onOpenChange(false);
-        return;
-      }
-      if (step === "details") return;
-      if (step === "search") {
         setSelected(null);
         return;
       }
       resetTransientState();
+      closing.current = false;
       historyReady.current = false;
+      historySession.current = '';
       onOpenChange(false);
     };
     window.addEventListener("popstate", onPopState);
@@ -119,18 +124,21 @@ export function FoodEntrySheet({
 
   function closeSheet() {
     if (closing.current) return;
-    const step = window.history.state?.nutriFoodEntry;
+    const entry = window.history.state?.nutriFoodEntry as FoodEntryHistory | undefined;
     resetTransientState();
-    if (historyReady.current && (step === "details" || step === "search")) {
+    if (historyReady.current && entry?.session === historySession.current) {
       closing.current = true;
-      window.history.back();
+      window.history.go(entry.step === 'details' ? -2 : -1);
     } else {
+      historyReady.current = false;
+      historySession.current = '';
       onOpenChange(false);
     }
   }
 
   function returnToSearch() {
-    if (window.history.state?.nutriFoodEntry === "details") window.history.back();
+    const entry = window.history.state?.nutriFoodEntry as FoodEntryHistory | undefined;
+    if (entry?.session === historySession.current && entry.step === 'details') window.history.back();
     else setSelected(null);
   }
 
@@ -220,7 +228,8 @@ export function FoodEntrySheet({
       });
       await onAdded(summary);
       resetTransientState();
-      if (window.history.state?.nutriFoodEntry === "details") window.history.back();
+      const entry = window.history.state?.nutriFoodEntry as FoodEntryHistory | undefined;
+      if (entry?.session === historySession.current && entry.step === 'details') window.history.back();
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "Não foi possível adicionar o alimento.");
     } finally {
