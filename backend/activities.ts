@@ -182,7 +182,7 @@ export async function energyHistory(patient: Row, from: string, to: string) {
       settingId: setting?.id ?? null,
       note:
         setting?.note ??
-        "Base cotidiana sem exercícios registrados; atividades elegíveis são somadas pelo gasto líquido.",
+        "Base cotidiana sem exercícios registrados; atividades elegíveis são somadas pelo gasto bruto.",
     };
     if (day < today && !saved.some((s) => s.day === day))
       freeze.push({ patient_id: id, day, snapshot: base });

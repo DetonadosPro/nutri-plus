@@ -160,7 +160,7 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
       let h = (await request(`/history?from=${today}&to=${today}`)).body;
       expect(h.days[0].base.mode).toBe("base_plus_net");
       expect(h.days[0].base.factor).toBe(1);
-      expect(h.days[0].additionalKcal).toBeCloseTo(98);
+      expect(h.days[0].additionalKcal).toBeCloseTo(133);
       expect(h.days[0].intakeKcal).toBeNull();
       expect(h.completeDays).toBe(0);
       expect((await request("/sessions", "POST", payload())).status).toBe(409);
@@ -200,7 +200,7 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
         ).status,
       ).toBe(201);
       h = (await request(`/history?from=${today}&to=${today}`)).body;
-      expect(h.days[0].additionalKcal).toBeCloseTo(98);
+      expect(h.days[0].additionalKcal).toBeCloseTo(133);
       await database.db
         .prepare("UPDATE weight_history SET weight_kg=80 WHERE patient_id=?")
         .run(patientId);
@@ -239,7 +239,7 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
         )
       ).body;
       expect(pro.sessions[0].id).toBe(s.id);
-      expect(pro.days[0].additionalKcal).toBeCloseTo(224);
+      expect(pro.days[0].additionalKcal).toBeCloseTo(304);
       expect((await request(`/sessions/${s.id}?revision=3`, "DELETE")).status).toBe(204);
       h = (await request(`/history?from=${today}&to=${today}`)).body;
       expect(h.days[0].additionalKcal).toBe(0);

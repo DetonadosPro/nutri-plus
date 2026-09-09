@@ -35,10 +35,10 @@ Cada registro do catálogo mantém sua própria fonte oficial. Códigos e METs s
 1. Repouso estimado por Mifflin–St Jeor. O nutricionista define nas metas o fator cotidiano que multiplica a basal, com padrão 1,00, para representar a rotina fora dos exercícios registrados.
 2. O efeito térmico dos alimentos (TEF) é estimado pelos macronutrientes registrados usando o ponto central dos intervalos de referência: proteína 25%, carboidrato 7,5% e gordura 1,5% de suas respectivas energias. O TEF é somado uma única vez ao gasto.
 3. Dados ausentes, faixa etária sem fórmula aplicável ou avaliação clínica suspensa deixam a base indisponível.
-4. O padrão é `base_plus_net`: exercícios elegíveis acrescentam somente o gasto líquido acima do repouso. Assim, cada exercício registrado atualiza o balanço sem somar novamente a energia que a pessoa gastaria em repouso durante o mesmo período.
+4. O padrão interno permanece denominado `base_plus_net` por compatibilidade com os registros existentes, mas exercícios elegíveis acrescentam o gasto bruto completo solicitado pelo produto.
 5. O nutricionista pode ajustar esse fator nas metas ou usar `habitual_includes_exercise` quando a base prescrita já incorporar exercícios. Nesse modo, as sessões permanecem no histórico, mas não são somadas novamente.
 6. No fluxo do paciente, exercícios escolhidos são classificados automaticamente como extras à rotina; atividades domésticas, jardinagem, trabalho, transporte e música não são. Essa classificação não modifica a configuração profissional e não causa acréscimo no modo habitual. Registros existentes e recentes mantêm o escopo armazenado.
-7. Bruto = MET × kg × horas. Líquido = (MET − 1) × kg × horas. O líquido pressupõe substituição de repouso; sua inclusão depende da definição profissional de base.
+7. O gasto contabilizado = MET × kg × horas. O gasto líquido continua preservado no snapshot histórico para auditoria, mas não é deduzido do saldo.
 8. TDEE estimado = rotina diária estimada + TEF + adicional elegível; saldo = ingestão − TDEE estimado. TDEE é o resultado total, não uma parcela adicional. Os valores exibidos são arredondados, preservando a precisão nos dados.
 9. Entrada manual permanece em Outras atividades e exige origem/tipo do gasto. Calorias ativas já são líquidas. Totais descontam repouso uma vez. Tipo desconhecido não vira adicional zero.
 10. Não se geram metas de déficit nem projeções de peso. A API legada mantém `theoreticalKg` sob suas restrições etárias/clínicas, mas essa equivalência não é exibida no frontend novo.

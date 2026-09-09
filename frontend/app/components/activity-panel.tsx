@@ -57,12 +57,12 @@ export function EnergyMethod() {
       <p>
         Se o fator já inclui exercícios, os registros não são somados. Na base
         sem exercícios, somente atividades marcadas como fora da base
-        acrescentam o gasto líquido. Tarefas habituais
+        acrescentam o gasto bruto completo. Tarefas habituais
         devem permanecer dentro da base.
       </p>
       <p>
-        O gasto bruto é MET × peso × horas. Valores manuais ativos já são
-        líquidos; valores totais descontam o repouso uma única vez. Tipo
+        O gasto contabilizado é MET × peso × horas. Valores informados por
+        relógios ou fontes profissionais são usados como fornecidos. Tipo
         desconhecido não permite estimar o adicional.
       </p>
       <p>
@@ -130,7 +130,7 @@ export function EnergyNumbers({ day }: { day: EnergyDay }) {
       <p className="activity-muted">
         {day.base.mode === 'habitual_includes_exercise'
           ? 'O fator habitual já inclui exercícios; os registros não aumentam o gasto total.'
-          : 'Somente atividades explicitamente fora da base somam gasto líquido.'}
+          : 'Somente atividades explicitamente fora da base aumentam o gasto total.'}
       </p>
     </>
   );
@@ -260,7 +260,7 @@ export function ActivityPanel({
                     <strong>{quickName(s.snapshot)}</strong>
                     <span>
                       {formatNumber(s.duration_minutes)} min · ≈{' '}
-                      {formatNumber(s.snapshot.netKcal ?? s.snapshot.grossKcal)}{' '}
+                      {formatNumber(s.snapshot.grossKcal ?? s.snapshot.netKcal)}{' '}
                       kcal
                     </span>
                   </button>
@@ -477,8 +477,8 @@ export function ActivityPanel({
                     : 'Incluída na rotina habitual.'}
                 </p>
                 <p>
-                  Bruto: {formatNumber(details.snapshot.grossKcal)} kcal ·
-                  Líquido: {formatNumber(details.snapshot.netKcal)} kcal
+                  Gasto contabilizado:{' '}
+                  {formatNumber(details.snapshot.grossKcal ?? details.snapshot.netKcal)} kcal
                 </p>
                 <p>
                   Peso:{' '}
