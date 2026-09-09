@@ -17,7 +17,7 @@ Reformulação local do frontend. Preserva alimentos, metas, autenticação e re
 
 As escolhas rápidas em `activity-choices.tsx` apontam para códigos reais da versão `2024-pt-BR.1`. Não há multiplicação arbitrária por intensidade. Para caminhada/corrida, os botões indicam as faixas de velocidade; ciclismo, natação e futebol apontam para modalidades operacionais correspondentes. O usuário pode escolher outro subtipo em “Mais opções”.
 
-Musculação leve e moderada usam a referência geral 02054 (3,5 MET); intensa usa 02050 (6 MET). A referência geral não permite inventar um valor menor exclusivo para “leve”. O gasto base da sessão é ajustado secundariamente pela densidade indicada pelo descanso: 30 s = 1,15; 60 s = 1,10; 90 s = 1,05; 120 s = 1,00; 180 s = 0,95; 240 s = 0,90; 300 s ou mais = 0,85, com interpolação linear e limites fixos. Não se acrescenta EPOC.
+Musculação usa 3,0 MET para intensidade leve, 3,5 MET para moderada e 6,0 MET para intensa. O gasto base da sessão é ajustado secundariamente pela densidade indicada pelo descanso: 30 s = 1,15; 60 s = 1,10; 90 s = 1,05; 120 s = 1,00; 180 s = 0,95; 240 s = 0,90; 300 s ou mais = 0,85, com interpolação linear e limites fixos. Não se acrescenta EPOC.
 
 Quando uma modalidade específica é escolhida pela busca, a intensidade é um relato subjetivo, sem alterar o MET daquela modalidade. Para modificar a estimativa, troca-se a modalidade. A explicação permanece disponível nos detalhes.
 

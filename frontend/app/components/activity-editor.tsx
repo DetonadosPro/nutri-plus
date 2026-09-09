@@ -174,6 +174,7 @@ export function ActivityEditor({
           code: chosen.code,
           version: chosen.version,
           restSeconds: rest,
+          intensity,
         }),
       })
         .then((result) => setEstimatedKcal(result.kcal))
@@ -185,7 +186,7 @@ export function ActivityEditor({
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [chosen, day, duration, query, rest, selected?.resistance]);
+  }, [chosen, day, duration, intensity, query, rest, selected?.resistance]);
   const visible = useMemo(
     () =>
       catalog.filter(

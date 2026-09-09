@@ -367,6 +367,7 @@ export function activitiesRouter(deps: {
         code: z.string().max(20),
         version: z.string().max(40),
         restSeconds: z.number().int().min(1).max(1200).nullable(),
+        intensity: z.enum(["light", "moderate", "vigorous", "unspecified"]),
       })
       .parse(req.body);
     const patient = res.locals.patient;
@@ -388,7 +389,7 @@ export function activitiesRouter(deps: {
       : null;
     const base = ageSpecificEnergy(reference, weight.weight_kg, p.duration, resting);
     const energy = catalog.resistance
-      ? calculateStrengthTrainingCalories(base, p.restSeconds)
+      ? calculateStrengthTrainingCalories(base, p.restSeconds, p.intensity, reference.met)
       : base;
     res.json({ kcal: energy.grossKcal });
   });
@@ -506,6 +507,7 @@ export function activitiesRouter(deps: {
         !old ||
         p.date !== old.activity_date ||
         p.duration !== old.duration_minutes ||
+        p.intensity !== old.intensity ||
         restSeconds !== (old.rest_seconds ?? legacyRestSeconds(old.rest_period)) ||
         p.code !== old.snapshot.code ||
         p.version !== old.snapshot.catalogVersion ||
@@ -548,7 +550,12 @@ export function activitiesRouter(deps: {
           ? ageSpecificEnergy(reference!, weight!.weight_kg, p.duration, restingForActivity)
           : manualEnergy(p.manual!.kcal, p.manual!.kind, weight?.weight_kg ?? null, p.duration);
         const energy = catalog?.resistance
-          ? calculateStrengthTrainingCalories(baseEnergy as { grossKcal: number; netKcal: number }, restSeconds)
+          ? calculateStrengthTrainingCalories(
+              baseEnergy as { grossKcal: number; netKcal: number },
+              restSeconds,
+              p.intensity,
+              reference!.met,
+            )
           : baseEnergy;
         snapshot = {
           version: ENERGY_VERSION,
@@ -557,7 +564,9 @@ export function activitiesRouter(deps: {
           catalogVersion: p.version,
           name: catalog?.name ?? p.manual!.name,
           category: catalog?.category ?? "Informado manualmente",
-          met: reference?.met ?? null,
+          met: catalog?.resistance
+            ? ((energy as { effectiveMet?: number }).effectiveMet ?? reference!.met)
+            : (reference?.met ?? null),
           source: reference?.source ?? p.manual!.source,
           notes: reference?.notes ?? "",
           referenceKind: reference?.referenceKind ?? "manual",

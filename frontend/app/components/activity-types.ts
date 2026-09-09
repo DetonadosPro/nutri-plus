@@ -57,6 +57,8 @@ export type ActivitySession = {
     baseGrossKcal?: number | null;
     baseNetKcal?: number | null;
     restDensityFactor?: number;
+    intensityFactor?: number;
+    effectiveMet?: number;
     strengthCalculationVersion?: string;
     manual: ManualActivity | null;
     referenceKind?: 'adult-met' | 'youth-mety' | 'older-met60' | 'manual';

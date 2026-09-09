@@ -13,6 +13,12 @@ export const TEF_RATES = {
   fat: 0.015,
 } as const;
 export const STRENGTH_CALCULATION_VERSION = "strength-density-1";
+export const STRENGTH_MET_BY_INTENSITY = {
+  light: 3,
+  moderate: 3.5,
+  vigorous: 6,
+  unspecified: 3.5,
+} as const;
 export const REST_DENSITY_POINTS = [
   [30, 1.15],
   [60, 1.1],
@@ -43,16 +49,24 @@ export function calculateRestDensityFactor(restSeconds: number | null) {
 export function calculateStrengthTrainingCalories(
   base: { grossKcal: number; netKcal: number },
   restSeconds: number | null,
+  intensity: keyof typeof STRENGTH_MET_BY_INTENSITY = "moderate",
+  referenceMet: number = STRENGTH_MET_BY_INTENSITY[intensity],
 ) {
   if (![base.grossKcal, base.netKcal].every((value) => Number.isFinite(value) && value >= 0))
     throw new Error("Gasto base da musculação inválido.");
   const restDensityFactor = calculateRestDensityFactor(restSeconds);
+  if (!Number.isFinite(referenceMet) || referenceMet <= 0)
+    throw new Error("MET de referência inválido.");
+  const effectiveMet = STRENGTH_MET_BY_INTENSITY[intensity];
+  const intensityFactor = effectiveMet / referenceMet;
   return {
-    grossKcal: base.grossKcal * restDensityFactor,
-    netKcal: base.netKcal * restDensityFactor,
+    grossKcal: base.grossKcal * intensityFactor * restDensityFactor,
+    netKcal: base.netKcal * intensityFactor * restDensityFactor,
     baseGrossKcal: base.grossKcal,
     baseNetKcal: base.netKcal,
     restDensityFactor,
+    intensityFactor,
+    effectiveMet,
     strengthCalculationVersion: STRENGTH_CALCULATION_VERSION,
   };
 }
