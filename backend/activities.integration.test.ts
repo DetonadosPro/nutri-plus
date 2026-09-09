@@ -415,25 +415,25 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
       const preview = await request(
         "/estimate",
         "POST",
-        { date: today, duration: 60, code: "02054", version: "2024-pt-BR.1", restSeconds: 30, intensity: "moderate" },
+        { date: today, duration: 60, code: "02054", version: "2024-pt-BR.1", restSeconds: 30, intensity: "moderate", calculationProfile: "quick_strength" },
       );
       expect(preview.status).toBe(200);
       const a = await request(
         "/sessions",
         "POST",
-        payload({ time: null, code: "02054", duration: 60, restPeriod: "1to2" }),
+        payload({ time: null, code: "02054", duration: 60, restPeriod: "1to2", calculationProfile: "quick_strength" }),
       );
       expect(a.status).toBe(201);
       expect(a.body.local_time).toBeNull();
       expect(a.body.rest_period).toBe("1to2");
       expect(a.body.rest_seconds).toBe(90);
-      expect(a.body.snapshot.restDensityFactor).toBe(1.05);
-      expect(a.body.snapshot.grossKcal).toBe(3.5 * a.body.snapshot.weight.weight_kg * 1.05);
+      expect(a.body.snapshot.restDensityFactor).toBeCloseTo(1.017);
+      expect(a.body.snapshot.grossKcal).toBeCloseTo(3.5 * a.body.snapshot.weight.weight_kg * 1.017);
       expect(preview.body.kcal).toBeGreaterThan(a.body.snapshot.grossKcal);
       const b = await request(
         `/sessions/${a.body.id}`,
         "PUT",
-        payload({ time: null, code: "02054", duration: 60, restSeconds: 30, revision: 1, recalculate: true }),
+        payload({ time: null, code: "02054", duration: 60, restSeconds: 30, revision: 1, recalculate: true, calculationProfile: "quick_strength" }),
       );
       expect(b.status).toBe(200);
       expect(b.body.snapshot.grossKcal).toBeGreaterThan(a.body.snapshot.grossKcal);
@@ -466,12 +466,22 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
       expect(walking[0]).toBeLessThan(walking[1]);
       expect(walking[1]).toBeLessThan(walking[2]);
       const strength = await Promise.all([
-        estimate("02054", "light"),
-        estimate("02054", "moderate"),
-        estimate("02050", "vigorous"),
+        (await request("/estimate", "POST", { date: today, duration: 60, code: "02054", version: "2024-pt-BR.1", restSeconds: null, intensity: "light", calculationProfile: "quick_strength" })).body.kcal,
+        (await request("/estimate", "POST", { date: today, duration: 60, code: "02054", version: "2024-pt-BR.1", restSeconds: null, intensity: "moderate", calculationProfile: "quick_strength" })).body.kcal,
+        (await request("/estimate", "POST", { date: today, duration: 60, code: "02050", version: "2024-pt-BR.1", restSeconds: null, intensity: "vigorous", calculationProfile: "quick_strength" })).body.kcal,
       ]);
       expect(strength[0]).toBeLessThan(strength[1]);
       expect(strength[1]).toBeLessThan(strength[2]);
+    });
+    it("preserva o MET específico do catálogo sem multiplicar intensidade ou descanso", async () => {
+      const values = await Promise.all(["light", "moderate", "vigorous"].map(async (intensity) =>
+        (await request("/estimate", "POST", {
+          date: today, duration: 60, code: "02040", version: "2024-pt-BR.1",
+          restSeconds: 30, intensity, calculationProfile: "catalog_specific",
+        })).body.kcal,
+      ));
+      expect(values[0]).toBe(values[1]);
+      expect(values[1]).toBe(values[2]);
     });
     it("mantém peso original ao editar duração no fluxo simples", async () => {
       const a = await request("/sessions", "POST", payload({ time: null }));
