@@ -16,9 +16,11 @@ RERANK envia a mesma imagem sanitizada, a detecção e de três a cinco nomes am
 
 O `matchConfidence` é normalizado em 0–1 e não é a confiança autorreportada pelo modelo:
 
-`0,48 × correspondência lexical + 0,27 × identidade + 0,16 × preparação + 0,09 × característica − 0,22 por contradição − penalidade de especificidade`.
+`0,48 × correspondência lexical + 0,27 × identidade + 0,16 × preparação + 0,09 × característica + 0,12 quando a identidade é principal − 0,12 quando é secundária − 0,22 por contradição − penalidade de especificidade`.
 
-Correspondência lexical prioriza nome amigável exato/inicial, alias exato/inicial, tokens fortes, nome/alias parcial e nome original. A penalidade de especificidade reduz pratos compostos e qualificadores que não foram observados. Contradições conservadoras cobrem cru/cozido, frito/grelhado/assado/cozido, integral/branco/refinado e peito/coxa/sobrecoxa, somente quando a detecção trouxe a característica.
+Correspondência lexical prioriza nome amigável exato/inicial, alias exato/inicial, tokens fortes, nome/alias parcial e nome original. A identidade é principal quando aparece nos dois primeiros termos úteis do nome exibido; isso impede que um ingrediente secundário, como ovo em um empanado, domine o resultado. A penalidade de especificidade reduz pratos compostos e qualificadores que não foram observados. Contradições conservadoras cobrem cru/cozido, frito/grelhado/assado/cozido, integral/branco/refinado e peito/coxa/sobrecoxa, somente quando a detecção trouxe a característica.
+
+O segundo estágio recebe somente candidatos a no máximo 0,10 do primeiro score. Assim, o limite técnico de cinco não inclui opções claramente piores e a interface mantém no máximo três escolhas plausíveis.
 
 Decisão usa também `margin = top1Score − top2Score`:
 
