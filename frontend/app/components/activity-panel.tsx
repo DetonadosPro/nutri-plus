@@ -50,8 +50,8 @@ export function EnergyMethod() {
       <summary>Como estimamos o gasto</summary>
       <p>
         Repouso estimado pela fórmula adequada à idade × fator definido pelo nutricionista
-        = rotina diária estimada. Esse fator já contempla indiretamente o efeito
-        térmico dos alimentos (TEF), por isso ele não é somado novamente. A meta
+        = rotina diária estimada. O efeito térmico dos alimentos é calculado a
+        partir dos macronutrientes registrados e somado uma única vez. A meta
         alimentar é uma prescrição distinta do gasto.
       </p>
       <p>
@@ -95,6 +95,7 @@ export function EnergyNumbers({ day }: { day: EnergyDay }) {
           ['Repouso estimado', day.base.restingKcal],
           ['Rotina habitual além do repouso', day.habitualKcal],
           ['Rotina diária estimada', day.base.baseKcal],
+          ['Digestão dos alimentos', day.tefKcal],
           ['Adicional contabilizado', day.additionalKcal],
           ['Gasto diário estimado (TDEE)', day.totalKcal],
         ].map(([label, value]) => (

@@ -8,6 +8,7 @@ import {
   ENERGY_VERSION,
   energyBalance,
   manualEnergy,
+  thermicEffectOfFood,
 } from "./domain/activity-energy";
 import { ageSpecificEnergy, referenceForAge, schofieldRestingKcal } from "./domain/age-activity-energy";
 import {
@@ -117,10 +118,20 @@ export async function energyHistory(patient: Row, from: string, to: string) {
       )
       .all<Row>(id),
     await db
-      .prepare(`SELECT dl.log_date,COUNT(me.id)::int AS entries,COUNT(me.id) FILTER(WHERE fn.numeric_value IS NULL)::int AS missing,
-      SUM(fn.numeric_value*me.grams_equivalent/100) AS kcal
+      .prepare(`SELECT dl.log_date,COUNT(me.id)::int AS entries,COUNT(me.id) FILTER(WHERE nutrients.energy IS NULL)::int AS missing,
+      SUM(nutrients.energy*me.grams_equivalent/100) AS kcal,
+      SUM(nutrients.protein*me.grams_equivalent/100) AS protein_g,
+      SUM(nutrients.carbohydrate*me.grams_equivalent/100) AS carbohydrate_g,
+      SUM(nutrients.fat*me.grams_equivalent/100) AS fat_g
       FROM daily_logs dl JOIN meals m ON m.daily_log_id=dl.id JOIN meal_entries me ON me.meal_id=m.id
-      LEFT JOIN food_nutrients fn ON fn.food_id=me.food_id AND fn.nutrient_code='energia_kcal'
+      LEFT JOIN LATERAL (
+        SELECT
+          MAX(numeric_value) FILTER (WHERE nutrient_code='energia_kcal') AS energy,
+          MAX(numeric_value) FILTER (WHERE nutrient_code='proteina_g') AS protein,
+          MAX(numeric_value) FILTER (WHERE nutrient_code='carboidrato_g') AS carbohydrate,
+          MAX(numeric_value) FILTER (WHERE nutrient_code='lipideos_g') AS fat
+        FROM food_nutrients WHERE food_id=me.food_id
+      ) nutrients ON TRUE
       WHERE dl.patient_id = ? AND dl.log_date BETWEEN ? AND ? GROUP BY dl.log_date`)
       .all<Row>(id, from, to),
     await db
@@ -140,7 +151,7 @@ export async function energyHistory(patient: Row, from: string, to: string) {
       goal?.daily_activity_factor ??
       setting?.factor ??
       (mode === "base_plus_net"
-        ? ACTIVITY_FACTORS.sedentary
+        ? 1
         : ACTIVITY_FACTORS[patient.activity_level]) ??
       null;
     const clinicalReview = setting?.clinical_review ?? false;
@@ -179,9 +190,15 @@ export async function energyHistory(patient: Row, from: string, to: string) {
     const ingestion = food.find((f) => f.log_date === day);
     const complete = Boolean(ingestion?.entries > 0) && !(ingestion?.missing > 0);
     const intakeKcal = complete ? (ingestion?.kcal ?? 0) : null;
+    const tefKcal = thermicEffectOfFood({
+      proteinG: ingestion?.protein_g ?? null,
+      carbohydrateG: ingestion?.carbohydrate_g ?? null,
+      fatG: ingestion?.fat_g ?? null,
+    });
     const balance = energyBalance(
       intakeKcal,
       base.baseKcal,
+      tefKcal,
       base.mode,
       activities.map((s) => ({ outside_base: s.outside_base, snapshot: s.snapshot })),
     );
@@ -192,6 +209,7 @@ export async function energyHistory(patient: Row, from: string, to: string) {
         base.baseKcal == null || base.restingKcal == null ? null : base.baseKcal - base.restingKcal,
       activities,
       intakeKcal,
+      tefKcal,
       knownIntakeKcal: ingestion?.kcal ?? null,
       foodComplete: complete,
       missingFoodEnergy: ingestion?.missing ?? 0,

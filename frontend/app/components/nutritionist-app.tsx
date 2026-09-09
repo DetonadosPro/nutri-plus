@@ -1760,14 +1760,14 @@ function SelfDiaryPortal({
   onLogout: () => void;
   onBack: () => void;
 }) {
-  const [ready, setReady] = useState(false);
+  const [patientId, setPatientId] = useState<number | null>(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
     let active = true;
-    void api('/nutritionist/self-diary', { method: 'POST' })
-      .then(() => {
-        if (active) setReady(true);
+    void api<{ patientId: number }>('/nutritionist/self-diary', { method: 'POST' })
+      .then((result) => {
+        if (active) setPatientId(result.patientId);
       })
       .catch((reason) => {
         if (active)
@@ -1786,13 +1786,14 @@ function SelfDiaryPortal({
         action={<Button onClick={onBack}>Voltar à área profissional</Button>}
       />
     );
-  if (!ready) return <ContentSkeleton rows={6} />;
+  if (patientId == null) return <ContentSkeleton rows={6} />;
   return (
     <div className="nutritionist-self-diary-portal">
       <PatientApp
         user={user}
         onLogout={onLogout}
         professionalMode
+        selfPatientId={patientId}
         onProfessionalBack={onBack}
       />
     </div>
@@ -2126,7 +2127,7 @@ function CreatePatientDialog({
                 <div>
                   <p className="text-sm font-medium">Fator cotidiano</p>
                   <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                    Multiplica a basal para estimar um dia comum sem treino e já contempla o TEF. Exercícios registrados são somados separadamente.
+                    Multiplica a basal para representar sua rotina sem treino. A digestão dos alimentos e os exercícios registrados são somados separadamente.
                   </p>
                 </div>
                 <GoalInput
@@ -2423,7 +2424,7 @@ function GoalsDialog({
           <div className="rounded-2xl border bg-surface-soft px-4 py-4 sm:col-span-2">
             <p className="text-sm font-medium">Fator cotidiano</p>
             <p className="mt-1 text-xs text-muted-foreground">
-              Multiplica a basal para estimar um dia comum sem treino e já contempla o TEF. Exercícios registrados são somados separadamente.
+              Multiplica a basal para representar a rotina sem treino. A digestão dos alimentos e os exercícios registrados são somados separadamente.
             </p>
             <div className="mt-3 max-w-48">
               <GoalInput
