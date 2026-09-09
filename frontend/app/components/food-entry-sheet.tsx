@@ -382,6 +382,7 @@ export function FoodEntrySheet({
                       value={consumedTime}
                       onChange={(event) => setConsumedTime(event.target.value)}
                     />
+                    <Clock3 className="food-time-mobile-icon size-4" aria-hidden="true" />
                   </div>
                 </div>
               </section>
