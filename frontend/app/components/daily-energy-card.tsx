@@ -73,7 +73,7 @@ export function DailyEnergyCard({
         aria-label="Energia do dia"
       >
         <div className="daily-energy-split">
-          <div>
+          <div className="daily-energy-intake">
             <span className="daily-energy-label">Calorias ingeridas</span>
             <p>
               <strong>{formatNumber(consumed)}</strong>
