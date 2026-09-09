@@ -55,6 +55,7 @@ export function useNavigationState<T extends Record<string, unknown>>(
     }
     sessionStorage.setItem(storageKey, JSON.stringify(initialValue.current));
     const onPopState = (event: PopStateEvent) => {
+      if (event.state?.nutriOverlayReturn) return;
       const stored = event.state?.nutriNavigation as StoredState<T> | undefined;
       if (stored?.namespace !== namespace) return;
       valueRef.current = stored.value;

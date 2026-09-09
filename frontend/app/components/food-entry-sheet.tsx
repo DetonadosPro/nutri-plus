@@ -79,8 +79,9 @@ export function FoodEntrySheet({
     if (!historyReady.current) {
       const baseState = { ...window.history.state };
       delete baseState.nutriFoodEntry;
-      window.history.replaceState(baseState, '');
       historySession.current = crypto.randomUUID();
+      baseState.nutriOverlayReturn = historySession.current;
+      window.history.replaceState(baseState, '');
       window.history.pushState({
         ...baseState,
         nutriFoodEntry: { session: historySession.current, step: 'search' },
@@ -113,6 +114,11 @@ export function FoodEntrySheet({
         return;
       }
       resetTransientState();
+      if (event.state?.nutriOverlayReturn === historySession.current) {
+        const cleanState = { ...event.state };
+        delete cleanState.nutriOverlayReturn;
+        window.history.replaceState(cleanState, '');
+      }
       closing.current = false;
       historyReady.current = false;
       historySession.current = '';
