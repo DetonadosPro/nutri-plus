@@ -28,6 +28,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { NutrientDetails } from './nutrient-details';
+import { foodDisplayName } from '@/lib/food-name';
 
 export function NutritionSummary({
   summary,
@@ -397,7 +398,7 @@ export function MealTimeline({
                 <div key={entry.id} className="meal-entry">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-baseline gap-x-2">
-                      <p className="meal-entry-title">{entry.description}</p>
+                      <p className="meal-entry-title">{foodDisplayName(entry)}</p>
                       {entry.consumed_at && (
                         <time className="meal-entry-time">
                           {timeFromTimestamp(entry.consumed_at)}
@@ -414,7 +415,7 @@ export function MealTimeline({
                     <DropdownMenu>
                       <DropdownMenuTrigger
                         className="icon-button subtle"
-                        aria-label={`Ações de ${entry.description}`}
+                        aria-label={`Ações de ${foodDisplayName(entry)}`}
                       >
                         <MoreHorizontal className="size-4" />
                       </DropdownMenuTrigger>

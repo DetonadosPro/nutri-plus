@@ -17,6 +17,8 @@ export type Food = {
   id: number;
   source_code: string;
   description: string;
+  name?: string;
+  displayName?: string | null;
   category: string | null;
   scientific_name?: string | null;
   brand?: string | null;
@@ -31,6 +33,8 @@ export type MealEntry = {
   id: number;
   food_id: number;
   description: string;
+  name?: string;
+  displayName?: string | null;
   category: string | null;
   source: 'TACO' | 'TBCA';
   glycemicIndex: number | null;

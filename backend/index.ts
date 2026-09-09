@@ -240,7 +240,11 @@ async function dailySummary(patientId: number, date: string) {
   for (const meal of meals) {
     const entries = await db
       .prepare(
-        `SELECT me.id, me.amount, me.unit, me.grams_equivalent, me.consumed_at, f.id AS food_id, f.description, f.category, f.source, f.glycemic_index AS "glycemicIndex" FROM meal_entries me JOIN foods f ON f.id = me.food_id WHERE me.meal_id = ? ORDER BY COALESCE(me.consumed_at, me.created_at), me.id`,
+        `SELECT me.id, me.amount, me.unit, me.grams_equivalent, me.consumed_at, f.id AS food_id,
+          f.description, f.description AS name, COALESCE(f.display_name,f.description) AS "displayName",
+          f.category, f.source, f.glycemic_index AS "glycemicIndex"
+         FROM meal_entries me JOIN foods f ON f.id = me.food_id WHERE me.meal_id = ?
+         ORDER BY COALESCE(me.consumed_at, me.created_at), me.id`,
       )
       .all<Record<string, any>>(meal.id);
     const resolved = await Promise.all(
@@ -353,8 +357,8 @@ app.get(
         .status(403)
         .json({ error: "Apenas o nutricionista responsável pela base pode editar o IG." });
     const foods = await db
-      .prepare(`SELECT id, source_code, description, category, glycemic_index AS "glycemicIndex"
-    FROM foods WHERE active AND source = 'TBCA' ORDER BY category, description`)
+      .prepare(`SELECT id, source_code, description, description AS name, COALESCE(display_name,description) AS "displayName", category, glycemic_index AS "glycemicIndex"
+    FROM foods WHERE active AND source = 'TBCA' ORDER BY category, COALESCE(display_name,description)`)
       .all();
     const completed = foods.filter((food) => food.glycemicIndex != null).length;
     res.json({ foods, completed, total: foods.length });
@@ -377,7 +381,7 @@ app.put(
     const food = await db
       .prepare(`UPDATE foods SET glycemic_index = ?, updated_at = CURRENT_TIMESTAMP
     WHERE id = ? AND active AND source = 'TBCA'
-    RETURNING id, source_code, description, category, glycemic_index AS "glycemicIndex"`)
+    RETURNING id, source_code, description, description AS name, COALESCE(display_name,description) AS "displayName", category, glycemic_index AS "glycemicIndex"`)
       .get(payload.glycemicIndex, foodId);
     if (!food) return res.status(404).json({ error: "Alimento TBCA não encontrado." });
     res.json(food);
@@ -715,39 +719,55 @@ app.get(
     if (favoritesOnly) {
       const tokens = search ? search.split(/\s+/).filter(Boolean).slice(0, 5) : [];
       const where = tokens.length
-        ? `AND ${tokens.map(() => "f.normalized_name LIKE ?").join(" AND ")}`
+        ? `AND ${tokens.map(() => "f.normalized_search_text LIKE ?").join(" AND ")}`
         : "";
       foods = await db
-        .prepare(`SELECT f.id, f.source_code, f.description, f.category, f.scientific_name, f.brand, f.source, f.glycemic_index AS "glycemicIndex"
+        .prepare(`SELECT f.id, f.source_code, f.description, f.description AS name, COALESCE(f.display_name,f.description) AS "displayName", f.category, f.scientific_name, f.brand, f.source, f.glycemic_index AS "glycemicIndex"
       FROM favorites fav JOIN foods f ON f.id = fav.food_id
       WHERE fav.user_id = ? AND f.active AND f.source = 'TBCA' ${where}
-      ORDER BY f.description LIMIT 100`)
+      ORDER BY COALESCE(f.display_name,f.description) LIMIT 100`)
         .all(user.id, ...tokens.map((token) => `%${token}%`));
     } else if (search) {
       const tokens = search.split(/\s+/).filter(Boolean).slice(0, 5);
-      const where = tokens.map(() => "normalized_name LIKE ?").join(" AND ");
+      const where = tokens.map(() => "normalized_search_text LIKE ?").join(" AND ");
       foods = await db
         .prepare(
-          `SELECT id, source_code, description, category, scientific_name, brand, source, glycemic_index AS "glycemicIndex" FROM foods WHERE active AND source = 'TBCA' AND ${where} ORDER BY (normalized_name LIKE ?) DESC, similarity(normalized_name, ?) DESC, description LIMIT 25`,
+          `SELECT id, source_code, description, description AS name, COALESCE(display_name,description) AS "displayName", category, scientific_name, brand, source, glycemic_index AS "glycemicIndex"
+           FROM foods WHERE active AND source = 'TBCA' AND ${where}
+           ORDER BY CASE
+             WHEN normalized_display_name = ? THEN 0
+             WHEN normalized_display_name LIKE ? THEN 1
+             WHEN ? = ANY(normalized_search_aliases) THEN 2
+             WHEN EXISTS(SELECT 1 FROM unnest(normalized_search_aliases) alias WHERE alias LIKE ?) THEN 3
+             WHEN normalized_display_name LIKE ? THEN 4
+             WHEN EXISTS(SELECT 1 FROM unnest(normalized_search_aliases) alias WHERE alias LIKE ?) THEN 5
+             WHEN normalized_name = ? THEN 6
+             WHEN normalized_name LIKE ? THEN 7
+             ELSE 8 END,
+             CASE WHEN normalized_display_name LIKE ? THEN 0 ELSE 1 END,
+             source_code,
+             GREATEST(similarity(normalized_display_name, ?),similarity(normalized_name, ?)) DESC,
+             COALESCE(display_name,description)
+           LIMIT 25`,
         )
-        .all(...tokens.map((token) => `%${token}%`), `${search}%`, search);
+        .all(...tokens.map((token) => `%${token}%`), search, `${search}%`, search, `${search}%`, `%${search}%`, `%${search}%`, search, `${search}%`, `%${search}%`, search, search);
     } else if (patient) {
       foods = await db
-        .prepare(`SELECT f.id, f.source_code, f.description, f.category, f.scientific_name, f.brand, f.source, f.glycemic_index AS "glycemicIndex", MAX(me.created_at) AS last_used
+        .prepare(`SELECT f.id, f.source_code, f.description, f.description AS name, COALESCE(f.display_name,f.description) AS "displayName", f.category, f.scientific_name, f.brand, f.source, f.glycemic_index AS "glycemicIndex", MAX(me.created_at) AS last_used
       FROM meal_entries me JOIN foods f ON f.id = me.food_id JOIN meals m ON m.id = me.meal_id JOIN daily_logs dl ON dl.id = m.daily_log_id
       WHERE dl.patient_id = ? AND f.active AND f.source = 'TBCA' GROUP BY f.id ORDER BY last_used DESC LIMIT 12`)
         .all(patient.id);
       if (!foods.length) {
         foods = await db
           .prepare(
-            `SELECT id, source_code, description, category, scientific_name, brand, source, glycemic_index AS "glycemicIndex" FROM foods WHERE active AND source = 'TBCA' ORDER BY description LIMIT 20`,
+            `SELECT id, source_code, description, description AS name, COALESCE(display_name,description) AS "displayName", category, scientific_name, brand, source, glycemic_index AS "glycemicIndex" FROM foods WHERE active AND source = 'TBCA' ORDER BY COALESCE(display_name,description) LIMIT 20`,
           )
           .all();
       }
     } else {
       foods = await db
         .prepare(
-          `SELECT id, source_code, description, category, scientific_name, brand, source, glycemic_index AS "glycemicIndex" FROM foods WHERE active AND source = 'TBCA' ORDER BY description LIMIT 20`,
+          `SELECT id, source_code, description, description AS name, COALESCE(display_name,description) AS "displayName", category, scientific_name, brand, source, glycemic_index AS "glycemicIndex" FROM foods WHERE active AND source = 'TBCA' ORDER BY COALESCE(display_name,description) LIMIT 20`,
         )
         .all();
     }
@@ -791,7 +811,8 @@ app.post('/api/foods/recognize',
     let detected;
     try { detected = await recognizePhoto(req.body); }
     catch { return res.status(503).json({ error: 'Não foi possível analisar esta foto agora. Tente outra imagem ou use a busca manual.' }); }
-    const foods = await db.prepare("SELECT id, source_code, description, category, source FROM foods WHERE active AND source = 'TBCA'").all<{ id: number; source_code: string; description: string; category: string; source: string }>();
+    const foods = await db.prepare(`SELECT id,source_code,description,description AS name,COALESCE(display_name,description) AS "displayName",search_aliases AS "searchAliases",category,source
+      FROM foods WHERE active AND source='TBCA'`).all<{ id:number;source_code:string;description:string;displayName:string;searchAliases:string[];category:string;source:string }>();
     const items = await Promise.all(detected.items.map(async item => {
       const ranked = rankFoodCandidates(item.name, foods);
       const alternatives = item.alternatives.flatMap(name => rankFoodCandidates(name, foods));

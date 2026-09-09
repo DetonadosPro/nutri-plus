@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { foodDisplayName } from "@/lib/food-name";
 
 export function EditEntryDialog({
   value,
@@ -60,7 +61,7 @@ export function EditEntryDialog({
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Editar registro</DialogTitle>
-          <DialogDescription>{value?.entry.description}</DialogDescription>
+          <DialogDescription>{value?.entry ? foodDisplayName(value.entry) : ""}</DialogDescription>
         </DialogHeader>
         <div>
           <Label htmlFor="edit-grams">Quantidade</Label>
