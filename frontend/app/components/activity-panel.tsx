@@ -484,6 +484,7 @@ export function ActivityPanel({
                     {
                       light: 'leve',
                       moderate: 'moderado',
+                      intense: 'intenso',
                       vigorous: 'vigoroso',
                       unspecified: 'não informado',
                     }[details.intensity]
