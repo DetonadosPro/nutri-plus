@@ -40,6 +40,13 @@
   font-variant-numeric: tabular-nums;
   line-height: 1.2;
 }
+.daily-energy-intake p strong {
+  font-size: clamp(2.15rem, 8vw, 3.25rem);
+  font-weight: 700;
+}
+.daily-balance p strong {
+  font-size: clamp(1.55rem, 5.6vw, 2.35rem);
+}
 .daily-energy-split p > span {
   font-size: 0.8rem;
   color: #456973;

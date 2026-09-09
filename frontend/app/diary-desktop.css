@@ -21,6 +21,8 @@
   }
   .diary-overview .daily-energy-card { padding: 1.25rem; box-shadow: none; }
   .diary-overview .daily-energy-split p strong { font-size: clamp(1.6rem, 2.2vw, 2.25rem); }
+  .diary-overview .daily-energy-intake p strong { font-size: clamp(2rem, 2.8vw, 2.75rem); }
+  .diary-overview .daily-balance p strong { font-size: clamp(1.5rem, 2vw, 2rem); }
   .diary-overview .daily-energy-label { font-size: .8rem; }
   .diary-overview .patient-macro-grid { gap: .65rem; align-items: start; }
   .diary-overview .patient-macro-card { padding: 0; box-shadow: none; }
