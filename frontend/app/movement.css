@@ -383,11 +383,6 @@
   color: #65766b;
   line-height: 1.25;
 }
-.movement-effort-kcal {
-  color: #315d45;
-  font-size: 0.78rem;
-  font-weight: 750;
-}
 .movement-effort-bars {
   height: 22px;
   display: flex;
