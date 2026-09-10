@@ -7,7 +7,8 @@ import { normalizeSearch, type NutrientStatus } from './taco-import';
 type RawNutrient = { componente: string; tagname: string; unidade: string; valor_100g: unknown };
 export type RawFood = { codigo: string; grupo: string | null; marca?: string | null; nome: string; nome_original: string; nome_exibicao: string; aliases_busca: string[]; nome_cientifico?: string | null; url?: string | null; nutrientes: RawNutrient[] };
 
-export const inactiveTbcaCodes = new Set(['BRC0056G']);
+export const inactiveTbcaCodes = new Set(['BRC0001A', 'BRC0056G']);
+export const tbcaDisplayNameOverrides = new Map([['BRC0018A', 'Arroz Branco']]);
 
 const definitions = [
   ['vitamina_e_mg','Vitamina E','TOCPHA','mg','vitamin'], ['acucar_adicao_g','Açúcar de adição','TBCA_ADDED_SUGAR','g','macro'],
@@ -75,10 +76,12 @@ export async function importTbca(filePath = projectPath('data','tbca','tbca comp
       SELECT x.code,x.name,x.tagname,x.unit,x.nutrient_group,x.sort_order FROM jsonb_to_recordset(?::jsonb) x(code text,name text,tagname text,unit text,nutrient_group text,sort_order int)
       ON CONFLICT(code) DO UPDATE SET name=excluded.name,tagname=excluded.tagname,unit=excluded.unit,nutrient_group=excluded.nutrient_group,sort_order=excluded.sort_order`).run(JSON.stringify(nutrientRows));
     const foods = dataset.map(f => {
-      const normalizedAliases = [...new Set(f.aliases_busca.map(normalizeSearch).filter(Boolean))];
+      const displayName = tbcaDisplayNameOverrides.get(f.codigo) ?? f.nome_exibicao;
+      const searchAliases = tbcaDisplayNameOverrides.has(f.codigo) ? [...new Set([...f.aliases_busca, f.nome_exibicao, displayName])] : f.aliases_busca;
+      const normalizedAliases = [...new Set(searchAliases.map(normalizeSearch).filter(Boolean))];
       const normalizedName = normalizeSearch(f.nome_original);
-      const normalizedDisplayName = normalizeSearch(f.nome_exibicao);
-      return {source_code:f.codigo,description:f.nome_original,display_name:f.nome_exibicao,search_aliases:f.aliases_busca,normalized_name:normalizedName,normalized_display_name:normalizedDisplayName,normalized_search_aliases:normalizedAliases,normalized_search_text:[normalizedDisplayName,normalizedName,...normalizedAliases].join(' '),category:f.grupo,scientific_name:f.nome_cientifico ?? null,brand:f.marca ?? null,source_url:f.url ?? null,active:!inactiveTbcaCodes.has(f.codigo)};
+      const normalizedDisplayName = normalizeSearch(displayName);
+      return {source_code:f.codigo,description:f.nome_original,display_name:displayName,search_aliases:searchAliases,normalized_name:normalizedName,normalized_display_name:normalizedDisplayName,normalized_search_aliases:normalizedAliases,normalized_search_text:[normalizedDisplayName,normalizedName,...normalizedAliases].join(' '),category:f.grupo,scientific_name:f.nome_cientifico ?? null,brand:f.marca ?? null,source_url:f.url ?? null,active:!inactiveTbcaCodes.has(f.codigo)};
     });
     for (let offset=0; offset<foods.length; offset+=1000) await db.prepare(`INSERT INTO foods(source,source_code,description,display_name,search_aliases,normalized_name,normalized_display_name,normalized_search_aliases,normalized_search_text,category,scientific_name,brand,source_url,active,updated_at)
       SELECT 'TBCA',x.source_code,x.description,x.display_name,x.search_aliases,x.normalized_name,x.normalized_display_name,x.normalized_search_aliases,x.normalized_search_text,x.category,x.scientific_name,x.brand,x.source_url,x.active,CURRENT_TIMESTAMP FROM jsonb_to_recordset(?::jsonb) x(source_code text,description text,display_name text,search_aliases text[],normalized_name text,normalized_display_name text,normalized_search_aliases text[],normalized_search_text text,category text,scientific_name text,brand text,source_url text,active boolean)

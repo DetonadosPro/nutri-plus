@@ -56,7 +56,7 @@ await seedActivityCatalog();
 const tbcaCount = Number(
   (
     await db
-      .prepare(`SELECT COUNT(*)::int AS count FROM foods WHERE source = 'TBCA' AND active`)
+      .prepare(`SELECT COUNT(*)::int AS count FROM foods WHERE source = 'TBCA'`)
       .get<{ count: number }>()
   )?.count ?? 0,
 );
