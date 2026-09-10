@@ -45,6 +45,10 @@ it.skipIf(!process.env.NUTRI_MEASURE_TEST_API)('API: criar, editar, mover, copia
     const searched=await request('/foods?search=leite%20b%C3%BAfala%20integral','GET');
     expect(searched.status).toBe(200);
     expect(searched.body.find((food:any)=>food.id===liquid.id)?.measures).toEqual(expect.arrayContaining([expect.objectContaining({id:ml.id,kind:'volume',name:'mL'})]));
+    const genericMilk=await request('/foods?search=leite%20integral','GET');
+    expect(genericMilk.status).toBe(200);
+    expect(genericMilk.body[0]).toEqual(expect.objectContaining({source_code:'BRC0027G',displayName:'Leite búfala integral'}));
+    expect(genericMilk.body.findIndex((food:any)=>food.displayName.startsWith('Lanche brasileiro'))).toBeGreaterThan(0);
     const liquidAdded=await request('/meals','POST',{date:'2026-09-13',mealType:'breakfast',items:[{foodId:liquid.id,quantity:100,measureId:ml.id}]});
     expect(liquidAdded.status).toBe(201);
     let liquidMeal=liquidAdded.body.meals[0], liquidEntry=liquidMeal.entries[0];

@@ -735,6 +735,7 @@ app.get(
     } else if (search) {
       const tokens = foodSearchTokenVariants(search).slice(0, 5);
       const canonicalSearch=normalizeFoodQuery(search);
+      const firstCanonicalToken=canonicalSearch.split(' ')[0];
       const where = tokens.map((variants) => `(${variants.map(()=>"normalized_search_text LIKE ?").join(' OR ')})`).join(" AND ");
       foods = await db
         .prepare(
@@ -742,21 +743,25 @@ app.get(
            FROM foods WHERE active AND source = 'TBCA' AND ${where}
            ORDER BY CASE
              WHEN normalized_display_name = ? THEN 0
+             WHEN normalized_name = ? THEN 0
              WHEN normalized_display_name LIKE ? THEN 1
-             WHEN ? = ANY(normalized_search_aliases) THEN 2
-             WHEN EXISTS(SELECT 1 FROM unnest(normalized_search_aliases) alias WHERE alias LIKE ?) THEN 3
-             WHEN normalized_display_name LIKE ? THEN 4
-             WHEN EXISTS(SELECT 1 FROM unnest(normalized_search_aliases) alias WHERE alias LIKE ?) THEN 5
-             WHEN normalized_name = ? THEN 6
-             WHEN normalized_name LIKE ? THEN 7
-             ELSE 8 END,
-             CASE WHEN normalized_display_name LIKE ? THEN 0 ELSE 1 END,
-             source_code,
+             WHEN normalized_name LIKE ? THEN 1
+             WHEN normalized_display_name LIKE ? THEN 2
+             WHEN normalized_name LIKE ? THEN 2
+             ELSE 3 END,
              GREATEST(similarity(normalized_display_name, ?),similarity(normalized_name, ?)) DESC,
+             CASE
+               WHEN ? = ANY(normalized_search_aliases) THEN 0
+               WHEN EXISTS(SELECT 1 FROM unnest(normalized_search_aliases) alias WHERE alias LIKE ?) THEN 1
+               WHEN EXISTS(SELECT 1 FROM unnest(normalized_search_aliases) alias WHERE alias LIKE ?) THEN 2
+               ELSE 3 END,
+             source_code,
              COALESCE(display_name,description)
            LIMIT 25`,
         )
-        .all(...tokens.flatMap((variants)=>variants.map(token=>`%${token}%`)), canonicalSearch, `${canonicalSearch}%`, canonicalSearch, `${canonicalSearch}%`, `%${canonicalSearch}%`, `%${canonicalSearch}%`, canonicalSearch, `${canonicalSearch}%`, `%${canonicalSearch}%`, canonicalSearch, canonicalSearch);
+        .all(...tokens.flatMap((variants)=>variants.map(token=>`%${token}%`)), canonicalSearch, canonicalSearch,
+          `${canonicalSearch}%`, `${canonicalSearch}%`, `${firstCanonicalToken}%`, `${firstCanonicalToken}%`,
+          canonicalSearch, canonicalSearch, canonicalSearch, `${canonicalSearch}%`, `%${canonicalSearch}%`);
     } else if (patient) {
       foods = await db
         .prepare(`SELECT f.id, f.source_code, f.description, f.description AS name, COALESCE(f.display_name,f.description) AS "displayName", f.category, f.scientific_name, f.brand, f.source, f.glycemic_index AS "glycemicIndex", MAX(me.created_at) AS last_used
