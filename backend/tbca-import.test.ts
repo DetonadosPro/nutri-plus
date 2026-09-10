@@ -1,7 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { projectPath } from './db';
-import { inactiveTbcaCodes, tbcaDisplayNameOverrides, validateTbcaDataset, type RawFood } from './tbca-import';
+import { validateTbcaDataset, type RawFood } from './tbca-import';
+import type { FoodCurationFile } from './food-curation-rules';
 
 describe('TBCA com nomes amigáveis', () => {
   it('preserva todos os nomes originais e valida aliases sem truncamento', () => {
@@ -15,10 +16,10 @@ describe('TBCA com nomes amigáveis', () => {
     expect(rice.nome_original).toContain('Arroz, polido, cru');
     expect(rice.nome_exibicao).toBe('Arroz polido cru');
     expect(rice.nome_original).not.toBe(rice.nome_exibicao);
-    expect(inactiveTbcaCodes.has('BRC0056G')).toBe(true);
-    expect(inactiveTbcaCodes.has('BRC0058G')).toBe(false);
-    expect(inactiveTbcaCodes.has('BRC0001A')).toBe(true);
-    expect(inactiveTbcaCodes.has('BRC0018A')).toBe(false);
-    expect(tbcaDisplayNameOverrides.get('BRC0018A')).toBe('Arroz Branco');
+    const curated = (JSON.parse(readFileSync(projectPath('data','food-curation.v1.json'),'utf8')) as FoodCurationFile).foods;
+    expect(curated).toHaveLength(5874);
+    expect(curated.find(food=>food.source_code==='BRC0001A')?.friendly_name).toBe('Arroz branco cru');
+    expect(curated.find(food=>food.source_code==='BRC0018A')?.friendly_name).toBe('Arroz branco cozido');
+    expect(curated.every(food=>food.priority)).toBe(true);
   });
 });

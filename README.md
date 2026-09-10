@@ -1,13 +1,15 @@
 # Nutri+
 
-Sistema para acompanhamento nutricional de pacientes e nutricionistas, executável localmente ou em servidor. A única base alimentar ativa é a TACO 4ª edição ampliada e revisada, com 597 alimentos e 26 componentes por 100 g.
+Sistema para acompanhamento nutricional de pacientes e nutricionistas, executável localmente ou em servidor. A base alimentar ativa é a TBCA, com 5.874 alimentos e 41 componentes por 100 g. Os 597 alimentos TACO permanecem inativos e são usados somente como referência de curadoria.
 
 ## Organização
 
 - `frontend/`: interface web responsiva, porta 3000;
 - `backend/`: API, banco PostgreSQL local, importador e regras nutricionais, porta 3001;
-- `backend/data/taco/`: PDF oficial, JSON e CSV auditáveis;
-- `docs/`: arquitetura e relatório da extração TACO.
+- `backend/data/tbca/`: fonte nutricional TBCA preservada;
+- `backend/data/food-curation.v1.json`: nomes, aliases, prioridades e sinais de revisão reproduzíveis;
+- `backend/data/taco/`: referência conceitual TACO, sem uso nutricional na busca ativa;
+- `docs/`: arquitetura, políticas e relatórios auditáveis.
 
 ## Inicialização
 
@@ -43,8 +45,11 @@ O administrador gera um código de ativação para o nutricionista, acompanha a 
 
 ```powershell
 npm run taco:extract  # recria JSON e CSV a partir do PDF oficial
-npm run taco:import   # UPSERT idempotente dos 597 alimentos
-npm run db:setup      # migração, importação TACO e dados locais de demonstração
+npm run tbca:import   # UPSERT idempotente da TBCA e da curadoria versionada
+npm run curation:check # valida a curadoria sem escrever no banco
+npm run curation:import # aplica somente a camada de busca, com fingerprints
+npm run curation:audit # audita cobertura, preservação, ranking e latência local
+npm run db:setup      # migrações e dados locais de demonstração
 npm run audit         # contagens e invariantes do PostgreSQL
 npm test              # testes do backend
 npm run build         # validação de produção do frontend
@@ -73,6 +78,6 @@ Em qualquer ambiente, o endereço do PostgreSQL fica somente em `DATABASE_URL`. 
 - os totais de refeições, dias e períodos usam a mesma função centralizada;
 - a API é a única camada que acessa o PostgreSQL; nenhuma credencial é armazenada no Git.
 
-Detalhes: [arquitetura](docs/ARCHITECTURE.md) e [relatório da TACO](docs/TACO_EXTRACTION_REPORT.md).
+Detalhes: [arquitetura](docs/ARCHITECTURE.md), [curadoria da busca TBCA](docs/tbca-search-curation.md) e [relatório gerado da curadoria](docs/tbca-curation-report.md).
 
 Configuração de produção, IAM Role, Secrets Manager e cuidados de rotação: [segurança na AWS](docs/AWS_SECURITY.md).

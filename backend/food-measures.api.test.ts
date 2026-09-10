@@ -22,8 +22,7 @@ it.skipIf(!process.env.NUTRI_MEASURE_TEST_API)('API: criar, editar, mover, copia
     const rice=(await db.prepare("SELECT id FROM foods WHERE source='TBCA' AND source_code='BRC0018A'").get<{id:number}>())!;
     const whiteRiceSearch=await request('/foods?search=arroz%20branco','GET');
     expect(whiteRiceSearch.status).toBe(200);
-    expect(whiteRiceSearch.body[0]).toEqual(expect.objectContaining({source_code:'BRC0018A',displayName:'Arroz Branco'}));
-    expect(whiteRiceSearch.body.some((food:any)=>food.source_code==='BRC0001A')).toBe(false);
+    expect(whiteRiceSearch.body[0]).toEqual(expect.objectContaining({source_code:'BRC0018A',displayName:'Arroz branco cozido'}));
     const riceMeasure=(await db.prepare("SELECT id FROM food_measures WHERE food_id=? AND name='colher de sopa cheia'").get<{id:number}>(rice.id))!;
     const listedMeasures=await request(`/foods/${rice.id}/measures`,'GET');
     expect(listedMeasures.status).toBe(200);
@@ -51,7 +50,7 @@ it.skipIf(!process.env.NUTRI_MEASURE_TEST_API)('API: criar, editar, mover, copia
     expect(searched.body.find((food:any)=>food.id===liquid.id)?.measures).toEqual(expect.arrayContaining([expect.objectContaining({id:ml.id,kind:'volume',name:'mL'})]));
     const genericMilk=await request('/foods?search=leite%20integral','GET');
     expect(genericMilk.status).toBe(200);
-    expect(genericMilk.body[0]).toEqual(expect.objectContaining({source_code:'BRC0027G',displayName:'Leite búfala integral'}));
+    expect(genericMilk.body[0]).toEqual(expect.objectContaining({source_code:'BRC0044G',displayName:'Leite integral UHT'}));
     expect(genericMilk.body.findIndex((food:any)=>food.displayName.startsWith('Lanche brasileiro'))).toBeGreaterThan(0);
     const liquidAdded=await request('/meals','POST',{date:'2026-09-13',mealType:'breakfast',items:[{foodId:liquid.id,quantity:100,measureId:ml.id}]});
     expect(liquidAdded.status).toBe(201);

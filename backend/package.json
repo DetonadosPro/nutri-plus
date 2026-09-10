@@ -15,7 +15,11 @@
     "measures:check": "tsx measure-import.ts --check",
     "measures:import": "tsx measure-import.ts",
     "measures:audit": "tsx measure-audit.ts",
-    "measures:samples": "tsx measure-samples.ts"
+    "measures:samples": "tsx measure-samples.ts",
+    "curation:generate": "tsx food-curation.ts --generate",
+    "curation:check": "tsx food-curation.ts --check",
+    "curation:import": "tsx food-curation.ts --import",
+    "curation:audit": "tsx food-curation.ts --audit"
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.1127.0",

@@ -4,7 +4,7 @@
 
 O frontend conversa somente com a API Express. A API é a única camada que acessa o PostgreSQL. A conexão fica centralizada em `DATABASE_URL`; por segurança, hosts externos só são aceitos quando `NUTRI_ALLOW_REMOTE_DATABASE=true` estiver definido explicitamente no ambiente do servidor.
 
-O `docker-compose.yml` reproduz a arquitetura completa com PostgreSQL, inicializa a base TACO de forma idempotente, executa frontend e backend separadamente e publica tudo pelo gateway Nginx. Para subir localmente:
+O `docker-compose.yml` reproduz a arquitetura completa com PostgreSQL, executa frontend e backend separadamente e publica tudo pelo gateway Nginx. Para subir localmente:
 
 1. copie `.env.docker.example` para `.env` e troque a senha;
 2. execute `docker compose up --build`;
@@ -28,14 +28,14 @@ Os antigos endereços `www`, `pro` e `admin` redirecionam para o domínio princi
 
 ## Base nutricional
 
-A fonte única é a TACO 4ª edição ampliada e revisada. `backend/scripts/extract-taco-pdf.py` lê a tabela diretamente do PDF oficial por coordenadas, combina as páginas esquerda/direita pelo código do alimento e produz JSON e CSV auditáveis. O texto é extraído sem OCR; os nomes são recuperados dos bytes textuais do próprio PDF.
+A fonte nutricional ativa é a TBCA versionada em `backend/data/tbca/tbca completa normalizada.json`: 5.874 códigos únicos e 41 componentes por alimento. O importador preserva `0` como zero real, `tr` como traço e valores ausentes como `missing`.
 
-`backend/taco-import.ts` valida 597 códigos únicos, 26 nutrientes por alimento, unidades e estados antes de escrever. O UPSERT usa `(source, source_code)`, portanto pode ser repetido sem duplicar alimentos ou valores.
+Os 597 alimentos TACO antigos permanecem inativos. Eles são lidos durante a geração da curadoria apenas para sinalizar equivalentes fundamentais da dieta brasileira; nutrientes TACO não são copiados e a busca não depende da TACO em runtime. O UPSERT TBCA usa `(source, source_code)`, portanto pode ser repetido sem duplicar identidades ou valores.
 
 ## Modelo de dados
 
-- `foods`: 597 identidades TACO, grupos e nomes pesquisáveis;
-- `nutrients`: catálogo fixo de 26 componentes;
+- `foods`: 5.874 identidades TBCA ativas, 597 identidades TACO inativas e a camada de curadoria da busca;
+- `nutrients`: catálogo versionado de componentes;
 - `food_nutrients`: valor, representação original e estado `numeric`, `trace` ou `missing`;
 - `nutrition_import_runs`: trilha de cada importação;
 - tabelas clínicas: usuários, pacientes, sessões, pesos, metas, diários, refeições, favoritos e anotações.
@@ -44,4 +44,4 @@ A fonte única é a TACO 4ª edição ampliada e revisada. `backend/scripts/extr
 
 `backend/domain/nutrition.ts` centraliza escala por gramas, soma, energia 4/4/9 e proteína por quilo. Um valor indisponível torna o total daquele nutriente indisponível; ele nunca entra como zero. A mesma resposta diária abastece paciente e nutricionista, inclusive a composição expansível de macros, minerais e vitaminas.
 
-A busca normaliza acentos e caixa, usa tokens parciais e similaridade textual, e retorna somente alimentos TACO ativos.
+A busca normaliza acentos e caixa, consulta o PostgreSQL com limite de 25 itens e ordena correspondência exata, alias, prefixo, prioridade de curadoria, score e similaridade. Retorna somente TBCA ativa; nomes originais e dados nutricionais continuam preservados.

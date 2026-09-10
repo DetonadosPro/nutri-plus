@@ -3,12 +3,10 @@ import { readFileSync, statSync } from 'node:fs';
 import { basename } from 'node:path';
 import { closeDatabase, db, migrate, projectPath, transaction } from './db';
 import { normalizeSearch, type NutrientStatus } from './taco-import';
+import { sha256, validateCuration, type FoodCurationFile } from './food-curation-rules';
 
 type RawNutrient = { componente: string; tagname: string; unidade: string; valor_100g: unknown };
 export type RawFood = { codigo: string; grupo: string | null; marca?: string | null; nome: string; nome_original: string; nome_exibicao: string; aliases_busca: string[]; nome_cientifico?: string | null; url?: string | null; nutrientes: RawNutrient[] };
-
-export const inactiveTbcaCodes = new Set(['BRC0001A', 'BRC0056G']);
-export const tbcaDisplayNameOverrides = new Map([['BRC0018A', 'Arroz Branco']]);
 
 const definitions = [
   ['vitamina_e_mg','Vitamina E','TOCPHA','mg','vitamin'], ['acucar_adicao_g','Açúcar de adição','TBCA_ADDED_SUGAR','g','macro'],
@@ -63,8 +61,12 @@ export function validateTbcaDataset(dataset: RawFood[]) {
 }
 
 export async function importTbca(filePath = projectPath('data','tbca','tbca completa normalizada.json')) {
-  const dataset = JSON.parse(readFileSync(filePath,'utf8')) as RawFood[];
+  const sourceBuffer=readFileSync(filePath);
+  const dataset = JSON.parse(sourceBuffer.toString('utf8')) as RawFood[];
   const audit = validateTbcaDataset(dataset);
+  const curation=validateCuration(JSON.parse(readFileSync(projectPath('data','food-curation.v1.json'),'utf8')) as FoodCurationFile,dataset);
+  if(curation.source_sha256!==sha256(sourceBuffer)) throw new Error('A curadoria não corresponde ao arquivo TBCA ativo. Execute npm run curation:generate.');
+  const curationByCode=new Map(curation.foods.map((food)=>[food.source_code,food]));
   await migrate();
   const existingFoods = new Set((await db.prepare(`SELECT source_code FROM foods WHERE source='TBCA'`).all<{source_code:string}>()).map(r => r.source_code));
   const existingValues = Number((await db.prepare(`SELECT COUNT(*)::int count FROM food_nutrients fn JOIN foods f ON f.id=fn.food_id WHERE f.source='TBCA'`).get<{count:number}>())?.count ?? 0);
@@ -76,16 +78,17 @@ export async function importTbca(filePath = projectPath('data','tbca','tbca comp
       SELECT x.code,x.name,x.tagname,x.unit,x.nutrient_group,x.sort_order FROM jsonb_to_recordset(?::jsonb) x(code text,name text,tagname text,unit text,nutrient_group text,sort_order int)
       ON CONFLICT(code) DO UPDATE SET name=excluded.name,tagname=excluded.tagname,unit=excluded.unit,nutrient_group=excluded.nutrient_group,sort_order=excluded.sort_order`).run(JSON.stringify(nutrientRows));
     const foods = dataset.map(f => {
-      const displayName = tbcaDisplayNameOverrides.get(f.codigo) ?? f.nome_exibicao;
-      const searchAliases = tbcaDisplayNameOverrides.has(f.codigo) ? [...new Set([...f.aliases_busca, f.nome_exibicao, displayName])] : f.aliases_busca;
+      const curated=curationByCode.get(f.codigo)!;
+      const displayName = curated.friendly_name;
+      const searchAliases = curated.aliases;
       const normalizedAliases = [...new Set(searchAliases.map(normalizeSearch).filter(Boolean))];
       const normalizedName = normalizeSearch(f.nome_original);
       const normalizedDisplayName = normalizeSearch(displayName);
-      return {source_code:f.codigo,description:f.nome_original,display_name:displayName,search_aliases:searchAliases,normalized_name:normalizedName,normalized_display_name:normalizedDisplayName,normalized_search_aliases:normalizedAliases,normalized_search_text:[normalizedDisplayName,normalizedName,...normalizedAliases].join(' '),category:f.grupo,scientific_name:f.nome_cientifico ?? null,brand:f.marca ?? null,source_url:f.url ?? null,active:!inactiveTbcaCodes.has(f.codigo)};
+      return {source_code:f.codigo,description:f.nome_original,display_name:displayName,search_aliases:searchAliases,normalized_name:normalizedName,normalized_display_name:normalizedDisplayName,normalized_search_aliases:normalizedAliases,normalized_search_text:[normalizedDisplayName,normalizedName,...normalizedAliases].join(' '),category:f.grupo,scientific_name:f.nome_cientifico ?? null,brand:f.marca ?? null,source_url:f.url ?? null,active:true,curation_priority:curated.priority,curation_priority_rank:{common:0,useful:1,specific:2}[curated.priority],curation_score:curated.priority_score,curation_category:curated.curation_category,curation_details:curated.details,curation_flags:curated.specificity_flags,curation_confidence:curated.confidence,taco_reference_codes:curated.taco_reference_codes,duplicate_group:curated.duplicate_group,curation_version:curation.rules_version};
     });
-    for (let offset=0; offset<foods.length; offset+=1000) await db.prepare(`INSERT INTO foods(source,source_code,description,display_name,search_aliases,normalized_name,normalized_display_name,normalized_search_aliases,normalized_search_text,category,scientific_name,brand,source_url,active,updated_at)
-      SELECT 'TBCA',x.source_code,x.description,x.display_name,x.search_aliases,x.normalized_name,x.normalized_display_name,x.normalized_search_aliases,x.normalized_search_text,x.category,x.scientific_name,x.brand,x.source_url,x.active,CURRENT_TIMESTAMP FROM jsonb_to_recordset(?::jsonb) x(source_code text,description text,display_name text,search_aliases text[],normalized_name text,normalized_display_name text,normalized_search_aliases text[],normalized_search_text text,category text,scientific_name text,brand text,source_url text,active boolean)
-      ON CONFLICT(source,source_code) DO UPDATE SET description=excluded.description,display_name=excluded.display_name,search_aliases=excluded.search_aliases,normalized_name=excluded.normalized_name,normalized_display_name=excluded.normalized_display_name,normalized_search_aliases=excluded.normalized_search_aliases,normalized_search_text=excluded.normalized_search_text,category=excluded.category,scientific_name=excluded.scientific_name,brand=excluded.brand,source_url=excluded.source_url,active=excluded.active,updated_at=CURRENT_TIMESTAMP`).run(JSON.stringify(foods.slice(offset,offset+1000)));
+    for (let offset=0; offset<foods.length; offset+=1000) await db.prepare(`INSERT INTO foods(source,source_code,description,display_name,search_aliases,normalized_name,normalized_display_name,normalized_search_aliases,normalized_search_text,category,scientific_name,brand,source_url,active,curation_priority,curation_priority_rank,curation_score,curation_category,curation_details,curation_flags,curation_confidence,taco_reference_codes,duplicate_group,curation_version,updated_at)
+      SELECT 'TBCA',x.source_code,x.description,x.display_name,x.search_aliases,x.normalized_name,x.normalized_display_name,x.normalized_search_aliases,x.normalized_search_text,x.category,x.scientific_name,x.brand,x.source_url,x.active,x.curation_priority,x.curation_priority_rank,x.curation_score,x.curation_category,x.curation_details,x.curation_flags,x.curation_confidence,x.taco_reference_codes,x.duplicate_group,x.curation_version,CURRENT_TIMESTAMP FROM jsonb_to_recordset(?::jsonb) x(source_code text,description text,display_name text,search_aliases text[],normalized_name text,normalized_display_name text,normalized_search_aliases text[],normalized_search_text text,category text,scientific_name text,brand text,source_url text,active boolean,curation_priority text,curation_priority_rank smallint,curation_score int,curation_category text,curation_details text[],curation_flags text[],curation_confidence text,taco_reference_codes text[],duplicate_group text,curation_version text)
+      ON CONFLICT(source,source_code) DO UPDATE SET description=excluded.description,display_name=excluded.display_name,search_aliases=excluded.search_aliases,normalized_name=excluded.normalized_name,normalized_display_name=excluded.normalized_display_name,normalized_search_aliases=excluded.normalized_search_aliases,normalized_search_text=excluded.normalized_search_text,category=excluded.category,scientific_name=excluded.scientific_name,brand=excluded.brand,source_url=excluded.source_url,active=excluded.active,curation_priority=excluded.curation_priority,curation_priority_rank=excluded.curation_priority_rank,curation_score=excluded.curation_score,curation_category=excluded.curation_category,curation_details=excluded.curation_details,curation_flags=excluded.curation_flags,curation_confidence=excluded.curation_confidence,taco_reference_codes=excluded.taco_reference_codes,duplicate_group=excluded.duplicate_group,curation_version=excluded.curation_version,updated_at=CURRENT_TIMESTAMP`).run(JSON.stringify(foods.slice(offset,offset+1000)));
     const ids = new Map((await db.prepare(`SELECT id,source_code FROM foods WHERE source='TBCA'`).all<{id:number;source_code:string}>()).map(r => [r.source_code,r.id]));
     await importMeasures(JSON.parse(readFileSync(projectPath('data','food-measures.reviewed.json'),'utf8')));
     const rows: Record<string,unknown>[] = [];

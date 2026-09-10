@@ -26,6 +26,10 @@
     "measures:import": "npm run measures:import --workspace @nutri/backend --",
     "measures:audit": "npm run measures:audit --workspace @nutri/backend",
     "measures:samples": "npm run measures:samples --workspace @nutri/backend --",
+    "curation:generate": "npm run curation:generate --workspace @nutri/backend",
+    "curation:check": "npm run curation:check --workspace @nutri/backend",
+    "curation:import": "npm run curation:import --workspace @nutri/backend",
+    "curation:audit": "npm run curation:audit --workspace @nutri/backend",
     "vision:benchmark": "tsx tests/food-vision-benchmark/run.ts"
   },
   "devDependencies": { "concurrently": "^10.0.5", "typescript": "5.9.3" }
