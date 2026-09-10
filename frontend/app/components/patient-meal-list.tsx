@@ -1,5 +1,6 @@
 "use client";
 
+import { formatServing } from '../../../shared/food-measures';
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { ChevronDown, Copy, Flame, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import { timeFromTimestamp } from "@/lib/datetime";
@@ -208,7 +209,7 @@ function PatientMealCard({
                 <div className="min-w-0 flex-1">
                   <p>{foodDisplayName(entry)}</p>
                   <div className="patient-food-serving">
-                    <span>{formatNumber(entry.grams_equivalent)} g</span>
+                    <span>{formatServing(entry)}</span>
                     <span><Flame className="size-3" />{formatNumber(entry.nutrients.energia_kcal)} kcal</span>
                   </div>
                   <div className="patient-food-nutrients">

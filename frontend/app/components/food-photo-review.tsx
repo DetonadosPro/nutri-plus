@@ -3,7 +3,7 @@ import '../food-photo.css';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { ArrowLeft, Camera, Check, ChevronRight, ImagePlus, LoaderCircle, Minus, Plus, Search, Sparkles, Trash2, UtensilsCrossed } from 'lucide-react';
+import { ArrowLeft, Camera, Check, ChevronRight, ImagePlus, LoaderCircle, Plus, Search, Sparkles, Trash2, UtensilsCrossed } from 'lucide-react';
 import { api } from '@/lib/client-api';
 import { formatNumber } from '@/lib/nutrition-format';
 import { MEAL_TYPES } from '@/lib/meal-types';
@@ -12,11 +12,13 @@ import { Input } from '@/components/ui/input';
 import { scaleNutrients } from '../../../shared/scale-nutrients';
 import type { Food, Summary } from '../types';
 import { foodDisplayName } from '@/lib/food-name';
+import { MeasureInput, gramMeasure, safeGrams } from './measure-input';
+import { measureLabel, type FoodMeasure } from '../../../shared/food-measures';
 import { optimizeFoodPhoto } from '@/lib/food-photo';
 
 type DetectionState = 'AUTOSELECT'|'RERANK'|'ASK_USER'|'ASK_IDENTITY'|'ASK_ATTRIBUTE'|'NO_EXACT_TBCA_MATCH'|'NO_MATCH';
 type Detection = { itemToken:string;name:string;preparation:string|null;clarificationKind:'MEAT_TYPE'|null;visualConfidence:number;state:DetectionState;top1Score:number;top2Score:number;margin:number;resolutionPolicy?:string|null;abstentionReason?:string|null;candidates:Food[] };
-type Row = Detection & { key: string; food: Food | null; grams: string; confirmed: boolean };
+type Row = Detection & { key: string; food: Food | null; grams: string; measure?: FoodMeasure; confirmed: boolean };
 
 function choiceMessage(state:DetectionState){
   if(state==='NO_MATCH')return 'Não encontramos uma opção segura. Busque manualmente:';
@@ -92,25 +94,37 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
   }, [initialPhoto, analyze]);
 
   function choose(food: Food) {
-    if (editing === 'new') setRows(current => [...current, { key: crypto.randomUUID(),itemToken:crypto.randomUUID(),name:foodDisplayName(food),preparation:null,clarificationKind:null,visualConfidence:1,state:'ASK_ATTRIBUTE',top1Score:0,top2Score:0,margin:0,candidates:[],food,grams:'',confirmed:false }]);
-    else setRows(current => current.map(row => row.key === editing ? { ...row, food, confirmed:false } : row));
+    if (editing === 'new') setRows(current => [...current, { key: crypto.randomUUID(),itemToken:crypto.randomUUID(),name:foodDisplayName(food),preparation:null,clarificationKind:null,visualConfidence:1,state:'ASK_ATTRIBUTE',top1Score:0,top2Score:0,margin:0,candidates:[],food,grams:'',measure:food.measures?.find(m=>m.isDefault) ?? gramMeasure,confirmed:false }]);
+    else setRows(current => current.map(row => row.key === editing ? { ...row, food, grams:"", measure:food.measures?.find(m=>m.isDefault) ?? gramMeasure, confirmed:false } : row));
     setEditing(null); setQuery('');
   }
-  const valid = rows.length > 0 && rows.every(row => row.confirmed && row.food && Number(row.grams) > 0 && Number(row.grams) <= 5000);
+  const valid = rows.length > 0 && rows.every(row => row.confirmed && row.food && safeGrams(row.grams,row.measure ?? gramMeasure) > 0);
   const activeRow=rows.find(row=>!row.confirmed);
   const activeIndex=activeRow?rows.findIndex(row=>row.key===activeRow.key):-1;
   const completed=rows.filter(row=>row.confirmed).length;
+  const activeFoodId=activeRow?.food?.id;
+  const activeKey=activeRow?.key;
+  const hasMeasures=Boolean(activeRow?.food?.measures);
+  useEffect(()=>{
+    if(!activeFoodId || !activeKey || hasMeasures) return;
+    let live=true;
+    api<FoodMeasure[]>(`/foods/${activeFoodId}/measures`).then(measures=>{
+      if(live) setRows(items=>items.map(row=>row.key===activeKey && row.food?.id===activeFoodId ? {...row,food:{...row.food,measures},measure:row.grams ? row.measure ?? gramMeasure : measures.find(m=>m.isDefault) ?? gramMeasure}:row));
+    }).catch(()=>{});
+    return ()=>{live=false};
+  },[activeFoodId,activeKey,hasMeasures]);
 
-  function updateGrams(key:string,value:string){setRows(items=>items.map(item=>item.key===key?{...item,grams:value}:item))}
-  function adjustGrams(row:Row,amount:number){const current=Number(row.grams)||0;updateGrams(row.key,String(Math.max(0,Math.min(5000,current+amount))))}
-  function confirmRow(row:Row){if(!row.food||Number(row.grams)<=0||Number(row.grams)>5000)return;setRows(items=>items.map(item=>item.key===row.key?{...item,confirmed:true}:item))}
+
+  function updateGrams(key:string,value:string,measure:FoodMeasure){setRows(items=>items.map(item=>item.key===key?{...item,grams:value,measure}:item))}
+
+  function confirmRow(row:Row){if(!row.food||safeGrams(row.grams,row.measure ?? gramMeasure)<=0)return;setRows(items=>items.map(item=>item.key===row.key?{...item,confirmed:true}:item))}
   function editRow(key:string){setRows(items=>items.map(item=>item.key===key?{...item,confirmed:false}:item))}
   async function save() {
     if (!valid || !mealType || saveLock.current) return;
     saveLock.current = true; setSaving(true); setError('');
     try {
       const summary = await api<Summary>('/meals', { method: 'POST', body: JSON.stringify({
-        date, mealType, items: rows.map(row => ({ foodId: row.food!.id, grams: Number(row.grams) })),
+        date, mealType, items: rows.map(row => ({ foodId: row.food!.id, quantity: Number(row.grams.replace(',', '.')), measureId: (row.measure ?? gramMeasure).id })),
       }) });
       setSaved(true);
       if(analysisToken)void api('/foods/recognize/feedback',{method:'POST',body:JSON.stringify({analysisToken,items:rows.filter(row=>row.food).map(row=>({itemToken:row.itemToken,selectedFoodId:row.food!.id}))})}).catch(()=>undefined);
@@ -167,23 +181,19 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
 
         {activeRow.food&&<div className="photo-quantity">
           <label htmlFor={`photo-grams-${activeRow.key}`}>Quanto você comeu?</label>
-          <div className="photo-quantity-control">
-            <button aria-label="Diminuir 10 gramas" onClick={()=>adjustGrams(activeRow,-10)}><Minus/></button>
-            <div><Input id={`photo-grams-${activeRow.key}`} aria-label={`Quantidade de ${activeRow.name} em gramas`} type="number" inputMode="decimal" min="0.1" max="5000" step="any" placeholder="0" value={activeRow.grams} disabled={saving} onChange={e=>updateGrams(activeRow.key,e.target.value)}/><span>g</span></div>
-            <button aria-label="Aumentar 10 gramas" onClick={()=>adjustGrams(activeRow,10)}><Plus/></button>
-          </div>
-          <div className="photo-portions" aria-label="Quantidades rápidas">{[50,100,150,200].map(value=><button key={value} aria-pressed={Number(activeRow.grams)===value} onClick={()=>updateGrams(activeRow.key,String(value))}>{value} g</button>)}</div>
-          {Number(activeRow.grams)>0&&<p className="photo-nutrition-preview">≈ {formatNumber(scaleNutrients(activeRow.food.nutrients,Number(activeRow.grams)).values.energia_kcal)} kcal</p>}
-          <Button className="photo-next" disabled={Number(activeRow.grams)<=0||Number(activeRow.grams)>5000} onClick={()=>confirmRow(activeRow)}><Check/> {activeIndex===rows.length-1?'Concluir revisão':'Confirmar e continuar'} <ChevronRight/></Button>
+          <MeasureInput id={`photo-grams-${activeRow.key}`} value={activeRow.grams} measure={activeRow.measure ?? gramMeasure}
+            measures={activeRow.food.measures ?? [gramMeasure]} onChange={(value,measure)=>updateGrams(activeRow.key,value,measure)} />
+          {safeGrams(activeRow.grams,activeRow.measure ?? gramMeasure)>0&&<p className="photo-nutrition-preview">≈ {formatNumber(scaleNutrients(activeRow.food.nutrients,safeGrams(activeRow.grams,activeRow.measure ?? gramMeasure)).values.energia_kcal)} kcal</p>}
+          <Button className="photo-next" disabled={safeGrams(activeRow.grams,activeRow.measure ?? gramMeasure)<=0} onClick={()=>confirmRow(activeRow)}><Check/> {activeIndex===rows.length-1?'Concluir revisão':'Confirmar e continuar'} <ChevronRight/></Button>
         </div>}
       </article>
     </div>}
 
-    {!!completed&&!valid&&<div className="photo-done-strip"><p><Check/> Já conferidos</p><div>{rows.filter(row=>row.confirmed).map(row=><button key={row.key} onClick={()=>editRow(row.key)}><strong>{row.food&&foodDisplayName(row.food)}</strong><span>{row.grams} g</span></button>)}</div></div>}
+    {!!completed&&!valid&&<div className="photo-done-strip"><p><Check/> Já conferidos</p><div>{rows.filter(row=>row.confirmed).map(row=><button key={row.key} onClick={()=>editRow(row.key)}><strong>{row.food&&foodDisplayName(row.food)}</strong><span>{row.grams} {measureLabel(Number(row.grams.replace(',', '.')),row.measure ?? gramMeasure)}</span></button>)}</div></div>}
 
     {valid&&<section className="photo-final">
       <div className="photo-final-heading"><span><Check/></span><div><p>Tudo conferido</p><h3>Sua refeição está pronta</h3></div></div>
-      <div className="photo-final-list">{rows.map(row=><button key={row.key} onClick={()=>editRow(row.key)}><span>{row.food&&foodDisplayName(row.food)}</span><strong>{row.grams} g</strong><ChevronRight/></button>)}</div>
+      <div className="photo-final-list">{rows.map(row=><button key={row.key} onClick={()=>editRow(row.key)}><span>{row.food&&foodDisplayName(row.food)}</span><strong>{row.grams} {measureLabel(Number(row.grams.replace(',', '.')),row.measure ?? gramMeasure)}</strong><ChevronRight/></button>)}</div>
       <Button variant="outline" disabled={saving||rows.length>=20} onClick={()=>{setEditing('new');setQuery('')}}><Plus/> Faltou algum alimento?</Button>
       <div className="photo-save"><label htmlFor="photo-meal">Refeição<select id="photo-meal" value={mealType} disabled={saving} onChange={e=>setMealType(e.target.value)}><option value="">Escolha a refeição</option>{MEAL_TYPES.map(meal=><option key={meal.value} value={meal.value}>{meal.label}</option>)}</select></label><Button disabled={!mealType||saving} onClick={save}>{saving?'Registrando…':'Adicionar ao Diário'}</Button></div>
     </section>}

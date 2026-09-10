@@ -11,7 +11,11 @@
     "taco:import": "tsx taco-import.ts",
     "tbca:import": "tsx tbca-import.ts",
     "ig:import": "tsx ig-import.ts",
-    "audit": "tsx audit.ts"
+    "audit": "tsx audit.ts",
+    "measures:check": "tsx measure-import.ts --check",
+    "measures:import": "tsx measure-import.ts",
+    "measures:audit": "tsx measure-audit.ts",
+    "measures:samples": "tsx measure-samples.ts"
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.1127.0",

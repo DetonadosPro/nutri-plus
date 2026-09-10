@@ -90,7 +90,7 @@ export default defineConfig(async () => {
 
       proxy: {
         '/api': {
-          target: 'http://127.0.0.1:3001',
+          target: process.env.NUTRI_DEV_API_URL || 'http://127.0.0.1:3001',
           changeOrigin: false,
         },
       },
