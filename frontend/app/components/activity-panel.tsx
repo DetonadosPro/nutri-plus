@@ -88,10 +88,10 @@ export function EnergyMethod() {
         Não acrescentamos calorias de recuperação após o treino.
       </p>
       <p>
-        Dos 6 aos 18 anos usamos o Youth Compendium e Schofield; dos 19 aos 59,
-        o Compendium Adulto; a partir dos 60, o Older Adult Compendium. Quando
-        uma modalidade não possui equivalente validado para a idade, ela não é
-        oferecida no catálogo automático.
+        Dos 6 aos 18 anos usamos o Youth Compendium e Schofield. A partir dos
+        19 anos, inclusive para pessoas com 60 anos ou mais, usamos o
+        Compendium Adulto e o cálculo MET normal. Para jovens, modalidades sem
+        equivalente validado para a idade não aparecem no catálogo automático.
       </p>
       <a
         href="https://pacompendium.com/adult-compendium/"

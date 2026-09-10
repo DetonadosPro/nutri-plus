@@ -1,10 +1,12 @@
 # Auditoria do gasto calórico por atividade — 2026-09-09
 
+> Decisão posterior de produto: a partir dos 19 anos, inclusive aos 60+, valem o catálogo adulto e a fórmula MET convencional.
+
 ## Escopo e conclusão
 
 Foram auditados catálogo, referências por idade, fórmulas, intensidade, descanso, API, persistência e balanço diário. O catálogo adulto expõe 142 atividades selecionadas e preserva exatamente os códigos e METs do snapshot do Compendium 2024 (142/142, nenhuma divergência). Não existe multiplicador universal 0,8/1,0/1,2 no sistema.
 
-Foram encontrados dois defeitos relevantes na aplicação posterior ao catálogo: toda entrada marcada como `resistance` recebia o perfil genérico 3,0/3,5/6,0, mesmo quando era uma modalidade específica; e o mesmo perfil adulto podia ser aplicado sobre referências METy/MET60+. A correção limita intensidade e descanso ao atalho de musculação genérica para adultos. Modalidades específicas preservam seu MET publicado. Registros históricos não são recalculados.
+Foi encontrado um defeito relevante na aplicação posterior ao catálogo: toda entrada marcada como `resistance` recebia o perfil genérico 3,0/3,5/6,0, mesmo quando era uma modalidade específica. A correção limita intensidade e descanso ao atalho de musculação genérica para adultos. Modalidades específicas preservam seu MET publicado. Registros históricos não são recalculados.
 
 O descanso continua alterando a estimativa no atalho genérico porque isso é uma decisão de produto solicitada, mas sua influência foi reduzida de ±15% para ±5%. **Este fator é uma heurística de modelagem e não um valor oficial do Compendium.** A literatura confirma que o intervalo muda respostas metabólicas e desempenho, mas não sustenta uma conversão universal, monotônica e exata de segundos para kcal.
 
@@ -15,7 +17,7 @@ O descanso continua alterando a estimativa no atalho genérico porque isso é um
 - Atalho de musculação adulta: `MET escolhido (3,0; 3,5; 4,0; 5,0) × peso × horas × fator de descanso`.
 - Modalidade específica: usa apenas o MET do código escolhido; intensidade relatada e descanso não multiplicam o MET.
 - Jovens de 6–18 anos: METy × repouso de Schofield por minuto; apenas cruzamentos explícitos.
-- Pessoas 60+: MET60+ com referência de 2,7 ml/kg/min; apenas cruzamentos explícitos.
+- Pessoas a partir de 19 anos, inclusive 60+: MET adulto convencional.
 - Menores de 6 anos e modalidades sem cruzamento etário: exigem gasto informado por fonte profissional.
 - Balanço: `ingestão − (basal × fator cotidiano + TEF + exercícios elegíveis)`.
 - TEF: proteína `4 kcal/g × 25%`; carboidrato `4 kcal/g × 7,5%`; gordura `9 kcal/g × 1,5%`.
@@ -29,7 +31,7 @@ O descanso continua alterando a estimativa no atalho genérico porque isso é um
 | Catálogo | `backend/data/activities/catalog-2024-pt-BR.json` | 142 linhas traduzidas e expostas, versão `2024-pt-BR.1` |
 | Proveniência | `backend/data/activities/provenance.json` | URLs, data de coleta, versão, contagem e hash SHA-256 |
 | Fórmulas | `backend/domain/activity-energy.ts` | MET, bruto/líquido, TEF, balanço, intensidade e descanso |
-| Faixas etárias | `backend/domain/age-activity-energy.ts` | Adult MET, Youth METy, Older MET60+ e cruzamentos explícitos |
+| Faixas etárias | `backend/domain/age-activity-energy.ts` | Adult MET e Youth METy com cruzamentos explícitos para jovens |
 | API | `backend/activities.ts` | catálogo, estimativa, criação, edição, exclusão, recentes, favoritos e histórico |
 | Banco | `activity_catalog` | código, versão, nome, categoria, aliases, MET, fonte e indicador resistido |
 | Banco | `activity_sessions` | duração, intensidade, descanso, origem, snapshot e revisão atual |
@@ -52,7 +54,7 @@ Agora, somente o atalho explícito `quick_strength`, para referência adulta, us
 
 | Severidade | Problema | Estado |
 |---|---|---|
-| CRÍTICO | Perfil adulto 3/3,5/6 podia substituir METy/MET60+ em atividade resistida | Corrigido: perfil genérico limitado a adulto 19–59 |
+| CRÍTICO | Perfil adulto 3/3,5/6 podia substituir METy em atividade resistida juvenil | Corrigido: perfil genérico limitado a pessoas a partir de 19 anos |
 | ALTO | Circuito, supersérie, levantamento terra e outras entradas específicas recebiam novamente intensidade e descanso | Corrigido: perfil aplicado somente ao atalho genérico |
 | ALTO | O saldo adiciona kcal brutas do exercício sobre uma base que contém repouso do dia | Mantido para não contrariar silenciosamente a decisão de produto anterior; requer decisão explícita sobre bruto versus líquido |
 | MÉDIO | Descanso tinha faixa heurística de −15% a +15%, sem referência que sustentasse esses números exatos | Reduzido conservadoramente para −5% a +5% e identificado como heurística |
