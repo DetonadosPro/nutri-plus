@@ -1,3 +1,4 @@
+import type { FoodMeasure } from '../../shared/food-measures';
 export type User = {
   id: number;
   name: string;
@@ -14,6 +15,7 @@ export type NutrientCatalogItem = {
   sortOrder: number;
 };
 export type Food = {
+  measures?: FoodMeasure[];
   id: number;
   source_code: string;
   description: string;
@@ -30,6 +32,7 @@ export type Food = {
   dataSources: string[];
 };
 export type MealEntry = {
+  measure_snapshot?: FoodMeasure | null;
   id: number;
   food_id: number;
   description: string;

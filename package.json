@@ -22,6 +22,10 @@
     "tbca:import": "npm run tbca:import --workspace @nutri/backend",
     "ig:import": "npm run ig:import --workspace @nutri/backend",
     "audit": "npm run audit --workspace @nutri/backend",
+    "measures:check": "npm run measures:check --workspace @nutri/backend --",
+    "measures:import": "npm run measures:import --workspace @nutri/backend --",
+    "measures:audit": "npm run measures:audit --workspace @nutri/backend",
+    "measures:samples": "npm run measures:samples --workspace @nutri/backend --",
     "vision:benchmark": "tsx tests/food-vision-benchmark/run.ts"
   },
   "devDependencies": { "concurrently": "^10.0.5", "typescript": "5.9.3" }

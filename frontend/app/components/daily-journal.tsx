@@ -1,5 +1,6 @@
 'use client';
 
+import { formatServing } from '../../../shared/food-measures';
 import {
   ChevronDown,
   Copy,
@@ -406,7 +407,7 @@ export function MealTimeline({
                       )}
                     </div>
                     <p className="meal-entry-meta">
-                      {formatNumber(entry.grams_equivalent)} g ·{' '}
+                      {formatServing(entry)} ·{' '}
                       {formatNumber(entry.nutrients.energia_kcal)} kcal ·{' '}
                       {formatNumber(entry.nutrients.proteina_g, 1)} g proteína
                     </p>

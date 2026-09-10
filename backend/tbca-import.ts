@@ -1,3 +1,4 @@
+import { importMeasures } from './measure-import';
 import { readFileSync, statSync } from 'node:fs';
 import { basename } from 'node:path';
 import { closeDatabase, db, migrate, projectPath, transaction } from './db';
@@ -81,6 +82,7 @@ export async function importTbca(filePath = projectPath('data','tbca','tbca comp
       SELECT 'TBCA',x.source_code,x.description,x.display_name,x.search_aliases,x.normalized_name,x.normalized_display_name,x.normalized_search_aliases,x.normalized_search_text,x.category,x.scientific_name,x.brand,x.source_url,true,CURRENT_TIMESTAMP FROM jsonb_to_recordset(?::jsonb) x(source_code text,description text,display_name text,search_aliases text[],normalized_name text,normalized_display_name text,normalized_search_aliases text[],normalized_search_text text,category text,scientific_name text,brand text,source_url text)
       ON CONFLICT(source,source_code) DO UPDATE SET description=excluded.description,display_name=excluded.display_name,search_aliases=excluded.search_aliases,normalized_name=excluded.normalized_name,normalized_display_name=excluded.normalized_display_name,normalized_search_aliases=excluded.normalized_search_aliases,normalized_search_text=excluded.normalized_search_text,category=excluded.category,scientific_name=excluded.scientific_name,brand=excluded.brand,source_url=excluded.source_url,active=true,updated_at=CURRENT_TIMESTAMP`).run(JSON.stringify(foods.slice(offset,offset+1000)));
     const ids = new Map((await db.prepare(`SELECT id,source_code FROM foods WHERE source='TBCA'`).all<{id:number;source_code:string}>()).map(r => [r.source_code,r.id]));
+    await importMeasures(JSON.parse(readFileSync(projectPath('data','food-measures.reviewed.json'),'utf8')));
     const rows: Record<string,unknown>[] = [];
     dataset.forEach(food => food.nutrientes.forEach((nutrient,index) => rows.push({food_id:ids.get(food.codigo),nutrient_code:definitions[index][0],...parsedValue(nutrient.valor_100g)})));
     for (let offset=0; offset<rows.length; offset+=2000) await db.prepare(`INSERT INTO food_nutrients(food_id,nutrient_code,numeric_value,raw_value,status,updated_at)

@@ -3537,3 +3537,21 @@
     width: 100%;
   }
 }
+
+.measure-control { width: min(100%, 22rem); }
+.measure-control-row { display: flex; gap: .5rem; min-width: 0; }
+.measure-control-row input { width: 5.5rem; min-width: 3rem; }
+.measure-control-row select { flex: 1; min-width: 0; max-width: 15rem; }
+.measure-control-row input, .measure-control-row select { min-height: 48px; border: 1px solid var(--border); border-radius: 14px; background: var(--background); padding: .6rem; font-size: 16px; }
+.measure-control small { color: var(--muted-foreground); font-size: .75rem; }
+.food-grams-field > .measure-control { display: block; }
+
+.food-batch-item { grid-template-columns: 2rem minmax(0,1fr) minmax(12rem,17rem) 3rem; }
+.food-batch-item .food-batch-energy { display: none; }
+.food-grams-field .measure-control-row input { font-size: 16px; padding-right: .5rem; }
+@media (max-width: 639px) {
+  .food-batch-item { grid-template-columns: 1.5rem minmax(0,1fr) 2.5rem; }
+  .food-batch-item .food-grams-field { grid-column: 2 / 4; grid-row: 2; min-width: 0; }
+  .food-batch-item .food-batch-remove { grid-column: 3; grid-row: 1; }
+  .measure-control-row input { width: 5rem; }
+}

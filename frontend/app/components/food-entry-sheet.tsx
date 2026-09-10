@@ -29,7 +29,8 @@ import {
 import { FoodPhotoReview } from './food-photo-review';
 import { foodDisplayName } from '@/lib/food-name';
 
-type Picked = { food: Food; grams: string };
+type Picked = { food: Food; grams: string; measure: import('../../../shared/food-measures').FoodMeasure };
+import { MeasureInput, gramMeasure, safeGrams } from './measure-input';
 
 export function FoodEntrySheet({
   open,
@@ -95,13 +96,13 @@ export function FoodEntrySheet({
   const quantitiesValid =
     picked.length > 0 &&
     picked.every(
-      (item) => Number(item.grams) > 0 && Number(item.grams) <= 5000,
+      (item) => safeGrams(item.grams, item.measure) > 0,
     );
   const totals = useMemo(
     () =>
       picked.reduce(
         (sum, item) => {
-          const factor = Number(item.grams) / 100;
+          const factor = safeGrams(item.grams, item.measure) / 100;
           if (!(factor > 0)) return sum;
           sum.energy += (item.food.nutrients.energia_kcal ?? 0) * factor;
           sum.protein += (item.food.nutrients.proteina_g ?? 0) * factor;
@@ -133,14 +134,14 @@ export function FoodEntrySheet({
       items.some((item) => item.food.id === food.id)
         ? items.filter((item) => item.food.id !== food.id)
         : items.length < 20
-          ? [...items, { food, grams: '' }]
+          ? [...items, { food, grams: '', measure: food.measures?.find(m => m.isDefault) ?? gramMeasure }]
           : items,
     );
   }
-  function grams(foodId: number, value: string) {
+  function grams(foodId: number, value: string, measure: Picked["measure"]) {
     setPicked((items) =>
       items.map((item) =>
-        item.food.id === foodId ? { ...item, grams: value } : item,
+        item.food.id === foodId ? { ...item, grams: value, measure } : item,
       ),
     );
   }
@@ -170,7 +171,8 @@ export function FoodEntrySheet({
           mealType,
           items: picked.map((item) => ({
             foodId: item.food.id,
-            grams: Number(item.grams),
+            quantity: Number(item.grams.replace(',', '.')),
+            measureId: item.measure.id,
           })),
         }),
       });
@@ -222,7 +224,7 @@ export function FoodEntrySheet({
                 {photoMode
                   ? 'Revise o reconhecimento antes de registrar.'
                   : reviewing
-                    ? 'Informe os gramas de cada alimento selecionado.'
+                    ? 'Informe a quantidade de cada alimento selecionado.'
                     : 'Escolha todos os alimentos desta refeição.'}
               </SheetDescription>
             </div>
@@ -286,30 +288,17 @@ export function FoodEntrySheet({
                       <Label htmlFor={`grams-${item.food.id}`}>
                         Quantidade
                       </Label>
-                      <div>
-                        <Input
-                          id={`grams-${item.food.id}`}
-                          type="number"
-                          inputMode="decimal"
-                          min="1"
-                          max="5000"
-                          placeholder="0"
-                          value={item.grams}
-                          onChange={(event) =>
-                            grams(item.food.id, event.target.value)
-                          }
-                        />
-                        <span>g</span>
-                      </div>
+                      <MeasureInput id={`grams-${item.food.id}`} value={item.grams} measure={item.measure}
+                        measures={item.food.measures ?? [gramMeasure]} onChange={(value, measure) => grams(item.food.id,value,measure)} />
                     </div>
                     <div className="food-batch-energy">
                       <small>Porção</small>
                       <strong>
                         {formatNumber(
-                          Number(item.grams) > 0 &&
+                          safeGrams(item.grams, item.measure) > 0 &&
                             item.food.nutrients.energia_kcal != null
                             ? (item.food.nutrients.energia_kcal *
-                                Number(item.grams)) /
+                                safeGrams(item.grams, item.measure)) /
                                 100
                             : null,
                         )}{' '}
@@ -405,7 +394,7 @@ export function FoodEntrySheet({
                 <div>
                   <small>MONTE SUA REFEIÇÃO</small>
                   <h3>O que você comeu?</h3>
-                  <p>Escolha até 20 alimentos e informe os gramas depois.</p>
+                  <p>Escolha até 20 alimentos e informe as quantidades depois.</p>
                 </div>
                 <Button variant="outline" onClick={() => setPhotoMode(true)}>
                   <Sparkles /> Reconhecer por foto

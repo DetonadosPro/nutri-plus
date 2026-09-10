@@ -13,7 +13,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+import { MeasureInput, gramMeasure, safeGrams } from './measure-input';
+import type { FoodMeasure } from '../../../shared/food-measures';
 import { Label } from "@/components/ui/label";
 import { foodDisplayName } from "@/lib/food-name";
 
@@ -26,24 +27,34 @@ export function EditEntryDialog({
   onOpenChange: (open: boolean) => void;
   onSaved: (summary: Summary) => void | Promise<void>;
 }) {
+  const [measure, setMeasure] = useState<FoodMeasure>(gramMeasure);
+  const [measures, setMeasures] = useState<FoodMeasure[]>([gramMeasure]);
   const [grams, setGrams] = useState("");
   const [mealType, setMealType] = useState<MealType>("lunch");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   useEffect(() => {
     if (!value) return;
-    setGrams(String(value.entry.grams_equivalent));
+    const original = value.entry.measure_snapshot ?? gramMeasure;
+    setMeasure(original);
+    setMeasures(original.id ? [original,gramMeasure] : [gramMeasure]);
+    setGrams(String(value.entry.measure_snapshot ? value.entry.amount : value.entry.grams_equivalent));
+    let live = true;
+    api<FoodMeasure[]>(`/foods/${value.entry.food_id}/measures`).then(rows => {
+      if (live) setMeasures(original.id ? [original,...rows.filter(m => m.id !== original.id)] : rows);
+    }).catch(() => {});
     setMealType(value.meal.meal_type as MealType);
     setError("");
+    return () => { live = false; };
   }, [value]);
-  const gramsValue = Number(grams);
+  const gramsValue = safeGrams(grams,measure);
   async function save() {
     if (!value || !Number.isFinite(gramsValue) || gramsValue <= 0) return;
     setLoading(true);
     try {
       const next = await api<Summary>(`/meal-entries/${value.entry.id}`, {
         method: "PATCH",
-        body: JSON.stringify({ grams: gramsValue, mealType }),
+        body: JSON.stringify({ quantity: Number(grams.replace(',', '.')), measureId: measure.id, mealType }),
       });
       await onSaved(next);
       onOpenChange(false);
@@ -62,21 +73,8 @@ export function EditEntryDialog({
         </DialogHeader>
         <div>
           <Label htmlFor="edit-grams">Quantidade</Label>
-          <div className="relative mt-2 max-w-40">
-            <Input
-              id="edit-grams"
-              type="number"
-              inputMode="decimal"
-              min="1"
-              max="5000"
-              value={grams}
-              onChange={(event) => setGrams(event.target.value)}
-              className="h-12 pr-8"
-            />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-              g
-            </span>
-          </div>
+          <MeasureInput id="edit-grams" value={grams} measure={measure} measures={measures}
+            onChange={(value,next) => { setGrams(value); setMeasure(next); }} />
         </div>
         <fieldset>
           <legend className="text-sm font-medium">Refeição</legend>

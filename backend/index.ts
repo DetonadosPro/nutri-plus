@@ -1,3 +1,4 @@
+import { measuresForFoods, quantityInput, resolveQuantity } from './food-measures';
 import { patientAccess } from './patient-access';
 import { deduplicateDetections,decideMatch,MATCH_THRESHOLDS,needsMeatConfirmation,recognizePhoto,rerankPhoto,rankSemanticFoodCandidates } from './food-recognition';
 import { tbcaCandidatesForDetection } from './food-identity-repository';
@@ -244,7 +245,7 @@ async function dailySummary(patientId: number, date: string) {
   for (const meal of meals) {
     const entries = await db
       .prepare(
-        `SELECT me.id, me.amount, me.unit, me.grams_equivalent, me.consumed_at, f.id AS food_id,
+        `SELECT me.id, me.amount, me.unit, me.measure_snapshot, me.grams_equivalent, me.consumed_at, f.id AS food_id,
           f.description, f.description AS name, COALESCE(f.display_name,f.description) AS "displayName",
           f.category, f.source, f.glycemic_index AS "glycemicIndex"
          FROM meal_entries me JOIN foods f ON f.id = me.food_id WHERE me.meal_id = ?
@@ -783,11 +784,13 @@ app.get(
           .all<{ food_id: number }>(user.id)
       ).map((row) => Number(row.food_id)),
     );
+    const measures = await measuresForFoods(foods.map(food => Number(food.id)));
     const payload = await Promise.all(
       foods.map(async (food) => {
         const nutrition = await nutrientsForFood(Number(food.id));
         return {
           ...food,
+          measures: measures.get(Number(food.id)),
           favorite: favoriteIds.has(Number(food.id)),
           nutrients: nutrition.values,
           nutrientSources: nutrition.sources,
@@ -798,6 +801,13 @@ app.get(
     res.json(payload);
   }),
 );
+
+app.get('/api/foods/:foodId/measures', route(async (req, res) => {
+  if (!await authUser(req,res)) return;
+  const id = z.coerce.number().int().positive().parse(req.params.foodId);
+  if (!await db.prepare('SELECT id FROM foods WHERE id=?').get(id)) return res.status(404).json({error:'Alimento não encontrado.'});
+  res.json((await measuresForFoods([id])).get(id));
+}));
 
 app.post('/api/foods/recognize',
   async (req, res, next) => {
@@ -976,7 +986,7 @@ app.post(
         mealType: z.enum(mealTypes),
         foodId: z.number().int().positive().optional(),
         grams: z.number().positive().max(5000).optional(),
-        items: z.array(z.object({ foodId: z.number().int().positive(), grams: z.number().positive().max(5000) })).min(1).max(20).optional(),
+        items: z.array(quantityInput.safeExtend({ foodId: z.number().int().positive() })).min(1).max(20).optional(),
       })
       .refine(value => value.items ? value.foodId == null && value.grams == null : value.foodId != null && value.grams != null)
       .parse(req.body);
@@ -996,11 +1006,14 @@ app.post(
         .prepare("SELECT id FROM daily_logs WHERE patient_id = ? AND log_date = ?")
         .get<{ id: number }>(patient!.id, payload.date);
       const meal = await getOrCreateMeal(log!.id, payload.mealType, consumedAt);
-      for (const entry of entries) await db
+      for (const entry of entries) {
+        const converted = await resolveQuantity(entry.foodId, entry).catch(error => { throw new InputError(error.message); });
+        await db
         .prepare(
-          "INSERT INTO meal_entries (meal_id, food_id, amount, unit, grams_equivalent, consumed_at) VALUES (?, ?, ?, ?, ?, ?)",
+          "INSERT INTO meal_entries (meal_id, food_id, amount, unit, grams_equivalent, consumed_at, measure_snapshot) VALUES (?, ?, ?, ?, ?, ?, ?::jsonb)",
         )
-        .run(meal.id, entry.foodId, entry.grams, "g", entry.grams, consumedAt);
+        .run(meal.id, entry.foodId, converted.amount, converted.unit, converted.grams, consumedAt, JSON.stringify(converted.snapshot));
+      }
       await refreshMealTime(meal.id);
     });
     res.status(201).json(await dailySummary(Number(patient!.id), payload.date));
@@ -1044,13 +1057,15 @@ app.patch(
     const payload = z
       .object({
         grams: z.number().positive().max(5000).optional(),
+        quantity: z.number().positive().optional(),
+        measureId: z.number().int().nonnegative().optional(),
         mealType: z.enum(mealTypes).optional(),
       })
       .refine((value) => Object.keys(value).length > 0, "Informe ao menos uma alteração.")
       .parse(req.body);
     const owned = await db
       .prepare(
-        `SELECT me.id, me.meal_id, me.grams_equivalent, me.consumed_at, m.meal_type, m.daily_log_id, dl.log_date FROM meal_entries me JOIN meals m ON m.id = me.meal_id JOIN daily_logs dl ON dl.id = m.daily_log_id WHERE me.id = ? AND dl.patient_id = ?`,
+        `SELECT me.id, me.meal_id, me.food_id, me.amount, me.unit, me.measure_snapshot, me.grams_equivalent, me.consumed_at, m.meal_type, m.daily_log_id, dl.log_date FROM meal_entries me JOIN meals m ON m.id = me.meal_id JOIN daily_logs dl ON dl.id = m.daily_log_id WHERE me.id = ? AND dl.patient_id = ?`,
       )
       .get<Record<string, any>>(entryId, patient!.id);
     if (!owned) return res.status(404).json({ error: "Registro não encontrado." });
@@ -1065,12 +1080,14 @@ app.patch(
         nextMealType,
         consumedAt,
       );
-      const grams = payload.grams ?? Number(owned.grams_equivalent);
+      const converted = payload.grams != null || payload.quantity != null || payload.measureId != null
+        ? await resolveQuantity(Number(owned.food_id), payload, owned.measure_snapshot).catch(error => { throw new InputError(error.message); })
+        : {amount:owned.amount,unit:owned.unit,grams:owned.grams_equivalent,snapshot:owned.measure_snapshot};
       await db
         .prepare(
-          "UPDATE meal_entries SET meal_id = ?, amount = ?, unit = ?, grams_equivalent = ?, consumed_at = ? WHERE id = ?",
+          "UPDATE meal_entries SET meal_id = ?, amount = ?, unit = ?, grams_equivalent = ?, consumed_at = ?, measure_snapshot = ?::jsonb WHERE id = ?",
         )
-        .run(targetMeal.id, grams, "g", grams, consumedAt, entryId);
+        .run(targetMeal.id, converted.amount, converted.unit, converted.grams, consumedAt, JSON.stringify(converted.snapshot), entryId);
       await refreshMealTime(targetMeal.id);
       if (targetMeal.id !== previousMealId) {
         const remaining = await db
@@ -1119,7 +1136,7 @@ app.post(
       );
       const entries = await db
         .prepare(
-          "SELECT food_id, amount, unit, grams_equivalent, consumed_at FROM meal_entries WHERE meal_id = ?",
+          "SELECT food_id, amount, unit, grams_equivalent, consumed_at, measure_snapshot FROM meal_entries WHERE meal_id = ?",
         )
         .all<Record<string, any>>(source.id);
       for (const entry of entries) {
@@ -1127,7 +1144,7 @@ app.post(
           typeof entry.consumed_at === "string" ? entry.consumed_at.slice(11, 16) : fallbackTime;
         await db
           .prepare(
-            "INSERT INTO meal_entries (meal_id, food_id, amount, unit, grams_equivalent, consumed_at) VALUES (?, ?, ?, ?, ?, ?)",
+            "INSERT INTO meal_entries (meal_id, food_id, amount, unit, grams_equivalent, consumed_at, measure_snapshot) VALUES (?, ?, ?, ?, ?, ?, ?::jsonb)",
           )
           .run(
             targetMeal.id,
@@ -1136,6 +1153,7 @@ app.post(
             entry.unit,
             entry.grams_equivalent,
             localTimestamp(payload.targetDate, time),
+            JSON.stringify(entry.measure_snapshot),
           );
       }
       await refreshMealTime(targetMeal.id);
