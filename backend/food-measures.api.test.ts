@@ -19,21 +19,25 @@ it.skipIf(!process.env.NUTRI_MEASURE_TEST_API)('API: criar, editar, mover, copia
       const response=await fetch(base+path,{method,headers:{Cookie:`nutri_session=${session.token}`,'Content-Type':'application/json'},body:body == null ? undefined : JSON.stringify(body)});
       return {status:response.status,body:response.status===204 ? null : await response.json()};
     }
-    const rice=(await db.prepare("SELECT id FROM foods WHERE source='TBCA' AND source_code='BRC0001A'").get<{id:number}>())!;
+    const rice=(await db.prepare("SELECT id FROM foods WHERE source='TBCA' AND source_code='BRC0018A'").get<{id:number}>())!;
+    const whiteRiceSearch=await request('/foods?search=arroz%20branco','GET');
+    expect(whiteRiceSearch.status).toBe(200);
+    expect(whiteRiceSearch.body[0]).toEqual(expect.objectContaining({source_code:'BRC0018A',displayName:'Arroz Branco'}));
+    expect(whiteRiceSearch.body.some((food:any)=>food.source_code==='BRC0001A')).toBe(false);
     const riceMeasure=(await db.prepare("SELECT id FROM food_measures WHERE food_id=? AND name='colher de sopa cheia'").get<{id:number}>(rice.id))!;
     const listedMeasures=await request(`/foods/${rice.id}/measures`,'GET');
     expect(listedMeasures.status).toBe(200);
     expect(listedMeasures.body).toEqual(expect.arrayContaining([
-      expect.objectContaining({id:riceMeasure.id,name:'colher de sopa cheia',plural:'colheres de sopa cheias',grams:23,source:'TBCA'}),
+      expect.objectContaining({id:riceMeasure.id,name:'colher de sopa cheia',plural:'colheres de sopa cheias',grams:20,source:'TBCA'}),
     ]));
     const realFood=await request('/meals','POST',{date:'2026-09-12',mealType:'breakfast',items:[{foodId:rice.id,quantity:1,measureId:riceMeasure.id}]});
     expect(realFood.status).toBe(201);
     const riceEntry=realFood.body.meals[0].entries[0];
     expect(riceEntry.amount).toBe(1);
     expect(riceEntry.unit).toBe('colher de sopa cheia');
-    expect(riceEntry.grams_equivalent).toBe(23);
-    expect(riceEntry.measure_snapshot).toEqual(expect.objectContaining({name:'colher de sopa cheia',grams:23,source:'TBCA'}));
-    expect(riceEntry.nutrients.energia_kcal).toBeCloseTo(79.35,2);
+    expect(riceEntry.grams_equivalent).toBe(20);
+    expect(riceEntry.measure_snapshot).toEqual(expect.objectContaining({name:'colher de sopa cheia',grams:20,source:'TBCA'}));
+    expect(riceEntry.nutrients.energia_kcal).toBeCloseTo(26,2);
     const liquid=(await db.prepare("SELECT id FROM foods WHERE source='TBCA' AND source_code='BRC0027G'").get<{id:number}>())!;
     const liquidNutrient=(await db.prepare("SELECT numeric_value FROM food_nutrients WHERE food_id=? AND nutrient_code='energia_kcal'").get<{numeric_value:number}>(liquid.id))!;
     const liquidMeasures=await request(`/foods/${liquid.id}/measures`,'GET');

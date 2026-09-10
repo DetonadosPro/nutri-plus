@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { projectPath } from './db';
-import { inactiveTbcaCodes, validateTbcaDataset, type RawFood } from './tbca-import';
+import { inactiveTbcaCodes, tbcaDisplayNameOverrides, validateTbcaDataset, type RawFood } from './tbca-import';
 
 describe('TBCA com nomes amigáveis', () => {
   it('preserva todos os nomes originais e valida aliases sem truncamento', () => {
@@ -17,5 +17,8 @@ describe('TBCA com nomes amigáveis', () => {
     expect(rice.nome_original).not.toBe(rice.nome_exibicao);
     expect(inactiveTbcaCodes.has('BRC0056G')).toBe(true);
     expect(inactiveTbcaCodes.has('BRC0058G')).toBe(false);
+    expect(inactiveTbcaCodes.has('BRC0001A')).toBe(true);
+    expect(inactiveTbcaCodes.has('BRC0018A')).toBe(false);
+    expect(tbcaDisplayNameOverrides.get('BRC0018A')).toBe('Arroz Branco');
   });
 });
