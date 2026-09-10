@@ -11,7 +11,7 @@ export type ActivityCatalog = {
   resistance: boolean;
   favorite: boolean;
   recent: string | null;
-  referenceKind: 'adult-met' | 'youth-mety' | 'older-met60';
+  referenceKind: 'adult-met' | 'youth-mety';
   referenceCode: string;
   ageBand: string;
 };
@@ -62,7 +62,7 @@ export type ActivitySession = {
     strengthCalculationVersion?: string;
     calculationProfile?: 'quick_strength' | 'catalog_specific';
     manual: ManualActivity | null;
-    referenceKind?: 'adult-met' | 'youth-mety' | 'older-met60' | 'manual';
+    referenceKind?: 'adult-met' | 'youth-mety' | 'manual';
     referenceCode?: string | null;
     referenceAgeBand?: string | null;
   };
