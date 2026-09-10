@@ -475,6 +475,9 @@ export function FoodEntrySheet({
                         <span>
                           <strong>{foodDisplayName(food)}</strong>
                           <small>
+                            {food.curationDetails?.length
+                              ? `${food.curationDetails.slice(0, 3).join(' • ')} · `
+                              : ''}
                             {food.category || 'Grupo não informado'} ·{' '}
                             {formatNumber(food.nutrients.energia_kcal)} kcal/100
                             g

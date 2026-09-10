@@ -727,58 +727,54 @@ app.get(
         ? `AND ${tokens.map((variants) => `(${variants.map(()=>"f.normalized_search_text LIKE ?").join(' OR ')})`).join(" AND ")}`
         : "";
       foods = await db
-        .prepare(`SELECT f.id, f.source_code, f.description, f.description AS name, COALESCE(f.display_name,f.description) AS "displayName", f.category, f.scientific_name, f.brand, f.source, f.glycemic_index AS "glycemicIndex"
+        .prepare(`SELECT f.id, f.source_code, f.description, f.description AS name, COALESCE(f.display_name,f.description) AS "displayName", f.category, f.scientific_name, f.brand, f.source, f.glycemic_index AS "glycemicIndex", f.curation_priority AS "curationPriority", f.curation_details AS "curationDetails", f.curation_confidence AS "curationConfidence"
       FROM favorites fav JOIN foods f ON f.id = fav.food_id
       WHERE fav.user_id = ? AND f.active AND f.source = 'TBCA' ${where}
-      ORDER BY COALESCE(f.display_name,f.description) LIMIT 100`)
+      ORDER BY COALESCE(f.curation_priority_rank,1),COALESCE(f.curation_score,0) DESC,COALESCE(f.display_name,f.description) LIMIT 100`)
         .all(user.id, ...tokens.flatMap((variants) => variants.map(token=>`%${token}%`)));
     } else if (search) {
       const tokens = foodSearchTokenVariants(search).slice(0, 5);
       const canonicalSearch=normalizeFoodQuery(search);
-      const firstCanonicalToken=canonicalSearch.split(' ')[0];
       const where = tokens.map((variants) => `(${variants.map(()=>"normalized_search_text LIKE ?").join(' OR ')})`).join(" AND ");
       foods = await db
         .prepare(
-          `SELECT id, source_code, description, description AS name, COALESCE(display_name,description) AS "displayName", category, scientific_name, brand, source, glycemic_index AS "glycemicIndex"
+          `SELECT id, source_code, description, description AS name, COALESCE(display_name,description) AS "displayName", category, scientific_name, brand, source, glycemic_index AS "glycemicIndex", curation_priority AS "curationPriority", curation_details AS "curationDetails", curation_confidence AS "curationConfidence"
            FROM foods WHERE active AND source = 'TBCA' AND ${where}
            ORDER BY CASE
              WHEN normalized_display_name = ? THEN 0
-             WHEN normalized_name = ? THEN 0
-             WHEN normalized_display_name LIKE ? THEN 1
-             WHEN normalized_name LIKE ? THEN 1
+             WHEN ? = ANY(normalized_search_aliases) THEN 1
              WHEN normalized_display_name LIKE ? THEN 2
-             WHEN normalized_name LIKE ? THEN 2
-             ELSE 3 END,
+             WHEN EXISTS(SELECT 1 FROM unnest(normalized_search_aliases) alias WHERE alias LIKE ?) THEN 3
+             WHEN normalized_name = ? THEN 4
+             WHEN normalized_name LIKE ? THEN 5
+             ELSE 6 END,
+             COALESCE(curation_priority_rank,1),
+             COALESCE(curation_score,0) DESC,
              GREATEST(similarity(normalized_display_name, ?),similarity(normalized_name, ?)) DESC,
-             CASE
-               WHEN ? = ANY(normalized_search_aliases) THEN 0
-               WHEN EXISTS(SELECT 1 FROM unnest(normalized_search_aliases) alias WHERE alias LIKE ?) THEN 1
-               WHEN EXISTS(SELECT 1 FROM unnest(normalized_search_aliases) alias WHERE alias LIKE ?) THEN 2
-               ELSE 3 END,
              source_code,
              COALESCE(display_name,description)
            LIMIT 25`,
         )
         .all(...tokens.flatMap((variants)=>variants.map(token=>`%${token}%`)), canonicalSearch, canonicalSearch,
-          `${canonicalSearch}%`, `${canonicalSearch}%`, `${firstCanonicalToken}%`, `${firstCanonicalToken}%`,
-          canonicalSearch, canonicalSearch, canonicalSearch, `${canonicalSearch}%`, `%${canonicalSearch}%`);
+          `${canonicalSearch}%`, `${canonicalSearch}%`, canonicalSearch, `${canonicalSearch}%`,
+          canonicalSearch, canonicalSearch);
     } else if (patient) {
       foods = await db
-        .prepare(`SELECT f.id, f.source_code, f.description, f.description AS name, COALESCE(f.display_name,f.description) AS "displayName", f.category, f.scientific_name, f.brand, f.source, f.glycemic_index AS "glycemicIndex", MAX(me.created_at) AS last_used
+        .prepare(`SELECT f.id, f.source_code, f.description, f.description AS name, COALESCE(f.display_name,f.description) AS "displayName", f.category, f.scientific_name, f.brand, f.source, f.glycemic_index AS "glycemicIndex", f.curation_priority AS "curationPriority", f.curation_details AS "curationDetails", f.curation_confidence AS "curationConfidence", MAX(me.created_at) AS last_used
       FROM meal_entries me JOIN foods f ON f.id = me.food_id JOIN meals m ON m.id = me.meal_id JOIN daily_logs dl ON dl.id = m.daily_log_id
       WHERE dl.patient_id = ? AND f.active AND f.source = 'TBCA' GROUP BY f.id ORDER BY last_used DESC LIMIT 12`)
         .all(patient.id);
       if (!foods.length) {
         foods = await db
           .prepare(
-            `SELECT id, source_code, description, description AS name, COALESCE(display_name,description) AS "displayName", category, scientific_name, brand, source, glycemic_index AS "glycemicIndex" FROM foods WHERE active AND source = 'TBCA' ORDER BY COALESCE(display_name,description) LIMIT 20`,
+            `SELECT id, source_code, description, description AS name, COALESCE(display_name,description) AS "displayName", category, scientific_name, brand, source, glycemic_index AS "glycemicIndex", curation_priority AS "curationPriority", curation_details AS "curationDetails", curation_confidence AS "curationConfidence" FROM foods WHERE active AND source = 'TBCA' ORDER BY COALESCE(curation_priority_rank,1),COALESCE(curation_score,0) DESC,COALESCE(display_name,description) LIMIT 20`,
           )
           .all();
       }
     } else {
       foods = await db
         .prepare(
-          `SELECT id, source_code, description, description AS name, COALESCE(display_name,description) AS "displayName", category, scientific_name, brand, source, glycemic_index AS "glycemicIndex" FROM foods WHERE active AND source = 'TBCA' ORDER BY COALESCE(display_name,description) LIMIT 20`,
+          `SELECT id, source_code, description, description AS name, COALESCE(display_name,description) AS "displayName", category, scientific_name, brand, source, glycemic_index AS "glycemicIndex", curation_priority AS "curationPriority", curation_details AS "curationDetails", curation_confidence AS "curationConfidence" FROM foods WHERE active AND source = 'TBCA' ORDER BY COALESCE(curation_priority_rank,1),COALESCE(curation_score,0) DESC,COALESCE(display_name,description) LIMIT 20`,
         )
         .all();
     }

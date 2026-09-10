@@ -21,6 +21,9 @@ export type Food = {
   description: string;
   name?: string;
   displayName?: string | null;
+  curationPriority?: 'common' | 'useful' | 'specific' | null;
+  curationDetails?: string[];
+  curationConfidence?: 'high' | 'medium' | 'low' | null;
   category: string | null;
   scientific_name?: string | null;
   brand?: string | null;
