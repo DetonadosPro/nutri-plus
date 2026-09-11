@@ -61,6 +61,14 @@ describe('curadoria integral da busca TBCA',()=>{
     expect(rice.slice(0,10).map(food=>food.displayName).join(' ')).not.toMatch(/arroz[^,]*\bcru[as]?\b/i);
   });
 
+  it.each(['peito bovino','pepino','arroz','linguiça','linguiça suína','bisteca','lombo','pernil'])('mantém a busca manual limpa para %s',(query)=>{
+    const results=patientResults(query);
+    expect(results.length).toBeGreaterThan(0);
+    expect(results.length).toBeLessThanOrEqual(25);
+    expect(new Set(results.map(food=>food.displayName)).size).toBe(results.length);
+    if(!/\bcru[as]?\b/i.test(query))expect(results.slice(0,10).map(food=>food.displayName).join(' ')).not.toMatch(/\b(?:com|sem) (?:sal|óleo|oleo|gordura|manteiga)\b/i);
+  });
+
   it('prioriza a omelete simples sem ocultar as preparações específicas',()=>{
     const results=ranked('omelete');
     expect(results[0]).toEqual(expect.objectContaining({source_code:'BRC0065J',friendly_name:'Omelete',priority:'common'}));

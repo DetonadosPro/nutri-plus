@@ -25,6 +25,10 @@ describe('food photo boundaries', () => {
     expect(needsMeatFamilyConfirmation(meat)).toBe(true);
     expect(needsMeatFamilyConfirmation({...meat,name:'carne suína',identityAmbiguity:null,meatVisual:{...meat.meatVisual!,familyConfidence:.9}})).toBe(false);
   });
+  it('accepts sausage as a processed meat form without treating it as a fresh whole cut',()=>{
+    const sausage=detection('linguiça','grelhada',['peça cilíndrica'],{meatVisual:{familyCandidate:'pork',familyConfidence:.8,cutStyle:'sausage',visibleFatLevel:'unknown',bone:'without',shapeHints:[]}});
+    expect(detectionSchema.parse({items:[sausage]}).items[0].meatVisual?.cutStyle).toBe('sausage');
+  });
   it('keeps preparation distinctions and does not match preparation without the food', () => {
     const foods = [{ description: 'Batata, inglesa, frita' }, { description: 'Batata, inglesa, cozida' }, { description: 'Carne, cozida' }];
     expect(rankFoodCandidates('batata frita', foods)[0].food.description).toContain('frita');
@@ -102,6 +106,17 @@ describe('food photo boundaries', () => {
     const visible=selectDistinctFoodCandidates(item,matches);
     expect(visible).toHaveLength(1);
     expect(recognitionFoodName(visible[0].food)).toBe('Feijão preto cozido');
+  });
+  it('collapses only technical variants of the same sausage identity',()=>{
+    const item=detection('linguiça suína','grelhada',[],{meatVisual:{familyCandidate:'pork',familyConfidence:.9,cutStyle:'sausage',visibleFatLevel:'unknown',bone:'without',shapeHints:[]}});
+    const sameIdentity=[
+      {description:'Linguiça suína grelhada sem óleo com sal',displayName:'Linguiça suína grelhada sem óleo com sal',source_code:'A'},
+      {description:'Linguiça suína grelhada com óleo sem sal',displayName:'Linguiça suína grelhada com óleo sem sal',source_code:'B'},
+      {description:'Preparado suíno grelhado',displayName:'Preparado suíno grelhado',source_code:'C'},
+    ];
+    const visible=selectDistinctFoodCandidates(item,rankSemanticFoodCandidates(item,sameIdentity));
+    expect(visible.filter(match=>/Linguiça/i.test(match.food.displayName||''))).toHaveLength(1);
+    expect(visible.some(match=>/^Preparado/i.test(match.food.displayName||''))).toBe(false);
   });
   it('abstains when the TBCA candidate requires an unseen recipe',()=>{
     const item=detection('omelete','frita',['dobrada e dourada'],{confidence:.95,componentRole:'integrated-preparation'});
