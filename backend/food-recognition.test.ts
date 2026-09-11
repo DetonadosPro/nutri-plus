@@ -4,7 +4,7 @@ import { canonicalQueries,deduplicateDetections,decideMatch,detectionSchema,food
 import { normalizePhoto } from './photo-image';
 
 function detection(name:string,preparation:string|null=null,visibleDetails:string[]=[],overrides:Partial<DetectedFood>={}):DetectedFood {
-  return {name,preparation,visibleDetails,confidence:.9,alternative:null,componentRole:'independent',identityAmbiguity:null,...overrides};
+  return {name,preparation,visibleDetails,confidence:.9,alternative:null,componentRole:'independent',identityAmbiguity:null,meatVisual:null,...overrides};
 }
 
 describe('food photo boundaries', () => {
@@ -18,6 +18,12 @@ describe('food photo boundaries', () => {
     expect(detectionSchema.safeParse({items:[{...detection('arroz'),foodId:12}]}).success).toBe(false);
     expect(rerankSchema.safeParse({candidateIndex:5,confidence:.9,uncertain:false}).success).toBe(false);
     expect(validRerankIndex({candidateIndex:2,confidence:.9,uncertain:false},2)).toBe(false);
+  });
+  it('captures meat family and visual structure in the first vision response',()=>{
+    const meat=detection('carne','grelhada',['peça com osso e gordura lateral'],{identityAmbiguity:'meat_family',meatVisual:{familyCandidate:'pork',familyConfidence:.58,cutStyle:'steak',visibleFatLevel:'medium',bone:'with',shapeHints:['bisteca']}});
+    expect(detectionSchema.parse({items:[meat]}).items[0].meatVisual).toMatchObject({familyCandidate:'pork',cutStyle:'steak',bone:'with',shapeHints:['bisteca']});
+    expect(needsMeatFamilyConfirmation(meat)).toBe(true);
+    expect(needsMeatFamilyConfirmation({...meat,name:'carne suína',identityAmbiguity:null,meatVisual:{...meat.meatVisual!,familyConfidence:.9}})).toBe(false);
   });
   it('keeps preparation distinctions and does not match preparation without the food', () => {
     const foods = [{ description: 'Batata, inglesa, frita' }, { description: 'Batata, inglesa, cozida' }, { description: 'Carne, cozida' }];

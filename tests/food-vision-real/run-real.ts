@@ -3,7 +3,7 @@ import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { basename, extname, resolve } from 'node:path';
 import { performance } from 'node:perf_hooks';
 import { closeDatabase } from '../../backend/db';
-import { tbcaCandidatesForDetection } from '../../backend/food-identity-repository';
+import { tbcaCandidatesForDetection,tbcaCandidatesForMeatFamily } from '../../backend/food-identity-repository';
 import { normalizePhoto } from '../../backend/photo-image';
 import {
   canonicalQueries,
@@ -116,7 +116,7 @@ try {
       if(direct)meatFamilyCheck={acceptable:true,path:'direct'};
       else if(ambiguous){
         const refined=refineMeatFamily(ambiguous,expected.family);
-        const retrieved=(await tbcaCandidatesForDetection(refined)).filter(food=>foodMatchesMeatFamily(food,expected.family));
+        const retrieved=(await tbcaCandidatesForMeatFamily(expected.family)).filter(food=>foodMatchesMeatFamily(food,expected.family));
         const resolution=resolveFoodCandidates(refined,retrieved);
         const candidates=resolution.candidates.map(match=>({code:match.food.source_code,name:match.food.displayName,score:match.matchConfidence}));
         meatFamilyCheck={acceptable:candidates.length>0&&candidates.length<=3&&resolution.candidates.every(match=>foodMatchesMeatFamily(match.food,expected.family)),path:'ASK_MEAT_FAMILY',family:expected.family,state:resolution.decision.state,candidates};

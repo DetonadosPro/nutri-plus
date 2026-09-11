@@ -1,4 +1,14 @@
 import { z } from 'zod';
+import {patientFoodName} from './food-catalog-presentation';
+
+export const meatVisualSchema = z.object({
+  familyCandidate: z.enum(['chicken', 'pork', 'beef', 'unknown']),
+  familyConfidence: z.number().min(0).max(1),
+  cutStyle: z.enum(['steak', 'fillet', 'shredded', 'ground', 'cubes', 'strips', 'rib', 'whole_piece', 'unknown']),
+  visibleFatLevel: z.enum(['low', 'medium', 'high', 'unknown']),
+  bone: z.enum(['with', 'without', 'unknown']),
+  shapeHints: z.array(z.enum(['bisteca', 'lombo', 'pernil', 'peito', 'sobrecoxa', 'hamburguer', 'almondega', 'costela'])).max(3),
+}).strict();
 
 export const detectedFoodSchema = z
   .object({
@@ -9,11 +19,13 @@ export const detectedFoodSchema = z
     alternative: z.string().trim().min(2).max(80).nullable(),
     componentRole: z.enum(['independent', 'integrated-preparation']),
     identityAmbiguity: z.enum(['meat_family', 'food_identity']).nullable(),
+    meatVisual: meatVisualSchema.nullable(),
   })
   .strict();
 
 export const detectionSchema = z.object({ items: z.array(detectedFoodSchema).max(15) }).strict();
 export type DetectedFood = z.infer<typeof detectedFoodSchema>;
+export type MeatVisual = z.infer<typeof meatVisualSchema>;
 
 const GENERIC_MEAT_WORDS = /\b(carne|bife|costela)\b/;
 const CHICKEN_WORDS = /\b(frango|galinha)\b/;
@@ -32,7 +44,10 @@ function meatFamilyInText(value:string):MeatFamily|null {
 }
 
 export function detectedMeatFamily(item: DetectedFood): MeatFamily | null {
-  return meatFamilyInText([item.name, item.preparation ?? '', ...item.visibleDetails].join(' '));
+  const named=meatFamilyInText([item.name, item.preparation ?? '', ...item.visibleDetails].join(' '));
+  if(named)return named;
+  const visual=item.meatVisual;
+  return visual&&visual.familyCandidate!=='unknown'&&visual.familyConfidence>=0.72?visual.familyCandidate:null;
 }
 
 /** Pergunta apenas a espécie; uma espécie já reconhecida nunca volta a ser tratada como ambígua. */
@@ -48,21 +63,26 @@ export function needsMeatFamilyConfirmation(item: DetectedFood) {
 export const needsMeatConfirmation = needsMeatFamilyConfirmation;
 
 export function refineMeatFamily(item: DetectedFood, family: MeatFamily): DetectedFood {
-  const presentation = tokens(item.name).find((value) => PRESENTATION_TOKENS.has(value)) ?? null;
+  const structuredPresentation:Partial<Record<MeatVisual['cutStyle'],string>>={steak:'bife',fillet:'filé',shredded:'desfiada',ground:'moída',cubes:'em cubos',strips:'em tiras',rib:'costela'};
+  const presentation = item.meatVisual?.shapeHints[0] ?? (item.meatVisual&&item.meatVisual.cutStyle!=='unknown'
+    ? structuredPresentation[item.meatVisual.cutStyle]??null
+    : tokens(item.name).find((value) => PRESENTATION_TOKENS.has(value)) ?? null);
   const familyName = family === 'chicken' ? 'frango' : family === 'pork' ? 'carne suína' : 'carne bovina';
   return {
     ...item,
     name: [familyName, presentation].filter(Boolean).join(' '),
     alternative: null,
     identityAmbiguity: null,
+    meatVisual: item.meatVisual ? {...item.meatVisual,familyCandidate:family,familyConfidence:1} : {
+      familyCandidate:family,familyConfidence:1,cutStyle:'unknown',visibleFatLevel:'unknown',bone:'unknown',shapeHints:[],
+    },
   };
 }
 
 export function foodMatchesMeatFamily(food: SearchableFood, family: MeatFamily) {
   const text = normalizeFoodName([food.displayName ?? '', food.description, ...(food.searchAliases ?? [])].join(' '));
-  if (family === 'chicken') return CHICKEN_WORDS.test(text);
-  if (family === 'pork') return PORK_WORDS.test(text);
-  return BEEF_WORDS.test(text);
+  const matches={chicken:CHICKEN_WORDS.test(text),pork:PORK_WORDS.test(text),beef:BEEF_WORDS.test(text)};
+  return matches[family]&&!Object.entries(matches).some(([candidate,present])=>candidate!==family&&present);
 }
 
 export const rerankSchema = z
@@ -100,6 +120,7 @@ export type SearchableFood = {
   curationFlags?: string[] | null;
   curationConfidence?: 'high' | 'medium' | 'low' | null;
   duplicateGroup?: string | null;
+  feedbackScore?: number | null;
 };
 
 export type MatchState =
@@ -311,6 +332,7 @@ type CandidateProfile = {
   bone: 'with' | 'without' | null;
   latentAttributes: string[];
   latentSignature: string;
+  normalizedText: string;
 };
 
 const candidateCache = new WeakMap<object, CandidateProfile>();
@@ -326,16 +348,18 @@ function candidateProfile(food: SearchableFood): CandidateProfile {
   const all = new Set([...fields, ...(food.curationDetails ?? [])].flatMap(tokens));
   const contentTokens = new Set([displayName, ...(food.searchAliases ?? []), food.description].flatMap(tokens));
   const normalizedDisplay = normalizeFoodName(displayName);
+  const normalizedText = normalizeFoodName([displayName,food.description,...(food.searchAliases??[])].join(' '));
   const latentAttributes = unique([
     ...(/\b(?:com|sem) sal\b/.test(normalizedDisplay) ? ['salt'] : []),
-    ...(/\b(?:com|sem) (?:oleo|gordura)\b/.test(normalizedDisplay) ? ['oil'] : []),
-    ...(/\b(?:uht|pasteurizad[oa])\b/.test(normalizedDisplay) ? ['processing'] : []),
+    ...(/\b(?:com|sem) (?:oleo|gordura|azeite|manteiga)\b/.test(normalizedDisplay) ? ['oil'] : []),
+    ...(/\b(?:uht|pasteurizad[oa]|processad[oa])\b/.test(normalizedDisplay) ? ['processing'] : []),
   ]);
   const latentSignature = unique(tokens(normalizedDisplay
     .replace(/\b(?:com|sem) sal\b/g, ' ')
     .replace(/\b(?:com|sem) oleo(?: de [a-z0-9]+)?\b/g, ' ')
+    .replace(/\b(?:com|sem) (?:azeite|manteiga)\b/g, ' ')
     .replace(/\b(?:com|sem) gordura\b/g, ' ')
-    .replace(/\b(?:uht|pasteurizad[oa])\b/g, ' '))).sort().join(' ');
+    .replace(/\b(?:uht|pasteurizad[oa]|processad[oa])\b/g, ' '))).sort().join(' ');
   const profile: CandidateProfile = {
     all, display, fields, semanticFields, fieldTokenSets: semanticFields.map((field) => new Set(tokens(field))),
     preparations: new Set([...all].filter((token) => PREPARATIONS.has(token))),
@@ -351,11 +375,40 @@ function candidateProfile(food: SearchableFood): CandidateProfile {
     hasPosta: display.includes('posta'),
     skin: visiblePolarity(normalizeFoodName(attributeText), 'pele'),
     bone: visiblePolarity(normalizeFoodName(attributeText), 'osso'),
-    latentAttributes,
+    latentAttributes,normalizedText,
     latentSignature,
   };
   candidateCache.set(food as object, profile);
   return profile;
+}
+
+const MEAT_CUT_PATTERNS:Record<Exclude<MeatVisual['cutStyle'],'unknown'>,RegExp>={
+  steak:/\b(bife|bisteca|fatia)\b/,fillet:/\b(file|peito|lombo)\b/,shredded:/\bdesfiad[oa]\b/,
+  ground:/\b(moid[oa]|hamburguer|almondega)\b/,cubes:/\bcubos?\b/,strips:/\b(tiras?|iscas?)\b/,
+  rib:/\b(costela|bisteca)\b/,whole_piece:/\b(pernil|lombo|peito|sobrecoxa|paleta)\b/,
+};
+
+function meatVisualAdjustment(item:DetectedFood,candidate:CandidateProfile,food:SearchableFood){
+  const visual=item.meatVisual;
+  if(!visual)return 0;
+  let score=0;
+  const text=candidate.normalizedText;
+  if(visual.cutStyle!=='unknown')score+=MEAT_CUT_PATTERNS[visual.cutStyle].test(text)?.14:-.035;
+  if(visual.shapeHints.length){
+    const shapeMatch=visual.shapeHints.some((hint)=>text.includes(normalizeFoodName(hint)));
+    score+=shapeMatch?.18:-.05;
+  }
+  if(visual.bone!=='unknown'){
+    if(candidate.bone===visual.bone)score+=.06;
+    else if(candidate.bone)score-=.22;
+  }
+  if(visual.visibleFatLevel==='low'&&/\bsem gordura\b/.test(text))score+=.035;
+  if(visual.visibleFatLevel==='high'&&/\bcom gordura\b/.test(text))score+=.035;
+  if(/\b(preparad[oa]|preparo|carne suina sem|carne bovina sem)\b/.test(text))score-=.18;
+  if(/^de segunda\b/.test(text))score-=.24;
+  if(food.curationFlags?.includes('ambiguous_label'))score-=.16;
+  if(food.curationFlags?.includes('many_ingredients'))score-=.12;
+  return score;
 }
 
 export function canonicalQueries(item: DetectedFood) {
@@ -476,6 +529,7 @@ function curationAdjustment(food: SearchableFood, profile: DetectionProfile) {
 
 function unobservedSubtypePenalty(profile: DetectionProfile, candidate: CandidateProfile) {
   if (profile.identity.has('camarao') && !profile.evidence.has('barba') && !profile.evidence.has('pitu') && (candidate.all.has('barba') || candidate.all.has('pitu'))) return 0.02;
+  if(!profile.preparations.has('cru')&&candidate.display.includes('cru')&&[...profile.identity].some(token=>['arroz','feijao','carne','bovino','suino','frango','galinha','macarrao'].includes(token)))return .16;
   return 0;
 }
 
@@ -488,6 +542,12 @@ export type SemanticMatch<T> = {
 function sortSemanticMatches<T extends SearchableFood>(matches: SemanticMatch<T>[]) {
   return matches.sort((left, right) => {
     const scoreDifference = right.matchConfidence - left.matchConfidence;
+    // Feedback nunca altera o score nem a decisão: só ordena candidatos dentro
+    // da mesma faixa centesimal de compatibilidade visual/semântica.
+    const leftBand=Math.round(left.matchConfidence*100),rightBand=Math.round(right.matchConfidence*100);
+    if(leftBand!==rightBand)return scoreDifference;
+    const feedbackDifference=Math.max(0,Math.min(.08,right.food.feedbackScore??0))-Math.max(0,Math.min(.08,left.food.feedbackScore??0));
+    if(Math.abs(feedbackDifference)>0.0001)return feedbackDifference;
     if (Math.abs(scoreDifference) > 0.0001) return scoreDifference;
     const priority = { common: 0, useful: 1, specific: 2 } as const;
     const priorityDifference = (priority[left.food.curationPriority ?? 'specific'] ?? 2) - (priority[right.food.curationPriority ?? 'specific'] ?? 2);
@@ -530,7 +590,7 @@ export function rankSemanticFoodCandidates<T extends SearchableFood>(item: Detec
     const exactAliasMatch = candidate.semanticFields.slice(1).some((field) => primaryQueries.includes(field));
     const visibleAttributeMatch = (profile.skin && candidate.skin === profile.skin ? 0.04 : 0) + (profile.bone && candidate.bone === profile.bone ? 0.03 : 0);
     const raw = identityMatch === 0 ? 0 : identityMatch * 0.34 + lexical * 0.22 + prepMatch * 0.10 + visibleMatch * 0.08 + (identityIsMain ? 0.05 : 0)
-      + (directFriendlyMatch ? 0.05 : exactAliasMatch ? 0.025 : 0) + visibleAttributeMatch + alternativeCoverage * 0.015 + curationAdjustment(food, profile)
+      + (directFriendlyMatch ? 0.05 : exactAliasMatch ? 0.025 : 0) + visibleAttributeMatch + alternativeCoverage * 0.015 + curationAdjustment(food, profile) + meatVisualAdjustment(item,candidate,food)
       - Math.min(0.42, unexpectedRecipes.length * 0.14) - unobservedSubtypePenalty(profile, candidate)
       - Math.min(0.36, missingVisible.length * 0.18) - Math.min(0.21, hiddenAdditions.length * 0.07)
       - Math.min(0.70, semanticContradictions.length * 0.30);
@@ -673,20 +733,10 @@ export function deduplicateDetections(items: DetectedFood[]) {
 }
 
 export function rankFoodCandidates<T extends SearchableFood>(name: string, foods: T[]) {
-  return rankSemanticFoodCandidates({ name, preparation: null, visibleDetails: [], confidence: 1, alternative: null, componentRole: 'independent', identityAmbiguity: null }, foods)
+  return rankSemanticFoodCandidates({ name, preparation: null, visibleDetails: [], confidence: 1, alternative: null, componentRole: 'independent', identityAmbiguity: null,meatVisual:null }, foods)
     .map((match) => ({ food: match.food, score: match.matchConfidence, exact: match.matchConfidence >= MATCH_THRESHOLDS.AUTOSELECT_MIN_SCORE }));
 }
 
 export function recognitionFoodName(food: SearchableFood) {
-  return (food.displayName?.trim() || food.description)
-    .replace(/\s*\([^)]*\)/g, '')
-    .replace(/\s+(?:com|sem)\s+sal\b/gi, '')
-    .replace(/\s+(?:com|sem)\s+(?:óleo|oleo)(?:\s+de\s+[\p{L}-]+)?\b/giu, '')
-    .replace(/\s+(?:com|sem)\s+gordura\b/gi, '')
-    .replace(/\b(?:UHT|pasteurizad[oa])\b/gi, '')
-    .replace(/^Macarrão\s+trigo\s+com\s+ovos\b/i, 'Macarrão')
-    .replace(/^Macarrão\s+trigo\s+integral\b/i, 'Macarrão integral')
-    .replace(/\s{2,}/g, ' ')
-    .replace(/\s+([),])/g, '$1')
-    .trim();
+  return patientFoodName(food);
 }
