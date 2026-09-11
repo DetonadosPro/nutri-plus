@@ -21,9 +21,9 @@ Foram alteradas somente classificações que já eram common na segunda revisão
 
 ## Correções de português e naturalidade
 
-- Friendly names corrigidos: 178.
-- Alimentos com aliases alterados: 264.
-- Aliases removidos: 277; adicionados: 207.
+- Friendly names corrigidos: 179.
+- Alimentos com aliases alterados: 265.
+- Aliases removidos: 280; adicionados: 210.
 
 ### Até 50 exemplos reais
 
@@ -55,6 +55,7 @@ Foram alteradas somente classificações que já eram common na segunda revisão
 - BRC0062E — Merluza filé assado → Filé de merluza assado — detalhes: Sem óleo • Sem sal • Brasil
 - BRC0063E — Merluza filé cru → Filé de merluza cru — detalhes: Brasil
 - BRC0064E — Merluza filé frito sem sal → Filé de merluza frito sem sal — detalhes: Sem sal • Brasil
+- BRC0065J — Ovo mexido sem óleo e sem sal → Omelete — detalhes: Sem óleo • Sem sal • Brasil
 - BRC0066E — Salmão filé com pele fresco grelhado → Filé de salmão fresco grelhado com pele — detalhes: Sem óleo • Sem sal • Brasil
 - BRC0070E — Sardinha filé crua → Filé de sardinha cru — detalhes: Brasil
 - BRC0071E — Sardinha conserva com molho de tomate → Sardinha em conserva com molho de tomate — detalhes: Brasil
@@ -76,7 +77,6 @@ Foram alteradas somente classificações que já eram common na segunda revisão
 - BRC0122E — Abadejo filé congelado assado sem óleo com sal → Filé de abadejo congelado assado sem óleo com sal — detalhes: Sem óleo • Com sal
 - BRC0123E — Abadejo filé congelado assado → Filé de abadejo congelado assado — detalhes: Sem óleo • Sem sal • Brasil
 - BRC0124E — Abadejo filé ensopado (com cebola tomate e pimentão) com óleo com sal → Filé de abadejo ensopado (com cebola tomate e pimentão) com óleo com sal — detalhes: Com óleo • Com sal
-- BRC0125E — Abadejo filé à milanesa (ovo e farinha de rosca) frito (com óleo de soja) com sal → Filé de abadejo à milanesa (ovo e farinha de rosca) frito (com óleo de soja) com sal — detalhes: Com óleo • Com sal
 
 ## Mudanças de classificação
 
@@ -190,7 +190,7 @@ Terceira revisão: Peito de frango grelhado sem pele [common] (BRC0114F); Peito 
 
 Segunda revisão: Ovo de galinha cozido [common] (BRC0010J); Ovo mexido sem óleo e sem sal [common] (BRC0065J); Ovo de galinha frito [common] (BRC0015J); Ovo de galinha cru [common] (BRC0011J); Ovo de codorna cozido [useful] (BRC0052J); Ovo de codorna inteiro cru [useful] (BRC0003J); Ovo de galinha gema cozida/10 min sem sal [useful] (BRC0007J); Ovo de galinha clara cozida/10 min sem sal [useful] (BRC0004J); Ovo de pata gema crua [useful] (BRC0019J); Ovo de pata clara crua [useful] (BRC0018J)
 
-Terceira revisão: Ovo de galinha cozido [common] (BRC0010J); Ovo mexido sem óleo e sem sal [common] (BRC0065J); Ovo de galinha frito [common] (BRC0015J); Ovo de galinha cru [common] (BRC0011J); Ovo de codorna cozido [useful] (BRC0052J); Ovo de codorna inteiro cru [useful] (BRC0003J); Ovo de galinha gema cozida/10 min sem sal [useful] (BRC0007J); Ovo de galinha clara cozida/10 min sem sal [useful] (BRC0004J); Ovo de pata gema crua [useful] (BRC0019J); Ovo de pata clara crua [useful] (BRC0018J)
+Terceira revisão: Ovo de galinha cozido [common] (BRC0010J); Ovo de galinha frito [common] (BRC0015J); Ovo de galinha cru [common] (BRC0011J); Ovo de codorna cozido [useful] (BRC0052J); Ovo de codorna inteiro cru [useful] (BRC0003J); Ovo de galinha gema cozida/10 min sem sal [useful] (BRC0007J); Ovo de galinha clara cozida/10 min sem sal [useful] (BRC0004J); Ovo de pata gema crua [useful] (BRC0019J); Ovo de pata clara crua [useful] (BRC0018J); Ovo de pata inteiro cru [useful] (BRC0020J)
 
 ### leite
 
@@ -888,7 +888,7 @@ Classificação: acceptable=44, needs_detail=61, needs_human_override=27.
 ## Reprodutibilidade
 
 - SHA-256 da fonte TBCA: `25bf7e2e60763e404be42b61011fc99256c6f944c43ed93b23ec4b14ec7d53a7`.
-- Fingerprint da curadoria: `a58aea2476121a6d2aef9b4140f416759b2edda3735b6f42471654e32510d108`.
+- Fingerprint da curadoria: `22d7baa392329c06a4f8cba1817213ef034f57fc17dcab152cc88de6531e944e`.
 - Regerar: `npm run curation:generate`.
 - Validar: `npm run curation:check`.
 - Importar localmente: `npm run curation:import`.

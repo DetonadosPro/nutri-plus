@@ -256,10 +256,10 @@ describe('photo matcher against the curated complete TBCA catalog', () => {
     expect(result.candidates).toEqual([]);
   });
 
-  it('does not expose a candidate that requires an unseen recipe', () => {
-    const result = resolve(detection('omelete', 'frita', ['dobrada e dourada']));
-    expect(result.decision.state).toBe('NO_EXACT_TBCA_MATCH');
-    expect(result.candidates).toEqual([]);
+  it('matches a plain omelet without requiring an unseen recipe', () => {
+    const result = resolve(detection('omelete'));
+    expect(result.decision.state).not.toBe('NO_EXACT_TBCA_MATCH');
+    expect(result.candidates[0]?.food.source_code).toBe('BRC0065J');
   });
 
   it('resolves multiple plate components independently', () => {

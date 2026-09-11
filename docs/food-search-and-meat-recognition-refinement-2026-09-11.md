@@ -113,20 +113,20 @@ Esta amostra não contém casos rotulados de porco e bovino suficientes para com
 
 ## Integridade
 
-Baseline versionado desta branch:
+Estado versionado após a integração da omelete simples:
 
 - 5.874 alimentos TBCA;
-- 8.316 medidas em 4.878 códigos: 6.087 caseiras, 1.784 contagens e 445 volumes;
+- 8.317 medidas em 4.879 códigos: 6.087 caseiras, 1.785 contagens e 445 volumes;
 - nutrientes: `7c663b29885bff52dda27adf5d295126b67d68dbb79ea7965d011845ac0f55db`;
 - identidade/códigos: `c736b4d473fdb20bd56fa90d5c6c92add5a3db24ef20f037f1b999de353521f6`;
 - histórico/snapshots: `019666543e65d1932532d9fd1910b308480a1c155849e675680dcb5d28e50335`;
-- relações/IDs de medidas: `fcf3f6acdd315555053596063ac9ead165a758a2d1b2fcddc668c5ebc918472e`.
+- SHA-256 do catálogo revisado de medidas: `2277486e9d63c8cb3544d5711b535bedb3e9bacd7c2c6829ba52bb972dfeaa08`.
 
-O banco de desenvolvimento compartilhado possui também a medida da omelete aplicada anteriormente em outra branch; por isso uma auditoria desse banco mostra 8.317 medidas. O artefato versionado e esta branch continuam exatamente com 8.316 e este diff não altera medidas. Nenhuma publicação em produção foi feita.
+A extensão adiciona somente `1 ovo = 50 g` à omelete simples `BRC0065J`; medidas anteriores, nutrientes e históricos permanecem inalterados.
 
 ## Revisão final da migration 024 e do feedback
 
-A migration 024 foi validada em dois schemas temporários e isolados no PostgreSQL local. No primeiro, o fluxo normal `migrate()` aplicou, em ordem, as migrations 001 a 024 sobre schema vazio. No segundo, foram aplicadas inicialmente as migrations 001 a 023, inserida uma previsão no formato legado e, em seguida, executado o mesmo `migrate()` para aplicar a 024 como atualização de banco existente.
+As migrations 024 e 025 foram validadas em dois schemas temporários e isolados no PostgreSQL local. No primeiro, o fluxo normal `migrate()` aplicou, em ordem, as migrations 001 a 025 sobre schema vazio. No segundo, foram aplicadas inicialmente as migrations 001 a 023, inseridos uma previsão no formato legado e o alimento `BRC0065J`, e então executado o mesmo `migrate()` para aplicar a telemetria e a omelete como atualização de banco existente.
 
 O registro legado permaneceu idêntico em todas as colunas anteriores. As novas colunas receberam os defaults esperados: objeto JSON vazio, array vazio, `manual_search=false` e famílias nulas. `detected_payload`, `candidate_food_ids` e `manual_search` são `NOT NULL`; as famílias são nullable porque não se aplicam a todo alimento, mas aceitam somente `chicken`, `pork` ou `beef`. O índice parcial inclui apenas previsões finalizadas. A migration e seu registro em `schema_migrations` são executados na mesma transação pelo deploy; uma falha reverte ambos.
 

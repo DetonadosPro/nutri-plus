@@ -48,6 +48,8 @@ Verificação visual no navegador: desktop 1440×900 e celular 390×844. Com o a
 
 `npm run measures:audit` emite cobertura, origem e impressões digitais das medidas e do histórico. Resultado local após duas importações: 5.874 alimentos TBCA ativos; 4.878 com medida adicional; 996 somente g; 3.407 com `household`; 1.784 com `count`; 445 com `volume`; 8.316 medidas, todas de origem TBCA. A impressão digital completa permaneceu `7d7dd61b1b51a5352299d739c1dde9bed8d080beca2d64556a184cd3d5742f59` na segunda execução.
 
+Extensão aprovada em 11/09/2026: a omelete simples `BRC0065J` acrescenta uma medida revisada de contagem, `1 ovo = 50 g`, referenciada na medida oficial do ovo `BRC0010J`. O estado atual passa a 8.317 medidas para 4.879 códigos, sendo 1.785 de contagem; as 8.316 medidas anteriores permanecem inalteradas.
+
 As 7.138 medidas da versão anterior permaneceram com os mesmos IDs e conteúdo: o subconjunto até o ID 7.146 conservou 7.138 linhas e a impressão de identidade `8f2d58c97d355623d0eae5129d3ac570bc8b99e780d3e3855114f2c12e605b9c`. A nova versão acrescentou 1.178 medidas. O histórico também permaneceu idêntico: 37 registros, soma de 4.244 g e impressão `0a41cae916dbf37dc44aa2f6ffda83887bb2f3b848dda70c1e8aaf7d1d17a132`.
 
 Os 996 alimentos restantes continuam com o fallback seguro em g. O catálogo não define `isDefault=true`; por isso g permanece selecionado inicialmente e o usuário escolhe uma das medidas TBCA disponíveis. Nenhum default foi inferido. Os rótulos foram preservados exatamente como entregues, inclusive `peça / unidade / fatia média`. Em `BRC0243C`, a medida genérica em mL foi mantida e as medidas caseiras pequenas conflitantes permaneceram excluídas conforme a revisão recebida. Nenhum nutriente foi alterado.

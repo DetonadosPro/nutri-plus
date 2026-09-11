@@ -7,13 +7,13 @@ const catalog = JSON.parse(readFileSync(new URL('./data/food-measures.reviewed.j
 describe('catálogo revisado de medidas TBCA', () => {
   it('mantém a estrutura e a cobertura curada esperadas', () => {
     const rows = reviewedMeasure.array().parse(catalog);
-    expect(rows).toHaveLength(8316);
-    expect(new Set(rows.map(row => row.foodCode)).size).toBe(4878);
+    expect(rows).toHaveLength(8317);
+    expect(new Set(rows.map(row => row.foodCode)).size).toBe(4879);
     expect(rows.every(row => row.foodSource === 'TBCA' && row.source === 'TBCA' && row.reviewed)).toBe(true);
     expect(rows.filter(row => row.kind === 'household')).toHaveLength(6087);
-    expect(rows.filter(row => row.kind === 'count')).toHaveLength(1784);
+    expect(rows.filter(row => row.kind === 'count')).toHaveLength(1785);
     expect(rows.filter(row => row.kind === 'volume')).toHaveLength(445);
-    expect(rows.some(row => row.isDefault)).toBe(false);
+    expect(rows.filter(row => row.isDefault)).toHaveLength(1);
   });
 
   it('não contém chaves, nomes ou pesos conflitantes dentro do alimento', () => {
@@ -29,6 +29,14 @@ describe('catálogo revisado de medidas TBCA', () => {
     expect(catalog).toContainEqual(expect.objectContaining({
       foodCode: 'BRC0001A', name: 'colher de sopa cheia', quantity: 1, grams: 23,
       source: 'TBCA', reviewed: true, isDefault: false,
+    }));
+  });
+
+  it('oferece quantidade de ovos para a omelete simples usando a medida oficial do ovo', () => {
+    expect(catalog).toContainEqual(expect.objectContaining({
+      foodCode:'BRC0065J', key:'omelet-egg-count', kind:'count', name:'ovo', plural:'ovos',
+      quantity:1, grams:50, isDefault:true, source:'TBCA', reviewed:true,
+      reference:'https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0010J',
     }));
   });
 
