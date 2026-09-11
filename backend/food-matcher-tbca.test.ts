@@ -236,6 +236,35 @@ describe('photo matcher against the curated complete TBCA catalog', () => {
     expect(visible).not.toMatch(/Preparad[oa] suíno/i);
   });
 
+  it('keeps sausage identity and prefers specific pork sausage over generic or wrong-family meat',()=>{
+    const item:DetectedFood={...detection('linguiça','grelhada',['peça cilíndrica avermelhada']),meatVisual:{familyCandidate:'pork',familyConfidence:.82,cutStyle:'sausage',visibleFatLevel:'unknown',bone:'without',shapeHints:[]}};
+    const result=resolve(item),visible=names(item).join(' ');
+    expect(result.candidates[0]?.food.source_code).toBe('BRC0189F');
+    expect(visible).toMatch(/Linguiça suí/i);
+    expect(visible).not.toMatch(/Linguiça de frango|Preparad[oa] suíno/i);
+    expect(result.candidates.length).toBeLessThanOrEqual(3);
+  });
+
+  it('preserves sausage through ASK_MEAT_FAMILY and returns no artificial filler',()=>{
+    const ambiguous:DetectedFood={...detection('linguiça','grelhada',['peça cilíndrica']),identityAmbiguity:'meat_family',meatVisual:{familyCandidate:'unknown',familyConfidence:.3,cutStyle:'sausage',visibleFatLevel:'unknown',bone:'without',shapeHints:[]}};
+    expect(resolve(ambiguous).decision.state).toBe('ASK_MEAT_FAMILY');
+    const refined=refineMeatFamily(ambiguous,'pork');
+    expect(refined.name).toBe('linguiça suína');
+    const result=resolveFoodCandidates(refined,foods.filter(food=>foodMatchesMeatFamily(food,'pork')));
+    expect(result.candidates[0]?.food.source_code).toBe('BRC0189F');
+    expect(result.candidates.length).toBeGreaterThan(0);
+    expect(result.candidates.length).toBeLessThanOrEqual(3);
+    expect(result.candidates.every(match=>foodMatchesMeatFamily(match.food,'pork'))).toBe(true);
+  });
+
+  it('does not mix independent sausage and pork-chop visual evidence',()=>{
+    const sausage:DetectedFood={...detection('linguiça','grelhada',['peça cilíndrica']),meatVisual:{familyCandidate:'pork',familyConfidence:.82,cutStyle:'sausage',visibleFatLevel:'unknown',bone:'without',shapeHints:[]}};
+    const chop:DetectedFood={...detection('carne','grelhada',['peça achatada']),identityAmbiguity:'meat_family',meatVisual:{familyCandidate:'pork',familyConfidence:.6,cutStyle:'steak',visibleFatLevel:'medium',bone:'with',shapeHints:['bisteca']}};
+    expect(resolve(sausage).candidates[0]?.food.source_code).toBe('BRC0189F');
+    const refined=refineMeatFamily(chop,'pork');
+    expect(resolveFoodCandidates(refined,foods.filter(food=>foodMatchesMeatFamily(food,'pork'))).candidates[0]?.food.displayName).toMatch(/Bisteca/i);
+  });
+
   it('does not ask again when chicken is already visually recognized', () => {
     const item=detection('frango desfiado','cozido',['fibras claras separadas']);
     expect(needsMeatFamilyConfirmation(item)).toBe(false);

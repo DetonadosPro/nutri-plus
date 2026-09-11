@@ -32,5 +32,14 @@ describe('apresentação canônica do catálogo ao paciente',()=>{
     expect(patientFoodName({description:'Bisteca suíno grelhada sem óleo com sal'})).toBe('Bisteca suína grelhada');
     expect(patientFoodName({description:'Lombo suíno assada sem sal'})).toBe('Lombo suíno assado');
     expect(patientFoodName({description:'Pernil suíno assada'})).toBe('Pernil suíno assado');
+    expect(patientFoodName({description:'Linguiça suíno grelhada sem óleo com sal'})).toBe('Linguiça suína grelhada');
+  });
+
+  it('não colapsa linguiça específica com preparado suíno genérico',()=>{
+    const results=presentFoodSearchResults([
+      {source_code:'LING',description:'Linguiça suíno grelhada sem óleo com sal'},
+      {source_code:'PREP',description:'Preparado suíno grelhado sem óleo com sal'},
+    ],'linguiça suína');
+    expect(results.map(food=>food.source_code)).toEqual(['LING','PREP']);
   });
 });

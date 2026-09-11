@@ -7,10 +7,12 @@ import { tbcaCandidatesForDetection,tbcaCandidatesForMeatFamily } from '../../ba
 import { normalizePhoto } from '../../backend/photo-image';
 import {
   canonicalQueries,
+  diagnoseCandidateSelection,
   deduplicateDetections,
   detectionSchema,
   foodMatchesMeatFamily,
   needsMeatFamilyConfirmation,
+  rankSemanticFoodCandidates,
   refineMeatFamily,
   resolveFoodCandidates,
   type MeatFamily,
@@ -43,8 +45,8 @@ function matchesAny(text: string, alternatives: string[]) {
   return alternatives.some((alternative) => text.includes(normalize(alternative)));
 }
 
-const directoryArgument = process.argv.slice(2).find((argument) => !argument.startsWith('--') && argument !== option('--output') && argument !== option('--manifest'));
-if (!directoryArgument) throw new Error('Uso: npm run vision:test-real -- <diretório> [--manifest arquivo.json] [--output resultado.json]');
+const directoryArgument = process.argv.slice(2).find((argument) => !argument.startsWith('--') && argument !== option('--output') && argument !== option('--manifest') && argument !== option('--image'));
+if (!directoryArgument) throw new Error('Uso: npm run vision:test-real -- <diretório> [--image arquivo.jpg] [--manifest arquivo.json] [--output resultado.json]');
 
 const imageDirectory = resolve(directoryArgument);
 const outputPath = resolve(option('--output') ?? `.codex-local/food-vision-real/${Date.now()}-result.json`);
@@ -53,8 +55,10 @@ const manifest = manifestPath ? JSON.parse(readFileSync(manifestPath, 'utf8')) a
 const tokenPath = resolve(process.env.NUTRI_VISION_TOKEN_FILE ?? '.codex-local/vision-token');
 const token = readFileSync(tokenPath, 'utf8').trim();
 const endpoint = process.env.NUTRI_VISION_URL ?? 'http://127.0.0.1:11435';
+const selectedImage=option('--image');
 const imageFiles = readdirSync(imageDirectory)
   .filter((file) => ['.jpg', '.jpeg', '.png', '.webp'].includes(extname(file).toLowerCase()))
+  .filter((file)=>!selectedImage||file===selectedImage)
   .sort((left, right) => left.localeCompare(right, 'pt-BR'));
 
 if (!imageFiles.length) throw new Error(`Nenhuma imagem encontrada em ${imageDirectory}`);
@@ -86,11 +90,14 @@ try {
       retrievalMs += performance.now() - retrievalStarted;
       const matcherStarted = performance.now();
       const resolution = resolveFoodCandidates(item, foods);
+      const diagnosticRanked=rankSemanticFoodCandidates(item,foods,foods.length);
       matcherMs += performance.now() - matcherStarted;
       items.push({
         detected: item,
         matcherQueries: canonicalQueries(item),
         retrievedFoods: foods.length,
+        rawPool:foods.map(food=>({id:food.id,code:food.source_code,name:food.displayName,description:food.description,category:food.category,priority:food.curationPriority,priorityScore:food.curationScore,confidence:food.curationConfidence,duplicateGroup:food.duplicateGroup})),
+        selectionAudit:diagnoseCandidateSelection(item,diagnosticRanked),
         decision: resolution.decision,
         candidates: resolution.candidates.map((match) => ({
           code: match.food.source_code,
@@ -98,6 +105,7 @@ try {
           score: match.matchConfidence,
           contradictions: match.contradictions,
           materialUnknowns: match.materialUnknowns,
+          scoreBreakdown:match.scoreBreakdown,
         })),
         rankedTop5: resolution.ranked.slice(0, 5).map((match) => ({
           code: match.food.source_code,

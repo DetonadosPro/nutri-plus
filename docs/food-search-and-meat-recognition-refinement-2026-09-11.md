@@ -145,3 +145,44 @@ A auditoria do feedback encontrou que a implementação inicial permitia influê
 - incompatibilidades de corte, `shapeHints`, osso, preparação e atributos visíveis continuam no score principal e sempre dominam o desempate.
 
 Assim, uma escolha isolada ou pouco histórico não altera o top 3. Várias escolhas coerentes podem apenas desempatar candidatos praticamente equivalentes no mesmo contexto visual. Banco sem feedback mantém exatamente a ordenação determinística normal.
+
+## Regressão da linguiça suína — imagem 3
+
+### Caso real e diagnóstico
+
+Golden case local: `C:\Users\Detona\Documents\Nutri+\imagens reais\imagem 3.jpg`. A imagem permaneceu fora do Git; resultados e instrumentação estão somente em `.codex-local/food-vision-real/`. Foram feitas exatamente duas leituras visuais controladas: uma antes e uma depois. Cada execução fez uma única chamada normal ao modelo `gpt-5.6-luna`, esforço `none`.
+
+Na execução anterior, a visão separou sete componentes. Para a linguiça retornou `name=linguiça`, `preparation=inteira, grelhada`, confiança 0,97, alternativa `salsicha` e família suína com confiança 0,72. O formato, porém, foi forçado a `whole_piece`, representação criada para cortes frescos. Para a bisteca retornou componente independente, `cutStyle=steak`, `shapeHints=[bisteca]` e família incerta, mantendo corretamente `ASK_MEAT_FAMILY`.
+
+O retrieval da linguiça estava correto: 68 linhas foram recuperadas, incluindo `BRC0188F` (frango grelhada), `BRC0189F` (suína grelhada), `BRC0763F/BRC0764F` (mista grelhada/assada), `BRC0901F` (calabresa à milanesa) e formas cruas/cozidas. `BRC0189F` não desaparecia no SQL nem na canonicalização; aparecia em segundo com o mesmo score 0,8304 da linguiça de frango.
+
+A perda acontecia em `selectDistinctFoodCandidates`. O eixo de família existia para `carne`, mas não para a identidade `linguiça`; assim, frango e suíno recebiam a mesma chave de diversidade `prep:grelhado`. O desempate anterior colocava `BRC0188F` primeiro e descartava `BRC0189F` como duplicata. Em paralelo, `BRC0901F` sobrevivia com 0,7213 porque um `empanado` inesperado não era registrado como contradição quando a preparação esperada era `grelhado`. O resultado visível eram precisamente duas escolhas ruins: frango grelhada e calabresa à milanesa. A canonicalização apenas agrupou corretamente variantes técnicas da mesma linguiça, por exemplo `BRC0763F/BRC0764F`; ela não confundiu linguiça com `Preparada suíno`.
+
+### Correção localizada
+
+- `cutStyle` passou a aceitar `sausage`; o prompt usa esse valor para embutidos cilíndricos e não para cortes frescos;
+- o eixo de identidade de linguiça agora preserva famílias suína, bovina e frango no dedup;
+- quando a família visual é defensável, a compatibilidade familiar entra no score local: família única compatível `+0,10`, mistura `-0,04`, família contrária `-0,30`; candidato sem família explícita permanece neutro;
+- ao responder `ASK_MEAT_FAMILY`, a identidade continua `linguiça suína/de frango/bovina`, em vez de virar a busca genérica `carne ...`;
+- `empanado` inesperado agora contradiz uma preparação visível grelhada/cozida/frita/assada;
+- `Linguiça suíno` é humanizada para `Linguiça suína` somente na apresentação;
+- thresholds globais, catálogo, IDs, nutrientes, medidas e número de chamadas não mudaram.
+
+Não foi criado um campo `foodForm` separado: ampliar o enum estrutural já existente com `sausage` resolveu a diferença entre embutido e corte fresco com menor superfície de mudança e compatibilidade com payloads anteriores. A chave de feedback já contém `cutStyle`; portanto, feedback de `sausage` fica automaticamente isolado de bisteca/lombo/pernil, mantendo mínimo de três exemplos, teto 0,08 e uso somente como desempate.
+
+### Before / after
+
+| Componente | Antes | Depois |
+|---|---|---|
+| Bisteca | visão: carne, bife grelhado, `steak`, hint `bisteca`, família incerta; `ASK_MEAT_FAMILY`; após Porco: `BRC0160F` Bisteca suína em primeiro | visão: carne bovina com alternativa suína, `steak`, hint `bisteca`; continua `ASK_MEAT_FAMILY`; após Porco: `BRC0160F`, score 0,99, primeiro e único candidato seguro |
+| Linguiça | visão: linguiça grelhada, família pork 0,72, formato incorreto `whole_piece`; pool 68; `BRC0189F` entrava com 0,8304, mas era removida pelo dedup; visíveis: frango grelhada e calabresa à milanesa | visão: linguiça grelhada, formato `sausage`, família visual abstida; pool inicial 68 e `ASK_MEAT_FAMILY`; após Porco: pool familiar filtrado 101, `BRC0189F` Linguiça suína grelhada, score 0,7924, único candidato seguro |
+
+Decomposição final de `BRC0189F` após Porco: identidade 0,17; lexical 0,0682; preparação 0,10; evidência visível 0,08; identidade principal 0,05; curadoria 0,0842; família 0,10; formato sausage 0,14; demais sinais e penalizações zero; score final 0,7924. `Preparada suíno` ficou em 0,2783: recebeu `-0,035` por incompatibilidade de formato e `-0,18` por genericidade, abaixo do piso 0,46. Formas suínas cruas ficaram em 0,3924/0,3833 devido à contradição de preparação `grelhado!=cru`. Nenhuma opção foi adicionada apenas para completar três.
+
+### Performance, testes e riscos
+
+Antes: visão 5.940,7 ms, retrieval total do prato 247,8 ms, matcher 206,9 ms, total 6.400,5 ms. Depois: visão 6.287,0 ms, retrieval 182,7 ms, matcher 155,3 ms, total 6.636,1 ms. A variação total foi +235,6 ms (+3,7%), concentrada na chamada remota; retrieval e matcher ficaram mais rápidos nessa amostra. A correção local adiciona apenas regex/testes de conjuntos constantes e nenhuma chamada, consulta ou rerank remoto.
+
+Testes automatizados cobrem linguiça suína direta, escolha de família Porco, precedência sobre família errada e preparado genérico, variantes técnicas, canonicalização, dedup sem fundir identidades, preparação empanada incompatível, bisteca preservada, componentes independentes, máximo de três, ausência de preenchimento artificial, abstinência sob o piso, feedback incapaz de trocar identidade e buscas manuais por peito bovino, pepino, arroz, linguiça, linguiça suína, bisteca, lombo e pernil.
+
+Risco restante: a família animal de um embutido inteiro pode não ser visualmente defensável. O comportamento intencional é perguntar a família e então apresentar somente correspondências compatíveis; não inferir pela cor. O caso real fez exatamente isso depois da correção.

@@ -24,6 +24,7 @@ export function patientFoodName(food:CatalogFood){
     .replace(/^Macarrão\s+trigo\s+integral\b/iu,'Macarrão integral')
     .replace(/^Pepino\s+com\s+casca\s+cru\b/iu,'Pepino')
     .replace(/^Bisteca\s+suíno\b/iu,'Bisteca suína')
+    .replace(/^Linguiça\s+suíno\b/iu,'Linguiça suína')
     .replace(/^Costela\s+suíno\b/iu,'Costela suína')
     .replace(/^Peito\s+bovino\s+(grelhada|cozida|frita|assada|refogada)\b/iu,(_match,prep:string)=>`Peito bovino ${{grelhada:'grelhado',cozida:'cozido',frita:'frito',assada:'assado',refogada:'refogado'}[prep]}`)
     .replace(/^(Lombo|Pernil)\s+suíno\s+assada\b/iu,'$1 suíno assado')
