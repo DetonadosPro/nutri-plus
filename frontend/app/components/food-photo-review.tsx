@@ -15,20 +15,26 @@ import { foodDisplayName } from '@/lib/food-name';
 import { MeasureInput, gramMeasure, safeGrams } from './measure-input';
 import { measureLabel, type FoodMeasure } from '../../../shared/food-measures';
 import { optimizeFoodPhoto } from '@/lib/food-photo';
+import {
+  createPhotoSessionId,
+  installPhotoLifecycleDiagnostics,
+  logPhotoSession,
+  PhotoAnalysisGate,
+  PhotoPreviewUrl,
+  takePhotoInputFile,
+} from '@/lib/photo-session';
 
 type DetectionState = 'AUTOSELECT'|'RERANK'|'ASK_USER'|'ASK_IDENTITY'|'ASK_ATTRIBUTE'|'NO_EXACT_TBCA_MATCH'|'NO_MATCH';
-type Detection = { itemToken:string;name:string;preparation:string|null;clarificationKind:'MEAT_TYPE'|null;visualConfidence:number;state:DetectionState;top1Score:number;top2Score:number;margin:number;resolutionPolicy?:string|null;abstentionReason?:string|null;candidates:Food[] };
+type Detection = { itemToken:string;name:string;preparation:string|null;clarificationKind:'MEAT_TYPE'|null;visionConfidence:number;matchConfidence:number;matchConfidenceLevel:'high'|'medium'|'low';state:DetectionState;top1Score:number;top2Score:number;margin:number;resolutionPolicy?:string|null;abstentionReason?:string|null;candidates:Food[] };
 type Row = Detection & { key: string; food: Food | null; grams: string; measure?: FoodMeasure; confirmed: boolean };
 
 function choiceMessage(state:DetectionState){
-  if(state==='NO_MATCH')return 'Não encontramos uma opção segura. Busque manualmente:';
-  if(state==='NO_EXACT_TBCA_MATCH')return 'A foto não mostra detalhes suficientes. Escolha uma opção se souber:';
-  if(state==='ASK_IDENTITY')return 'Qual alimento aparece na foto?';
-  return 'Qual destas opções corresponde ao alimento?';
+  if(['NO_MATCH','NO_EXACT_TBCA_MATCH'].includes(state))return 'Não encontramos uma opção segura. Busque manualmente:';
+  return 'Pode ser:';
 }
 
-export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, onAdded }: {
-  date: string; initialMealType?: string; initialPhoto?: { file: File; token: number }; onBack: () => void; onAdded: (summary: Summary) => void | Promise<void>;
+export function FoodPhotoReview({ date, initialMealType, initialPhoto, onInitialPhotoConsumed, onBack, onAdded }: {
+  date: string; initialMealType?: string; initialPhoto?: { file: File; token: number }; onInitialPhotoConsumed?: (token: number) => void; onBack: () => void; onAdded: (summary: Summary) => void | Promise<void>;
 }) {
   const [preview, setPreview] = useState('');
   const [rows, setRows] = useState<Row[]>([]);
@@ -43,14 +49,40 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Food[]>([]);
   const [searching, setSearching] = useState(false);
-  const request = useRef<AbortController | null>(null);
   const saveLock = useRef(false);
   const camera = useRef<HTMLInputElement>(null);
   const gallery = useRef<HTMLInputElement>(null);
   const analyzedInitialPhoto = useRef<number | undefined>(undefined);
+  const analysisGate = useRef<PhotoAnalysisGate | null>(null);
+  const previewUrl = useRef<PhotoPreviewUrl | null>(null);
+  const currentSession = useRef<number | null>(null);
+  const pendingPickerSession = useRef<number | null>(null);
+  if (!analysisGate.current) analysisGate.current = new PhotoAnalysisGate();
+  if (!previewUrl.current) previewUrl.current = new PhotoPreviewUrl();
 
-  useEffect(() => () => { request.current?.abort(); request.current = null; }, []);
-  useEffect(() => () => { if (preview) URL.revokeObjectURL(preview); }, [preview]);
+  const releasePreview = useCallback((reason: string, sessionId = currentSession.current) => {
+    if (!previewUrl.current?.current()) return;
+    previewUrl.current.clear();
+    logPhotoSession(sessionId, 'object URL revoked', { reason });
+  }, []);
+
+  useEffect(() => {
+    logPhotoSession(null, 'route mounted');
+    const removeLifecycleDiagnostics = installPhotoLifecycleDiagnostics(
+      () => currentSession.current,
+    );
+    return () => {
+      logPhotoSession(currentSession.current, 'cleanup start', {
+        reason: 'route unmounted',
+      });
+      analysisGate.current?.cancel();
+      releasePreview('route unmounted');
+      pendingPickerSession.current = null;
+      currentSession.current = null;
+      removeLifecycleDiagnostics();
+      logPhotoSession(null, 'route unmounted');
+    };
+  }, [releasePreview]);
   useEffect(() => {
     if (!editing) return;
     const controller = new AbortController();
@@ -63,38 +95,102 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
     return () => { clearTimeout(timer); controller.abort(); };
   }, [editing, query]);
 
-  const analyze = useCallback(async (file?: File) => {
+  const analyze = useCallback(async (
+    file?: File,
+    source: 'initial' | 'camera' | 'gallery' = 'gallery',
+    initialToken?: number,
+  ) => {
     if (!file || saving || saved) return;
+    if (initialToken != null) onInitialPhotoConsumed?.(initialToken);
+    const sourceBytes = file.size;
+    const sessionId = pendingPickerSession.current ?? createPhotoSessionId();
+    pendingPickerSession.current = null;
+    const analysis = analysisGate.current!.start(sessionId);
+    currentSession.current = sessionId;
+    releasePreview('new analysis', sessionId);
+    setPreview('');
     setError('');
-    request.current?.abort();
-    const controller = new AbortController();
-    request.current = controller;
     setRows([]); setAnalysisToken(''); setAnalyzed(false); setBusy(true);
-    const timeout = setTimeout(() => controller.abort(), 100_000);
+    logPhotoSession(sessionId, 'file received', { source, sourceBytes });
+    const timeout = setTimeout(() => analysis.controller.abort(), 100_000);
     try {
-      const upload = await optimizeFoodPhoto(file, controller.signal);
-      if (request.current !== controller) return;
-      setPreview(URL.createObjectURL(upload));
+      const upload = await optimizeFoodPhoto(
+        file,
+        analysis.controller.signal,
+        (event, details) => logPhotoSession(sessionId, event, details),
+      );
+      file = undefined;
+      if (!analysisGate.current!.isCurrent(analysis)) {
+        logPhotoSession(sessionId, 'stale optimization ignored');
+        return;
+      }
+      const nextPreview = previewUrl.current!.replace(upload);
+      setPreview(nextPreview);
+      logPhotoSession(sessionId, 'preview created', { previewBytes: upload.size });
+      logPhotoSession(sessionId, 'upload start', { uploadBytes: upload.size });
       const data = await api<{ analysisToken:string;items: Detection[] }>('/foods/recognize', {
-        method: 'POST', headers: { 'Content-Type': upload.type }, body: upload, signal: controller.signal,
+        method: 'POST', headers: { 'Content-Type': upload.type }, body: upload, signal: analysis.controller.signal,
       });
-      if (request.current !== controller) return;
+      if (!analysisGate.current!.isCurrent(analysis)) {
+        logPhotoSession(sessionId, 'stale response ignored');
+        return;
+      }
+      logPhotoSession(sessionId, 'upload complete', { detectedItems: data.items.length });
       setAnalysisToken(data.analysisToken);
       setRows(data.items.map(item => ({ ...item, key: crypto.randomUUID(), food: ['AUTOSELECT','RERANK'].includes(item.state) ? item.candidates[0] || null : null, grams: '', confirmed: false })));
       setAnalyzed(true);
     } catch (reason) {
-      if (request.current === controller) setError(controller.signal.aborted ? 'A análise demorou mais que o esperado. Você pode usar a busca manual.' : reason instanceof Error ? reason.message : 'Reconhecimento indisponível. Use a busca manual.');
-    } finally { clearTimeout(timeout); if (request.current === controller) setBusy(false); }
-  }, [saved, saving]);
+      if (analysisGate.current!.isCurrent(analysis)) {
+        const aborted = analysis.controller.signal.aborted;
+        logPhotoSession(sessionId, aborted ? 'analysis aborted' : 'analysis error', {
+          name: reason instanceof Error ? reason.name : 'Error',
+          message: reason instanceof Error ? reason.message : 'unknown',
+        });
+        setError(aborted ? 'A análise demorou mais que o esperado. Você pode usar a busca manual.' : reason instanceof Error ? reason.message : 'Reconhecimento indisponível. Use a busca manual.');
+      }
+    } finally {
+      clearTimeout(timeout);
+      if (analysisGate.current!.isCurrent(analysis)) {
+        analysisGate.current!.finish(analysis);
+        currentSession.current = null;
+        setBusy(false);
+        logPhotoSession(sessionId, 'analysis settled');
+      }
+    }
+  }, [onInitialPhotoConsumed, releasePreview, saved, saving]);
 
   useEffect(() => {
     if (!initialPhoto || analyzedInitialPhoto.current === initialPhoto.token) return;
     analyzedInitialPhoto.current = initialPhoto.token;
-    void analyze(initialPhoto.file);
+    void analyze(initialPhoto.file, 'initial', initialPhoto.token);
   }, [initialPhoto, analyze]);
 
+  function openPicker(
+    source: 'camera' | 'gallery',
+    input: HTMLInputElement | null,
+  ) {
+    if (!input || busy || saving) return;
+    const sessionId = createPhotoSessionId();
+    pendingPickerSession.current = sessionId;
+    currentSession.current = sessionId;
+    logPhotoSession(sessionId, 'file picker opened', { source });
+    input.click();
+  }
+
+  function leavePhotoMode() {
+    logPhotoSession(currentSession.current, 'cleanup start', {
+      reason: 'back',
+    });
+    analysisGate.current!.cancel();
+    releasePreview('back');
+    pendingPickerSession.current = null;
+    currentSession.current = null;
+    setPreview('');
+    onBack();
+  }
+
   function choose(food: Food) {
-    if (editing === 'new') setRows(current => [...current, { key: crypto.randomUUID(),itemToken:crypto.randomUUID(),name:foodDisplayName(food),preparation:null,clarificationKind:null,visualConfidence:1,state:'ASK_ATTRIBUTE',top1Score:0,top2Score:0,margin:0,candidates:[],food,grams:'',measure:food.measures?.find(m=>m.isDefault) ?? gramMeasure,confirmed:false }]);
+    if (editing === 'new') setRows(current => [...current, { key: crypto.randomUUID(),itemToken:crypto.randomUUID(),name:foodDisplayName(food),preparation:null,clarificationKind:null,visionConfidence:1,matchConfidence:1,matchConfidenceLevel:'high',state:'ASK_ATTRIBUTE',top1Score:0,top2Score:0,margin:0,candidates:[],food,grams:'',measure:food.measures?.find(m=>m.isDefault) ?? gramMeasure,confirmed:false }]);
     else setRows(current => current.map(row => row.key === editing ? { ...row, food, grams:"", measure:food.measures?.find(m=>m.isDefault) ?? gramMeasure, confirmed:false } : row));
     setEditing(null); setQuery('');
   }
@@ -128,12 +224,14 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
       }) });
       setSaved(true);
       if(analysisToken)void api('/foods/recognize/feedback',{method:'POST',body:JSON.stringify({analysisToken,items:rows.filter(row=>row.food).map(row=>({itemToken:row.itemToken,selectedFoodId:row.food!.id}))})}).catch(()=>undefined);
+      releasePreview('meal saved');
+      setPreview('');
       await onAdded(summary);
     } catch (reason) { setError(reason instanceof Error ? reason.message : 'Não foi possível salvar.'); }
     finally { setSaving(false); saveLock.current = false; }
   }
 
-  if (saved) return <div className="photo-empty"><output>Refeição registrada! Seus alimentos foram adicionados ao Diário.</output><Button onClick={onBack}>Concluir</Button></div>;
+  if (saved) return <div className="photo-empty"><output>Refeição registrada! Seus alimentos foram adicionados ao Diário.</output><Button onClick={leavePhotoMode}>Concluir</Button></div>;
   if (editing) return <section className="photo-search">
     <Button variant="ghost" onClick={() => setEditing(null)}><ArrowLeft /> Voltar à revisão</Button>
     <label htmlFor="photo-food-search">{editing === 'new' ? 'Adicionar alimento' : 'Trocar alimento'}</label>
@@ -145,7 +243,7 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
 
   return <section className="photo-review photo-flow">
     <header className="photo-flow-header">
-      <Button variant="ghost" onClick={onBack} disabled={saving}><ArrowLeft /> Busca manual</Button>
+      <Button variant="ghost" onClick={leavePhotoMode} disabled={saving}><ArrowLeft /> Busca manual</Button>
       {!!rows.length&&<span>{completed} de {rows.length} prontos</span>}
     </header>
     <div className="photo-scene">
@@ -153,9 +251,9 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
         {preview?<Image src={preview} unoptimized width={800} height={520} alt="Foto do prato para revisar" className="photo-preview"/>:<Camera/>}
         {preview&&<div className="photo-scene-badge"><Sparkles/> {rows.length} {rows.length===1?'alimento':'alimentos'}</div>}
       </div>
-      <input ref={camera} className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={e=>{void analyze(e.target.files?.[0]);e.target.value=''}}/>
-      <input ref={gallery} className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>{void analyze(e.target.files?.[0]);e.target.value=''}}/>
-      <div className="photo-scene-actions"><button disabled={busy||saving} onClick={()=>camera.current?.click()}><Camera/> Nova foto</button><button disabled={busy||saving} onClick={()=>gallery.current?.click()}><ImagePlus/> Galeria</button></div>
+      <input ref={camera} className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" onChange={e=>{const file=takePhotoInputFile(e.currentTarget);void analyze(file,'camera')}}/>
+      <input ref={gallery} className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>{const file=takePhotoInputFile(e.currentTarget);void analyze(file,'gallery')}}/>
+      <div className="photo-scene-actions"><button disabled={busy||saving} onClick={()=>openPicker('camera',camera.current)}><Camera/> Nova foto</button><button disabled={busy||saving} onClick={()=>openPicker('gallery',gallery.current)}><ImagePlus/> Galeria</button></div>
     </div>
 
     {busy&&<div className="photo-empty photo-loading"><LoaderCircle className="animate-spin"/><output>Reconhecendo seu prato…</output><p>Separando os alimentos para você.</p></div>}
@@ -170,13 +268,13 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onBack, o
         <button disabled={saving} className="photo-remove" aria-label={`Remover ${activeRow.name}`} onClick={()=>setRows(items=>items.filter(item=>item.key!==activeRow.key))}><Trash2/></button>
         <p className="photo-focus-label">{activeRow.food?'Encontramos':'Precisamos confirmar'}</p>
         <h3>{activeRow.food?foodDisplayName(activeRow.food):activeRow.name}</h3>
-        {activeRow.food&&<button className="photo-change" onClick={()=>{setEditing(activeRow.key);setQuery(activeRow.name)}}>Não é esse? Trocar</button>}
+        {activeRow.food&&<button className="photo-change" onClick={()=>{setEditing(activeRow.key);setQuery(activeRow.name)}}>Trocar alimento</button>}
 
         {!activeRow.food&&<div className={`photo-candidates ${activeRow.clarificationKind==='MEAT_TYPE'?'photo-meat-question':''}`}>
           <strong>{activeRow.clarificationKind==='MEAT_TYPE'?'Qual carne você usou?':choiceMessage(activeRow.state)}</strong>
           {activeRow.clarificationKind==='MEAT_TYPE'&&<small>A foto não mostra o corte com segurança.</small>}
-          {activeRow.candidates.map(food=><button key={food.id} disabled={saving} onClick={()=>setRows(items=>items.map(item=>item.key===activeRow.key?{...item,food}:item))}>{foodDisplayName(food)}<ChevronRight/></button>)}
-          <button className="photo-search-choice" onClick={()=>{setEditing(activeRow.key);setQuery(activeRow.name)}}><Search/> {activeRow.clarificationKind==='MEAT_TYPE'?'Não sei / buscar outra':'Buscar alimento'}</button>
+          {activeRow.candidates.map((food,index)=><button key={food.id} disabled={saving} onClick={()=>setRows(items=>items.map(item=>item.key===activeRow.key?{...item,food}:item))}><span className="photo-candidate-index">{index+1}</span><span>{foodDisplayName(food)}</span><ChevronRight/></button>)}
+          <button className="photo-search-choice" onClick={()=>{setEditing(activeRow.key);setQuery(activeRow.name)}}><Search/> Nenhum desses / Buscar outro</button>
         </div>}
 
         {activeRow.food&&<div className="photo-quantity">

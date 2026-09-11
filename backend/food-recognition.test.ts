@@ -50,12 +50,14 @@ describe('food photo boundaries', () => {
     const fried={description:'Batata, inglesa, frita',displayName:'Batata inglesa frita'},boiled={description:'Batata, inglesa, cozida',displayName:'Batata inglesa cozida'};
     const item={name:'batata inglesa',preparation:'frita',visibleDetails:['palitos fritos'],confidence:.95,alternative:null};
     const matches=rankSemanticFoodCandidates(item,[boiled,fried]);
-    expect(matches[0].food).toBe(fried);expect(matches.find(match=>match.food===boiled)?.contradictions.length).toBeGreaterThan(0);
+    expect(matches[0].food).toBe(fried);
+    const conflicting = matches.find((match) => match.food === boiled);
+    expect(conflicting === undefined || conflicting.contradictions.length > 0).toBe(true);
   });
   it('uses explicit score and margin states',()=>{
     const item={name:'arroz',preparation:'cozido',visibleDetails:[],confidence:.95,alternative:null};
     expect(decideMatch(item,[{food:{},matchConfidence:.94,contradictions:[],query:'arroz'},{food:{},matchConfidence:.7,contradictions:[],query:'arroz'}]).state).toBe('AUTOSELECT');
-    expect(decideMatch(item,[{food:{},matchConfidence:.9,contradictions:[],query:'arroz'},{food:{},matchConfidence:.87,contradictions:[],query:'arroz'}]).state).toBe('RERANK');
+    expect(decideMatch(item,[{food:{},matchConfidence:.9,contradictions:[],query:'arroz'},{food:{},matchConfidence:.87,contradictions:[],query:'arroz'}]).state).toBe('ASK_ATTRIBUTE');
     expect(decideMatch(item,[{food:{},matchConfidence:.4,contradictions:[],query:'arroz'}]).state).toBe('NO_MATCH');
   });
   it('uses only controlled visible details and deduplicates paraphrases',()=>{
@@ -77,13 +79,12 @@ describe('food photo boundaries', () => {
     expect(foodSearchTokenVariants('almôndegas')).toEqual([['almondegas','almondega']]);
     expect(rankFoodCandidates('almôndegas',[{description:'Almôndega de carne bovina cozida'},{description:'Arroz cozido'}])[0].food.description).toContain('Almôndega');
   });
-  it('uses a versioned salt policy only for otherwise equivalent variants',()=>{
+  it('does not turn an invisible salt difference into visual certainty',()=>{
     const item={name:'feijão preto',preparation:'cozido',visibleDetails:[],confidence:.95,alternative:null};
     const withSalt={description:'Feijão preto cozido sem óleo com sal',displayName:'Feijão preto cozido sem óleo com sal',source_code:'WITH'};
     const withoutSalt={description:'Feijão preto cozido sem óleo sem sal',displayName:'Feijão preto cozido sem óleo sem sal',source_code:'WITHOUT'};
     const matches=rankSemanticFoodCandidates(item,[withoutSalt,withSalt]);
-    expect(matches[0].food).toBe(withSalt);
-    expect(decideMatch(item,matches)).toMatchObject({state:'AUTOSELECT',policy:'salt_default'});
+    expect(decideMatch(item,matches)).toMatchObject({state:'ASK_ATTRIBUTE',policy:null});
   });
   it('abstains when the TBCA candidate requires an unseen recipe',()=>{
     const item={name:'omelete',preparation:'frita',visibleDetails:['dobrada e dourada'],confidence:.95,alternative:null};

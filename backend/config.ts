@@ -41,10 +41,6 @@ export const appConfig = {
     url: required('DATABASE_URL', 'DATABASE_URL_DEV'),
     allowRemote: enabled('NUTRI_ALLOW_REMOTE_DATABASE'),
   },
-  vision: {
-    // The fast path avoids one extra model request for every ambiguous item.
-    rerankEnabled: enabled('NUTRI_VISION_RERANK_ENABLED'),
-  },
   email: {
     host: env.NUTRI_SMTP_HOST,
     port: Number(env.NUTRI_SMTP_PORT || 587),

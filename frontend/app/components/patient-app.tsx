@@ -492,6 +492,11 @@ export function PatientApp({
         catalog={summary.nutrientCatalog}
         initialMealType={initialMealType}
         initialPhoto={cameraCapture}
+        onInitialPhotoConsumed={(token) =>
+          setCameraCapture((current) =>
+            current?.token === token ? undefined : current,
+          )
+        }
         onAdded={(nextSummary) => {
           const previousSummary =
             homeSummary?.date === nextSummary.date
@@ -515,6 +520,7 @@ export function PatientApp({
             if (mealType) {
               setHomeMealReveal({ mealType, token: Date.now() });
             }
+            setCameraCapture(undefined);
             setAddOpen(false);
           }
           void refreshPatientData();
