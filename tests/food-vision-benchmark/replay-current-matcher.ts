@@ -37,7 +37,10 @@ const rows: Array<Record<string, unknown>> = [];
 
 try {
   for (const test of predictions.cases) {
-    const parsed = detectionSchema.parse({ items: test.items.map((entry) => entry.detected) });
+    const parsed = detectionSchema.parse({ items: test.items.map((entry) => {
+      const detected=entry.detected as Record<string,unknown>;
+      return {...detected,componentRole:detected.componentRole??'independent',identityAmbiguity:detected.identityAmbiguity??null};
+    }) });
     const detections = deduplicateDetections(parsed.items);
     for (const item of detections) {
       const retrievalStarted = performance.now();

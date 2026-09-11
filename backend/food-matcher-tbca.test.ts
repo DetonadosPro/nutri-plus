@@ -2,8 +2,10 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import {
   MATCH_THRESHOLDS,
-  needsMeatConfirmation,
+  foodMatchesMeatFamily,
+  needsMeatFamilyConfirmation,
   normalizeFoodName,
+  refineMeatFamily,
   resolveFoodCandidates,
   type DetectedFood,
   type SearchableFood,
@@ -50,7 +52,7 @@ function detection(
   visibleDetails: string[] = [],
   confidence = 0.9,
 ): DetectedFood {
-  return { name, preparation, visibleDetails, confidence, alternative: null };
+  return { name, preparation, visibleDetails, confidence, alternative: null, componentRole: 'independent', identityAmbiguity: null };
 }
 
 function resolve(item: DetectedFood) {
@@ -179,7 +181,7 @@ describe('photo matcher against the curated complete TBCA catalog', () => {
   });
 
   it('preserves a visible tomato sauce without offering an unseen seafood recipe', () => {
-    const item = detection('espaguete', 'cozido', ['fios longos', 'molho vermelho']);
+    const item = detection('espaguete', 'cozido', ['fios longos', 'molho marrom-avermelhado']);
     const result = resolve(item);
     expect(names(item)[0]).toMatch(/molho de tomate/i);
     expect(names(item).join(' ')).not.toMatch(/camarão|lula|mexilhão|frutos do mar/i);
@@ -187,13 +189,29 @@ describe('photo matcher against the curated complete TBCA catalog', () => {
     expect(result.candidates.length).toBeLessThanOrEqual(3);
   });
 
-  it('asks for identity when fragmented meat hides the defensible cut', () => {
-    const item = detection('carne moída');
+  it('asks for the meat family when the species is not visually defensible', () => {
+    const item = {...detection('carne moída'),identityAmbiguity:'meat_family' as const};
     const result = resolve(item);
-    expect(needsMeatConfirmation(item)).toBe(true);
-    expect(result.decision.state).toBe('ASK_IDENTITY');
+    expect(needsMeatFamilyConfirmation(item)).toBe(true);
+    expect(result.decision.state).toBe('ASK_MEAT_FAMILY');
     expect(result.candidates.length).toBeGreaterThan(0);
     expect(result.candidates.length).toBeLessThanOrEqual(3);
+  });
+
+  it.each(['chicken','pork','beef'] as const)('rematches %s locally after the family answer', (family) => {
+    const refined=refineMeatFamily({...detection('carne desfiada','cozida'),identityAmbiguity:'meat_family'},family);
+    const familyFoods=foods.filter(food=>foodMatchesMeatFamily(food,family));
+    const result=resolveFoodCandidates(refined,familyFoods);
+    expect(result.decision.state).not.toBe('ASK_MEAT_FAMILY');
+    expect(result.candidates.length).toBeGreaterThan(0);
+    expect(result.candidates.length).toBeLessThanOrEqual(3);
+    expect(result.candidates.every(match=>foodMatchesMeatFamily(match.food,family))).toBe(true);
+  });
+
+  it('does not ask again when chicken is already visually recognized', () => {
+    const item=detection('frango desfiado','cozido',['fibras claras separadas']);
+    expect(needsMeatFamilyConfirmation(item)).toBe(false);
+    expect(resolve(item).decision.state).not.toBe('ASK_MEAT_FAMILY');
   });
 
   it('maps a visible grilled steak to simple bovine cuts, not named recipes', () => {

@@ -7,20 +7,62 @@ export const detectedFoodSchema = z
     visibleDetails: z.array(z.string().trim().min(2).max(60)).max(6),
     confidence: z.number().min(0).max(1),
     alternative: z.string().trim().min(2).max(80).nullable(),
+    componentRole: z.enum(['independent', 'integrated-preparation']),
+    identityAmbiguity: z.enum(['meat_family', 'food_identity']).nullable(),
   })
   .strict();
 
 export const detectionSchema = z.object({ items: z.array(detectedFoodSchema).max(15) }).strict();
 export type DetectedFood = z.infer<typeof detectedFoodSchema>;
 
-const MEAT_WORDS = /\b(carne|bovin[oa]|boi|bife|frango|galinha|suin[oa]|porco|costela)\b/;
-const CHOPPED_MEAT_WORDS = /\b(picado|picada|cubos?|pedacos?|tiras?|iscas?|desfiado|desfiada|moido|moida)\b/;
-const SPECIFIC_MEAT_CUTS = /\b(acem|alcatra|contrafile|coxao|maminha|picanha|patinho|lagarto|paleta|peito|coxa|sobrecoxa|asa|lombo|pernil|tilapia|salmao|pescada|merluza|atum|bacalhau)\b/;
+const GENERIC_MEAT_WORDS = /\b(carne|bife|costela)\b/;
+const CHICKEN_WORDS = /\b(frango|galinha)\b/;
+const PORK_WORDS = /\b(suin[oa]|porco|porca)\b/;
+const BEEF_WORDS = /\b(bovin[oa]|boi|vaca)\b/;
+const MEAT_PRESENTATIONS = ['desfiado', 'moído', 'picado', 'em cubos', 'em tiras', 'em iscas'] as const;
 
-/** A foto de carne fragmentada não sustenta a escolha automática de um corte TBCA. */
-export function needsMeatConfirmation(item: DetectedFood) {
+export type MeatFamily = 'chicken' | 'pork' | 'beef';
+
+function meatFamilyInText(value:string):MeatFamily|null {
+  const description=normalizeFoodName(value);
+  if(CHICKEN_WORDS.test(description))return 'chicken';
+  if(PORK_WORDS.test(description))return 'pork';
+  if(BEEF_WORDS.test(description))return 'beef';
+  return null;
+}
+
+export function detectedMeatFamily(item: DetectedFood): MeatFamily | null {
+  return meatFamilyInText([item.name, item.preparation ?? '', ...item.visibleDetails].join(' '));
+}
+
+/** Pergunta apenas a espécie; uma espécie já reconhecida nunca volta a ser tratada como ambígua. */
+export function needsMeatFamilyConfirmation(item: DetectedFood) {
+  const detectedFamily=detectedMeatFamily(item),alternativeFamily=meatFamilyInText(item.alternative??'');
+  if(alternativeFamily&&alternativeFamily!==detectedFamily)return true;
+  if (detectedFamily) return false;
   const description = normalizeFoodName([item.name, item.preparation ?? '', ...item.visibleDetails].join(' '));
-  return MEAT_WORDS.test(description) && CHOPPED_MEAT_WORDS.test(description) && !SPECIFIC_MEAT_CUTS.test(description);
+  return item.identityAmbiguity === 'meat_family' || GENERIC_MEAT_WORDS.test(description);
+}
+
+/** Compatibilidade com chamadas anteriores; o significado agora é estritamente família da carne. */
+export const needsMeatConfirmation = needsMeatFamilyConfirmation;
+
+export function refineMeatFamily(item: DetectedFood, family: MeatFamily): DetectedFood {
+  const presentation = tokens(item.name).find((value) => PRESENTATION_TOKENS.has(value)) ?? null;
+  const familyName = family === 'chicken' ? 'frango' : family === 'pork' ? 'carne suína' : 'carne bovina';
+  return {
+    ...item,
+    name: [familyName, presentation].filter(Boolean).join(' '),
+    alternative: null,
+    identityAmbiguity: null,
+  };
+}
+
+export function foodMatchesMeatFamily(food: SearchableFood, family: MeatFamily) {
+  const text = normalizeFoodName([food.displayName ?? '', food.description, ...(food.searchAliases ?? [])].join(' '));
+  if (family === 'chicken') return CHICKEN_WORDS.test(text);
+  if (family === 'pork') return PORK_WORDS.test(text);
+  return BEEF_WORDS.test(text);
 }
 
 export const rerankSchema = z
@@ -64,6 +106,7 @@ export type MatchState =
   | 'AUTOSELECT'
   | 'RERANK'
   | 'ASK_IDENTITY'
+  | 'ASK_MEAT_FAMILY'
   | 'ASK_ATTRIBUTE'
   | 'NO_EXACT_TBCA_MATCH'
   | 'NO_MATCH';
@@ -238,7 +281,7 @@ function detectionProfile(item: DetectedFood): DetectionProfile {
     // candidates for an isolated egg-white or yolk entry.
     evidence.delete('clara'); evidence.delete('gema'); evidence.add('inteiro'); evidence.add('galinha');
   }
-  if (/molho (vermelho|de tomate)/.test(rawText)) { evidence.add('molho'); evidence.add('tomate'); }
+  if (/molho (?:marrom )?(?:vermelho|avermelhado|de tomate)/.test(rawText)) { evidence.add('molho'); evidence.add('tomate'); }
   const identity = new Set(expandedNameTokens.filter((token) => !STOP_WORDS.has(token) && !PREPARATIONS.has(token) && !PRESENTATION_TOKENS.has(token)));
   return {
     identity,
@@ -266,6 +309,8 @@ type CandidateProfile = {
   hasPosta: boolean;
   skin: 'with' | 'without' | null;
   bone: 'with' | 'without' | null;
+  latentAttributes: string[];
+  latentSignature: string;
 };
 
 const candidateCache = new WeakMap<object, CandidateProfile>();
@@ -281,6 +326,16 @@ function candidateProfile(food: SearchableFood): CandidateProfile {
   const all = new Set([...fields, ...(food.curationDetails ?? [])].flatMap(tokens));
   const contentTokens = new Set([displayName, ...(food.searchAliases ?? []), food.description].flatMap(tokens));
   const normalizedDisplay = normalizeFoodName(displayName);
+  const latentAttributes = unique([
+    ...(/\b(?:com|sem) sal\b/.test(normalizedDisplay) ? ['salt'] : []),
+    ...(/\b(?:com|sem) (?:oleo|gordura)\b/.test(normalizedDisplay) ? ['oil'] : []),
+    ...(/\b(?:uht|pasteurizad[oa])\b/.test(normalizedDisplay) ? ['processing'] : []),
+  ]);
+  const latentSignature = unique(tokens(normalizedDisplay
+    .replace(/\b(?:com|sem) sal\b/g, ' ')
+    .replace(/\b(?:com|sem) oleo(?: de [a-z0-9]+)?\b/g, ' ')
+    .replace(/\b(?:com|sem) gordura\b/g, ' ')
+    .replace(/\b(?:uht|pasteurizad[oa])\b/g, ' '))).sort().join(' ');
   const profile: CandidateProfile = {
     all, display, fields, semanticFields, fieldTokenSets: semanticFields.map((field) => new Set(tokens(field))),
     preparations: new Set([...all].filter((token) => PREPARATIONS.has(token))),
@@ -296,6 +351,8 @@ function candidateProfile(food: SearchableFood): CandidateProfile {
     hasPosta: display.includes('posta'),
     skin: visiblePolarity(normalizeFoodName(attributeText), 'pele'),
     bone: visiblePolarity(normalizeFoodName(attributeText), 'osso'),
+    latentAttributes,
+    latentSignature,
   };
   candidateCache.set(food as object, profile);
   return profile;
@@ -425,6 +482,7 @@ function unobservedSubtypePenalty(profile: DetectionProfile, candidate: Candidat
 export type SemanticMatch<T> = {
   food: T; matchConfidence: number; contradictions: string[]; query: string;
   materialUnknowns?: string[]; resolutionPolicies?: string[]; saltSignature?: string; withSalt?: boolean;
+  latentSignature?: string; latentAttributes?: string[];
 };
 
 function sortSemanticMatches<T extends SearchableFood>(matches: SemanticMatch<T>[]) {
@@ -481,6 +539,7 @@ export function rankSemanticFoodCandidates<T extends SearchableFood>(item: Detec
       query: primaryQueries.find((query) => fieldTier(query, food) === lexical) || primaryQueries[0],
       materialUnknowns: unique([...unexpectedRecipes.map((value) => `recipe:${value}`), ...materialAttributes.map((value) => `attribute:${value}`)]),
       resolutionPolicies: [], saltSignature: candidate.saltSignature, withSalt: candidate.withSalt,
+      latentSignature: candidate.latentSignature, latentAttributes: candidate.latentAttributes,
     };
   });
   return sortSemanticMatches(matches).filter((match) => match.matchConfidence >= 0.25).slice(0, limit);
@@ -488,6 +547,7 @@ export function rankSemanticFoodCandidates<T extends SearchableFood>(item: Detec
 
 function candidateDiversityKey<T extends SearchableFood>(item: DetectedFood, match: SemanticMatch<T>) {
   const profile = detectionProfile(item), candidate = candidateProfile(match.food);
+  if (candidate.latentAttributes.length) return `latent:${candidate.latentSignature}`;
   if (match.food.duplicateGroup) return `duplicate:${match.food.duplicateGroup}`;
   const axes = relevantAxes(profile);
   const valuesFor = (identity: string) => unique(axes.filter((axis) => axis.identities.includes(identity as never)).flatMap((axis) => axis.values.filter((value) => candidate.all.has(value))));
@@ -525,10 +585,34 @@ function candidateDiversityKey<T extends SearchableFood>(item: DetectedFood, mat
   return remainder.length ? remainder.join('|') : 'base';
 }
 
+function canonicalizeLatentVariants<T extends SearchableFood>(matches: SemanticMatch<T>[]) {
+  const groups = new Map<string, SemanticMatch<T>[]>();
+  for (const match of matches) {
+    const candidate = candidateProfile(match.food);
+    const key = candidate.latentSignature || `food:${match.food.source_code ?? match.food.id ?? candidate.semanticFields[0]}`;
+    const group = groups.get(key) ?? [];
+    group.push(match);
+    groups.set(key, group);
+  }
+  const priority = { common: 0, useful: 1, specific: 2 } as const;
+  return [...groups.values()].map((group) => group.sort((left, right) => {
+    const leftProfile = candidateProfile(left.food), rightProfile = candidateProfile(right.food);
+    const genericDifference = leftProfile.latentAttributes.length - rightProfile.latentAttributes.length;
+    if (genericDifference) return genericDifference;
+    const priorityDifference = (priority[left.food.curationPriority ?? 'specific'] ?? 2) - (priority[right.food.curationPriority ?? 'specific'] ?? 2);
+    if (priorityDifference) return priorityDifference;
+    const curationDifference = (right.food.curationScore ?? 0) - (left.food.curationScore ?? 0);
+    if (curationDifference) return curationDifference;
+    const scoreDifference = right.matchConfidence - left.matchConfidence;
+    if (scoreDifference) return scoreDifference;
+    return (left.food.source_code ?? '').localeCompare(right.food.source_code ?? '');
+  })[0]);
+}
+
 export function selectDistinctFoodCandidates<T extends SearchableFood>(item: DetectedFood, matches: SemanticMatch<T>[], limit: number = MATCH_THRESHOLDS.ASK_USER_MAX_CANDIDATES) {
   const maximum = Math.max(0, Math.min(MATCH_THRESHOLDS.ASK_USER_MAX_CANDIDATES, Math.trunc(limit)));
   if (!maximum || !matches.length) return [] as SemanticMatch<T>[];
-  const sorted = sortSemanticMatches([...matches]);
+  const sorted = sortSemanticMatches(canonicalizeLatentVariants(matches));
   const top = sorted[0];
   const selected: SemanticMatch<T>[] = [], seen = new Set<string>();
   for (const match of sorted) {
@@ -562,8 +646,8 @@ export function resolveFoodCandidates<T extends SearchableFood>(item: DetectedFo
   const ranked = rankSemanticFoodCandidates(item, foods, MATCH_THRESHOLDS.MATCH_POOL_MAX_CANDIDATES);
   const distinct = selectDistinctFoodCandidates(item, ranked);
   const initial = decideMatch(item, distinct);
-  const forceIdentityChoice = needsMeatConfirmation(item);
-  const decision = forceIdentityChoice ? { ...initial, state: 'ASK_IDENTITY' as const, policy: null } : initial;
+  const forceIdentityChoice = needsMeatFamilyConfirmation(item);
+  const decision = forceIdentityChoice ? { ...initial, state: 'ASK_MEAT_FAMILY' as const, policy: null } : initial;
   const candidates = decision.state === 'NO_MATCH' || decision.state === 'NO_EXACT_TBCA_MATCH'
     ? []
     : decision.state === 'AUTOSELECT' ? distinct.slice(0, 1) : distinct;
@@ -576,8 +660,12 @@ export function deduplicateDetections(items: DetectedFood[]) {
     const profile = detectionProfile(item);
     const index = result.findIndex((existing) => {
       const current = detectionProfile(existing);
+      if (existing.componentRole !== item.componentRole) return false;
       const samePreparation = (!current.preparations.size && !profile.preparations.size) || intersects(current.preparations, profile.preparations);
-      return intersects(current.identity, profile.identity) && samePreparation;
+      const shared = [...current.identity].filter((identity) => profile.identity.has(identity)).length;
+      const union = new Set([...current.identity, ...profile.identity]).size;
+      const identitySimilarity = union ? shared / union : 0;
+      return identitySimilarity >= 0.67 && samePreparation;
     });
     if (index < 0) result.push(item); else if (item.confidence > result[index].confidence) result[index] = item;
   }
@@ -585,6 +673,20 @@ export function deduplicateDetections(items: DetectedFood[]) {
 }
 
 export function rankFoodCandidates<T extends SearchableFood>(name: string, foods: T[]) {
-  return rankSemanticFoodCandidates({ name, preparation: null, visibleDetails: [], confidence: 1, alternative: null }, foods)
+  return rankSemanticFoodCandidates({ name, preparation: null, visibleDetails: [], confidence: 1, alternative: null, componentRole: 'independent', identityAmbiguity: null }, foods)
     .map((match) => ({ food: match.food, score: match.matchConfidence, exact: match.matchConfidence >= MATCH_THRESHOLDS.AUTOSELECT_MIN_SCORE }));
+}
+
+export function recognitionFoodName(food: SearchableFood) {
+  return (food.displayName?.trim() || food.description)
+    .replace(/\s*\([^)]*\)/g, '')
+    .replace(/\s+(?:com|sem)\s+sal\b/gi, '')
+    .replace(/\s+(?:com|sem)\s+(?:óleo|oleo)(?:\s+de\s+[\p{L}-]+)?\b/giu, '')
+    .replace(/\s+(?:com|sem)\s+gordura\b/gi, '')
+    .replace(/\b(?:UHT|pasteurizad[oa])\b/gi, '')
+    .replace(/^Macarrão\s+trigo\s+com\s+ovos\b/i, 'Macarrão')
+    .replace(/^Macarrão\s+trigo\s+integral\b/i, 'Macarrão integral')
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\s+([),])/g, '$1')
+    .trim();
 }
