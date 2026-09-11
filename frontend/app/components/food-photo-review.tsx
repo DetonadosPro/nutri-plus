@@ -15,6 +15,7 @@ import { foodDisplayName } from '@/lib/food-name';
 import { MeasureInput, gramMeasure, safeGrams } from './measure-input';
 import { measureLabel, type FoodMeasure } from '../../../shared/food-measures';
 import { optimizeFoodPhoto } from '@/lib/food-photo';
+import { MEAT_FAMILY_OPTIONS, recognitionFoodLabel, type MeatFamily } from '@/lib/food-photo-recognition';
 import {
   createPhotoSessionId,
   installPhotoLifecycleDiagnostics,
@@ -24,8 +25,8 @@ import {
   takePhotoInputFile,
 } from '@/lib/photo-session';
 
-type DetectionState = 'AUTOSELECT'|'RERANK'|'ASK_USER'|'ASK_IDENTITY'|'ASK_ATTRIBUTE'|'NO_EXACT_TBCA_MATCH'|'NO_MATCH';
-type Detection = { itemToken:string;name:string;preparation:string|null;clarificationKind:'MEAT_TYPE'|null;visionConfidence:number;matchConfidence:number;matchConfidenceLevel:'high'|'medium'|'low';state:DetectionState;top1Score:number;top2Score:number;margin:number;resolutionPolicy?:string|null;abstentionReason?:string|null;candidates:Food[] };
+type DetectionState = 'AUTOSELECT'|'RERANK'|'ASK_USER'|'ASK_IDENTITY'|'ASK_MEAT_FAMILY'|'ASK_ATTRIBUTE'|'NO_EXACT_TBCA_MATCH'|'NO_MATCH';
+type Detection = { itemToken:string;name:string;preparation:string|null;visibleDetails:string[];componentRole:'independent'|'integrated-preparation';identityAmbiguity:'meat_family'|'food_identity'|null;clarificationKind:'MEAT_FAMILY'|null;visionConfidence:number;matchConfidence:number;matchConfidenceLevel:'high'|'medium'|'low';state:DetectionState;top1Score:number;top2Score:number;margin:number;resolutionPolicy?:string|null;abstentionReason?:string|null;candidates:Food[] };
 type Row = Detection & { key: string; food: Food | null; grams: string; measure?: FoodMeasure; confirmed: boolean };
 
 function choiceMessage(state:DetectionState){
@@ -49,6 +50,7 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onInitial
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Food[]>([]);
   const [searching, setSearching] = useState(false);
+  const [familyBusyKey,setFamilyBusyKey]=useState<string|null>(null);
   const saveLock = useRef(false);
   const camera = useRef<HTMLInputElement>(null);
   const gallery = useRef<HTMLInputElement>(null);
@@ -190,7 +192,7 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onInitial
   }
 
   function choose(food: Food) {
-    if (editing === 'new') setRows(current => [...current, { key: crypto.randomUUID(),itemToken:crypto.randomUUID(),name:foodDisplayName(food),preparation:null,clarificationKind:null,visionConfidence:1,matchConfidence:1,matchConfidenceLevel:'high',state:'ASK_ATTRIBUTE',top1Score:0,top2Score:0,margin:0,candidates:[],food,grams:'',measure:food.measures?.find(m=>m.isDefault) ?? gramMeasure,confirmed:false }]);
+    if (editing === 'new') setRows(current => [...current, { key: crypto.randomUUID(),itemToken:crypto.randomUUID(),name:foodDisplayName(food),preparation:null,visibleDetails:[],componentRole:'independent',identityAmbiguity:null,clarificationKind:null,visionConfidence:1,matchConfidence:1,matchConfidenceLevel:'high',state:'ASK_ATTRIBUTE',top1Score:0,top2Score:0,margin:0,candidates:[],food,grams:'',measure:food.measures?.find(m=>m.isDefault) ?? gramMeasure,confirmed:false }]);
     else setRows(current => current.map(row => row.key === editing ? { ...row, food, grams:"", measure:food.measures?.find(m=>m.isDefault) ?? gramMeasure, confirmed:false } : row));
     setEditing(null); setQuery('');
   }
@@ -212,6 +214,17 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onInitial
 
 
   function updateGrams(key:string,value:string,measure:FoodMeasure){setRows(items=>items.map(item=>item.key===key?{...item,grams:value,measure}:item))}
+
+  async function chooseMeatFamily(row:Row,family:MeatFamily){
+    if(!analysisToken||familyBusyKey)return;
+    setFamilyBusyKey(row.key);setError('');
+    try{
+      const detected={name:row.name,preparation:row.preparation,visibleDetails:row.visibleDetails,confidence:row.visionConfidence,alternative:null,componentRole:row.componentRole,identityAmbiguity:row.identityAmbiguity};
+      const item=await api<Detection>('/foods/recognize/meat-family',{method:'POST',body:JSON.stringify({analysisToken,itemToken:row.itemToken,detected,family})});
+      setRows(items=>items.map(current=>current.key===row.key?{...current,...item,food:['AUTOSELECT','RERANK'].includes(item.state)?item.candidates[0]||null:null,grams:'',measure:undefined,confirmed:false}:current));
+    }catch(reason){setError(reason instanceof Error?reason.message:'Não foi possível confirmar a carne.');}
+    finally{setFamilyBusyKey(null)}
+  }
 
   function confirmRow(row:Row){if(!row.food||safeGrams(row.grams,row.measure ?? gramMeasure)<=0)return;setRows(items=>items.map(item=>item.key===row.key?{...item,confirmed:true}:item))}
   function editRow(key:string){setRows(items=>items.map(item=>item.key===key?{...item,confirmed:false}:item))}
@@ -267,13 +280,13 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onInitial
         <div className="photo-focus-icon"><UtensilsCrossed/></div>
         <button disabled={saving} className="photo-remove" aria-label={`Remover ${activeRow.name}`} onClick={()=>setRows(items=>items.filter(item=>item.key!==activeRow.key))}><Trash2/></button>
         <p className="photo-focus-label">{activeRow.food?'Encontramos':'Precisamos confirmar'}</p>
-        <h3>{activeRow.food?foodDisplayName(activeRow.food):activeRow.name}</h3>
+        <h3>{activeRow.food?recognitionFoodLabel(activeRow.food):activeRow.name}</h3>
         {activeRow.food&&<button className="photo-change" onClick={()=>{setEditing(activeRow.key);setQuery(activeRow.name)}}>Trocar alimento</button>}
 
-        {!activeRow.food&&<div className={`photo-candidates ${activeRow.clarificationKind==='MEAT_TYPE'?'photo-meat-question':''}`}>
-          <strong>{activeRow.clarificationKind==='MEAT_TYPE'?'Qual carne você usou?':choiceMessage(activeRow.state)}</strong>
-          {activeRow.clarificationKind==='MEAT_TYPE'&&<small>A foto não mostra o corte com segurança.</small>}
-          {activeRow.candidates.map((food,index)=><button key={food.id} disabled={saving} onClick={()=>setRows(items=>items.map(item=>item.key===activeRow.key?{...item,food}:item))}><span className="photo-candidate-index">{index+1}</span><span>{foodDisplayName(food)}</span><ChevronRight/></button>)}
+        {!activeRow.food&&<div className={`photo-candidates ${activeRow.clarificationKind==='MEAT_FAMILY'?'photo-meat-question':''}`}>
+          <strong>{activeRow.clarificationKind==='MEAT_FAMILY'?'Que tipo de carne é?':choiceMessage(activeRow.state)}</strong>
+          {activeRow.clarificationKind==='MEAT_FAMILY'&&<small>A foto não permite confirmar a família com segurança.</small>}
+          {activeRow.clarificationKind==='MEAT_FAMILY'?MEAT_FAMILY_OPTIONS.map(option=><button key={option.value} disabled={saving||familyBusyKey===activeRow.key} onClick={()=>void chooseMeatFamily(activeRow,option.value)}><span>{option.label}</span>{familyBusyKey===activeRow.key?<LoaderCircle className="animate-spin"/>:<ChevronRight/>}</button>):activeRow.candidates.map((food,index)=><button key={food.id} disabled={saving} onClick={()=>setRows(items=>items.map(item=>item.key===activeRow.key?{...item,food}:item))}><span className="photo-candidate-index">{index+1}</span><span>{recognitionFoodLabel(food)}</span><ChevronRight/></button>)}
           <button className="photo-search-choice" onClick={()=>{setEditing(activeRow.key);setQuery(activeRow.name)}}><Search/> Nenhum desses / Buscar outro</button>
         </div>}
 
@@ -287,11 +300,11 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onInitial
       </article>
     </div>}
 
-    {!!completed&&!valid&&<div className="photo-done-strip"><p><Check/> Já conferidos</p><div>{rows.filter(row=>row.confirmed).map(row=><button key={row.key} onClick={()=>editRow(row.key)}><strong>{row.food&&foodDisplayName(row.food)}</strong><span>{row.grams} {measureLabel(Number(row.grams.replace(',', '.')),row.measure ?? gramMeasure)}</span></button>)}</div></div>}
+    {!!completed&&!valid&&<div className="photo-done-strip"><p><Check/> Já conferidos</p><div>{rows.filter(row=>row.confirmed).map(row=><button key={row.key} onClick={()=>editRow(row.key)}><strong>{row.food&&recognitionFoodLabel(row.food)}</strong><span>{row.grams} {measureLabel(Number(row.grams.replace(',', '.')),row.measure ?? gramMeasure)}</span></button>)}</div></div>}
 
     {valid&&<section className="photo-final">
       <div className="photo-final-heading"><span><Check/></span><div><p>Tudo conferido</p><h3>Sua refeição está pronta</h3></div></div>
-      <div className="photo-final-list">{rows.map(row=><button key={row.key} onClick={()=>editRow(row.key)}><span>{row.food&&foodDisplayName(row.food)}</span><strong>{row.grams} {measureLabel(Number(row.grams.replace(',', '.')),row.measure ?? gramMeasure)}</strong><ChevronRight/></button>)}</div>
+      <div className="photo-final-list">{rows.map(row=><button key={row.key} onClick={()=>editRow(row.key)}><span>{row.food&&recognitionFoodLabel(row.food)}</span><strong>{row.grams} {measureLabel(Number(row.grams.replace(',', '.')),row.measure ?? gramMeasure)}</strong><ChevronRight/></button>)}</div>
       <Button variant="outline" disabled={saving||rows.length>=20} onClick={()=>{setEditing('new');setQuery('')}}><Plus/> Faltou algum alimento?</Button>
       <div className="photo-save"><label htmlFor="photo-meal">Refeição<select id="photo-meal" value={mealType} disabled={saving} onChange={e=>setMealType(e.target.value)}><option value="">Escolha a refeição</option>{MEAL_TYPES.map(meal=><option key={meal.value} value={meal.value}>{meal.label}</option>)}</select></label><Button disabled={!mealType||saving} onClick={save}>{saving?'Registrando…':'Adicionar ao Diário'}</Button></div>
     </section>}

@@ -1,8 +1,8 @@
 import { measuresForFoods, quantityInput, resolveQuantity } from './food-measures';
 import { patientAccess } from './patient-access';
-import { deduplicateDetections,MATCH_THRESHOLDS,recognizePhoto,resolveFoodCandidates } from './food-recognition';
+import { deduplicateDetections,foodMatchesMeatFamily,MATCH_THRESHOLDS,recognitionFoodName,recognizePhoto,refineMeatFamily,resolveFoodCandidates } from './food-recognition';
 import { tbcaCandidatesForDetection } from './food-identity-repository';
-import type { MatchState } from '../shared/food-recognition';
+import { detectedFoodSchema,type MatchState } from '../shared/food-recognition';
 import { randomUUID } from 'node:crypto';
 import { rateLimit } from 'express-rate-limit';
 import { activitiesRouter, seedActivityCatalog } from './activities';
@@ -854,38 +854,54 @@ app.post('/api/foods/recognize',
     const detected=deduplicateDetections(vision.detection.items);
     const candidateSets=await Promise.all(detected.map(item=>tbcaCandidatesForDetection(item)));
     const rerankLatency=0,inputTokens=vision.telemetry.inputTokens??0,outputTokens=vision.telemetry.outputTokens??0,reasoningTokens=vision.telemetry.reasoningTokens??0,totalTokens=vision.telemetry.totalTokens??0;
-    const decisions=[] as Array<{itemToken:string;name:string;preparation:string|null;clarificationKind:'MEAT_TYPE'|null;visionConfidence:number;matchConfidence:number;matchConfidenceLevel:'high'|'medium'|'low';state:MatchState;selectedFoodId:number|null;top1Score:number;top2Score:number;margin:number;resolutionPolicy:string|null;abstentionReason:string|null;candidates:any[]}>;
+    const decisions=[] as Array<{itemToken:string;name:string;preparation:string|null;visibleDetails:string[];componentRole:'independent'|'integrated-preparation';identityAmbiguity:'meat_family'|'food_identity'|null;clarificationKind:'MEAT_FAMILY'|null;visionConfidence:number;matchConfidence:number;matchConfidenceLevel:'high'|'medium'|'low';state:MatchState;selectedFoodId:number|null;top1Score:number;top2Score:number;margin:number;resolutionPolicy:string|null;abstentionReason:string|null;candidates:any[]}>;
     for(const [itemIndex,item] of detected.entries()){
       const foods=candidateSets[itemIndex];
       const resolution=resolveFoodCandidates(item,foods);
       const matches=resolution.candidates,initial=resolution.decision;
-      const meatConfirmation=initial.state==='ASK_IDENTITY';
+      const meatConfirmation=initial.state==='ASK_MEAT_FAMILY';
       let state:MatchState=initial.state;
       let selectedFoodId:number|null=state==='AUTOSELECT'?matches[0].food.id:null;
       let resolutionPolicy=state==='AUTOSELECT'?initial.policy:null;
       let abstentionReason=state==='NO_EXACT_TBCA_MATCH'?(resolution.ranked[0]?.materialUnknowns?.join(',')||'unresolved_variant'):null;
-      if(meatConfirmation){selectedFoodId=null;resolutionPolicy=null;abstentionReason='meat_cut_not_visually_defensible'}
+      if(meatConfirmation){selectedFoodId=null;resolutionPolicy=null;abstentionReason='meat_family_not_visually_defensible'}
       else if(state==='ASK_ATTRIBUTE')abstentionReason='deterministic_match_ambiguous';
-      const visible=['NO_MATCH','NO_EXACT_TBCA_MATCH'].includes(state)?[]:state==='AUTOSELECT'?matches.slice(0,1):matches.slice(0,MATCH_THRESHOLDS.ASK_USER_MAX_CANDIDATES);
+      const visible=['NO_MATCH','NO_EXACT_TBCA_MATCH','ASK_MEAT_FAMILY'].includes(state)?[]:state==='AUTOSELECT'?matches.slice(0,1):matches.slice(0,MATCH_THRESHOLDS.ASK_USER_MAX_CANDIDATES);
       if(visible.length>MATCH_THRESHOLDS.ASK_USER_MAX_CANDIDATES)throw new Error('food_vision_candidate_limit');
-      const candidates=await Promise.all(visible.map(async match=>{const food=match.food,nutrition=await nutrientsForFood(Number(food.id));return{...food,nutrients:nutrition.values,nutrientSources:nutrition.sources,dataSources:[nutrition.source],favorite:false}}));
+      const candidates=await Promise.all(visible.map(async match=>{const food=match.food,nutrition=await nutrientsForFood(Number(food.id));return{...food,recognitionName:recognitionFoodName(food),nutrients:nutrition.values,nutrientSources:nutrition.sources,dataSources:[nutrition.source],favorite:false}}));
       const matchConfidenceLevel=state==='AUTOSELECT'?'high':initial.top1Score>=.65?'medium':'low';
       if(process.env.NUTRI_VISION_DEBUG_MATCHING==='true'){
         const safeLabel=`${item.name}${item.preparation?` ${item.preparation}`:''}`.replace(/[\r\n]/g,' ').slice(0,130);
         const ranked=visible.map(match=>`${match.food.source_code}:${match.matchConfidence.toFixed(4)}`).join(',');
         console.info(`[food-vision-match] detected=${safeLabel}; candidates=${ranked||'none'}; selected=${selectedFoodId??'none'}; state=${state}`);
       }
-      decisions.push({itemToken:randomUUID(),name:item.name,preparation:item.preparation,clarificationKind:meatConfirmation?'MEAT_TYPE':null,visionConfidence:item.confidence,matchConfidence:initial.top1Score,matchConfidenceLevel,state,selectedFoodId,top1Score:initial.top1Score,top2Score:initial.top2Score,margin:initial.margin,resolutionPolicy,abstentionReason,candidates});
+      decisions.push({itemToken:randomUUID(),name:item.name,preparation:item.preparation,visibleDetails:item.visibleDetails,componentRole:item.componentRole,identityAmbiguity:meatConfirmation?'meat_family':item.identityAmbiguity,clarificationKind:meatConfirmation?'MEAT_FAMILY':null,visionConfidence:item.confidence,matchConfidence:initial.top1Score,matchConfidenceLevel,state,selectedFoodId,top1Score:initial.top1Score,top2Score:initial.top2Score,margin:initial.margin,resolutionPolicy,abstentionReason,candidates});
     }
     const analysisToken=randomUUID();
-    await transaction(async()=>{const counts=(state:string)=>decisions.filter(item=>item.state===state).length,askCount=counts('ASK_IDENTITY')+counts('ASK_ATTRIBUTE');const analysis=await db.prepare(`INSERT INTO food_vision_analyses(analysis_token,model,reasoning_effort,first_latency_ms,rerank_latency_ms,input_tokens,output_tokens,reasoning_tokens,total_tokens,detected_count,autoselect_count,rerank_count,ask_user_count,no_match_count,ask_identity_count,ask_attribute_count,no_exact_match_count)
-      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING id`).get<{id:number}>(analysisToken,vision.telemetry.model,vision.telemetry.reasoningEffort,vision.telemetry.latencyMs,rerankLatency,inputTokens||null,outputTokens||null,reasoningTokens||null,totalTokens||null,detected.length,counts('AUTOSELECT'),counts('RERANK'),askCount,counts('NO_MATCH'),counts('ASK_IDENTITY'),counts('ASK_ATTRIBUTE'),counts('NO_EXACT_TBCA_MATCH'));
-      for(const item of decisions)await db.prepare(`INSERT INTO food_vision_predictions(analysis_id,item_token,decision_state,predicted_food_id,top1_score,top2_score,margin,visual_confidence,resolution_policy,abstention_reason) VALUES(?,?,?,?,?,?,?,?,?,?)`).run(analysis!.id,item.itemToken,item.state,item.selectedFoodId,item.top1Score,item.top2Score,item.margin,item.visionConfidence,item.resolutionPolicy,item.abstentionReason);
+    await transaction(async()=>{const counts=(state:string)=>decisions.filter(item=>item.state===state).length,identityCount=counts('ASK_IDENTITY')+counts('ASK_MEAT_FAMILY'),askCount=identityCount+counts('ASK_ATTRIBUTE');const analysis=await db.prepare(`INSERT INTO food_vision_analyses(analysis_token,model,reasoning_effort,first_latency_ms,rerank_latency_ms,input_tokens,output_tokens,reasoning_tokens,total_tokens,detected_count,autoselect_count,rerank_count,ask_user_count,no_match_count,ask_identity_count,ask_attribute_count,no_exact_match_count)
+      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) RETURNING id`).get<{id:number}>(analysisToken,vision.telemetry.model,vision.telemetry.reasoningEffort,vision.telemetry.latencyMs,rerankLatency,inputTokens||null,outputTokens||null,reasoningTokens||null,totalTokens||null,detected.length,counts('AUTOSELECT'),counts('RERANK'),askCount,counts('NO_MATCH'),identityCount,counts('ASK_ATTRIBUTE'),counts('NO_EXACT_TBCA_MATCH'));
+      for(const item of decisions){const storedState=item.state==='ASK_MEAT_FAMILY'?'ASK_IDENTITY':item.state;await db.prepare(`INSERT INTO food_vision_predictions(analysis_id,item_token,decision_state,predicted_food_id,top1_score,top2_score,margin,visual_confidence,resolution_policy,abstention_reason) VALUES(?,?,?,?,?,?,?,?,?,?)`).run(analysis!.id,item.itemToken,storedState,item.selectedFoodId,item.top1Score,item.top2Score,item.margin,item.visionConfidence,item.resolutionPolicy,item.abstentionReason)};
     });
-    console.info(`[food-vision] model=${vision.telemetry.model}; effort=${vision.telemetry.reasoningEffort}; detected=${detected.length}; auto=${decisions.filter(i=>i.state==='AUTOSELECT').length}; rerank=${decisions.filter(i=>i.state==='RERANK').length}; ask=${decisions.filter(i=>['ASK_IDENTITY','ASK_ATTRIBUTE'].includes(i.state)).length}; no_exact=${decisions.filter(i=>i.state==='NO_EXACT_TBCA_MATCH').length}; no_match=${decisions.filter(i=>i.state==='NO_MATCH').length}; latency_ms=${vision.telemetry.latencyMs+rerankLatency}`);
+    console.info(`[food-vision] model=${vision.telemetry.model}; effort=${vision.telemetry.reasoningEffort}; detected=${detected.length}; auto=${decisions.filter(i=>i.state==='AUTOSELECT').length}; rerank=${decisions.filter(i=>i.state==='RERANK').length}; ask=${decisions.filter(i=>['ASK_IDENTITY','ASK_MEAT_FAMILY','ASK_ATTRIBUTE'].includes(i.state)).length}; no_exact=${decisions.filter(i=>i.state==='NO_EXACT_TBCA_MATCH').length}; no_match=${decisions.filter(i=>i.state==='NO_MATCH').length}; latency_ms=${vision.telemetry.latencyMs+rerankLatency}`);
     res.json({analysisToken,items:decisions.map(({selectedFoodId,...item})=>item)});
   }),
 );
+
+app.post('/api/foods/recognize/meat-family',route(async(req,res)=>{
+  const user=await authUser(req,res);if(!user)return;
+  if(!await patientAccess(user))return res.status(403).json({error:'Ação não permitida.'});
+  const payload=z.object({analysisToken:z.string().uuid(),itemToken:z.string().uuid(),detected:detectedFoodSchema,family:z.enum(['chicken','pork','beef'])}).strict().parse(req.body);
+  const prediction=await db.prepare(`SELECT 1 FROM food_vision_predictions p JOIN food_vision_analyses a ON a.id=p.analysis_id WHERE a.analysis_token=? AND p.item_token=?`).get(payload.analysisToken,payload.itemToken);
+  if(!prediction)return res.status(404).json({error:'Análise não encontrada.'});
+  const detected=refineMeatFamily(payload.detected,payload.family);
+  const retrieved=(await tbcaCandidatesForDetection(detected)).filter(food=>foodMatchesMeatFamily(food,payload.family));
+  const resolution=resolveFoodCandidates(detected,retrieved);
+  if(resolution.decision.state==='ASK_MEAT_FAMILY')throw new Error('meat_family_resolution_loop');
+  const visible=['NO_MATCH','NO_EXACT_TBCA_MATCH'].includes(resolution.decision.state)?[]:resolution.decision.state==='AUTOSELECT'?resolution.candidates.slice(0,1):resolution.candidates.slice(0,MATCH_THRESHOLDS.ASK_USER_MAX_CANDIDATES);
+  const candidates=await Promise.all(visible.map(async match=>{const food=match.food,nutrition=await nutrientsForFood(Number(food.id));return{...food,recognitionName:recognitionFoodName(food),nutrients:nutrition.values,nutrientSources:nutrition.sources,dataSources:[nutrition.source],favorite:false}}));
+  const state=resolution.decision.state,top1Score=resolution.decision.top1Score;
+  res.json({itemToken:payload.itemToken,name:detected.name,preparation:detected.preparation,visibleDetails:detected.visibleDetails,componentRole:detected.componentRole,identityAmbiguity:null,clarificationKind:null,visionConfidence:detected.confidence,matchConfidence:top1Score,matchConfidenceLevel:state==='AUTOSELECT'?'high':top1Score>=.65?'medium':'low',state,top1Score,top2Score:resolution.decision.top2Score,margin:resolution.decision.margin,resolutionPolicy:state==='AUTOSELECT'?resolution.decision.policy:null,abstentionReason:state==='NO_EXACT_TBCA_MATCH'?(resolution.ranked[0]?.materialUnknowns?.join(',')||'unresolved_variant'):state==='NO_MATCH'?'no_local_family_match':state==='ASK_ATTRIBUTE'?'deterministic_match_ambiguous':null,candidates});
+}));
 
 app.post('/api/foods/recognize/feedback',route(async(req,res)=>{const user=await authUser(req,res);if(!user)return;if(!await patientAccess(user))return res.status(403).json({error:'Ação não permitida.'});const payload=z.object({analysisToken:z.string().uuid(),items:z.array(z.object({itemToken:z.string().uuid(),selectedFoodId:z.number().int().positive()})).max(20)}).parse(req.body);
   await transaction(async()=>{for(const item of payload.items){const selected=await db.prepare(`SELECT id FROM foods WHERE id=? AND source='TBCA' AND active`).get(item.selectedFoodId);if(!selected)throw new InputError('Alimento selecionado inválido.');await db.prepare(`UPDATE food_vision_predictions p SET final_food_id=?,changed=(predicted_food_id IS DISTINCT FROM ?) FROM food_vision_analyses a WHERE p.analysis_id=a.id AND a.analysis_token=? AND p.item_token=?`).run(item.selectedFoodId,item.selectedFoodId,payload.analysisToken,item.itemToken)}});res.json({ok:true});}));
