@@ -3,6 +3,6 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     environment: 'node',
-    include: ['lib/food-photo.test.ts'],
+    include: ['lib/**/*.test.ts'],
   },
 });

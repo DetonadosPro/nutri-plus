@@ -3,6 +3,8 @@ import { DM_Sans, Manrope } from 'next/font/google';
 import { Toaster } from '@/components/ui/toast';
 import { LargeScreenScale } from './components/large-screen-scale';
 import { PwaRegister } from './components/pwa-register';
+import { BootErrorBoundary, BootProvidersMounted } from './components/boot-resilience';
+import { APP_BUILD_ID, bootGuardScript } from '@/lib/app-boot';
 import './globals.css';
 import './movement.css';
 import './diary-desktop.css';
@@ -53,10 +55,17 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR">
+      <head>
+        <meta name="nutri-build-id" content={APP_BUILD_ID} />
+        <script dangerouslySetInnerHTML={{ __html: bootGuardScript(APP_BUILD_ID) }} />
+      </head>
       <body className={`${sans.variable} ${display.variable} antialiased`}>
-        <LargeScreenScale />
-        <PwaRegister />
-        <Toaster>{children}</Toaster>
+        <BootErrorBoundary>
+          <BootProvidersMounted />
+          <LargeScreenScale />
+          <PwaRegister />
+          <Toaster>{children}</Toaster>
+        </BootErrorBoundary>
       </body>
     </html>
   );

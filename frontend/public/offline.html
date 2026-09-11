@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#176b50" />
+    <title>Nutri+ indisponível</title>
+  </head>
+  <body style="margin:0;background:#f5f2ea;color:#173e31;font:16px system-ui,sans-serif">
+    <main style="min-height:100dvh;display:grid;place-items:center;padding:24px;box-sizing:border-box">
+      <section style="max-width:520px;padding:28px;border:1px solid #dbe6df;border-radius:22px;background:white;box-shadow:0 16px 50px rgba(20,60,45,.12);text-align:center">
+        <h1 style="margin:0 0 12px;font-size:24px">O Nutri+ está sem conexão.</h1>
+        <p style="margin:0 0 20px;line-height:1.5;color:#52665e">Verifique sua internet e tente abrir o aplicativo novamente.</p>
+        <button id="retry" type="button" style="padding:12px 18px;border:0;border-radius:12px;background:#176b50;color:white;font-weight:700;cursor:pointer">Tentar novamente</button>
+        <p style="margin:16px 0 0;font-size:12px;color:#75847e">Código: BOOT-OFFLINE</p>
+      </section>
+    </main>
+    <script>
+      document.getElementById('retry').addEventListener('click', function () {
+        var url = new URL('/', location.origin);
+        url.searchParams.set('app-retry', Date.now().toString(36));
+        location.replace(url.toString());
+      });
+    </script>
+  </body>
+</html>
