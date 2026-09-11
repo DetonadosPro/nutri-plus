@@ -30,7 +30,8 @@
     "curation:check": "npm run curation:check --workspace @nutri/backend",
     "curation:import": "npm run curation:import --workspace @nutri/backend",
     "curation:audit": "npm run curation:audit --workspace @nutri/backend",
-    "vision:benchmark": "tsx tests/food-vision-benchmark/run.ts"
+    "vision:benchmark": "tsx tests/food-vision-benchmark/run.ts",
+    "vision:replay-matcher": "tsx tests/food-vision-benchmark/replay-current-matcher.ts"
   },
   "devDependencies": { "concurrently": "^10.0.5", "typescript": "5.9.3" }
 }

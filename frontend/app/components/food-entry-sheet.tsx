@@ -38,6 +38,7 @@ export function FoodEntrySheet({
   date,
   initialMealType,
   initialPhoto,
+  onInitialPhotoConsumed,
   onAdded,
 }: {
   open: boolean;
@@ -46,6 +47,7 @@ export function FoodEntrySheet({
   catalog: NutrientCatalogItem[];
   initialMealType?: string;
   initialPhoto?: { file: File; token: number };
+  onInitialPhotoConsumed?: (token: number) => void;
   onAdded: (summary: Summary) => void | Promise<void>;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -64,7 +66,7 @@ export function FoodEntrySheet({
 
   useEffect(() => {
     if (!open) return;
-    setPhotoMode(Boolean(initialPhoto));
+    if (initialPhoto) setPhotoMode(true);
     setError('');
     setMealType(
       MEAL_TYPES.some((item) => item.value === initialMealType)
@@ -247,6 +249,7 @@ export function FoodEntrySheet({
               date={date}
               initialMealType={initialMealType}
               initialPhoto={initialPhoto}
+              onInitialPhotoConsumed={onInitialPhotoConsumed}
               onBack={() => setPhotoMode(false)}
               onAdded={onAdded}
             />
