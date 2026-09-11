@@ -1,7 +1,7 @@
 {
   "version": 1,
   "source_sha256": "25bf7e2e60763e404be42b61011fc99256c6f944c43ed93b23ec4b14ec7d53a7",
-  "curation_fingerprint": "a58aea2476121a6d2aef9b4140f416759b2edda3735b6f42471654e32510d108",
+  "curation_fingerprint": "22d7baa392329c06a4f8cba1817213ef034f57fc17dcab152cc88de6531e944e",
   "totals": {
     "foods": 5874,
     "priority": {
@@ -12633,6 +12633,13 @@
         "confidence": "high"
       },
       {
+        "source_code": "BRC0065J",
+        "friendly_name": "Omelete",
+        "original_name": "Ovo, galinha, mexido, s/ óleo, s/ sal, Brasil",
+        "score": 975,
+        "confidence": "high"
+      },
+      {
         "source_code": "BRC0008C",
         "friendly_name": "Banana-da-terra",
         "original_name": "Banana, da terra, in natura , Brasil",
@@ -12657,13 +12664,6 @@
         "source_code": "BRC0036G",
         "friendly_name": "Leite desnatado",
         "original_name": "Leite, vaca, desnatado, fluído (média de diferentes amostras), Brasil",
-        "score": 970,
-        "confidence": "high"
-      },
-      {
-        "source_code": "BRC0047F",
-        "friendly_name": "Picanha bovina grelhada com gordura",
-        "original_name": "Carne, boi, picanha, c/ gordura, grelhada, s/ sal, Brasil",
         "score": 970,
         "confidence": "high"
       }
@@ -13543,12 +13543,6 @@
           "score": 980
         },
         {
-          "source_code": "BRC0065J",
-          "name": "Ovo mexido sem óleo e sem sal",
-          "priority": "common",
-          "score": 970
-        },
-        {
           "source_code": "BRC0015J",
           "name": "Ovo de galinha frito",
           "priority": "common",
@@ -13593,6 +13587,12 @@
         {
           "source_code": "BRC0018J",
           "name": "Ovo de pata clara crua",
+          "priority": "useful",
+          "score": 430
+        },
+        {
+          "source_code": "BRC0020J",
+          "name": "Ovo de pata inteiro cru",
           "priority": "useful",
           "score": 430
         }
@@ -44268,10 +44268,10 @@
   "changes": {
     "totals": {
       "classification_changed": 85,
-      "friendly_names_changed": 178,
-      "aliases_removed": 277,
-      "aliases_added": 207,
-      "foods_with_alias_changes": 264,
+      "friendly_names_changed": 179,
+      "aliases_removed": 280,
+      "aliases_added": 210,
+      "foods_with_alias_changes": 265,
       "classification_transitions": {
         "common -> specific": 39,
         "common -> useful": 46
@@ -45422,6 +45422,17 @@
           "original_name": "Peixe, água salgada, Merluza, filé, frito, s/ sal, Brasil"
         },
         {
+          "source_code": "BRC0065J",
+          "before": "Ovo mexido sem óleo e sem sal",
+          "after": "Omelete",
+          "details": [
+            "Sem óleo",
+            "Sem sal",
+            "Brasil"
+          ],
+          "original_name": "Ovo, galinha, mexido, s/ óleo, s/ sal, Brasil"
+        },
+        {
           "source_code": "BRC0066E",
           "before": "Salmão filé com pele fresco grelhado",
           "after": "Filé de salmão fresco grelhado com pele",
@@ -45635,16 +45646,6 @@
             "Com sal"
           ],
           "original_name": "Peixe, água salgada, abadejo, filé, ensopado (c/ cebola, tomate e pimentão), c/ óleo, c/ sal"
-        },
-        {
-          "source_code": "BRC0125E",
-          "before": "Abadejo filé à milanesa (ovo e farinha de rosca) frito (com óleo de soja) com sal",
-          "after": "Filé de abadejo à milanesa (ovo e farinha de rosca) frito (com óleo de soja) com sal",
-          "details": [
-            "Com óleo",
-            "Com sal"
-          ],
-          "original_name": "Peixe, água salgada, abadejo, filé, à milanesa (ovo e farinha de rosca), frito (c/ óleo de soja), c/ sal"
         }
       ],
       "specific_to_useful": [],

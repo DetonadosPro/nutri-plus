@@ -14,7 +14,7 @@
   "BRC0010J": { "friendly_name": "Ovo de galinha cozido", "aliases": ["ovo", "ovo cozido"], "priority": "common", "priority_score": 980, "confidence": "high" },
   "BRC0011J": { "friendly_name": "Ovo de galinha cru", "aliases": ["ovo", "ovo cru"], "priority": "common", "priority_score": 900, "confidence": "high" },
   "BRC0015J": { "friendly_name": "Ovo de galinha frito", "aliases": ["ovo", "ovo frito"], "priority": "common", "priority_score": 960, "confidence": "high" },
-  "BRC0065J": { "friendly_name": "Ovo mexido sem óleo e sem sal", "aliases": ["ovo", "ovo mexido", "ovo mexido simples"], "priority": "common", "priority_score": 970, "confidence": "high" },
+  "BRC0065J": { "friendly_name": "Omelete", "aliases": ["omelete", "omelete simples", "omelete de ovo", "ovo mexido", "ovo mexido simples"], "priority": "common", "priority_score": 975, "confidence": "high" },
   "BRC0052J": { "friendly_name": "Ovo de codorna cozido", "aliases": ["ovo de codorna"], "priority": "useful", "priority_score": 610, "confidence": "high" },
 
   "BRC0036G": { "friendly_name": "Leite desnatado", "aliases": ["leite", "leite de vaca", "leite desnatado"], "priority": "common", "priority_score": 970, "confidence": "high" },

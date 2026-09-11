@@ -28,7 +28,7 @@ describe('curadoria integral da busca TBCA',()=>{
     ['arroz',['BRC0018A','BRC0016A','BRC0001A','BRC0017A']],
     ['feijão',['BRC0001T','BRC0008T']],
     ['frango',['BRC0114F','BRC0194F','BRC0113F','BRC0133F']],
-    ['ovo',['BRC0010J','BRC0065J','BRC0015J']],
+    ['ovo',['BRC0010J','BRC0015J','BRC0011J']],
     ['leite',['BRC0044G','BRC0043G','BRC0036G']],
     ['banana',['BRC0007C','BRC0011C','BRC0009C']],
     ['carne',['BRC0025F','BRC0047F','BRC0023F']],
@@ -59,6 +59,12 @@ describe('curadoria integral da busca TBCA',()=>{
     const rice=patientResults('arroz');
     expect(rice[0].source_code).toBe('BRC0018A');
     expect(rice.slice(0,10).map(food=>food.displayName).join(' ')).not.toMatch(/arroz[^,]*\bcru[as]?\b/i);
+  });
+
+  it('prioriza a omelete simples sem ocultar as preparações específicas',()=>{
+    const results=ranked('omelete');
+    expect(results[0]).toEqual(expect.objectContaining({source_code:'BRC0065J',friendly_name:'Omelete',priority:'common'}));
+    expect(results.slice(1).some((food)=>food.friendly_name.toLocaleLowerCase('pt-BR').startsWith('omelete'))).toBe(true);
   });
 
   it.each(['arroz','frango','carne','feijão','ovo'])('não deixa receitas específicas poluírem os cinco primeiros resultados de %s',(query)=>{

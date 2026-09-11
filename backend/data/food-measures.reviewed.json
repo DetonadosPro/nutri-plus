@@ -116422,5 +116422,19 @@
     "reference": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC1214A",
     "isDefault": false,
     "reviewed": true
+  },
+  {
+    "foodSource": "TBCA",
+    "foodCode": "BRC0065J",
+    "key": "omelet-egg-count",
+    "kind": "count",
+    "name": "ovo",
+    "plural": "ovos",
+    "quantity": 1,
+    "grams": 50,
+    "source": "TBCA",
+    "reference": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0010J",
+    "isDefault": true,
+    "reviewed": true
   }
 ]

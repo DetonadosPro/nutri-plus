@@ -483,7 +483,7 @@ function unexpectedRecipeMarkers(profile: DetectionProfile, candidate: Candidate
     }
   }
   if (profile.identity.has('farofa') || profile.identity.has('omelete')) {
-    for (const filling of ['carne', 'cenoura', 'linguica', 'toucinho', 'bacon', 'vegetal', 'queijo', 'frio', 'ovo']) {
+    for (const filling of ['carne', 'cenoura', 'linguica', 'toucinho', 'bacon', 'vegetal', 'queijo', 'frio']) {
       if (candidate.all.has(filling) && !profile.evidence.has(filling)) markers.push(filling);
     }
   }
@@ -504,7 +504,6 @@ function unobservedMaterialAttributes(profile: DetectionProfile, candidate: Cand
   if (!profile.bone && candidate.bone) values.push('bone');
   if (profile.identity.has('queijo') && !relevantAxes(profile)[0]?.values.some((value) => profile.evidence.has(value)) && !values.length) values.push('cheese_variety');
   if (profile.identity.has('farofa')) values.push('farofa_recipe');
-  if (profile.identity.has('omelete')) values.push('omelet_recipe');
   if ((profile.identity.has('peixe') || profile.identity.has('file')) && profile.evidence.has('empanado')) values.push('breaded_fish_recipe');
   return unique(values);
 }

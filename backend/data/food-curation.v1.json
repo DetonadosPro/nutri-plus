@@ -20198,19 +20198,19 @@
     },
     {
       "source_code": "BRC0065J",
-      "friendly_name": "Ovo mexido sem óleo e sem sal",
+      "friendly_name": "Omelete",
       "aliases": [
-        "Ovo mexido sem óleo e sem sal",
-        "Ovo",
+        "Omelete",
+        "Omelete simples",
+        "Omelete de ovo",
         "Ovo mexido",
         "Ovo mexido simples",
         "Ovo de galinha mexido sem óleo sem sal",
         "Ovo galinha mexido sem óleo sem sal",
-        "Ovo de galinha mexido",
-        "Ovo mexido sem óleo sem sal"
+        "Ovo de galinha mexido"
       ],
       "priority": "common",
-      "priority_score": 970,
+      "priority_score": 975,
       "curation_category": "base_food",
       "details": [
         "Sem óleo",

@@ -33,7 +33,7 @@ function runNormalMigration(name:string){
   execFileSync(process.execPath,['--import','tsx','--eval',runner],{cwd:projectDir,env:{...process.env,DATABASE_URL:schemaUrl(name)},stdio:'pipe'});
 }
 
-describe.runIf(enabled)('migration 024 em PostgreSQL temporário',()=>{
+describe.runIf(enabled)('migrations 024 e 025 em PostgreSQL temporário',()=>{
   beforeAll(async()=>{for(const name of schemas)await createSchema(name)},30_000);
   afterAll(async()=>{for(const name of schemas)await dropSchema(name);await admin!.end()},30_000);
 
@@ -46,6 +46,7 @@ describe.runIf(enabled)('migration 024 em PostgreSQL temporário',()=>{
     expect(columns.rows.find(row=>row.column_name==='candidate_food_ids')).toMatchObject({is_nullable:'NO'});
     expect(columns.rows.find(row=>row.column_name==='manual_search')).toMatchObject({is_nullable:'NO'});
     expect((await client.query(`SELECT count(*)::int AS count FROM schema_migrations WHERE version='024_food_vision_feedback_context.sql'`)).rows[0].count).toBe(1);
+    expect((await client.query(`SELECT count(*)::int AS count FROM schema_migrations WHERE version='025_simple_omelet.sql'`)).rows[0].count).toBe(1);
     expect((await client.query(`SELECT indexdef FROM pg_indexes WHERE schemaname=current_schema() AND indexname='idx_food_vision_feedback_family_cut'`)).rows[0].indexdef).toContain('WHERE (final_food_id IS NOT NULL)');
     await client.end();
   },60_000);
@@ -55,12 +56,15 @@ describe.runIf(enabled)('migration 024 em PostgreSQL temporário',()=>{
     await applyThrough(client,'023_tbca_search_curation.sql');
     const analysis=(await client.query(`INSERT INTO food_vision_analyses(analysis_token,model,reasoning_effort,first_latency_ms,detected_count) VALUES($1,'legacy','none',10,1) RETURNING id`,[randomUUID()])).rows[0];
     const prediction=(await client.query(`INSERT INTO food_vision_predictions(analysis_id,item_token,decision_state,top1_score,top2_score,margin,visual_confidence) VALUES($1,$2,'ASK_IDENTITY',.7,.6,.1,.8) RETURNING *`,[analysis.id,randomUUID()])).rows[0];
+    await client.query(`INSERT INTO foods(source,source_code,description,normalized_name) VALUES('TBCA','BRC0065J','Ovo de galinha mexido sem óleo sem sal','ovo de galinha mexido sem oleo sem sal')`);
     await client.end();
     runNormalMigration(schemas[1]);
     const migrated=new pg.Client({connectionString:schemaUrl(schemas[1])});await migrated.connect();
     const row=(await migrated.query('SELECT * FROM food_vision_predictions WHERE id=$1',[prediction.id])).rows[0];
     for(const key of Object.keys(prediction))expect(row[key]).toEqual(prediction[key]);
     expect(row).toMatchObject({detected_payload:{},suggested_family:null,chosen_family:null,candidate_food_ids:[],manual_search:false});
+    const omelet=(await migrated.query(`SELECT f.display_name,m.key,m.kind,m.name,m.quantity::float8 AS quantity,m.grams::float8 AS grams,m.is_default FROM foods f JOIN food_measures m ON m.food_id=f.id WHERE f.source='TBCA' AND f.source_code='BRC0065J'`)).rows[0];
+    expect(omelet).toMatchObject({display_name:'Omelete',key:'omelet-egg-count',kind:'count',name:'ovo',quantity:1,grams:50,is_default:true});
     await expect(migrated.query(`INSERT INTO food_vision_predictions(analysis_id,item_token,decision_state,top1_score,top2_score,margin,visual_confidence,suggested_family) VALUES($1,$2,'ASK_IDENTITY',.7,.6,.1,.8,'fish')`,[analysis.id,randomUUID()])).rejects.toThrow();
     await migrated.query('BEGIN');
     await migrated.query('DROP INDEX idx_food_vision_feedback_family_cut');
