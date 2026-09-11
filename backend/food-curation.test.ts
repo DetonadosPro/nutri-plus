@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { projectPath } from './db';
 import { normalizeFoodName } from '../shared/food-recognition';
 import { rankCuratedFoods, sha256, validateCuration, type CurationSourceFood, type FoodCurationFile } from './food-curation-rules';
+import {presentFoodSearchResults} from '../shared/food-catalog-presentation';
 
 const sourceBuffer=readFileSync(projectPath('data','tbca','tbca completa normalizada.json'));
 const foods=JSON.parse(sourceBuffer.toString('utf8')) as CurationSourceFood[];
@@ -12,6 +13,7 @@ const secondPass=JSON.parse(readFileSync(projectPath('data','food-curation.v1.se
 const sourceByCode=new Map(foods.map((food)=>[food.codigo,food]));
 
 function ranked(query:string) {return rankCuratedFoods(curation.foods,sourceByCode,query).map((row)=>row.entry);}
+function patientResults(query:string){return presentFoodSearchResults(ranked(query).map(food=>({source_code:food.source_code,description:sourceByCode.get(food.source_code)!.nome_original,displayName:food.friendly_name,category:sourceByCode.get(food.source_code)!.grupo})),query);}
 
 describe('curadoria integral da busca TBCA',()=>{
   it('cobre os 5.874 códigos sem alterar nem substituir a fonte',()=>{
@@ -42,6 +44,21 @@ describe('curadoria integral da busca TBCA',()=>{
     const results=ranked('arroz com espinafre');
     expect(results[0].friendly_name).toMatch(/^Arroz com espinafre/i);
     expect(results[0].priority).toBe('specific');
+  });
+
+  it('apresenta peito bovino sem variantes técnicas repetidas ou carne crua',()=>{
+    const results=patientResults('peito bovino');
+    expect(results.length).toBeGreaterThanOrEqual(3);
+    expect(results[0].displayName).toBe('Peito bovino grelhado');
+    expect(results.map(food=>food.displayName).join(' ')).not.toMatch(/\b(?:com|sem) (?:sal|óleo|oleo|gordura|manteiga)\b|\bcru[as]?\b/i);
+    expect(new Set(results.map(food=>food.displayName)).size).toBe(results.length);
+  });
+
+  it('mostra Pepino e mantém arroz cozido acima das formas cruas',()=>{
+    expect(patientResults('pepino')[0].displayName).toBe('Pepino');
+    const rice=patientResults('arroz');
+    expect(rice[0].source_code).toBe('BRC0018A');
+    expect(rice.slice(0,10).map(food=>food.displayName).join(' ')).not.toMatch(/arroz[^,]*\bcru[as]?\b/i);
   });
 
   it.each(['arroz','frango','carne','feijão','ovo'])('não deixa receitas específicas poluírem os cinco primeiros resultados de %s',(query)=>{

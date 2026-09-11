@@ -52,7 +52,7 @@ function detection(
   visibleDetails: string[] = [],
   confidence = 0.9,
 ): DetectedFood {
-  return { name, preparation, visibleDetails, confidence, alternative: null, componentRole: 'independent', identityAmbiguity: null };
+  return { name, preparation, visibleDetails, confidence, alternative: null, componentRole: 'independent', identityAmbiguity: null,meatVisual:null };
 }
 
 function resolve(item: DetectedFood) {
@@ -206,6 +206,34 @@ describe('photo matcher against the curated complete TBCA catalog', () => {
     expect(result.candidates.length).toBeGreaterThan(0);
     expect(result.candidates.length).toBeLessThanOrEqual(3);
     expect(result.candidates.every(match=>foodMatchesMeatFamily(match.food,family))).toBe(true);
+  });
+
+  it.each([
+    ['pork',{familyCandidate:'unknown',familyConfidence:.45,cutStyle:'steak',visibleFatLevel:'medium',bone:'with',shapeHints:['bisteca']},/Bisteca/i],
+    ['pork',{familyCandidate:'unknown',familyConfidence:.45,cutStyle:'whole_piece',visibleFatLevel:'low',bone:'without',shapeHints:['lombo']},/Lombo suíno/i],
+    ['pork',{familyCandidate:'unknown',familyConfidence:.45,cutStyle:'whole_piece',visibleFatLevel:'medium',bone:'without',shapeHints:['pernil']},/Pernil suíno/i],
+    ['beef',{familyCandidate:'unknown',familyConfidence:.45,cutStyle:'fillet',visibleFatLevel:'low',bone:'without',shapeHints:['peito']},/Peito bovino/i],
+    ['chicken',{familyCandidate:'unknown',familyConfidence:.45,cutStyle:'fillet',visibleFatLevel:'low',bone:'without',shapeHints:['peito']},/Peito de frango/i],
+  ] as const)('uses first-pass visual evidence after choosing %s', (family,meatVisual,expected) => {
+    const ambiguous={...detection('carne','grelhada',['corte inteiro']),identityAmbiguity:'meat_family' as const,meatVisual:{...meatVisual,shapeHints:[...meatVisual.shapeHints]}};
+    expect(resolve(ambiguous).decision.state).toBe('ASK_MEAT_FAMILY');
+    const refined=refineMeatFamily(ambiguous,family);
+    const familyFoods=foods.filter(food=>foodMatchesMeatFamily(food,family));
+    const result=resolveFoodCandidates(refined,familyFoods);
+    expect(result.candidates.length).toBeGreaterThan(0);
+    expect(result.candidates.length).toBeLessThanOrEqual(3);
+    expect(result.candidates.every(match=>foodMatchesMeatFamily(match.food,family))).toBe(true);
+    expect(result.candidates[0]?.food.displayName).toMatch(expected);
+    expect(result.candidates.map(match=>match.food.displayName).join(' ')).not.toMatch(/Preparad[oa] suín/i);
+  });
+
+  it('prefers useful pork cuts over a generic prepared-pork row',()=>{
+    const ambiguous={...detection('carne','assada'),identityAmbiguity:'meat_family' as const};
+    const refined=refineMeatFamily(ambiguous,'pork');
+    const result=resolveFoodCandidates(refined,foods.filter(food=>foodMatchesMeatFamily(food,'pork')));
+    const visible=result.candidates.map(match=>match.food.displayName||'').join(' ');
+    expect(visible).toMatch(/Bisteca|Lombo|Pernil|Costela/i);
+    expect(visible).not.toMatch(/Preparad[oa] suíno/i);
   });
 
   it('does not ask again when chicken is already visually recognized', () => {
