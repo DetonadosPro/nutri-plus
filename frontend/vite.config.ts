@@ -3,12 +3,26 @@ import tailwindcss from '@tailwindcss/postcss';
 import vinext from 'vinext';
 import { defineConfig } from 'vite';
 import { existsSync, readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import hostingConfig from './.openai/hosting.json';
 
 const SITE_CREATOR_PLACEHOLDER_DATABASE_ID =
   '00000000-0000-4000-8000-000000000000';
 
 const { d1, r2 } = hostingConfig;
+
+function resolveBuildId() {
+  if (process.env.NUTRI_BUILD_ID?.trim()) return process.env.NUTRI_BUILD_ID.trim();
+  try {
+    return execFileSync('git', ['rev-parse', 'HEAD'], {
+      cwd: new URL('..', import.meta.url),
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+  } catch {
+    return 'development';
+  }
+}
 
 // macOS Seatbelt blocks FSEvents, so Codex previews need polling for HMR.
 const isCodexSeatbeltSandbox = process.env.CODEX_SANDBOX === 'seatbelt';
@@ -68,6 +82,9 @@ export default defineConfig(async () => {
   const { cloudflare } = await import('@cloudflare/vite-plugin');
 
   return {
+    define: {
+      __NUTRI_BUILD_ID__: JSON.stringify(resolveBuildId()),
+    },
     css: {
       postcss: {
         plugins: [tailwindcss()],

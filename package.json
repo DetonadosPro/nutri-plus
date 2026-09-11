@@ -16,6 +16,7 @@
     "lint": "npm run lint --workspace @nutri/frontend",
     "format": "npm run format --workspace @nutri/frontend",
     "test": "npm run test --workspace @nutri/backend",
+    "test:frontend": "npm run test --workspace @nutri/frontend",
     "db:setup": "npm run db:setup --workspace @nutri/backend",
     "taco:extract": "npm run taco:extract --workspace @nutri/backend",
     "taco:import": "npm run taco:import --workspace @nutri/backend",
@@ -31,7 +32,8 @@
     "curation:import": "npm run curation:import --workspace @nutri/backend",
     "curation:audit": "npm run curation:audit --workspace @nutri/backend",
     "vision:benchmark": "tsx tests/food-vision-benchmark/run.ts",
-    "vision:replay-matcher": "tsx tests/food-vision-benchmark/replay-current-matcher.ts"
+    "vision:replay-matcher": "tsx tests/food-vision-benchmark/replay-current-matcher.ts",
+    "boot:stress": "node tests/app-bootstrap/stress-bootstrap.mjs"
   },
   "devDependencies": { "concurrently": "^10.0.5", "typescript": "5.9.3" }
 }

@@ -25,6 +25,7 @@ import {
 } from "./auth";
 import { accountMailHtml, appUrlForRequest, sendMail, deliveryResult } from "./mailer";
 import { appConfig } from "./config";
+import { bootTelemetryLog, bootTelemetrySchema } from './boot-telemetry';
 import { AccountTokenError, saveAccountToken, validAccountToken, withAccountToken } from './account-tokens';
 import { accountMailLimit, authenticationLimits, configureSecurity, sessionCookieOptions } from './security';
 import { normalizeSearch } from "./taco-import";
@@ -89,6 +90,13 @@ app.use(cookieParser());
 app.use(['/api/auth/login', '/api/auth/activate', '/api/auth/activation-code/identify', '/api/auth/verify-email', '/api/auth/password-reset'], ...authenticationLimits());
 app.use('/api/nutritionist', accountMailLimit());
 app.use('/api/admin', accountMailLimit());
+
+const bootTelemetryLimit = rateLimit({
+  windowMs: 60_000,
+  limit: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 type Handler = (req: Request, res: Response) => unknown;
 class InputError extends Error {}
@@ -350,6 +358,21 @@ app.use("/api/activities", activitiesRouter({ authUser, patientAccess }));
 
 app.get("/api/health", (_req, res) =>
   res.json({ ok: true, foods: tbcaCount, database: databaseInfo.engine, source: "TBCA", version: appConfig.release }),
+);
+
+app.post(
+  '/api/client-boot',
+  bootTelemetryLimit,
+  route((req, res) => {
+    const event = bootTelemetrySchema.parse(req.body);
+    const line = bootTelemetryLog(event);
+    if (['asset-error', 'js-error', 'unhandled-rejection', 'boot-timeout', 'chunk-recovery', 'boot-error'].includes(event.stage)) {
+      console.warn(`[client-boot] ${line}`);
+    } else {
+      console.info(`[client-boot] ${line}`);
+    }
+    res.sendStatus(204);
+  }),
 );
 
 app.get(
