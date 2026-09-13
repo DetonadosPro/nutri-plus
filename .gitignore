@@ -59,4 +59,5 @@ dist/
 
 # local Codex/browser data
 /.codex-local/
+/imagens reais/
 /certificado-android/
