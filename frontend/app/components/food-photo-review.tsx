@@ -16,7 +16,7 @@ import { MeasureInput, gramMeasure, safeGrams } from './measure-input';
 import { measureLabel, type FoodMeasure } from '../../../shared/food-measures';
 import { optimizeFoodPhoto } from '@/lib/food-photo';
 import { MEAT_FAMILY_OPTIONS, recognitionFoodLabel, type MeatFamily } from '@/lib/food-photo-recognition';
-import type {MeatVisual} from '../../../shared/food-recognition';
+import type {FoodKind,MeatVisual} from '../../../shared/food-recognition';
 import {
   createPhotoSessionId,
   installPhotoLifecycleDiagnostics,
@@ -27,7 +27,7 @@ import {
 } from '@/lib/photo-session';
 
 type DetectionState = 'AUTOSELECT'|'RERANK'|'ASK_USER'|'ASK_IDENTITY'|'ASK_MEAT_FAMILY'|'ASK_ATTRIBUTE'|'NO_EXACT_TBCA_MATCH'|'NO_MATCH';
-type Detection = { itemToken:string;name:string;preparation:string|null;visibleDetails:string[];componentRole:'independent'|'integrated-preparation';identityAmbiguity:'meat_family'|'food_identity'|null;meatVisual:MeatVisual|null;clarificationKind:'MEAT_FAMILY'|null;visionConfidence:number;matchConfidence:number;matchConfidenceLevel:'high'|'medium'|'low';state:DetectionState;top1Score:number;top2Score:number;margin:number;resolutionPolicy?:string|null;abstentionReason?:string|null;candidates:Food[] };
+type Detection = { itemToken:string;name:string;preparation:string|null;visibleDetails:string[];componentRole:'independent'|'integrated-preparation';foodKind:FoodKind;groupLabel:string|null;identityAmbiguity:'meat_family'|'food_identity'|null;meatVisual:MeatVisual|null;clarificationKind:'MEAT_FAMILY'|null;visionConfidence:number;matchConfidence:number;matchConfidenceLevel:'high'|'medium'|'low';state:DetectionState;top1Score:number;top2Score:number;margin:number;resolutionPolicy?:string|null;abstentionReason?:string|null;candidates:Food[] };
 type Row = Detection & { key: string; food: Food | null; grams: string; measure?: FoodMeasure; confirmed: boolean;manualSearch:boolean };
 
 function choiceMessage(state:DetectionState){
@@ -193,7 +193,7 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onInitial
   }
 
   function choose(food: Food) {
-    if (editing === 'new') setRows(current => [...current, { key: crypto.randomUUID(),itemToken:crypto.randomUUID(),name:foodDisplayName(food),preparation:null,visibleDetails:[],componentRole:'independent',identityAmbiguity:null,meatVisual:null,clarificationKind:null,visionConfidence:1,matchConfidence:1,matchConfidenceLevel:'high',state:'ASK_ATTRIBUTE',top1Score:0,top2Score:0,margin:0,candidates:[],food,grams:'',measure:food.measures?.find(m=>m.isDefault) ?? gramMeasure,confirmed:false,manualSearch:true }]);
+    if (editing === 'new') setRows(current => [...current, { key: crypto.randomUUID(),itemToken:crypto.randomUUID(),name:foodDisplayName(food),preparation:null,visibleDetails:[],componentRole:'independent',foodKind:'unknown',groupLabel:null,identityAmbiguity:null,meatVisual:null,clarificationKind:null,visionConfidence:1,matchConfidence:1,matchConfidenceLevel:'high',state:'ASK_ATTRIBUTE',top1Score:0,top2Score:0,margin:0,candidates:[],food,grams:'',measure:food.measures?.find(m=>m.isDefault) ?? gramMeasure,confirmed:false,manualSearch:true }]);
     else setRows(current => current.map(row => row.key === editing ? { ...row, food, grams:"", measure:food.measures?.find(m=>m.isDefault) ?? gramMeasure, confirmed:false,manualSearch:true } : row));
     setEditing(null); setQuery('');
   }
@@ -220,7 +220,7 @@ export function FoodPhotoReview({ date, initialMealType, initialPhoto, onInitial
     if(!analysisToken||familyBusyKey)return;
     setFamilyBusyKey(row.key);setError('');
     try{
-      const detected={name:row.name,preparation:row.preparation,visibleDetails:row.visibleDetails,confidence:row.visionConfidence,alternative:null,componentRole:row.componentRole,identityAmbiguity:row.identityAmbiguity,meatVisual:row.meatVisual};
+      const detected={name:row.name,preparation:row.preparation,visibleDetails:row.visibleDetails,confidence:row.visionConfidence,alternative:null,componentRole:row.componentRole,foodKind:row.foodKind,groupLabel:row.groupLabel,identityAmbiguity:row.identityAmbiguity,meatVisual:row.meatVisual};
       const item=await api<Detection>('/foods/recognize/meat-family',{method:'POST',body:JSON.stringify({analysisToken,itemToken:row.itemToken,detected,family})});
       setRows(items=>items.map(current=>current.key===row.key?{...current,...item,food:['AUTOSELECT','RERANK'].includes(item.state)?item.candidates[0]||null:null,grams:'',measure:undefined,confirmed:false}:current));
     }catch(reason){setError(reason instanceof Error?reason.message:'Não foi possível confirmar a carne.');}

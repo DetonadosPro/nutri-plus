@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import sharp from 'sharp';
-import { canonicalQueries,deduplicateDetections,decideMatch,detectionSchema,foodMatchesMeatFamily,foodRetrievalTokens,foodSearchTokenVariants,needsMeatFamilyConfirmation,normalizeFoodQuery,rankFoodCandidates,rankSemanticFoodCandidates,recognitionFoodName,refineMeatFamily,rerankSchema,selectDistinctFoodCandidates,validRerankIndex,type DetectedFood } from '../shared/food-recognition';
+import { atomizeDetections,canonicalQueries,deduplicateDetections,decideMatch,detectionSchema,foodMatchesMeatFamily,foodRetrievalTokens,foodSearchTokenVariants,needsMeatFamilyConfirmation,normalizeFoodQuery,rankFoodCandidates,rankSemanticFoodCandidates,recognitionFoodName,refineMeatFamily,rerankSchema,selectDistinctFoodCandidates,shouldAskMeatFamily,validRerankIndex,type DetectedFood,type SemanticMatch,type SearchableFood } from '../shared/food-recognition';
 import { normalizePhoto } from './photo-image';
 
 function detection(name:string,preparation:string|null=null,visibleDetails:string[]=[],overrides:Partial<DetectedFood>={}):DetectedFood {
@@ -24,6 +24,13 @@ describe('food photo boundaries', () => {
     expect(detectionSchema.parse({items:[meat]}).items[0].meatVisual).toMatchObject({familyCandidate:'pork',cutStyle:'steak',bone:'with',shapeHints:['bisteca']});
     expect(needsMeatFamilyConfirmation(meat)).toBe(true);
     expect(needsMeatFamilyConfirmation({...meat,name:'carne suína',identityAmbiguity:null,meatVisual:{...meat.meatVisual!,familyConfidence:.9}})).toBe(false);
+  });
+  it('captures a coarse food kind and an optional visual group without merging identities',()=>{
+    const salad=[detection('alface',null,['folhas verdes'],{foodKind:'vegetable',groupLabel:'salada'}),detection('tomate',null,['fatias vermelhas'],{foodKind:'vegetable',groupLabel:'salada'})];
+    const parsed=detectionSchema.parse({items:salad});
+    expect(parsed.items.map(item=>item.name)).toEqual(['alface','tomate']);
+    expect(parsed.items.every(item=>item.groupLabel==='salada'&&item.foodKind==='vegetable')).toBe(true);
+    expect(deduplicateDetections(parsed.items)).toHaveLength(2);
   });
   it('accepts sausage as a processed meat form without treating it as a fresh whole cut',()=>{
     const sausage=detection('linguiça','grelhada',['peça cilíndrica'],{meatVisual:{familyCandidate:'pork',familyConfidence:.8,cutStyle:'sausage',visibleFatLevel:'unknown',bone:'without',shapeHints:[]}});
@@ -49,6 +56,53 @@ describe('food photo boundaries', () => {
     expect(refined).toMatchObject({name:'frango desfiado',identityAmbiguity:null});
     expect(foodMatchesMeatFamily({description:'Peito de frango cozido'},'chicken')).toBe(true);
     expect(foodMatchesMeatFamily({description:'Lombo suíno assado'},'chicken')).toBe(false);
+  });
+  it.each(['cebola','tomate','alface','arroz','feijão'])('never opens the meat gate for %s when retrieval is non-meat',(name)=>{
+    const item=detection(name,null,['servido ao lado da carne'],{foodKind:name==='arroz'?'grain_starch':name==='feijão'?'legume':'vegetable',identityAmbiguity:'meat_family',meatVisual:{familyCandidate:'unknown',familyConfidence:.2,cutStyle:'unknown',visibleFatLevel:'unknown',bone:'unknown',shapeHints:[]}});
+    const matches:SemanticMatch<SearchableFood>[]=[{food:{description:`${name} cru`,displayName:name,category:'Hortaliças'},matchConfidence:.9,contradictions:[],query:name}];
+    expect(shouldAskMeatFamily(item,matches)).toBe(false);
+  });
+  it('opens the meat gate only when local candidates confirm multiple animal families',()=>{
+    const candidates:SemanticMatch<SearchableFood>[]=[
+      {food:{description:'Linguiça suína grelhada'},matchConfidence:.9,contradictions:[],query:'linguiça'},
+      {food:{description:'Linguiça de frango grelhada'},matchConfidence:.88,contradictions:[],query:'linguiça'},
+    ];
+    const sausage=detection('linguiça','grelhada',[],{foodKind:'processed_meat',identityAmbiguity:'meat_family',meatVisual:{familyCandidate:'unknown',familyConfidence:.3,cutStyle:'sausage',visibleFatLevel:'unknown',bone:'without',shapeHints:[]}});
+    expect(shouldAskMeatFamily(sausage,candidates)).toBe(true);
+    expect(shouldAskMeatFamily(detection('carne','grelhada',[],{foodKind:'meat_cut',identityAmbiguity:'meat_family'}),candidates)).toBe(true);
+    expect(shouldAskMeatFamily(sausage,candidates.slice(0,1))).toBe(false);
+  });
+  it('atomizes explicit independent identities only when every part resolves strongly',async()=>{
+    const combined=detection('alface e tomate',null,['folhas e fatias'],{foodKind:'vegetable',groupLabel:'salada'});
+    const result=await atomizeDetections([combined],async item=>[{description:item.name,displayName:item.name,category:'Hortaliças'}]);
+    expect(result.entries.map(entry=>entry.item.name)).toEqual(['alface','tomate']);
+    expect(result.entries.every(entry=>entry.item.groupLabel==='salada')).toBe(true);
+    expect(result.splits).toEqual([{source:'alface e tomate',parts:['alface','tomate']}]);
+  });
+  it('does not split integrated recipes or weak compound identities',async()=>{
+    const integrated=detection('arroz e feijão',null,[],{componentRole:'integrated-preparation',foodKind:'composite'});
+    const weak=detection('alimento amarelo e molho',null,[],{foodKind:'unknown'});
+    const retrieve=async(item:DetectedFood)=>item.name==='alimento amarelo'?[]:[{description:item.name,displayName:item.name}];
+    expect((await atomizeDetections([integrated],retrieve)).entries).toHaveLength(1);
+    const weakResult=await atomizeDetections([weak],retrieve);
+    expect(weakResult.entries).toHaveLength(1);
+    expect(weakResult.entries[0].item.name).toBe('alimento amarelo e molho');
+  });
+  it('does not leak meat context from one atomized component to its vegetable neighbor',async()=>{
+    const combined=detection('carne e cebola',null,['cebola sobre a carne'],{foodKind:'meat_cut',identityAmbiguity:'meat_family',meatVisual:{familyCandidate:'unknown',familyConfidence:.3,cutStyle:'steak',visibleFatLevel:'medium',bone:'unknown',shapeHints:[]}});
+    const result=await atomizeDetections([combined],async item=>[{description:item.name==='carne'?'Carne bovina grelhada':'Cebola branca crua',displayName:item.name,category:item.name==='carne'?'Carnes e derivados':'Hortaliças'}]);
+    expect(result.entries.map(entry=>entry.item.name)).toEqual(['carne','cebola']);
+    expect(result.entries[0].item.meatVisual).not.toBeNull();
+    expect(result.entries[1].item.meatVisual).toBeNull();
+    expect(result.entries[1].item.identityAmbiguity).toBeNull();
+  });
+  it('keeps an already atomic bisteca and onion as independent component contexts',()=>{
+    const bisteca=detection('bisteca','grelhada',['corte achatado'],{foodKind:'meat_cut',identityAmbiguity:'meat_family',meatVisual:{familyCandidate:'unknown',familyConfidence:.4,cutStyle:'steak',visibleFatLevel:'medium',bone:'with',shapeHints:['bisteca']}});
+    const onion=detection('cebola','refogada',['tiras sobre a bisteca'],{foodKind:'vegetable',groupLabel:'carne com cebola'});
+    const result=deduplicateDetections([bisteca,onion]);
+    expect(result).toHaveLength(2);
+    expect(result[0].meatVisual?.shapeHints).toEqual(['bisteca']);
+    expect(result[1].meatVisual).toBeNull();
   });
   it('resolves aliases to existing candidates only', () => {
     const foods = [
@@ -78,6 +132,10 @@ describe('food photo boundaries', () => {
     expect(decideMatch(item,[{food:{},matchConfidence:.94,contradictions:[],query:'arroz'},{food:{},matchConfidence:.7,contradictions:[],query:'arroz'}]).state).toBe('AUTOSELECT');
     expect(decideMatch(item,[{food:{},matchConfidence:.9,contradictions:[],query:'arroz'},{food:{},matchConfidence:.87,contradictions:[],query:'arroz'}]).state).toBe('ASK_ATTRIBUTE');
     expect(decideMatch(item,[{food:{},matchConfidence:.4,contradictions:[],query:'arroz'}]).state).toBe('NO_MATCH');
+  });
+  it('abstains when low-confidence vision offers a materially different identity',()=>{
+    const uncertain=detection('farinha de mandioca','frita',['cobertura granulada'],{confidence:.73,alternative:'croquete',foodKind:'unknown'});
+    expect(decideMatch(uncertain,[{food:{description:'Farinha de mandioca torrada'},matchConfidence:.7,contradictions:[],query:'farinha'}]).state).toBe('NO_MATCH');
   });
   it('uses only controlled visible details and deduplicates paraphrases',()=>{
     const base=detection('frango','grelhado',['aparenta ser peito','prato bonito'],{confidence:.8,alternative:'filé de frango'});

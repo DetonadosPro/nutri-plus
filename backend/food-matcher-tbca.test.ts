@@ -198,6 +198,16 @@ describe('photo matcher against the curated complete TBCA catalog', () => {
     expect(result.candidates.length).toBeLessThanOrEqual(3);
   });
 
+  it.each([
+    ['cebola','vegetable'],['tomate','vegetable'],['alface','vegetable'],['arroz','grain_starch'],['feijão','legume'],
+  ] as const)('blocks a false meat gate for catalog-confirmed non-meat %s',(name,foodKind)=>{
+    const item:DetectedFood={...detection(name,null,['visível sobre a carne']),foodKind,identityAmbiguity:'meat_family',meatVisual:{familyCandidate:'unknown',familyConfidence:.2,cutStyle:'unknown',visibleFatLevel:'unknown',bone:'unknown',shapeHints:[]}};
+    const result=resolve(item);
+    expect(result.decision.state).not.toBe('ASK_MEAT_FAMILY');
+    expect(result.candidates.length).toBeLessThanOrEqual(3);
+    expect(result.candidates[0]?.food.displayName).toMatch(new RegExp(name,'i'));
+  });
+
   it.each(['chicken','pork','beef'] as const)('rematches %s locally after the family answer', (family) => {
     const refined=refineMeatFamily({...detection('carne desfiada','cozida'),identityAmbiguity:'meat_family'},family);
     const familyFoods=foods.filter(food=>foodMatchesMeatFamily(food,family));

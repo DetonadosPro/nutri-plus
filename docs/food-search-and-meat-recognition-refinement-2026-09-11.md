@@ -2,7 +2,7 @@
 
 ## Escopo e estado
 
-Trabalho isolado na branch `feature/food-search-meat-refinement`, criada diretamente de `main` em `8c87e241e6394f4ba0e42a42f705136bd242dcbe`. Nenhum commit, push ou deploy foi feito. A feature da omelete permanece em outra branch e não faz parte deste diff.
+O trabalho começou na branch `feature/food-search-meat-refinement`, criada de `main` em `8c87e241e6394f4ba0e42a42f705136bd242dcbe` e consolidada no commit `5f2b6fb21c9d3a79ccdf8944679a6a57a29b4add`. O histórico atual seguiu de forma linear: a integração da omelete entrou em `e77b9443e605faf075e60720f9c7dfd76c376d52` e as correções posteriores de linguiça/bisteca foram registradas em `3f5b341334fb579b64559aefa92b6fefd3f0fac6`, commit apontado por `main` e `fix/food-vision-sausage-regression`. A auditoria estrutural mais recente foi continuada, ainda sem commit, na branch `fix/food-vision-sausage-regression`, que contém todo o trabalho anterior e representa o estado atual descrito neste relatório. Não há merge commit, rebase ou cherry-pick entre essas duas linhas no histórico atual: o commit de `feature/food-search-meat-refinement` é ancestral direto da branch atual.
 
 Esta rodada não altera linhas nutricionais, medidas, IDs, `source_code`, diário ou curadoria persistida. As mudanças são de apresentação, busca contextual, matching, schema visual e telemetria de feedback.
 
@@ -186,3 +186,72 @@ Antes: visão 5.940,7 ms, retrieval total do prato 247,8 ms, matcher 206,9 ms, t
 Testes automatizados cobrem linguiça suína direta, escolha de família Porco, precedência sobre família errada e preparado genérico, variantes técnicas, canonicalização, dedup sem fundir identidades, preparação empanada incompatível, bisteca preservada, componentes independentes, máximo de três, ausência de preenchimento artificial, abstinência sob o piso, feedback incapaz de trocar identidade e buscas manuais por peito bovino, pepino, arroz, linguiça, linguiça suína, bisteca, lombo e pernil.
 
 Risco restante: a família animal de um embutido inteiro pode não ser visualmente defensável. O comportamento intencional é perguntar a família e então apresentar somente correspondências compatíveis; não inferir pela cor. O caso real fez exatamente isso depois da correção.
+
+## Auditoria geral das imagens reais e componentização atômica
+
+### Escopo e método
+
+A pasta local `imagens reais` continha quatro arquivos: `imagem 1.jpeg`, `imagem 2.jpeg`, `imagem 3.jpg` e `imagem 4.jpg`. As fotos não foram copiadas nem adicionadas ao Git. O manifest humano, os resultados integrais e o replay determinístico ficaram em `.codex-local/food-vision-real/`, também ignorado pelo Git.
+
+Foi feita exatamente uma chamada visual por arquivo antes e uma depois da alteração, sempre com `gpt-5.6-luna`, esforço `none` e detalhe alto. Não houve crop, chamada por componente, rerank remoto ou repetição para escolher uma resposta favorável. A inspeção humana definiu as expectativas antes de interpretar a rodada final; inferência do modelo não foi tratada como ground truth.
+
+### Matriz comparativa
+
+| Imagem | Expectativa humana | Visão antes / decisão final antes | Falhas antes | Visão depois / decisão final depois | Situação final |
+|---|---|---|---|---|---|
+| `imagem 1.jpeg` | feijão, omelete e pepino; arroz proibido | omelete `BRC0065J`, feijão `BRC0001T`, pepino `BRC0030B`; três `AUTOSELECT` | nenhuma; arroz não foi inventado | mesmos três componentes e códigos; `foodKind` coerente; nenhuma pergunta de carne | aprovada |
+| `imagem 2.jpeg` | massa longa com molho e carne/frango visível em componente separado | massa em `ASK_ATTRIBUTE`; carne separada em `ASK_MEAT_FAMILY` | a visão não sustentou diretamente frango, mas abstém corretamente na família; não houve merge | massa e carne continuam independentes; massa em `ASK_ATTRIBUTE`, carne em `ASK_MEAT_FAMILY` | aprovada, com incerteza animal explícita |
+| `imagem 3.jpg` | ovo, bisteca, linguiça, arroz, couve, preparação granulada/com feijão e item empanado/frito | sete componentes; linguiça e bife independentes; o item `empanado` tinha pool zero, mas recebia `ASK_MEAT_FAMILY` | `invalid_meat_gate` no empanado; preparação granulada permanece visualmente ambígua | sete componentes; ovo e arroz automáticos; bife e linguiça em `ASK_MEAT_FAMILY`; farofa em `NO_EXACT_TBCA_MATCH`; item frito de baixa confiança em `NO_MATCH` no replay final | correção de linguiça/bisteca preservada; identidade do item frito não é forçada |
+| `imagem 4.jpg` | arroz, feijão, alface, tomate, cebola e corte de carne; pequena região amarela pode ser ignorada | os seis componentes apareceram separados nesta execução; cebola foi incorretamente para `ASK_MEAT_FAMILY` | merge alface/tomate relatado é intermitente no estágio visual; `invalid_meat_gate` determinístico na cebola | seis componentes separados; alface/tomate em `groupLabel=salada`; carne/cebola em `groupLabel=carne com cebola`; cebola em `ASK_ATTRIBUTE`, nunca família; região amarela não foi inventada | aprovada |
+
+### Causas raízes e estágios
+
+O agrupamento de alface e tomate acontecia no primeiro Structured Output. O contrato dizia para percorrer componentes, mas não definia explicitamente a atomicidade nutricional, permitia nomes livres e não tinha grupo visual separado da identidade. Depois disso não havia validação semântica para um nome independente contendo duas identidades catalogáveis. Portanto o matcher recebia um componente já fundido e não tinha como recuperar duas porções.
+
+O erro da cebola acontecia depois de um retrieval correto. A visão desta auditoria retornou `name=cebola`, `meatVisual=null` e os primeiros candidatos locais eram cebolas, mas `needsMeatFamilyConfirmation` procurava palavras de carne em `name + preparation + visibleDetails`. A frase espacial `fatias ... sobre a carne` continha “carne” e abria o gate sem consultar o pool. O mesmo desenho explicava o empanado da imagem 3: `identityAmbiguity=meat_family` forçava a pergunta mesmo com zero candidatos recuperados. Não houve compartilhamento de objetos entre componentes; a contaminação era semântica, causada por usar contexto do vizinho como identidade local.
+
+Classes observadas: `merged_components` no relato intermitente de salada; `invalid_meat_gate` na cebola e no empanado; `wrong_identity`/baixa confiança no item frito da imagem 3; e ambiguidade segura de identidade na preparação granulada. Não foram observados `over_split_component`, arroz alucinado na imagem 1, merge massa/carne, merge bisteca/linguiça, `dedup_failure` ou `unsafe_auto_select` após as barreiras finais.
+
+### Alteração arquitetural
+
+O Structured Output ganhou dois campos pequenos:
+
+- `foodKind`: `meat_cut`, `processed_meat`, `egg`, `grain_starch`, `legume`, `vegetable`, `fruit`, `dairy`, `bakery`, `composite` ou `unknown`;
+- `groupLabel`, opcional e sem efeito em matching, nutrientes, medidas ou diário.
+
+O prompt agora exige uma lista flat: alimentos distinguíveis, porcionáveis e nutricionalmente relevantes são itens independentes mesmo quando encostam. `groupLabel` pode representar “salada” ou “carne com cebola” sem fundir identidades. Receitas integradas continuam únicas; microtemperos não são obrigatórios. `meatVisual` deve ser nulo fora de `meat_cut` e `processed_meat`, mas o backend não confia nesse campo sozinho.
+
+Foi adicionada uma segunda barreira inteiramente local para nomes explicitamente compostos. Ela só separa um item `independent` com separador explícito quando cada parte, isoladamente, resolve com score mínimo 0,72 e todos os tokens de identidade aparecem no candidato vencedor. Preparações `integrated-preparation`, partes fracas e nomes sem duas identidades fortes são preservados. Não existe `.split(" e ")` global: a separação depende do papel visual e de confirmação semântica pelo catálogo. No split seguro, detalhes, ambiguidade e `meatVisual` não são copiados para a parte vegetal; o grupo visual é preservado.
+
+### Nova regra do gate de carne
+
+`ASK_MEAT_FAMILY` passou a ocorrer somente quando todas as condições abaixo são verdadeiras:
+
+1. a família ainda não está defensavelmente determinada, ou existe alternativa animal conflitante;
+2. `foodKind`, o nome/alternativa ou a ambiguidade local colocam o próprio componente no domínio carne/embutido;
+3. o melhor candidato local acima do piso é realmente carne;
+4. o conjunto local acima do piso contém pelo menos duas famílias animais explícitas e materialmente possíveis.
+
+`visibleDetails` e `preparation` continuam influenciando preparo e score, mas não podem, sozinhos, declarar que a identidade é carne. Se o primeiro candidato forte é vegetal, ou se o pool está vazio, a pergunta é bloqueada. Uma identidade de baixa confiança com alternativa materialmente diferente passa para `NO_MATCH`, em vez de promover um candidato arbitrário.
+
+Na imagem 4, antes, a cebola recuperou 400 linhas e tinha como top 3 `BRC0018B`, `BRC0114B` e `BRC0356B`, todos cebola, porém o gate ignorava isso. Depois, ela recuperou novamente 400 linhas; `BRC0112B` cebola refogada ficou em primeiro com 0,7263 e o estado foi `ASK_ATTRIBUTE`. Alface retornou três variedades em `ASK_ATTRIBUTE`; tomate retornou `BRC0035B` em `AUTOSELECT`; arroz `BRC0018A` e feijão `BRC0001T` foram automáticos. O corte bovino permaneceu em escolha de atributo entre cortes bovinos porque a família veio direta com confiança 0,83. A região amarela não gerou componente.
+
+Na imagem 3, `cutStyle=sausage`, dedup por família e independência entre bife e linguiça permaneceram. A escolha Porco mantém `BRC0189F` para linguiça e os testes/replay familiar preservam `BRC0160F` para bisteca. O item frito, devolvido nesta única rodada como “farinha de mandioca frita” com alternativa “croquete” e confiança 0,73, não recebe sugestão segura: o replay final determinístico o colocou em `NO_MATCH`. Isso registra a presença visual sem inventar a identidade interna.
+
+### Performance e chamadas
+
+| Métrica média por foto | Antes | Depois | Variação |
+|---|---:|---:|---:|
+| visão | 5.328,8 ms | 5.329,4 ms | +0,6 ms |
+| retrieval | 79,8 ms | 98,9 ms | +19,1 ms |
+| matcher | 174,8 ms | 193,9 ms | +19,1 ms |
+| pós-processamento atômico | não isolado | 1,8 ms | +1,8 ms |
+| total | 5.595,6 ms | 5.646,6 ms | +51,0 ms (+0,9%) |
+
+A oscilação por imagem foi dominada pela chamada remota. A barreira atômica adicionou em média 1,8 ms de CPU fora do SQL nesta amostra. Foram quatro chamadas antes e quatro depois, exatamente uma por foto em cada rodada. O replay final usou as respostas já salvas e fez zero chamadas externas.
+
+### Suíte local, regressões e riscos
+
+O manifest local cobre as quatro imagens, componentes obrigatórios, arroz proibido na imagem 1 e caminhos familiares conhecidos. Testes unitários adicionais cobrem alface/tomate separados com grupo comum, split semântico seguro, receitas integradas não divididas, parte fraca não dividida, não propagação de `meatVisual`, bloqueio do gate para cebola/tomate/alface/arroz/feijão, carne e linguiça ambíguas, exigência de múltiplas famílias locais, pool vegetal dominando sinal visual errado, abstinência de identidade insegura e máximo de três candidatos. Os testes anteriores continuam cobrindo uma chamada, busca humanizada, cru/cozido, bisteca, linguiça, feedback contextual e ausência de preenchimento artificial.
+
+Riscos restantes: uma única leitura visual ainda pode omitir um componente parcialmente oculto; `foodKind` também é predição e por isso nunca é autoridade isolada; o split local só age quando o nome contém separador explícito e ambas as identidades são fortes; “couve” ainda recupera variantes de couve-flor, mas fica em escolha humana, sem seleção insegura; e preparações granuladas ou empanadas sem interior visível podem terminar em abstinência. Esses casos exigem mais imagens humanas rotuladas, não redução global de thresholds.

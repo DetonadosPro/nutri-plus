@@ -6,9 +6,9 @@ import { closeDatabase } from '../../backend/db';
 import { tbcaCandidatesForDetection,tbcaCandidatesForMeatFamily } from '../../backend/food-identity-repository';
 import { normalizePhoto } from '../../backend/photo-image';
 import {
+  atomizeDetections,
   canonicalQueries,
   diagnoseCandidateSelection,
-  deduplicateDetections,
   detectionSchema,
   foodMatchesMeatFamily,
   needsMeatFamilyConfirmation,
@@ -80,20 +80,25 @@ try {
     const raw = await response.json() as { detection: unknown; telemetry: unknown };
     const visionMs = performance.now() - visionStarted;
     const parsed = detectionSchema.parse(raw.detection);
-    const deduplicated = deduplicateDetections(parsed.items);
-    const items = [];
     let retrievalMs = 0;
+    const postProcessStarted=performance.now();
+    const atomic=await atomizeDetections(parsed.items,async item=>{
+      const started=performance.now(),foods=await tbcaCandidatesForDetection(item);
+      retrievalMs+=performance.now()-started;
+      return foods;
+    });
+    const postProcessingMs=performance.now()-postProcessStarted-retrievalMs;
+    const deduplicated=atomic.entries.map(entry=>entry.item);
+    const items = [];
     let matcherMs = 0;
-    for (const item of deduplicated) {
-      const retrievalStarted = performance.now();
-      const foods = await tbcaCandidatesForDetection(item);
-      retrievalMs += performance.now() - retrievalStarted;
+    for (const {item,foods,splitFrom} of atomic.entries) {
       const matcherStarted = performance.now();
       const resolution = resolveFoodCandidates(item, foods);
       const diagnosticRanked=rankSemanticFoodCandidates(item,foods,foods.length);
       matcherMs += performance.now() - matcherStarted;
       items.push({
         detected: item,
+        splitFrom,
         matcherQueries: canonicalQueries(item),
         retrievedFoods: foods.length,
         rawPool:foods.map(food=>({id:food.id,code:food.source_code,name:food.displayName,description:food.description,category:food.category,priority:food.curationPriority,priorityScore:food.curationScore,confidence:food.curationConfidence,duplicateGroup:food.duplicateGroup})),
@@ -153,6 +158,7 @@ try {
       rawDetection: raw.detection,
       telemetry: raw.telemetry,
       deduplicated,
+      atomicSplits:atomic.splits,
       items,
       checks,
       passed,
@@ -160,6 +166,7 @@ try {
         visionRequest: Number(visionMs.toFixed(1)),
         retrieval: Number(retrievalMs.toFixed(1)),
         matcher: Number(matcherMs.toFixed(1)),
+        postProcessing:Number(Math.max(0,postProcessingMs).toFixed(1)),
         total: Number((performance.now() - totalStarted).toFixed(1)),
       },
     });
