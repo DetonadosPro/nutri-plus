@@ -10,6 +10,11 @@ export const meatVisualSchema = z.object({
   shapeHints: z.array(z.enum(['bisteca', 'lombo', 'pernil', 'peito', 'sobrecoxa', 'hamburguer', 'almondega', 'costela'])).max(3),
 }).strict();
 
+export const foodKindSchema = z.enum([
+  'meat_cut', 'processed_meat', 'egg', 'grain_starch', 'legume',
+  'vegetable', 'fruit', 'dairy', 'bakery', 'composite', 'unknown',
+]);
+
 export const detectedFoodSchema = z
   .object({
     name: z.string().trim().min(2).max(80),
@@ -18,16 +23,19 @@ export const detectedFoodSchema = z
     confidence: z.number().min(0).max(1),
     alternative: z.string().trim().min(2).max(80).nullable(),
     componentRole: z.enum(['independent', 'integrated-preparation']),
+    foodKind: foodKindSchema.default('unknown'),
+    groupLabel: z.string().trim().min(2).max(60).nullable().default(null),
     identityAmbiguity: z.enum(['meat_family', 'food_identity']).nullable(),
     meatVisual: meatVisualSchema.nullable(),
   })
   .strict();
 
 export const detectionSchema = z.object({ items: z.array(detectedFoodSchema).max(15) }).strict();
-export type DetectedFood = z.infer<typeof detectedFoodSchema>;
+export type DetectedFood = z.input<typeof detectedFoodSchema>;
 export type MeatVisual = z.infer<typeof meatVisualSchema>;
+export type FoodKind = z.infer<typeof foodKindSchema>;
 
-const GENERIC_MEAT_WORDS = /\b(carne|bife|costela)\b/;
+const GENERIC_MEAT_WORDS = /\b(carne|bife|bisteca|costela|file|linguica|salsicha|embutido)\b/;
 const CHICKEN_WORDS = /\b(frango|galinha)\b/;
 const PORK_WORDS = /\b(suin[oa]|porco|porca)\b/;
 const BEEF_WORDS = /\b(bovin[oa]|boi|vaca)\b/;
@@ -55,8 +63,8 @@ export function needsMeatFamilyConfirmation(item: DetectedFood) {
   const detectedFamily=detectedMeatFamily(item),alternativeFamily=meatFamilyInText(item.alternative??'');
   if(alternativeFamily&&alternativeFamily!==detectedFamily)return true;
   if (detectedFamily) return false;
-  const description = normalizeFoodName([item.name, item.preparation ?? '', ...item.visibleDetails].join(' '));
-  return item.identityAmbiguity === 'meat_family' || GENERIC_MEAT_WORDS.test(description);
+  const identity = normalizeFoodName([item.name,item.alternative??''].join(' '));
+  return item.identityAmbiguity === 'meat_family' || GENERIC_MEAT_WORDS.test(identity);
 }
 
 /** Compatibilidade com chamadas anteriores; o significado agora é estritamente família da carne. */
@@ -730,6 +738,87 @@ export function selectDistinctFoodCandidates<T extends SearchableFood>(item: Det
   return selected;
 }
 
+function candidateIdentityText(food:SearchableFood){
+  return normalizeFoodName([food.displayName??'',food.description,...(food.searchAliases??[]),food.category??''].join(' '));
+}
+
+function candidateLooksLikeMeat(food:SearchableFood){
+  const text=candidateIdentityText(food);
+  return GENERIC_MEAT_WORDS.test(text)||CHICKEN_WORDS.test(text)||PORK_WORDS.test(text)||BEEF_WORDS.test(text)||/\b(carnes|aves) e derivados\b/.test(text);
+}
+
+function candidateFamilies(food:SearchableFood){
+  const text=candidateIdentityText(food),families=new Set<MeatFamily>();
+  if(CHICKEN_WORDS.test(text))families.add('chicken');
+  if(PORK_WORDS.test(text))families.add('pork');
+  if(BEEF_WORDS.test(text))families.add('beef');
+  return families;
+}
+
+/**
+ * Gate defensivo: o pedido de família só existe quando identidade visual e
+ * catálogo local concordam que o componente é carne e mais de uma família
+ * continua materialmente plausível. Detalhes espaciais não definem identidade.
+ */
+export function shouldAskMeatFamily<T extends SearchableFood>(item:DetectedFood,matches:SemanticMatch<T>[]){
+  const detectedFamily=detectedMeatFamily(item),alternativeFamily=meatFamilyInText(item.alternative??'');
+  if(detectedFamily&&alternativeFamily===null)return false;
+  const plausible=matches.filter(match=>match.matchConfidence>=MATCH_THRESHOLDS.MATCH_MIN_SCORE);
+  const top=plausible[0];
+  if(!top||!candidateLooksLikeMeat(top.food))return false;
+  const identity=normalizeFoodName([item.name,item.alternative??''].join(' '));
+  const visualMeat=item.foodKind==='meat_cut'||item.foodKind==='processed_meat'||GENERIC_MEAT_WORDS.test(identity)||item.identityAmbiguity==='meat_family';
+  if(!visualMeat)return false;
+  const families=new Set<MeatFamily>();
+  for(const match of plausible)for(const family of candidateFamilies(match.food))families.add(family);
+  return families.size>=2;
+}
+
+const EXPLICIT_COMPONENT_SEPARATOR=/\s+(?:e|\+)\s+|\s*\/\s*/iu;
+
+function compoundIdentityParts(item:DetectedFood){
+  if(item.componentRole!=='independent'||!EXPLICIT_COMPONENT_SEPARATOR.test(item.name))return [];
+  const parts=item.name.split(EXPLICIT_COMPONENT_SEPARATOR).map(value=>value.trim()).filter(value=>value.length>=2);
+  return parts.length>=2&&parts.length<=4?parts:[];
+}
+
+function strongIndependentIdentity<T extends SearchableFood>(part:string,matches:SemanticMatch<T>[]){
+  const top=matches[0];
+  if(!top||top.matchConfidence<.72)return false;
+  const wanted=new Set(tokens(part)),candidate=new Set(tokens(candidateIdentityText(top.food)));
+  return wanted.size>0&&[...wanted].every(token=>candidate.has(token));
+}
+
+export type AtomicDetectionEntry<T extends SearchableFood>={item:DetectedFood;foods:T[];splitFrom:string|null};
+
+/** Expande apenas nomes explicitamente compostos cujas partes resolvem, cada uma,
+ * como identidade forte no catálogo. Receitas integradas nunca são divididas. */
+export async function atomizeDetections<T extends SearchableFood>(items:DetectedFood[],retrieve:(item:DetectedFood)=>Promise<T[]>){
+  const entries:AtomicDetectionEntry<T>[]=[],splits:Array<{source:string;parts:string[]}>=[];
+  for(const item of deduplicateDetections(items)){
+    const parts=compoundIdentityParts(item);
+    if(parts.length){
+      const proposed=await Promise.all(parts.map(async name=>{
+        const child:DetectedFood={...item,name,preparation:null,visibleDetails:item.visibleDetails.filter(detail=>normalizeFoodName(detail).includes(normalizeFoodName(name))),alternative:null,groupLabel:(item.groupLabel??item.name).slice(0,60)};
+        const foods=await retrieve(child),ranked=rankSemanticFoodCandidates(child,foods,MATCH_THRESHOLDS.MATCH_POOL_MAX_CANDIDATES);
+        const meat=Boolean(ranked[0]&&candidateLooksLikeMeat(ranked[0].food));
+        const processed=Boolean(ranked[0]&&/\b(linguica|salsicha|embutido)\b/.test(candidateIdentityText(ranked[0].food)));
+        child.foodKind=meat?(processed?'processed_meat':'meat_cut'):(item.foodKind&& !['meat_cut','processed_meat','composite'].includes(item.foodKind)?item.foodKind:'unknown');
+        child.meatVisual=meat?item.meatVisual:null;
+        child.identityAmbiguity=meat?item.identityAmbiguity:null;
+        return {item:child,foods,ranked};
+      }));
+      if(proposed.every((entry,index)=>strongIndependentIdentity(parts[index],entry.ranked))){
+        splits.push({source:item.name,parts});
+        entries.push(...proposed.map(({item:child,foods})=>({item:child,foods,splitFrom:item.name})));
+        continue;
+      }
+    }
+    entries.push({item,foods:await retrieve(item),splitFrom:null});
+  }
+  return {entries,splits};
+}
+
 function unresolvedRecipe(unknowns: string[]) {
   return unknowns.some((value) => value.startsWith('recipe:') || /(?:farofa|omelet|breaded_fish)_recipe$/.test(value));
 }
@@ -737,6 +826,7 @@ function unresolvedRecipe(unknowns: string[]) {
 export function decideMatch<T>(item: DetectedFood, matches: SemanticMatch<T>[]) {
   const top1 = matches[0]?.matchConfidence ?? 0, top2 = matches[1]?.matchConfidence ?? 0, margin = Number((top1 - top2).toFixed(4)), top = matches[0];
   const policy = top?.resolutionPolicies?.[0] ?? null;
+  if(item.identityAmbiguity==='food_identity'||(item.confidence<.8&&item.alternative))return {state:'NO_MATCH' as const,top1Score:top1,top2Score:top2,margin,policy};
   if (top && unresolvedRecipe(top.materialUnknowns ?? [])) return { state: 'NO_EXACT_TBCA_MATCH' as const, top1Score: top1, top2Score: top2, margin, policy };
   if (!top || top1 < MATCH_THRESHOLDS.MATCH_MIN_SCORE) return { state: 'NO_MATCH' as const, top1Score: top1, top2Score: top2, margin, policy };
   if (top1 >= MATCH_THRESHOLDS.AUTOSELECT_MIN_SCORE && (matches.length === 1 || margin >= MATCH_THRESHOLDS.AUTOSELECT_MIN_MARGIN) && item.confidence >= MATCH_THRESHOLDS.AUTOSELECT_MIN_VISUAL_CONFIDENCE && !top.contradictions.length && !(top.materialUnknowns?.length ?? 0)) {
@@ -749,7 +839,7 @@ export function resolveFoodCandidates<T extends SearchableFood>(item: DetectedFo
   const ranked = rankSemanticFoodCandidates(item, foods, MATCH_THRESHOLDS.MATCH_POOL_MAX_CANDIDATES);
   const distinct = selectDistinctFoodCandidates(item, ranked);
   const initial = decideMatch(item, distinct);
-  const forceIdentityChoice = needsMeatFamilyConfirmation(item);
+  const forceIdentityChoice = shouldAskMeatFamily(item,ranked);
   const decision = forceIdentityChoice ? { ...initial, state: 'ASK_MEAT_FAMILY' as const, policy: null } : initial;
   const candidates = decision.state === 'NO_MATCH' || decision.state === 'NO_EXACT_TBCA_MATCH'
     ? []
@@ -776,7 +866,7 @@ export function deduplicateDetections(items: DetectedFood[]) {
 }
 
 export function rankFoodCandidates<T extends SearchableFood>(name: string, foods: T[]) {
-  return rankSemanticFoodCandidates({ name, preparation: null, visibleDetails: [], confidence: 1, alternative: null, componentRole: 'independent', identityAmbiguity: null,meatVisual:null }, foods)
+  return rankSemanticFoodCandidates({ name, preparation: null, visibleDetails: [], confidence: 1, alternative: null, componentRole: 'independent',foodKind:'unknown',groupLabel:null,identityAmbiguity: null,meatVisual:null }, foods)
     .map((match) => ({ food: match.food, score: match.matchConfidence, exact: match.matchConfidence >= MATCH_THRESHOLDS.AUTOSELECT_MIN_SCORE }));
 }
 
