@@ -255,3 +255,45 @@ A oscilação por imagem foi dominada pela chamada remota. A barreira atômica a
 O manifest local cobre as quatro imagens, componentes obrigatórios, arroz proibido na imagem 1 e caminhos familiares conhecidos. Testes unitários adicionais cobrem alface/tomate separados com grupo comum, split semântico seguro, receitas integradas não divididas, parte fraca não dividida, não propagação de `meatVisual`, bloqueio do gate para cebola/tomate/alface/arroz/feijão, carne e linguiça ambíguas, exigência de múltiplas famílias locais, pool vegetal dominando sinal visual errado, abstinência de identidade insegura e máximo de três candidatos. Os testes anteriores continuam cobrindo uma chamada, busca humanizada, cru/cozido, bisteca, linguiça, feedback contextual e ausência de preenchimento artificial.
 
 Riscos restantes: uma única leitura visual ainda pode omitir um componente parcialmente oculto; `foodKind` também é predição e por isso nunca é autoridade isolada; o split local só age quando o nome contém separador explícito e ambas as identidades são fortes; “couve” ainda recupera variantes de couve-flor, mas fica em escolha humana, sem seleção insegura; e preparações granuladas ou empanadas sem interior visível podem terminar em abstinência. Esses casos exigem mais imagens humanas rotuladas, não redução global de thresholds.
+
+## Regressão pós-deploy — família correta, corte bovino genérico
+
+### Reprodução e diagnóstico
+
+O registro de produção de `2026-09-13 18:54:49 -03` confirmou o caso: `name=carne bovina`, confiança visual 0,78, `foodKind=meat_cut`, `componentRole=independent`, preparação `grelhada ou frita`, detalhes `pedaço escuro de carne` e `fibras visíveis`, família bovina com confiança 0,64, `cutStyle=whole_piece`, `shapeHints=[]`, `bone=without` e gordura média. O ranking persistido terminou em `NO_MATCH`, embora os scores fossem 0,6179 e 0,6172. Como a versão então publicada não persistia `alternative`, a string alternativa original não pode ser recuperada; pelo código, um `NO_MATCH` acima do piso com confiança 0,78 só podia vir da proteção de baixa confiança com alternativa ou de ambiguidade de identidade.
+
+A foto correspondente é `imagens reais/imagem 4.jpg`, que contém uma peça bovina escura com cebola, além de arroz, feijão, alface e tomate. A reprodução controlada local usou essa foto exatamente uma vez antes e uma vez depois, com `qwen3-vl:4b-instruct`, esforço `none`, sem crop, rerank remoto ou chamada por componente. As duas leituras devolveram exatamente o mesmo payload para a carne: `name=carne`, `alternative=null`, confiança 0,95, `foodKind=meat_cut`, `componentRole=independent`, `groupLabel=carne com cebola`, preparação `fatia`, detalhes `corte de carne com gordura visível` e `com cebola frita ao lado`, família bovina 0,85, `cutStyle=unknown`, `shapeHints=[]`, `bone=unknown` e gordura média. Assim, a comparação do matcher não depende de uma resposta visual mais favorável.
+
+Antes da correção, a identidade `carne` gerava as queries `carne`, `carne fatia` e `carne fatia frito`, com pool de 400 linhas. `fatia` não era convertida em evidência de formato quando `cutStyle` vinha `unknown`. O top 3 visível era:
+
+| Candidato antes | Score | Motivo relevante |
+|---|---:|---|
+| `BRC0025F` Carne bovina moída cozida | 0,9755 | identidade genérica, lexical e curadoria fortes; nenhuma incompatibilidade estrutural |
+| `BRC0023F` Contrafilé bovino grelhado | 0,9168 | família e identidade compatíveis, mas sem ganho por formato |
+| `BRC0032F` Costela bovina assada | 0,9161 | família compatível; osso/formato de costela não eram exigidos |
+
+No fluxo explícito de família, `refineMeatFamily` já fazia spread do objeto e, portanto, não apagava fisicamente `preparation`, `visibleDetails`, `foodKind`, `componentRole`, `groupLabel`, `cutStyle`, `shapeHints`, `bone` ou `visibleFatLevel`. A família bovina substituía o nome por `carne bovina` e o retrieval familiar buscava 497 linhas bovinas — não chamava `/api/foods?search=carne bovina`. Porém, a compatibilidade de corte era fraca: um formato incompatível recebia somente `-0,035`, `whole_piece` não reconhecia os cortes bovinos usuais como peças inteiras, forma livre como `fatia` era descartada e costela não dependia de osso/shape. Além disso, `alternative` era omitida na resposta, no payload enviado pela interface e na telemetria persistida. O único fallback textual genérico ocorria depois de `NO_MATCH`, quando o usuário acionava `Nenhum desses / Buscar outro`: a tela manual era pré-preenchida apenas com `row.name`, isto é, `carne bovina`.
+
+### Causa raiz e correção
+
+A causa não era perda total do objeto no family refinement, mas perda efetiva de autoridade dos sinais visuais em três pontos: transporte incompleto de `alternative`, ausência de normalização conservadora do formato observável e penalidade insuficiente para incompatibilidade forte. A busca manual e o matcher por foto permanecem fluxos separados.
+
+O matcher agora deriva a forma somente de sinais locais defensáveis: `cutStyle` estruturado tem precedência; quando ele é `unknown`, termos explícitos como bife/fatia/achatado, peça/pedaço/corte, moído, desfiado, cubos, tiras, costela e linguiça podem recuperar a classe visual. Os candidatos também recebem classe estrutural. Formatos fragmentados incompatíveis recebem `-0,60`; costela sem `bone=with`, `shapeHint=costela` ou `cutStyle=rib` recebe `-0,55`; conflito explícito de osso recebe até `-0,45`; conflito explícito de gordura recebe `-0,24`. Compatibilidade de forma soma apenas 0,06, enquanto `shapeHint` compatível soma 0,32 e incompatível recebe `-0,10`. Esses valores são locais ao matching de carne; nenhum threshold global mudou.
+
+Depois da correção, o mesmo payload e o mesmo pool inicial de 400 linhas produziram `ASK_ATTRIBUTE`, margem 0,0007 e somente três cortes inteiros plausíveis:
+
+| Candidato depois | Score | Motivo relevante |
+|---|---:|---|
+| `BRC0023F` Contrafilé bovino grelhado | 0,9768 | família, peça/fatia e preparo compatíveis |
+| `BRC0036F` Filé-mignon bovino grelhado | 0,9761 | família, peça/fatia e preparo compatíveis |
+| `BRC0045F` Patinho bovino grelhado | 0,9761 | família, peça/fatia e preparo compatíveis |
+
+Carne moída caiu abaixo do piso devido à incompatibilidade `steak!=ground`; costela ficou fora por não haver osso, shape de costela ou `cutStyle=rib`. A repetição determinística do passo de família com o mesmo payload preservou preparação, detalhes, `foodKind`, `groupLabel`, gordura e osso, ampliou o pool para 497 bovinos e retornou o mesmo top 3. Quando não há formato, shape ou osso defensável para um `meat_cut` de família resolvida, a decisão agora é `NO_MATCH`, em vez de transformar o catálogo bovino em menu. `bone=with` junto de `cutStyle=rib`/shape de costela permite costela; `shapeHints` compatíveis alteram efetivamente a ordem. A busca manual por `carne bovina` continua inalterada.
+
+### Testes, performance e riscos
+
+Os testes adicionados cobrem peça/bife inteiro contra carne moída; restrição por `cutStyle=steak`; costela bloqueada sem osso e permitida com evidência; influência de `shapeHints`; preservação de grelhado; preservação de `cutStyle`, `shapeHints`, osso, gordura, preparo, detalhes, grupo e papel após escolha da família; conflito explícito entre famílias; exclusão de porco/frango do pool bovino; máximo de três; ausência de candidatos estruturalmente incompatíveis; `NO_MATCH` sem corte defensável; busca manual `carne bovina`; e exatamente uma requisição ao provedor por reconhecimento. As regressões anteriores de arroz ausente na imagem 1, massa/carne separadas, bisteca/linguiça independentes, `sausage`, dedup por família, alface/tomate separados, cebola fora do meat gate, feedback contextual e cru/cozido permanecem na suíte completa.
+
+Na execução real antes: visão 46.450,7 ms, retrieval 431,3 ms, matcher 825,0 ms, pós-processamento 5,9 ms e total 47.768,1 ms. Depois: visão 39.011,2 ms, retrieval 235,6 ms, matcher 653,3 ms, pós-processamento 9,8 ms e total 39.944,8 ms. A diferença total é dominada pela inferência local e cache/estado do banco; esta amostra única não é benchmark de velocidade. A correção adiciona somente regex e conjuntos em memória, sem nova consulta e sem segunda chamada visual. Os arquivos locais `beef-cut-before.json` e `beef-cut-after.json` registram `providerCalls=1` cada.
+
+Riscos restantes: uma foto pode sustentar apenas a classe “peça bovina”, sem anatomia suficiente para separar contrafilé, filé-mignon e patinho; nesse caso a escolha humana entre até três opções continua correta. Termos livres só viram formato quando são explícitos, para não converter cor ou contexto culinário em corte. O catálogo nem sempre explicita osso/gordura no nome, portanto sinais ausentes não são inventados; apenas conflitos explícitos ou costela sem suporte são barrados. Não houve alteração de nutrientes, medidas, IDs, histórico ou dados TBCA.

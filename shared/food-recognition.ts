@@ -71,9 +71,10 @@ export function needsMeatFamilyConfirmation(item: DetectedFood) {
 export const needsMeatConfirmation = needsMeatFamilyConfirmation;
 
 export function refineMeatFamily(item: DetectedFood, family: MeatFamily): DetectedFood {
-  const structuredPresentation:Partial<Record<MeatVisual['cutStyle'],string>>={steak:'bife',fillet:'filé',shredded:'desfiada',ground:'moída',cubes:'em cubos',strips:'em tiras',rib:'costela',sausage:'linguiça'};
-  const presentation = item.meatVisual?.shapeHints[0] ?? (item.meatVisual&&item.meatVisual.cutStyle!=='unknown'
-    ? structuredPresentation[item.meatVisual.cutStyle]??null
+  const structuredPresentation:Partial<Record<MeatVisual['cutStyle'],string>>={steak:'bife',fillet:'filé',shredded:family==='chicken'?'desfiado':'desfiada',ground:family==='chicken'?'moído':'moída',cubes:'em cubos',strips:'em tiras',rib:'costela',sausage:'linguiça'};
+  const inferredStyle=[...detectedMeatForms(item)][0];
+  const presentation = item.meatVisual?.shapeHints[0] ?? (inferredStyle
+    ? structuredPresentation[inferredStyle]??null
     : tokens(item.name).find((value) => PRESENTATION_TOKENS.has(value)) ?? null);
   const sausage=normalizeFoodName(item.name).includes('linguica')||item.meatVisual?.cutStyle==='sausage';
   const familyName = sausage
@@ -400,10 +401,64 @@ const MEAT_CUT_PATTERNS:Record<Exclude<MeatVisual['cutStyle'],'unknown'>,RegExp>
   rib:/\b(costela|bisteca)\b/,whole_piece:/\b(pernil|lombo|peito|sobrecoxa|paleta)\b/,sausage:/\b(linguica|salsicha)\b/,
 };
 
+type MeatForm=Exclude<MeatVisual['cutStyle'],'unknown'>;
+const INTACT_MEAT_CUT=/\b(acem|alcatra|bife|bisteca|contrafile|coxao|cupim|file mignon|fraldinha|lagarto|lombo|maminha|musculo|paleta|patinho|peito|pernil|picanha|sobrecoxa)\b/;
+
+function detectedMeatForms(item:DetectedFood){
+  const explicit=item.meatVisual?.cutStyle;
+  if(explicit&&explicit!=='unknown')return new Set<MeatForm>([explicit]);
+  const text=normalizeFoodName([item.name,item.alternative??'',item.preparation??'',...item.visibleDetails].join(' '));
+  const forms=new Set<MeatForm>();
+  if(/\b(linguica|salsicha|embutido|cilindric[oa])\b/.test(text))forms.add('sausage');
+  if(/\b(moid[oa]|hamburguer|almondega|mincad[oa])\b/.test(text))forms.add('ground');
+  if(/\bdesfiad[oa]\b/.test(text))forms.add('shredded');
+  if(/\b(cubos?|picad[oa])\b/.test(text))forms.add('cubes');
+  if(/\b(tiras?|iscas?)\b/.test(text))forms.add('strips');
+  if(/\b(costela|bisteca)\b/.test(text))forms.add('rib');
+  if(/\b(file|lombo|peito)\b/.test(text))forms.add('fillet');
+  if(/\b(bife|fatia|achatad[oa])\b/.test(text))forms.add('steak');
+  if(/\b(peca|pedaco|corte)\b/.test(text)&&!forms.size)forms.add('whole_piece');
+  return forms;
+}
+
+function candidateMeatForms(candidate:CandidateProfile){
+  const text=candidate.normalizedText,forms=new Set<MeatForm>();
+  if(MEAT_CUT_PATTERNS.sausage.test(text))forms.add('sausage');
+  if(MEAT_CUT_PATTERNS.ground.test(text))forms.add('ground');
+  if(MEAT_CUT_PATTERNS.shredded.test(text))forms.add('shredded');
+  if(MEAT_CUT_PATTERNS.cubes.test(text)||/\bpicad[oa]\b/.test(text))forms.add('cubes');
+  if(MEAT_CUT_PATTERNS.strips.test(text))forms.add('strips');
+  if(MEAT_CUT_PATTERNS.rib.test(text))forms.add('rib');
+  if(MEAT_CUT_PATTERNS.fillet.test(text))forms.add('fillet');
+  if(MEAT_CUT_PATTERNS.steak.test(text))forms.add('steak');
+  if(INTACT_MEAT_CUT.test(text)&&![...forms].some(form=>['sausage','ground','shredded','cubes','strips','rib'].includes(form)))forms.add('whole_piece');
+  return forms;
+}
+
+function meatFormCompatibility(item:DetectedFood,candidate:CandidateProfile){
+  const expected=detectedMeatForms(item),present=candidateMeatForms(candidate),text=candidate.normalizedText;
+  const contradictions:string[]=[];
+  if(/\bcostela\b/.test(text)&&(item.meatVisual?.bone==='without'||(item.meatVisual?.bone!=='with'&&!item.meatVisual?.shapeHints.includes('costela')&&!expected.has('rib'))))contradictions.push('meat:costela_without_visual_support');
+  if(item.meatVisual?.bone==='without'&&(candidate.bone==='with'||/\bcom osso\b/.test(text)))contradictions.push('meat:bone_without!=with');
+  if(item.meatVisual?.visibleFatLevel==='low'&&/\bcom gordura\b/.test(text))contradictions.push('meat:fat_low!=with_fat');
+  if(item.meatVisual?.visibleFatLevel==='high'&&/\bsem gordura\b/.test(text))contradictions.push('meat:fat_high!=without_fat');
+  if(expected.size){
+    const fragmented=new Set<MeatForm>(['sausage','ground','shredded','cubes','strips']);
+    const strict=[...expected].filter(form=>fragmented.has(form)||form==='rib');
+    const supportsBisteca=item.meatVisual?.shapeHints.includes('bisteca')||item.meatVisual?.bone==='with';
+    const presentWithoutUnsupportedRib=[...present].filter(form=>form!=='rib'||supportsBisteca||expected.has('rib'));
+    const compatible=strict.length
+      ? strict.some(form=>present.has(form))
+      : presentWithoutUnsupportedRib.some(form=>['steak','fillet','whole_piece'].includes(form));
+    if(!compatible)contradictions.push(`meat:format_${[...expected].join('+')}!=${[...present].join('+')||'unknown'}`);
+  }
+  return {expected,present,contradictions};
+}
+
 function meatVisualAdjustment(item:DetectedFood,candidate:CandidateProfile,food:SearchableFood){
   const visual=item.meatVisual;
   const contributions={family:0,cutStyle:0,shapeHints:0,bone:0,visibleFat:0,generic:0,curationFlags:0};
-  if(!visual)return {total:0,contributions};
+  if(!visual)return {total:0,contributions,contradictions:[] as string[]};
   const text=candidate.normalizedText;
   const family=detectedMeatFamily(item);
   if(family){
@@ -413,22 +468,25 @@ function meatVisualAdjustment(item:DetectedFood,candidate:CandidateProfile,food:
       : familyPresence[family]&&otherFamily ? -.04
       : otherFamily ? -.30 : 0;
   }
-  if(visual.cutStyle!=='unknown')contributions.cutStyle=MEAT_CUT_PATTERNS[visual.cutStyle].test(text)?.14:-.035;
+  const format=meatFormCompatibility(item,candidate);
+  if(format.expected.size)contributions.cutStyle=format.contradictions.some(value=>value.startsWith('meat:format_'))?-.60:.06;
   if(visual.shapeHints.length){
     const shapeMatch=visual.shapeHints.some((hint)=>text.includes(normalizeFoodName(hint)));
-    contributions.shapeHints=shapeMatch?.18:-.05;
+    contributions.shapeHints=shapeMatch?.32:-.10;
   }
   if(visual.bone!=='unknown'){
     if(candidate.bone===visual.bone)contributions.bone=.06;
-    else if(candidate.bone)contributions.bone=-.22;
+    else if(candidate.bone)contributions.bone=-.45;
   }
   if(visual.visibleFatLevel==='low'&&/\bsem gordura\b/.test(text))contributions.visibleFat=.035;
   if(visual.visibleFatLevel==='high'&&/\bcom gordura\b/.test(text))contributions.visibleFat=.035;
+  if(format.contradictions.some(value=>value.startsWith('meat:costela_')))contributions.bone-=.55;
+  if(format.contradictions.some(value=>value.startsWith('meat:fat_')))contributions.visibleFat-=.24;
   if(/\b(preparad[oa]|preparo|carne suina sem|carne bovina sem)\b/.test(text))contributions.generic-=.18;
   if(/^de segunda\b/.test(text))contributions.generic-=.24;
   if(food.curationFlags?.includes('ambiguous_label'))contributions.curationFlags-=.16;
   if(food.curationFlags?.includes('many_ingredients'))contributions.curationFlags-=.12;
-  return {total:Object.values(contributions).reduce((sum,value)=>sum+value,0),contributions};
+  return {total:Object.values(contributions).reduce((sum,value)=>sum+value,0),contributions,contradictions:format.contradictions};
 }
 
 export function canonicalQueries(item: DetectedFood) {
@@ -599,7 +657,6 @@ export function rankSemanticFoodCandidates<T extends SearchableFood>(item: Detec
       ...axisContradictions(profile, candidate.all),
       ...visibleAttributeContradictions(profile, candidate),
     ];
-    const contradictions = [...semanticContradictions, ...missingVisible.map((value) => `visible:${value}!=absent`)];
     const unexpectedRecipes = unexpectedRecipeMarkers(profile, candidate);
     const materialAttributes = unobservedMaterialAttributes(profile, candidate);
     const hiddenAdditions = [...candidate.positiveIngredients].filter((ingredient) => {
@@ -611,6 +668,7 @@ export function rankSemanticFoodCandidates<T extends SearchableFood>(item: Detec
     const exactAliasMatch = candidate.semanticFields.slice(1).some((field) => primaryQueries.includes(field));
     const visibleAttributeMatch = (profile.skin && candidate.skin === profile.skin ? 0.04 : 0) + (profile.bone && candidate.bone === profile.bone ? 0.03 : 0);
     const meatVisual=meatVisualAdjustment(item,candidate,food);
+    const contradictions = [...semanticContradictions,...meatVisual.contradictions,...missingVisible.map((value) => `visible:${value}!=absent`)];
     const scoreBreakdown={
       identityText:identityMatch*.34,lexical:lexical*.22,preparation:prepMatch*.10,visible:visibleMatch*.08,
       identityMain:identityIsMain?.05:0,directOrAlias:directFriendlyMatch?.05:exactAliasMatch?.025:0,
@@ -762,10 +820,11 @@ function candidateFamilies(food:SearchableFood){
  */
 export function shouldAskMeatFamily<T extends SearchableFood>(item:DetectedFood,matches:SemanticMatch<T>[]){
   const detectedFamily=detectedMeatFamily(item),alternativeFamily=meatFamilyInText(item.alternative??'');
-  if(detectedFamily&&alternativeFamily===null)return false;
   const plausible=matches.filter(match=>match.matchConfidence>=MATCH_THRESHOLDS.MATCH_MIN_SCORE);
   const top=plausible[0];
   if(!top||!candidateLooksLikeMeat(top.food))return false;
+  if(detectedFamily&&alternativeFamily&&alternativeFamily!==detectedFamily)return true;
+  if(detectedFamily&&alternativeFamily===null)return false;
   const identity=normalizeFoodName([item.name,item.alternative??''].join(' '));
   const visualMeat=item.foodKind==='meat_cut'||item.foodKind==='processed_meat'||GENERIC_MEAT_WORDS.test(identity)||item.identityAmbiguity==='meat_family';
   if(!visualMeat)return false;
@@ -800,7 +859,9 @@ export async function atomizeDetections<T extends SearchableFood>(items:Detected
     if(parts.length){
       const proposed=await Promise.all(parts.map(async name=>{
         const child:DetectedFood={...item,name,preparation:null,visibleDetails:item.visibleDetails.filter(detail=>normalizeFoodName(detail).includes(normalizeFoodName(name))),alternative:null,groupLabel:(item.groupLabel??item.name).slice(0,60)};
-        const foods=await retrieve(child),ranked=rankSemanticFoodCandidates(child,foods,MATCH_THRESHOLDS.MATCH_POOL_MAX_CANDIDATES);
+        const foods=await retrieve(child);
+        const identityProbe:DetectedFood={...child,foodKind:'unknown',identityAmbiguity:null,meatVisual:null};
+        const ranked=rankSemanticFoodCandidates(identityProbe,foods,MATCH_THRESHOLDS.MATCH_POOL_MAX_CANDIDATES);
         const meat=Boolean(ranked[0]&&candidateLooksLikeMeat(ranked[0].food));
         const processed=Boolean(ranked[0]&&/\b(linguica|salsicha|embutido)\b/.test(candidateIdentityText(ranked[0].food)));
         child.foodKind=meat?(processed?'processed_meat':'meat_cut'):(item.foodKind&& !['meat_cut','processed_meat','composite'].includes(item.foodKind)?item.foodKind:'unknown');
@@ -823,10 +884,26 @@ function unresolvedRecipe(unknowns: string[]) {
   return unknowns.some((value) => value.startsWith('recipe:') || /(?:farofa|omelet|breaded_fish)_recipe$/.test(value));
 }
 
+function lacksDefensibleResolvedMeatForm(item:DetectedFood){
+  return item.foodKind==='meat_cut'
+    && detectedMeatFamily(item)!==null
+    && detectedMeatForms(item).size===0
+    && !(item.meatVisual?.shapeHints.length)
+    && item.meatVisual?.bone!=='with';
+}
+
+function alternativeKeepsResolvedMeatContext(item:DetectedFood){
+  if(item.foodKind!=='meat_cut'&&item.foodKind!=='processed_meat')return false;
+  const family=detectedMeatFamily(item),alternativeFamily=meatFamilyInText(item.alternative??'');
+  if(!family||(alternativeFamily&&alternativeFamily!==family))return false;
+  return detectedMeatForms(item).size>0||Boolean(item.meatVisual?.shapeHints.length);
+}
+
 export function decideMatch<T>(item: DetectedFood, matches: SemanticMatch<T>[]) {
   const top1 = matches[0]?.matchConfidence ?? 0, top2 = matches[1]?.matchConfidence ?? 0, margin = Number((top1 - top2).toFixed(4)), top = matches[0];
   const policy = top?.resolutionPolicies?.[0] ?? null;
-  if(item.identityAmbiguity==='food_identity'||(item.confidence<.8&&item.alternative))return {state:'NO_MATCH' as const,top1Score:top1,top2Score:top2,margin,policy};
+  if(item.identityAmbiguity==='food_identity'||(item.confidence<.8&&item.alternative&&!alternativeKeepsResolvedMeatContext(item)))return {state:'NO_MATCH' as const,top1Score:top1,top2Score:top2,margin,policy};
+  if(lacksDefensibleResolvedMeatForm(item))return {state:'NO_MATCH' as const,top1Score:top1,top2Score:top2,margin,policy};
   if (top && unresolvedRecipe(top.materialUnknowns ?? [])) return { state: 'NO_EXACT_TBCA_MATCH' as const, top1Score: top1, top2Score: top2, margin, policy };
   if (!top || top1 < MATCH_THRESHOLDS.MATCH_MIN_SCORE) return { state: 'NO_MATCH' as const, top1Score: top1, top2Score: top2, margin, policy };
   if (top1 >= MATCH_THRESHOLDS.AUTOSELECT_MIN_SCORE && (matches.length === 1 || margin >= MATCH_THRESHOLDS.AUTOSELECT_MIN_MARGIN) && item.confidence >= MATCH_THRESHOLDS.AUTOSELECT_MIN_VISUAL_CONFIDENCE && !top.contradictions.length && !(top.materialUnknowns?.length ?? 0)) {

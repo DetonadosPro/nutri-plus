@@ -25,6 +25,15 @@ describe('food photo boundaries', () => {
     expect(needsMeatFamilyConfirmation(meat)).toBe(true);
     expect(needsMeatFamilyConfirmation({...meat,name:'carne suína',identityAmbiguity:null,meatVisual:{...meat.meatVisual!,familyConfidence:.9}})).toBe(false);
   });
+  it('adds the chosen family without erasing first-pass cut evidence',()=>{
+    const original=detection('carne','grelhada',['peça achatada com gordura lateral'],{foodKind:'meat_cut',groupLabel:'carne com cebola',identityAmbiguity:'meat_family',meatVisual:{familyCandidate:'unknown',familyConfidence:.35,cutStyle:'steak',visibleFatLevel:'medium',bone:'without',shapeHints:['bisteca']}});
+    const refined=refineMeatFamily(original,'beef');
+    expect(refined).toMatchObject({preparation:original.preparation,visibleDetails:original.visibleDetails,foodKind:'meat_cut',groupLabel:'carne com cebola',identityAmbiguity:null,meatVisual:{familyCandidate:'beef',familyConfidence:1,cutStyle:'steak',shapeHints:['bisteca'],bone:'without',visibleFatLevel:'medium'}});
+  });
+  it('uses an alternative visual form when refining the family',()=>{
+    const original=detection('carne','grelhada',['fibras visíveis'],{foodKind:'meat_cut',alternative:'bife',identityAmbiguity:'meat_family',meatVisual:{familyCandidate:'unknown',familyConfidence:.3,cutStyle:'unknown',visibleFatLevel:'medium',bone:'without',shapeHints:[]}});
+    expect(refineMeatFamily(original,'beef')).toMatchObject({name:'carne bovina bife',preparation:'grelhada',visibleDetails:['fibras visíveis'],alternative:null,meatVisual:{cutStyle:'unknown',bone:'without',visibleFatLevel:'medium'}});
+  });
   it('captures a coarse food kind and an optional visual group without merging identities',()=>{
     const salad=[detection('alface',null,['folhas verdes'],{foodKind:'vegetable',groupLabel:'salada'}),detection('tomate',null,['fatias vermelhas'],{foodKind:'vegetable',groupLabel:'salada'})];
     const parsed=detectionSchema.parse({items:salad});
@@ -71,6 +80,11 @@ describe('food photo boundaries', () => {
     expect(shouldAskMeatFamily(sausage,candidates)).toBe(true);
     expect(shouldAskMeatFamily(detection('carne','grelhada',[],{foodKind:'meat_cut',identityAmbiguity:'meat_family'}),candidates)).toBe(true);
     expect(shouldAskMeatFamily(sausage,candidates.slice(0,1))).toBe(false);
+  });
+  it('keeps a conflicting first-pass animal alternative in the family question',()=>{
+    const item=detection('carne bovina','grelhada',['peça inteira'],{foodKind:'meat_cut',alternative:'carne suína',meatVisual:{familyCandidate:'beef',familyConfidence:.7,cutStyle:'whole_piece',visibleFatLevel:'medium',bone:'without',shapeHints:[]}});
+    const beefOnly:SemanticMatch<SearchableFood>[]=[{food:{description:'Contrafilé bovino grelhado'},matchConfidence:.9,contradictions:[],query:'carne bovina'}];
+    expect(shouldAskMeatFamily(item,beefOnly)).toBe(true);
   });
   it('atomizes explicit independent identities only when every part resolves strongly',async()=>{
     const combined=detection('alface e tomate',null,['folhas e fatias'],{foodKind:'vegetable',groupLabel:'salada'});
