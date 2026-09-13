@@ -61,7 +61,7 @@ describe('curadoria integral da busca TBCA',()=>{
     expect(rice.slice(0,10).map(food=>food.displayName).join(' ')).not.toMatch(/arroz[^,]*\bcru[as]?\b/i);
   });
 
-  it.each(['peito bovino','pepino','arroz','linguiça','linguiça suína','bisteca','lombo','pernil'])('mantém a busca manual limpa para %s',(query)=>{
+  it.each(['carne bovina','peito bovino','pepino','arroz','linguiça','linguiça suína','bisteca','lombo','pernil'])('mantém a busca manual limpa para %s',(query)=>{
     const results=patientResults(query);
     expect(results.length).toBeGreaterThan(0);
     expect(results.length).toBeLessThanOrEqual(25);

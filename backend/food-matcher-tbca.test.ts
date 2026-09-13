@@ -209,13 +209,61 @@ describe('photo matcher against the curated complete TBCA catalog', () => {
   });
 
   it.each(['chicken','pork','beef'] as const)('rematches %s locally after the family answer', (family) => {
-    const refined=refineMeatFamily({...detection('carne desfiada','cozida'),identityAmbiguity:'meat_family'},family);
+    const ambiguous:DetectedFood={...detection('carne','grelhada',['corte inteiro']),foodKind:'meat_cut',identityAmbiguity:'meat_family',meatVisual:{familyCandidate:'unknown',familyConfidence:.4,cutStyle:'whole_piece',visibleFatLevel:'medium',bone:'without',shapeHints:[]}};
+    const refined=refineMeatFamily(ambiguous,family);
     const familyFoods=foods.filter(food=>foodMatchesMeatFamily(food,family));
     const result=resolveFoodCandidates(refined,familyFoods);
     expect(result.decision.state).not.toBe('ASK_MEAT_FAMILY');
     expect(result.candidates.length).toBeGreaterThan(0);
     expect(result.candidates.length).toBeLessThanOrEqual(3);
     expect(result.candidates.every(match=>foodMatchesMeatFamily(match.food,family))).toBe(true);
+  });
+
+  function resolvedBeef(overrides:Partial<NonNullable<DetectedFood['meatVisual']>>={},preparation='grelhada',visibleDetails=['peça achatada','fibras visíveis']){
+    const item:DetectedFood={...detection('carne bovina',preparation,visibleDetails,.92),foodKind:'meat_cut',meatVisual:{familyCandidate:'beef',familyConfidence:.9,cutStyle:'steak',visibleFatLevel:'medium',bone:'without',shapeHints:[],...overrides}};
+    return resolveFoodCandidates(item,foods.filter(food=>foodMatchesMeatFamily(food,'beef')));
+  }
+
+  it('never prioritizes ground beef for a visible whole steak',()=>{
+    const result=resolvedBeef();
+    expect(result.candidates.length).toBeGreaterThan(0);
+    expect(result.candidates[0]?.food.displayName).not.toMatch(/moíd|hambúrguer|almôndega/i);
+  });
+
+  it('uses cutStyle=steak to remove incompatible meat formats',()=>{
+    const visible=resolvedBeef().candidates.map(match=>match.food.displayName||'').join(' ');
+    expect(visible).not.toMatch(/moíd|desfiad|cubos|tiras|linguiça|salsicha/i);
+  });
+
+  it('removes costela when bone is absent and compatible intact cuts exist',()=>{
+    const result=resolvedBeef({cutStyle:'whole_piece',bone:'without'},'grelhada',['peça inteira sem osso']);
+    expect(result.candidates.length).toBeGreaterThan(0);
+    expect(result.candidates.map(match=>match.food.displayName).join(' ')).not.toMatch(/costela/i);
+    const conflicting=resolvedBeef({cutStyle:'rib',bone:'without',shapeHints:[]},'assada',['peça sem osso']);
+    expect(conflicting.candidates.map(match=>match.food.displayName).join(' ')).not.toMatch(/costela/i);
+  });
+
+  it('allows costela when bone and rib structure are visually supported',()=>{
+    const result=resolvedBeef({cutStyle:'rib',bone:'with',shapeHints:['costela']},'assada',['peça com osso','formato de costela']);
+    expect(result.candidates[0]?.food.displayName).toMatch(/costela/i);
+  });
+
+  it('uses a compatible shape hint as a strong ranking signal',()=>{
+    const result=resolvedBeef({cutStyle:'fillet',visibleFatLevel:'low',shapeHints:['peito']},'grelhada',['corte inteiro sem osso']);
+    expect(result.candidates[0]?.food.displayName).toMatch(/Peito bovino/i);
+  });
+
+  it('preserves grilled preparation preference after beef-family resolution',()=>{
+    const result=resolvedBeef();
+    expect(result.candidates.length).toBeGreaterThan(0);
+    expect(result.candidates.every(match=>/grelhad/i.test(match.food.displayName||match.food.description))).toBe(true);
+  });
+
+  it('returns no safe cut when resolved beef has no defensible visual form',()=>{
+    const item:DetectedFood={...detection('carne bovina',null,[],.9),foodKind:'meat_cut',meatVisual:{familyCandidate:'beef',familyConfidence:.9,cutStyle:'unknown',visibleFatLevel:'unknown',bone:'unknown',shapeHints:[]}};
+    const result=resolveFoodCandidates(item,foods.filter(food=>foodMatchesMeatFamily(food,'beef')));
+    expect(result.decision.state).toBe('NO_MATCH');
+    expect(result.candidates).toEqual([]);
   });
 
   it.each([
