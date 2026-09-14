@@ -174,7 +174,7 @@ async function activeGoals(patientId: number, onDate: string) {
   );
 }
 
-type FoodSource = "TACO" | "TBCA";
+type FoodSource = "TACO" | "TBCA" | "USDA";
 type ResolvedNutrition = {
   values: NutrientMap;
   sources: Record<string, FoodSource>;
@@ -758,7 +758,7 @@ app.get(
       foods = await db
         .prepare(`SELECT f.id, f.source_code, f.description, f.description AS name, COALESCE(f.display_name,f.description) AS "displayName", f.category, f.scientific_name, f.brand, f.source, f.glycemic_index AS "glycemicIndex", f.curation_priority AS "curationPriority", f.curation_details AS "curationDetails", f.curation_confidence AS "curationConfidence"
       FROM favorites fav JOIN foods f ON f.id = fav.food_id
-      WHERE fav.user_id = ? AND f.active AND f.source = 'TBCA' ${where}
+      WHERE fav.user_id = ? AND f.active AND f.source IN ('TBCA','USDA') ${where}
       ORDER BY COALESCE(f.curation_priority_rank,1),COALESCE(f.curation_score,0) DESC,COALESCE(f.display_name,f.description) LIMIT 150`)
         .all(user.id, ...tokens.flatMap((variants) => variants.map(token=>`%${token}%`)));
     } else if (search) {
@@ -768,7 +768,7 @@ app.get(
       foods = await db
         .prepare(
           `SELECT id, source_code, description, description AS name, COALESCE(display_name,description) AS "displayName", category, scientific_name, brand, source, glycemic_index AS "glycemicIndex", curation_priority AS "curationPriority", curation_details AS "curationDetails", curation_confidence AS "curationConfidence"
-           FROM foods WHERE active AND source = 'TBCA' AND ${where}
+           FROM foods WHERE active AND source IN ('TBCA','USDA') AND ${where}
            ORDER BY CASE
              WHEN normalized_display_name = ? THEN 0
              WHEN ? = ANY(normalized_search_aliases) THEN 1
@@ -791,7 +791,7 @@ app.get(
       foods = await db
         .prepare(`SELECT f.id, f.source_code, f.description, f.description AS name, COALESCE(f.display_name,f.description) AS "displayName", f.category, f.scientific_name, f.brand, f.source, f.glycemic_index AS "glycemicIndex", f.curation_priority AS "curationPriority", f.curation_details AS "curationDetails", f.curation_confidence AS "curationConfidence", MAX(me.created_at) AS last_used
       FROM meal_entries me JOIN foods f ON f.id = me.food_id JOIN meals m ON m.id = me.meal_id JOIN daily_logs dl ON dl.id = m.daily_log_id
-      WHERE dl.patient_id = ? AND f.active AND f.source = 'TBCA' GROUP BY f.id ORDER BY last_used DESC LIMIT 12`)
+      WHERE dl.patient_id = ? AND f.active AND f.source IN ('TBCA','USDA') GROUP BY f.id ORDER BY last_used DESC LIMIT 12`)
         .all(patient.id);
       if (!foods.length) {
         foods = await db
@@ -1014,8 +1014,8 @@ app.post(
     const consumedAt = localTimestamp(payload.date, brazilTime());
     await transaction(async () => {
       for (const entry of entries) {
-        const allowed = await db.prepare("SELECT id FROM foods WHERE id = ? AND source = 'TBCA' AND active FOR SHARE").get(entry.foodId);
-        if (!allowed) throw new InputError('Selecione um alimento ativo da TBCA.');
+        const allowed = await db.prepare("SELECT id FROM foods WHERE id = ? AND source IN ('TBCA','USDA') AND active FOR SHARE").get(entry.foodId);
+        if (!allowed) throw new InputError('Selecione um alimento ativo do catálogo.');
       }
       await db
         .prepare(

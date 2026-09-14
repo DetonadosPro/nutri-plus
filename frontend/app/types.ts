@@ -28,11 +28,11 @@ export type Food = {
   category: string | null;
   scientific_name?: string | null;
   brand?: string | null;
-  source: 'TACO' | 'TBCA';
+  source: 'TACO' | 'TBCA' | 'USDA';
   favorite: boolean;
   glycemicIndex?: number | null;
   nutrients: NutrientMap;
-  nutrientSources: Record<string, 'TACO' | 'TBCA'>;
+  nutrientSources: Record<string, 'TACO' | 'TBCA' | 'USDA'>;
   dataSources: string[];
 };
 export type MealEntry = {
@@ -43,14 +43,14 @@ export type MealEntry = {
   name?: string;
   displayName?: string | null;
   category: string | null;
-  source: 'TACO' | 'TBCA';
+  source: 'TACO' | 'TBCA' | 'USDA';
   glycemicIndex: number | null;
   amount: number;
   unit: string;
   grams_equivalent: number;
   consumed_at?: string | null;
   nutrients: NutrientMap;
-  nutrientSources: Record<string, 'TACO' | 'TBCA'>;
+  nutrientSources: Record<string, 'TACO' | 'TBCA' | 'USDA'>;
   dataSources: string[];
   /** CG absoluta da porção, quando IG e carboidrato estão disponíveis. */
   glycemicLoad?: number | null;
@@ -236,7 +236,7 @@ export type MealPlanItem = {
   description: string;
   display_name: string;
   category?: string | null;
-  source: 'TBCA';
+  source: 'TBCA' | 'USDA';
   nutrients: NutrientMap;
   measures: FoodMeasure[];
   substitutions: MealPlanItemSubstitution[];

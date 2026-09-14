@@ -750,9 +750,9 @@ export function mealPlanRouter(deps: Dependencies) {
       const meal = await requireDraftByMeal(user, id.parse(req.params.mealId), deps);
       const payload = itemPayload.parse(req.body);
       const food = await db
-        .prepare("SELECT id FROM foods WHERE id=? AND active AND source='TBCA' FOR SHARE")
+        .prepare("SELECT id FROM foods WHERE id=? AND active AND source IN ('TBCA','USDA') FOR SHARE")
         .get(payload.foodId);
-      if (!food) throw new MealPlanError("Selecione um alimento ativo da TBCA.");
+      if (!food) throw new MealPlanError("Selecione um alimento ativo do catálogo.");
       const converted = await resolveQuantity(payload.foodId, payload).catch((e) => {
         throw new MealPlanError(e.message);
       });
