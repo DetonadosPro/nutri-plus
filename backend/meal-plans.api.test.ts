@@ -100,7 +100,7 @@ it.skipIf(!process.env.NUTRI_MEAL_PLAN_TEST_API)(
       );
       expect(created.status).toBe(201);
       let plan = created.body;
-      expect(plan).toMatchObject({ version: 1, status: "draft", meals: [], queryCount: 6 });
+      expect(plan).toMatchObject({ version: 1, status: "draft", meals: [], queryCount: 7 });
       const metadata = await request(`/meal-plans/${plan.id}`, "PATCH", {
         title: "Plano de teste",
         notes: "Orientação de teste",
@@ -394,7 +394,7 @@ it.skipIf(!process.env.NUTRI_MEAL_PLAN_TEST_API)(
       expect(realistic.status).toBe(200);
       expect(realistic.body.meals).toHaveLength(6);
       expect(realistic.body.meals.flatMap((meal: any) => meal.items)).toHaveLength(24);
-      expect(realistic.body.queryCount).toBe(6);
+      expect(realistic.body.queryCount).toBe(7);
       expect(elapsed).toBeLessThan(2000);
       console.info(`[meal-plan-performance] meals=6 items=24 queries=${realistic.body.queryCount} latency_ms=${elapsed.toFixed(1)}`);
       const concurrentCopies = await Promise.all([

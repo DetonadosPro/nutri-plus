@@ -195,6 +195,79 @@ export type MealPlanItem = {
   source: 'TBCA';
   nutrients: NutrientMap;
   measures: FoodMeasure[];
+  substitutions: MealPlanItemSubstitution[];
+};
+export type MealPlanItemSubstitution = {
+  id: number;
+  meal_plan_item_id: number;
+  food_id: number;
+  position: number;
+  amount: number;
+  unit: string;
+  grams_equivalent: number;
+  measure_snapshot?: FoodMeasure | null;
+  origin: 'suggestion' | 'manual';
+  algorithm_version: string;
+  equivalence_metadata: {
+    algorithmVersion: string;
+    group: string;
+    automaticCompatible: boolean;
+    compatibilityReason: string;
+    gramsIdeal: number;
+    gramsFinal: number;
+    weightedError: number;
+    differences: Record<string, number | null>;
+  };
+  source_code: string;
+  description: string;
+  display_name: string;
+  category?: string | null;
+  source: 'TBCA';
+  nutrients: NutrientMap;
+  measures: FoodMeasure[];
+};
+export type SubstitutionEquivalence = {
+  algorithmVersion: string;
+  group: string;
+  automaticCompatible: boolean;
+  compatibilityReason: string;
+  gramsIdeal: number;
+  gramsFinal: number;
+  amount: number;
+  unit: string;
+  measureSnapshot?: FoodMeasure | null;
+  targetNutrients: NutrientMap;
+  candidateNutrients: NutrientMap;
+  differences: Record<string, number | null>;
+  weightedError: number;
+  friendlyMeasure: boolean;
+};
+export type SubstitutionSuggestionResponse = {
+  algorithmVersion: string;
+  classification: { group: string; role: string; preparation: string; reason: string } | null;
+  suggestions: Array<{
+    food: {
+      id: number;
+      source_code: string;
+      display_name: string;
+      description: string;
+      nutrients: NutrientMap;
+      measures: FoodMeasure[];
+    };
+    equivalence: SubstitutionEquivalence;
+  }>;
+  metrics: {
+    initialCandidates: number;
+    classifiedCandidates: number;
+    rankingMs: number;
+    returned: number;
+  };
+  patientContext: {
+    preferences: string | null;
+    restrictions: string | null;
+    allergies: string | null;
+    structuredFiltering: false;
+  };
 };
 export type MealPlanMeal = {
   id: number;

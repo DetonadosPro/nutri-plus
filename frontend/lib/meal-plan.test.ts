@@ -66,6 +66,36 @@ describe('meal plan view model', () => {
     expect(component).toContain('Remover ${item.display_name}');
     expect(component).toMatch(/method:\s*'DELETE'/);
   });
+  it('lets the nutritionist approve, edit, order and remove up to three substitutions', () => {
+    expect(component).toContain('Adicionar substituição');
+    expect(component).toContain('/substitution-suggestions');
+    expect(component).toContain('/substitution-equivalence?foodId=');
+    expect(component).toContain("origin: 'suggestion'");
+    expect(component).toContain("void add(selected.id, 'manual')");
+    expect(component).toContain('/substitutions/order');
+    expect(component).toContain('/meal-plan-item-substitutions/');
+    expect(component).toContain('item.substitutions.length >= 3');
+    expect(component).toContain('Limite de 3 alternativas atingido');
+  });
+  it('makes conservative automation and free-text safety limits explicit', () => {
+    expect(component).toContain('Nenhuma sugestão automática atingiu os critérios conservadores.');
+    expect(component).toContain('não filtram sugestões automaticamente');
+    expect(component).toContain('Alergias:');
+    expect(component).toContain('Restrições:');
+    expect(component).toContain('não atende aos critérios automáticos de grupo, preparo ou equivalência');
+    expect(component).toContain('Diferença nutricional estimada');
+  });
+  it('shows only approved substitutions to the patient without persisting a visual choice', () => {
+    const readItem = component.slice(
+      component.indexOf('function ReadPlanItem'),
+      component.indexOf('function DraftItem'),
+    );
+    expect(readItem).toContain('Trocar');
+    expect(readItem).toContain('No lugar de');
+    expect(readItem).toContain('item.substitutions.map');
+    expect(readItem).not.toContain('api<');
+    expect(readItem).not.toContain("method: 'POST'");
+  });
   it('shows nutrition totals and goal comparisons', () => {
     expect(component).toContain('Resumo nutricional do plano');
     expect(component).toContain('energyPercent');
@@ -105,6 +135,9 @@ describe('meal plan view model', () => {
     expect(css).toContain('width: min(100%, 68rem)');
     expect(css).toContain('@media (max-width: 390px)');
     expect(css).toContain('min-height: 44px');
+    expect(css).toContain('max-width: 100% !important');
+    expect(css).toContain('overflow-wrap: anywhere');
+    expect(css).toContain('.meal-plan-substitution-dialog *');
   });
   it('keeps patient meals before optional notes and the collapsed summary', () => {
     const patient = component.slice(
