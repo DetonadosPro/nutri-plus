@@ -8,7 +8,7 @@ const component = readFileSync(
   'utf8',
 );
 const css = readFileSync(
-  join(import.meta.dirname, '../app/globals.css'),
+  join(import.meta.dirname, '../app/meal-plan.css'),
   'utf8',
 );
 
@@ -40,7 +40,7 @@ describe('meal plan view model', () => {
     expect(component).toContain(
       'Este paciente ainda não tem um plano alimentar.',
     );
-    expect(component).toContain('Criar plano alimentar');
+    expect(component).toContain("'Criar plano'");
   });
   it('adds canonical meals and food through the existing catalog search', () => {
     expect(component).toContain('Adicionar refeição');
@@ -57,7 +57,9 @@ describe('meal plan view model', () => {
   });
   it('saves quantity and notes without a page reload', () => {
     expect(component).toMatch(/method:\s*'PATCH'/);
-    expect(component).toContain("{busy ? 'Salvando…' : 'Salvo'}");
+    expect(component).toContain("busy ? 'Salvando…' : 'Salvo'");
+    expect(component).toContain('data-error={Boolean(error)}');
+    expect(component).toContain("'Alterações não salvas'");
   });
   it('exposes explicit remove and reorder controls', () => {
     expect(component).toContain('Mover ${item.display_name} para cima');
@@ -68,7 +70,9 @@ describe('meal plan view model', () => {
     expect(component).toContain('Resumo nutricional do plano');
     expect(component).toContain('energyPercent');
     expect(component).toContain("nutrientValue(plan.totals, 'energia_kcal')");
-    expect(component).toContain("['Proteína', 'proteina_g', 'g']");
+    expect(component).toContain(
+      "['Proteína', 'proteina_g', 'protein_g', 'protein']",
+    );
     expect(component).not.toContain('Mín. por peso');
   });
   it('does not expose free-form meal names or schedules', () => {
@@ -82,8 +86,12 @@ describe('meal plan view model', () => {
     expect(component).toContain('Histórico de versões');
   });
   it('loads the patient read-only endpoint and welcoming empty state', () => {
-    expect(component).toMatch(/api<MealPlan\s*\|\s*null>\('\/patient\/meal-plan'\)/);
-    expect(component).toContain('Seu plano alimentar ainda não está disponível.');
+    expect(component).toMatch(
+      /api<MealPlan\s*\|\s*null>\('\/patient\/meal-plan'\)/,
+    );
+    expect(component).toContain(
+      'Seu plano alimentar ainda não está disponível.',
+    );
   });
   it('formats publication timestamps without treating them as calendar-only dates', () => {
     expect(component).toContain('formatDateTime(plan.published_at)');
@@ -94,8 +102,56 @@ describe('meal plan view model', () => {
     expect(component).toContain('aria-live="polite"');
   });
   it('contains narrow mobile and bounded desktop layouts', () => {
-    expect(css).toContain('width: min(100%, 58rem)');
+    expect(css).toContain('width: min(100%, 68rem)');
     expect(css).toContain('@media (max-width: 390px)');
     expect(css).toContain('min-height: 44px');
+  });
+  it('keeps patient meals before optional notes and the collapsed summary', () => {
+    const patient = component.slice(
+      component.indexOf('export function PatientMealPlan'),
+    );
+    expect(patient.indexOf('<PlanContent')).toBeLessThan(
+      patient.indexOf('<PlanNotes'),
+    );
+    expect(patient.indexOf('<PlanNotes')).toBeLessThan(
+      patient.indexOf('<PlanTotals'),
+    );
+    expect(patient).toContain('editable={false}');
+    expect(patient).not.toContain('lock_version');
+    expect(patient).not.toContain('status ===');
+    expect(patient).not.toContain('grams_equivalent');
+  });
+  it('uses the same meal identity in cards and the keyboard-free selector', () => {
+    expect(component).toContain('data-meal-type={meal.meal_type}');
+    expect(component).toContain('data-meal-type={definition.value}');
+    for (const type of [
+      'breakfast',
+      'morning_snack',
+      'lunch',
+      'afternoon_snack',
+      'dinner',
+      'supper',
+    ]) {
+      expect(css).toMatch(new RegExp(`\\[data-meal-type=['"]${type}['"]\\]`));
+    }
+    expect(css).toContain('prefers-reduced-motion');
+  });
+  it('retains explicit confirmation and prevents a failed save being called saved', () => {
+    expect(component).toMatch(/<Dialog\s+open=\{publishOpen\}/);
+    expect(component).toContain('Confirmar publicação');
+    expect(component).toContain("error ? 'Alterações não salvas'");
+    expect(component).not.toContain('window.confirm');
+  });
+  it('ignores superseded search responses and exposes loading or empty results', () => {
+    expect(component).toContain('current = false');
+    expect(component).toContain('if (current) setFoods(results)');
+    expect(component).toContain('Buscando alimentos…');
+    expect(component).toContain('Nenhum alimento encontrado.');
+  });
+  it('does not clamp the displayed target percentage when above the goal', () => {
+    expect(goalPercent(2300, 2000)).toBeCloseTo(115, 5);
+    expect(goalPercent(1980, 2000)).toBe(99);
+    expect(goalPercent(0, 2000)).toBe(0);
+    expect(goalPercent(0, 0)).toBeNull();
   });
 });
