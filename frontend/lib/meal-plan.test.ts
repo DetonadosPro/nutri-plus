@@ -38,12 +38,16 @@ describe('meal plan view model', () => {
   });
   it('has the nutritionist empty state and draft creation action', () => {
     expect(component).toContain(
-      'Crie o primeiro plano alimentar deste paciente.',
+      'Este paciente ainda não tem um plano alimentar.',
     );
     expect(component).toContain('Criar plano alimentar');
   });
-  it('supports adding a custom meal and food through the existing catalog search', () => {
+  it('adds canonical meals and food through the existing catalog search', () => {
     expect(component).toContain('Adicionar refeição');
+    expect(component).toContain('MEAL_TYPES.map');
+    expect(component).toContain('body: JSON.stringify({ mealType })');
+    expect(component).not.toContain('meal-plan-meal-name');
+    expect(component).not.toContain('type="time"');
     expect(component).toContain('/foods?search=');
     expect(component).toContain('Adicionar alimento');
   });
@@ -53,7 +57,7 @@ describe('meal plan view model', () => {
   });
   it('saves quantity and notes without a page reload', () => {
     expect(component).toMatch(/method:\s*'PATCH'/);
-    expect(component).toContain('Alterações salvas');
+    expect(component).toContain("{busy ? 'Salvando…' : 'Salvo'}");
   });
   it('exposes explicit remove and reorder controls', () => {
     expect(component).toContain('Mover ${item.display_name} para cima');
@@ -62,14 +66,15 @@ describe('meal plan view model', () => {
   });
   it('shows nutrition totals and goal comparisons', () => {
     expect(component).toContain('Resumo nutricional do plano');
-    expect(component).toContain('% da meta');
-    expect(component).toContain("'energia_kcal', 'energy_kcal'");
-    expect(component).toContain('protein_gkg_min_grams');
+    expect(component).toContain('energyPercent');
+    expect(component).toContain("nutrientValue(plan.totals, 'energia_kcal')");
+    expect(component).toContain("['Proteína', 'proteina_g', 'g']");
+    expect(component).not.toContain('Mín. por peso');
   });
-  it('lets the nutritionist rename and reschedule draft meals', () => {
-    expect(component).toContain('Nome da refeição ${meal.position + 1}');
-    expect(component).toContain('Horário de ${meal.name}');
-    expect(component).toContain('/meal-plan-meals/${meal.id}');
+  it('does not expose free-form meal names or schedules', () => {
+    expect(component).toContain('mealDefinition(meal.meal_type).label');
+    expect(component).not.toContain('Nome da refeição');
+    expect(component).not.toContain('Horário');
   });
   it('publishes, duplicates and opens immutable history', () => {
     expect(component).toContain('Publicar plano');
@@ -78,7 +83,7 @@ describe('meal plan view model', () => {
   });
   it('loads the patient read-only endpoint and welcoming empty state', () => {
     expect(component).toMatch(/api<MealPlan\s*\|\s*null>\('\/patient\/meal-plan'\)/);
-    expect(component).toContain('Seu plano alimentar ainda não foi publicado.');
+    expect(component).toContain('Seu plano alimentar ainda não está disponível.');
   });
   it('formats publication timestamps without treating them as calendar-only dates', () => {
     expect(component).toContain('formatDateTime(plan.published_at)');
@@ -89,8 +94,8 @@ describe('meal plan view model', () => {
     expect(component).toContain('aria-live="polite"');
   });
   it('contains narrow mobile and bounded desktop layouts', () => {
-    expect(css).toContain('width: min(100%, 70rem)');
-    expect(css).toContain('@media (max-width: 560px)');
+    expect(css).toContain('width: min(100%, 58rem)');
+    expect(css).toContain('@media (max-width: 390px)');
     expect(css).toContain('min-height: 44px');
   });
 });

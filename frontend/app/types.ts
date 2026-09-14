@@ -199,9 +199,8 @@ export type MealPlanItem = {
 export type MealPlanMeal = {
   id: number;
   meal_plan_id: number;
-  name: string;
+  meal_type: import('../../shared/meal-types').MealType;
   position: number;
-  time?: string | null;
   notes?: string | null;
   items: MealPlanItem[];
   totals: NutrientMap;

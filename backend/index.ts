@@ -29,6 +29,7 @@ import { accountMailHtml, appUrlForRequest, sendMail, deliveryResult } from "./m
 import { appConfig } from "./config";
 import { bootTelemetryLog, bootTelemetrySchema } from './boot-telemetry';
 import { AccountTokenError, saveAccountToken, validAccountToken, withAccountToken } from './account-tokens';
+import { MEAL_TYPE_LABELS, MEAL_TYPE_VALUES, type MealType } from '../shared/meal-types';
 import { accountMailLimit, authenticationLimits, configureSecurity, sessionCookieOptions } from './security';
 import { normalizeSearch } from "./taco-import";
 import {
@@ -969,26 +970,6 @@ app.post(
   }),
 );
 
-const mealTypes = [
-  "breakfast",
-  "morning_snack",
-  "lunch",
-  "afternoon_snack",
-  "dinner",
-  "supper",
-  "other",
-] as const;
-type MealType = (typeof mealTypes)[number];
-const mealLabels: Record<MealType, string> = {
-  breakfast: "Café da manhã",
-  morning_snack: "Lanche da manhã",
-  lunch: "Almoço",
-  afternoon_snack: "Lanche da tarde",
-  dinner: "Jantar",
-  supper: "Ceia",
-  other: "Outra refeição",
-};
-
 async function getOrCreateMeal(logId: number, mealType: MealType, consumedAt: string) {
   let meal = await db
     .prepare("SELECT id FROM meals WHERE daily_log_id = ? AND meal_type = ? ORDER BY id LIMIT 1")
@@ -998,7 +979,7 @@ async function getOrCreateMeal(logId: number, mealType: MealType, consumedAt: st
       .prepare(
         "INSERT INTO meals (daily_log_id, meal_type, label, eaten_at) VALUES (?, ?, ?, ?) RETURNING id",
       )
-      .get<{ id: number }>(logId, mealType, mealLabels[mealType], consumedAt);
+      .get<{ id: number }>(logId, mealType, MEAL_TYPE_LABELS[mealType], consumedAt);
   return meal!;
 }
 
@@ -1020,7 +1001,7 @@ app.post(
     const payload = z
       .object({
         date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-        mealType: z.enum(mealTypes),
+        mealType: z.enum(MEAL_TYPE_VALUES),
         foodId: z.number().int().positive().optional(),
         grams: z.number().positive().max(5000).optional(),
         items: z.array(quantityInput.safeExtend({ foodId: z.number().int().positive() })).min(1).max(20).optional(),
@@ -1096,7 +1077,7 @@ app.patch(
         grams: z.number().positive().max(5000).optional(),
         quantity: z.number().positive().optional(),
         measureId: z.number().int().nonnegative().optional(),
-        mealType: z.enum(mealTypes).optional(),
+        mealType: z.enum(MEAL_TYPE_VALUES).optional(),
       })
       .refine((value) => Object.keys(value).length > 0, "Informe ao menos uma alteração.")
       .parse(req.body);
