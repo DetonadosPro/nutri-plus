@@ -1,6 +1,7 @@
 /* Plano: paleta de refeições do Diário; superfícies leves, alimento em primeiro plano. */
 .meal-plan-page,
 .meal-plan-publish-dialog,
+.meal-plan-substitution-dialog,
 .meal-plan-menu {
   --plan-ink: #253e38;
   --plan-muted: #5c706a;
@@ -329,6 +330,323 @@
 .meal-plan-item-summary:focus-visible .meal-plan-edit-hint {
   opacity: 1;
   color: var(--meal-ink);
+}
+.meal-plan-substitution-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 44px;
+  margin: -0.35rem 0 0.35rem;
+  color: var(--meal-ink);
+  font-size: 0.74rem;
+  font-weight: 650;
+  border-radius: 0.65rem;
+}
+.meal-plan-substitution-trigger svg,
+.meal-plan-patient-swap svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+.meal-plan-substitution-dialog {
+  width: min(46rem, calc(100% - 2rem));
+  max-width: 46rem !important;
+  max-height: min(90dvh, 52rem);
+  min-width: 0;
+  padding: 0 !important;
+  gap: 0 !important;
+  overflow: hidden;
+}
+.meal-plan-substitution-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 1.25rem 3.25rem 1rem 1.25rem;
+  border-bottom: 1px solid var(--plan-line);
+  background: linear-gradient(115deg, #edf6ef, #f8fbf9);
+}
+.meal-plan-substitution-title > span {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 0.8rem;
+  background: white;
+  color: #3f7657;
+}
+.meal-plan-substitution-title svg {
+  width: 1.05rem;
+}
+.meal-plan-substitution-title [data-slot='dialog-title'] {
+  font-size: 1.15rem;
+  overflow-wrap: anywhere;
+}
+.meal-plan-substitution-title [data-slot='dialog-description'] {
+  margin-top: 0.25rem;
+  font-size: 0.78rem;
+}
+.meal-plan-substitution-scroll {
+  min-width: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 1rem 1.25rem 1.35rem;
+  display: grid;
+  gap: 1.15rem;
+}
+.meal-plan-substitution-dialog :is(button, input, select):focus-visible {
+  outline: 2px solid #3c7857;
+  outline-offset: 2px;
+}
+.meal-plan-substitution-patient-context {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.85rem;
+  border: 1px solid #eadab2;
+  border-radius: 0.9rem;
+  background: #fff9e9;
+  color: #695627;
+}
+.meal-plan-substitution-patient-context > svg {
+  flex-shrink: 0;
+  width: 1rem;
+  margin-top: 0.1rem;
+}
+.meal-plan-substitution-patient-context > div {
+  min-width: 0;
+}
+.meal-plan-substitution-patient-context strong,
+.meal-plan-substitution-patient-context p,
+.meal-plan-substitution-patient-context small {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.meal-plan-substitution-patient-context p {
+  margin-top: 0.3rem;
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+.meal-plan-substitution-patient-context small {
+  margin-top: 0.45rem;
+  color: #75683f;
+  font-size: 0.69rem;
+  line-height: 1.45;
+}
+.meal-plan-approved-list,
+.meal-plan-suggestions,
+.meal-plan-manual-substitution {
+  min-width: 0;
+  display: grid;
+  gap: 0.65rem;
+}
+.meal-plan-substitution-section-head {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+.meal-plan-substitution-section-head h3,
+.meal-plan-manual-substitution > h3 {
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+.meal-plan-substitution-section-head > span {
+  color: var(--plan-muted);
+  font-size: 0.72rem;
+}
+.meal-plan-substitution-section-head > button {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 0.75rem;
+  color: var(--plan-muted);
+}
+.meal-plan-substitution-section-head > button svg {
+  width: 1rem;
+}
+.meal-plan-approved-list > ol,
+.meal-plan-suggestions > ul {
+  display: grid;
+  gap: 0.55rem;
+}
+.meal-plan-approved-substitution,
+.meal-plan-suggestions > ul > li {
+  min-width: 0;
+  padding: 0.85rem;
+  border: 1px solid var(--plan-line);
+  border-radius: 0.95rem;
+  background: #fbfdfb;
+}
+.meal-plan-approved-substitution {
+  display: grid;
+  gap: 0.65rem;
+}
+.meal-plan-approved-substitution-head,
+.meal-plan-approved-substitution-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+}
+.meal-plan-approved-substitution-head > div:first-child {
+  min-width: 0;
+  display: grid;
+  gap: 0.15rem;
+}
+.meal-plan-approved-substitution strong,
+.meal-plan-suggestions strong,
+.meal-plan-manual-picked strong {
+  overflow-wrap: anywhere;
+  font-size: 0.82rem;
+}
+.meal-plan-approved-substitution small,
+.meal-plan-suggestions span {
+  color: var(--plan-muted);
+  font-size: 0.69rem;
+}
+.meal-plan-substitution-order {
+  display: flex;
+  flex-shrink: 0;
+}
+.meal-plan-substitution-order button {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 0.65rem;
+  color: var(--plan-muted);
+}
+.meal-plan-substitution-order button:last-child {
+  color: #934f45;
+}
+.meal-plan-substitution-order svg {
+  width: 0.9rem;
+}
+.meal-plan-substitution-dialog .measure-control,
+.meal-plan-substitution-dialog .measure-control-row {
+  width: 100%;
+  min-width: 0;
+}
+.meal-plan-substitution-dialog .measure-control-row select {
+  flex: 1 1 0;
+  width: 0;
+}
+.meal-plan-substitution-differences {
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.7rem;
+}
+.meal-plan-substitution-differences > div {
+  display: flex;
+  gap: 0.22rem;
+  font-size: 0.67rem;
+  white-space: nowrap;
+}
+.meal-plan-substitution-differences dt {
+  color: var(--plan-muted);
+}
+.meal-plan-substitution-differences dd {
+  font-weight: 650;
+}
+.meal-plan-suggestions > ul > li {
+  display: grid;
+  grid-template-columns: minmax(8rem, 1fr) auto;
+  align-items: center;
+  gap: 0.55rem 0.8rem;
+}
+.meal-plan-suggestions > ul > li > div:first-child {
+  min-width: 0;
+  display: grid;
+  gap: 0.15rem;
+}
+.meal-plan-suggestions > ul > li > .meal-plan-substitution-differences {
+  grid-column: 1;
+}
+.meal-plan-suggestions > ul > li > button {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  min-height: 44px;
+}
+.meal-plan-manual-substitution {
+  padding-top: 0.2rem;
+  border-top: 1px solid var(--plan-line);
+}
+.meal-plan-manual-substitution .meal-plan-search-results {
+  max-height: 14rem;
+}
+.meal-plan-manual-picked {
+  display: grid;
+  gap: 0.65rem;
+}
+.meal-plan-manual-picked > button {
+  justify-self: end;
+  min-height: 44px;
+}
+.meal-plan-substitution-warning,
+.meal-plan-substitution-limit {
+  border-radius: 0.75rem;
+  padding: 0.7rem 0.8rem;
+  color: #735a20;
+  background: #fff8e6;
+  font-size: 0.73rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.meal-plan-substitution-empty {
+  color: var(--plan-muted);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+.meal-plan-read-item {
+  flex-wrap: wrap;
+}
+.meal-plan-patient-swap {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding-inline: 0.55rem;
+  border-radius: 0.7rem;
+  color: var(--meal-ink);
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+.meal-plan-patient-swap[aria-expanded='true'] {
+  background: var(--meal-soft);
+}
+.meal-plan-patient-alternatives {
+  flex: 0 0 100% !important;
+  display: grid !important;
+  gap: 0.45rem !important;
+  padding: 0.75rem !important;
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, var(--meal-soft) 58%, white);
+  animation: plan-reveal 0.16s ease-out;
+}
+.meal-plan-patient-alternatives > strong {
+  font-size: 0.72rem;
+  color: var(--meal-ink);
+}
+.meal-plan-patient-alternatives ul {
+  display: grid;
+  gap: 0.35rem;
+}
+.meal-plan-patient-alternatives li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.65rem;
+  font-size: 0.78rem;
+}
+.meal-plan-patient-alternatives li span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.meal-plan-patient-alternatives li small {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 .meal-plan-meal-nutrition {
   display: flex;
@@ -864,6 +1182,31 @@
   .meal-plan-patient-note {
     padding: 1rem;
   }
+  .meal-plan-substitution-dialog {
+    top: auto !important;
+    bottom: 0;
+    left: 0 !important;
+    width: 100%;
+    max-width: 100% !important;
+    max-height: 94dvh;
+    transform: none !important;
+    translate: none !important;
+    border-radius: 1.35rem 1.35rem 0 0;
+  }
+  .meal-plan-substitution-title {
+    padding: 1rem 3rem 0.85rem 1rem;
+  }
+  .meal-plan-substitution-scroll {
+    padding: 0.85rem 1rem max(1.2rem, env(safe-area-inset-bottom));
+  }
+  .meal-plan-approved-substitution-head,
+  .meal-plan-approved-substitution-foot {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .meal-plan-suggestions > ul > li {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
 }
 @media (max-width: 390px) {
   .meal-plan-item-actions {
@@ -879,6 +1222,20 @@
   .meal-plan-publish-actions > button:last-child {
     grid-row: 1;
   }
+  .meal-plan-substitution-order button {
+    width: 40px;
+  }
+  .meal-plan-suggestions > ul > li {
+    grid-template-columns: 1fr;
+  }
+  .meal-plan-suggestions > ul > li > .meal-plan-substitution-differences,
+  .meal-plan-suggestions > ul > li > button {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .meal-plan-suggestions > ul > li > button {
+    width: 100%;
+  }
 }
 @keyframes plan-reveal {
   from {
@@ -892,7 +1249,9 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .meal-plan-page *,
-  .meal-plan-publish-dialog {
+  .meal-plan-publish-dialog,
+  .meal-plan-substitution-dialog,
+  .meal-plan-substitution-dialog * {
     animation: none !important;
     transition: none !important;
     scroll-behavior: auto !important;

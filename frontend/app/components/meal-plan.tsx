@@ -10,7 +10,9 @@ import {
   Pencil,
   Utensils,
   Plus,
+  RefreshCcw,
   Search,
+  ShieldAlert,
   Trash2,
   X,
 } from 'lucide-react';
@@ -42,7 +44,16 @@ import {
 import { EmptyState, ContentSkeleton } from './page-primitives';
 import { MeasureInput, gramMeasure, safeGrams } from './measure-input';
 import { formatServing, type FoodMeasure } from '../../../shared/food-measures';
-import type { Food, MealPlan, MealPlanItem, MealPlanListItem } from '../types';
+import type {
+  Food,
+  MealPlan,
+  MealPlanItem,
+  MealPlanItemSubstitution,
+  MealPlanListItem,
+  NutrientMap,
+  SubstitutionEquivalence,
+  SubstitutionSuggestionResponse,
+} from '../types';
 import { MEAL_TYPES, mealDefinition, type MealType } from '@/lib/meal-types';
 import '../meal-plan.css';
 
@@ -50,6 +61,49 @@ function errorMessage(reason: unknown) {
   return reason instanceof Error
     ? reason.message
     : 'Não foi possível salvar o plano alimentar.';
+}
+
+const substitutionNutrients = [
+  ['Energia', 'energia_kcal'],
+  ['Proteína', 'proteina_g'],
+  ['Carboidrato', 'carboidrato_g'],
+  ['Gordura', 'lipideos_g'],
+  ['Fibra', 'fibra_g'],
+] as const;
+
+function formatDifference(value: number | null | undefined) {
+  if (value == null || !Number.isFinite(value)) return 'indisponível';
+  const percent = Math.round(value * 100);
+  return `${percent > 0 ? '+' : ''}${percent}%`;
+}
+
+function quantityDifferences(
+  target: NutrientMap,
+  per100g: NutrientMap,
+  grams: number,
+) {
+  return Object.fromEntries(
+    substitutionNutrients.map(([, key]) => {
+      const base = target[key];
+      const candidate = per100g[key];
+      if (base == null || candidate == null) return [key, null];
+      const floor = key === 'energia_kcal' ? 20 : key === 'lipideos_g' || key === 'fibra_g' ? 0.5 : 1;
+      return [key, (Number(candidate) * grams / 100 - Number(base)) / Math.max(Math.abs(Number(base)), floor)];
+    }),
+  ) as Record<string, number | null>;
+}
+
+function DifferenceList({ differences }: { differences: Record<string, number | null> }) {
+  return (
+    <dl className="meal-plan-substitution-differences" aria-label="Diferença nutricional estimada">
+      {substitutionNutrients.map(([label, key]) => differences[key] == null ? null : (
+        <div key={key}>
+          <dt>{label}</dt>
+          <dd>{formatDifference(differences[key])}</dd>
+        </div>
+      ))}
+    </dl>
+  );
 }
 function PlanTotals({ plan }: { plan: MealPlan }) {
   const metrics = [
@@ -278,13 +332,448 @@ function FoodPicker({
   );
 }
 
+function ApprovedSubstitution({
+  substitution,
+  index,
+  total,
+  busy,
+  onSave,
+  onRemove,
+  onMove,
+}: {
+  substitution: MealPlanItemSubstitution;
+  index: number;
+  total: number;
+  busy: boolean;
+  onSave: (substitution: MealPlanItemSubstitution, quantity: string, measure: FoodMeasure) => Promise<void>;
+  onRemove: (substitution: MealPlanItemSubstitution) => Promise<void>;
+  onMove: (substitution: MealPlanItemSubstitution, direction: -1 | 1) => Promise<void>;
+}) {
+  const initialMeasure = substitution.measure_snapshot ?? gramMeasure;
+  const [quantity, setQuantity] = useState(String(substitution.amount).replace('.', ','));
+  const [measure, setMeasure] = useState<FoodMeasure>(initialMeasure);
+  const changed = Number(quantity.replace(',', '.')) !== substitution.amount || measure.id !== initialMeasure.id;
+  return (
+    <li className="meal-plan-approved-substitution">
+      <div className="meal-plan-approved-substitution-head">
+        <div>
+          <strong>{substitution.display_name}</strong>
+          <small>{substitution.origin === 'suggestion' ? 'Sugestão aprovada' : 'Adicionada manualmente'}</small>
+        </div>
+        <div className="meal-plan-substitution-order">
+          <button
+            aria-label={`Mover ${substitution.display_name} para cima`}
+            disabled={busy || index === 0}
+            onClick={() => void onMove(substitution, -1)}
+          ><ArrowUp /></button>
+          <button
+            aria-label={`Mover ${substitution.display_name} para baixo`}
+            disabled={busy || index === total - 1}
+            onClick={() => void onMove(substitution, 1)}
+          ><ArrowDown /></button>
+          <button
+            aria-label={`Remover substituição ${substitution.display_name}`}
+            disabled={busy}
+            onClick={() => void onRemove(substitution)}
+          ><Trash2 /></button>
+        </div>
+      </div>
+      <MeasureInput
+        id={`substitution-${substitution.id}`}
+        value={quantity}
+        measure={measure}
+        measures={substitution.measures ?? [gramMeasure]}
+        onChange={(value, next) => {
+          setQuantity(value);
+          setMeasure(next);
+        }}
+      />
+      <div className="meal-plan-approved-substitution-foot">
+        <DifferenceList differences={substitution.equivalence_metadata.differences} />
+        {changed && (
+          <Button
+            size="sm"
+            disabled={busy || safeGrams(quantity, measure) <= 0}
+            onClick={() => void onSave(substitution, quantity, measure)}
+          >Salvar porção</Button>
+        )}
+      </div>
+    </li>
+  );
+}
+
+function SubstitutionDialog({
+  item,
+  planId,
+  open,
+  onOpenChange,
+  onSaved,
+}: {
+  item: MealPlanItem;
+  planId: number;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSaved: (plan: MealPlan) => void;
+}) {
+  const [suggestions, setSuggestions] = useState<SubstitutionSuggestionResponse | null>(null);
+  const [query, setQuery] = useState('');
+  const [foods, setFoods] = useState<Food[]>([]);
+  const [selected, setSelected] = useState<Food | null>(null);
+  const [equivalence, setEquivalence] = useState<SubstitutionEquivalence | null>(null);
+  const [quantity, setQuantity] = useState('');
+  const [measure, setMeasure] = useState<FoodMeasure>(gramMeasure);
+  const [busy, setBusy] = useState(false);
+  const [searching, setSearching] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const loadSuggestions = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      setSuggestions(await api<SubstitutionSuggestionResponse>(`/meal-plan-items/${item.id}/substitution-suggestions`));
+    } catch (reason) {
+      setError(errorMessage(reason));
+    } finally {
+      setLoading(false);
+    }
+  }, [item.id]);
+
+  useEffect(() => {
+    if (!open) return;
+    setQuery('');
+    setFoods([]);
+    setSelected(null);
+    setEquivalence(null);
+    void loadSuggestions();
+  }, [open, loadSuggestions]);
+
+  useEffect(() => {
+    if (!open || selected || !query.trim()) {
+      setSearching(false);
+      if (!query.trim()) setFoods([]);
+      return;
+    }
+    let current = true;
+    setSearching(true);
+    const timer = window.setTimeout(() => {
+      void api<Food[]>(`/foods?search=${encodeURIComponent(query)}`)
+        .then((results) => {
+          if (current) setFoods(results.filter((food) => food.source === 'TBCA' && food.id !== item.food_id));
+        })
+        .catch((reason) => {
+          if (current) setError(errorMessage(reason));
+        })
+        .finally(() => {
+          if (current) setSearching(false);
+        });
+    }, 180);
+    return () => {
+      current = false;
+      window.clearTimeout(timer);
+    };
+  }, [item.food_id, open, query, selected]);
+
+  async function pickManual(food: Food) {
+    setBusy(true);
+    setError('');
+    try {
+      const result = await api<{ food: unknown; equivalence: SubstitutionEquivalence }>(
+        `/meal-plan-items/${item.id}/substitution-equivalence?foodId=${food.id}`,
+      );
+      const nextMeasure = result.equivalence.measureSnapshot ?? gramMeasure;
+      setSelected(food);
+      setEquivalence(result.equivalence);
+      setMeasure(nextMeasure);
+      setQuantity(String(result.equivalence.amount).replace('.', ','));
+    } catch (reason) {
+      setError(errorMessage(reason));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function add(foodId: number, origin: 'suggestion' | 'manual') {
+    setBusy(true);
+    setError('');
+    try {
+      const body = origin === 'manual'
+        ? {
+            foodId,
+            origin,
+            quantity: Number(quantity.replace(',', '.')),
+            measureId: measure.id,
+          }
+        : { foodId, origin };
+      const plan = await api<MealPlan>(`/meal-plan-items/${item.id}/substitutions`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+      });
+      onSaved(plan);
+      setSelected(null);
+      setEquivalence(null);
+      setQuery('');
+      setFoods([]);
+      await loadSuggestions();
+    } catch (reason) {
+      setError(errorMessage(reason));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function saveApproved(substitution: MealPlanItemSubstitution, nextQuantity: string, nextMeasure: FoodMeasure) {
+    setBusy(true);
+    setError('');
+    try {
+      onSaved(await api<MealPlan>(`/meal-plan-item-substitutions/${substitution.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          quantity: Number(nextQuantity.replace(',', '.')),
+          measureId: nextMeasure.id,
+        }),
+      }));
+    } catch (reason) {
+      setError(errorMessage(reason));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function removeApproved(substitution: MealPlanItemSubstitution) {
+    setBusy(true);
+    setError('');
+    try {
+      await api(`/meal-plan-item-substitutions/${substitution.id}`, { method: 'DELETE' });
+      onSaved(await api<MealPlan>(`/meal-plans/${planId}`));
+      await loadSuggestions();
+    } catch (reason) {
+      setError(errorMessage(reason));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function moveApproved(substitution: MealPlanItemSubstitution, direction: -1 | 1) {
+    const current = item.substitutions.map((entry) => entry.id);
+    const ids = moveId(current, substitution.id, direction);
+    if (ids === current) return;
+    setBusy(true);
+    setError('');
+    try {
+      onSaved(await api<MealPlan>(`/meal-plan-items/${item.id}/substitutions/order`, {
+        method: 'PUT',
+        body: JSON.stringify({ ids }),
+      }));
+    } catch (reason) {
+      setError(errorMessage(reason));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const patientNotes = suggestions?.patientContext;
+  const hasPatientNotes = Boolean(patientNotes?.preferences || patientNotes?.restrictions || patientNotes?.allergies);
+  const selectedDifferences = selected && equivalence
+    ? quantityDifferences(equivalence.targetNutrients, selected.nutrients, safeGrams(quantity, measure))
+    : null;
+  const full = item.substitutions.length >= 3;
+
+  return (
+    <Dialog open={open} onOpenChange={(next) => !busy && onOpenChange(next)}>
+      <DialogContent className="meal-plan-substitution-dialog" showCloseButton={!busy}>
+        <div className="meal-plan-substitution-title">
+          <span><RefreshCcw aria-hidden="true" /></span>
+          <div>
+            <DialogTitle>Substituições de {item.display_name}</DialogTitle>
+            <DialogDescription>Até 3 alternativas para esta porção, aprovadas por você.</DialogDescription>
+          </div>
+        </div>
+
+        <div className="meal-plan-substitution-scroll">
+          {hasPatientNotes && (
+            <section className="meal-plan-substitution-patient-context" aria-labelledby={`patient-context-${item.id}`}>
+              <ShieldAlert aria-hidden="true" />
+              <div>
+                <strong id={`patient-context-${item.id}`}>Confira o contexto do paciente</strong>
+                {patientNotes?.allergies && <p><b>Alergias:</b> {patientNotes.allergies}</p>}
+                {patientNotes?.restrictions && <p><b>Restrições:</b> {patientNotes.restrictions}</p>}
+                {patientNotes?.preferences && <p><b>Preferências:</b> {patientNotes.preferences}</p>}
+                <small>Esses textos não filtram sugestões automaticamente. A aprovação clínica continua sendo sua.</small>
+              </div>
+            </section>
+          )}
+
+          <section className="meal-plan-approved-list" aria-labelledby={`approved-title-${item.id}`}>
+            <div className="meal-plan-substitution-section-head">
+              <h3 id={`approved-title-${item.id}`}>Alternativas aprovadas</h3>
+              <span>{item.substitutions.length}/3</span>
+            </div>
+            {item.substitutions.length ? (
+              <ol>
+                {item.substitutions.map((substitution, index) => (
+                  <ApprovedSubstitution
+                    key={`${substitution.id}-${substitution.amount}-${substitution.measure_snapshot?.id ?? 0}`}
+                    substitution={substitution}
+                    index={index}
+                    total={item.substitutions.length}
+                    busy={busy}
+                    onSave={saveApproved}
+                    onRemove={removeApproved}
+                    onMove={moveApproved}
+                  />
+                ))}
+              </ol>
+            ) : <p className="meal-plan-substitution-empty">Nenhuma alternativa aprovada ainda.</p>}
+          </section>
+
+          {!full && (
+            <section className="meal-plan-suggestions" aria-labelledby={`suggestions-title-${item.id}`}>
+              <div className="meal-plan-substitution-section-head">
+                <h3 id={`suggestions-title-${item.id}`}>Sugestões compatíveis</h3>
+                <button disabled={busy || loading} onClick={() => void loadSuggestions()} aria-label="Atualizar sugestões">
+                  <RefreshCcw />
+                </button>
+              </div>
+              {loading ? <output className="meal-plan-loading">Calculando equivalências…</output> : suggestions?.suggestions.length ? (
+                <ul>
+                  {suggestions.suggestions.map(({ food, equivalence: suggested }) => (
+                    <li key={food.id}>
+                      <div>
+                        <strong>{food.display_name}</strong>
+                        <span>{formatServing({
+                          amount: suggested.amount,
+                          unit: suggested.unit,
+                          grams_equivalent: suggested.gramsFinal,
+                          measure_snapshot: suggested.measureSnapshot,
+                        })}</span>
+                      </div>
+                      <DifferenceList differences={suggested.differences} />
+                      <Button size="sm" variant="outline" disabled={busy} onClick={() => void add(food.id, 'suggestion')}>
+                        Aprovar
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="meal-plan-substitution-empty">
+                  {suggestions?.classification?.group === 'unknown'
+                    ? 'Este alimento não tem classificação segura para sugestões automáticas.'
+                    : 'Nenhuma sugestão automática atingiu os critérios conservadores.'}
+                </p>
+              )}
+            </section>
+          )}
+
+          {!full && (
+            <section className="meal-plan-manual-substitution" aria-labelledby={`manual-title-${item.id}`}>
+              <h3 id={`manual-title-${item.id}`}>Buscar outra alternativa</h3>
+              {!selected ? (
+                <>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      aria-label="Buscar alternativa no catálogo"
+                      value={query}
+                      onChange={(event) => setQuery(event.target.value)}
+                      placeholder="Busque no catálogo TBCA"
+                      className="pl-9"
+                    />
+                  </div>
+                  <output className="meal-plan-search-status">
+                    {searching ? 'Buscando alimentos…' : query.trim() && !foods.length ? 'Nenhum alimento encontrado.' : ''}
+                  </output>
+                  <div className="meal-plan-search-results">
+                    {foods.slice(0, 8).map((food) => (
+                      <button key={food.id} disabled={busy} onClick={() => void pickManual(food)}>
+                        <strong>{food.displayName ?? food.description}</strong>
+                        <small>{formatNumber(food.nutrients.energia_kcal)} kcal/100 g</small>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              ) : equivalence && (
+                <div className="meal-plan-manual-picked">
+                  <div className="meal-plan-picker-head">
+                    <strong>{selected.displayName ?? selected.description}</strong>
+                    <button aria-label="Escolher outro alimento" disabled={busy} onClick={() => {
+                      setSelected(null);
+                      setEquivalence(null);
+                    }}><X /></button>
+                  </div>
+                  {!equivalence.automaticCompatible && (
+                    <p className="meal-plan-substitution-warning" role="note">
+                      Esta escolha não atende aos critérios automáticos de grupo, preparo ou equivalência. Confirme se faz sentido clinicamente.
+                    </p>
+                  )}
+                  <Label htmlFor={`manual-substitution-${item.id}`}>Quantidade e medida</Label>
+                  <MeasureInput
+                    id={`manual-substitution-${item.id}`}
+                    value={quantity}
+                    measure={measure}
+                    measures={selected.measures ?? [gramMeasure]}
+                    onChange={(value, next) => {
+                      setQuantity(value);
+                      setMeasure(next);
+                    }}
+                  />
+                  {selectedDifferences && <DifferenceList differences={selectedDifferences} />}
+                  <Button disabled={busy || safeGrams(quantity, measure) <= 0} onClick={() => void add(selected.id, 'manual')}>
+                    {busy ? 'Adicionando…' : 'Aprovar alternativa'}
+                  </Button>
+                </div>
+              )}
+            </section>
+          )}
+          {full && <p className="meal-plan-substitution-limit">Limite de 3 alternativas atingido. Remova uma para adicionar outra.</p>}
+          {error && <p role="alert" className="meal-plan-error">{error}</p>}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function ReadPlanItem({ item }: { item: MealPlanItem }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <article className="meal-plan-read-item">
+      <div>
+        <strong>{item.display_name}</strong>
+        <span className="meal-plan-portion">{formatServing(item)}</span>
+        {item.notes && <small>{item.notes}</small>}
+      </div>
+      {item.substitutions.length > 0 && (
+        <button className="meal-plan-patient-swap" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+          <RefreshCcw aria-hidden="true" /> Trocar
+        </button>
+      )}
+      {open && (
+        <div className="meal-plan-patient-alternatives">
+          <strong>No lugar de {item.display_name}</strong>
+          <ul>
+            {item.substitutions.map((substitution) => (
+              <li key={substitution.id}>
+                <span>{substitution.display_name}</span>
+                <small>{formatServing(substitution)}</small>
+              </li>
+            ))}
+          </ul>
+          <small>Escolha uma alternativa conforme a orientação do seu nutricionista.</small>
+        </div>
+      )}
+    </article>
+  );
+}
+
 function DraftItem({
   item,
+  planId,
   onSaved,
   onRemoved,
   onMove,
 }: {
   item: MealPlanItem;
+  planId: number;
   onSaved: (plan: MealPlan) => void;
   onRemoved: () => void;
   onMove: (direction: -1 | 1) => void;
@@ -297,6 +786,7 @@ function DraftItem({
     [notes, setNotes] = useState(item.notes ?? ''),
     [editing, setEditing] = useState(false),
     [busy, setBusy] = useState(false),
+    [substitutionsOpen, setSubstitutionsOpen] = useState(false),
     [error, setError] = useState('');
   async function save() {
     if (safeGrams(quantity, measure) <= 0) return;
@@ -334,6 +824,16 @@ function DraftItem({
           {item.notes && <small>{item.notes}</small>}
         </span>
         <Pencil className="meal-plan-edit-hint" aria-hidden="true" />
+      </button>
+      <button
+        className="meal-plan-substitution-trigger"
+        aria-haspopup="dialog"
+        onClick={() => setSubstitutionsOpen(true)}
+      >
+        <RefreshCcw aria-hidden="true" />
+        {item.substitutions.length
+          ? `${item.substitutions.length} ${item.substitutions.length === 1 ? 'substituição' : 'substituições'}`
+          : 'Adicionar substituição'}
       </button>
       {editing && (
         <div className="meal-plan-item-editor">
@@ -404,6 +904,13 @@ function DraftItem({
           {error}
         </p>
       )}
+      <SubstitutionDialog
+        item={item}
+        planId={planId}
+        open={substitutionsOpen}
+        onOpenChange={setSubstitutionsOpen}
+        onSaved={onSaved}
+      />
     </article>
   );
 }
@@ -551,6 +1058,7 @@ function PlanContent({
                     <DraftItem
                       key={item.id}
                       item={item}
+                      planId={plan.id}
                       onSaved={change}
                       onMove={(d) => moveItem(meal.id, item.id, d)}
                       onRemoved={() =>
@@ -558,15 +1066,7 @@ function PlanContent({
                       }
                     />
                   ) : (
-                    <article className="meal-plan-read-item" key={item.id}>
-                      <div>
-                        <strong>{item.display_name}</strong>
-                        <span className="meal-plan-portion">
-                          {formatServing(item)}
-                        </span>
-                        {item.notes && <small>{item.notes}</small>}
-                      </div>
-                    </article>
+                    <ReadPlanItem item={item} key={item.id} />
                   ),
                 )
               ) : (

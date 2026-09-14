@@ -11,6 +11,12 @@ import {
   MEAL_TYPE_VALUES,
   type MealType,
 } from "../shared/meal-types";
+import {
+  automaticSubstitutionSuggestions,
+  equivalenceMetadata,
+  manualSubstitutionEquivalence,
+  SUBSTITUTION_ALGORITHM_VERSION,
+} from "./smart-substitutions";
 
 type Dependencies = {
   authUser: (req: Request, res: Response) => Promise<AuthUser | null>;
@@ -68,6 +74,26 @@ const itemPatch = z
         : value.quantity != null && value.measureId != null)
     );
   }, "Informe gramas ou quantidade e medida.");
+const substitutionQuantity = z
+  .object({
+    grams: z.number().positive().max(5000).optional(),
+    quantity: z.number().positive().optional(),
+    measureId: z.number().int().nonnegative().optional(),
+  })
+  .refine((value) => {
+    const supplied = value.grams != null || value.quantity != null || value.measureId != null;
+    return !supplied || (value.grams != null
+      ? value.quantity == null && value.measureId == null
+      : value.quantity != null && value.measureId != null);
+  }, "Informe gramas ou quantidade e medida.");
+const substitutionPayload = substitutionQuantity.extend({
+  foodId: z.number().int().positive(),
+  origin: z.enum(["suggestion", "manual"]).default("manual"),
+});
+const substitutionPatch = substitutionQuantity.refine(
+  (value) => value.grams != null || value.quantity != null || value.measureId != null,
+  "Informe a nova quantidade.",
+);
 
 function handler(fn: (req: Request, res: Response) => Promise<void>) {
   return async (req: Request, res: Response) => {
@@ -145,6 +171,58 @@ async function requireDraftByItem(user: AuthUser, itemId: number, deps: Dependen
   return row;
 }
 
+async function requireDraftSubstitution(
+  user: AuthUser,
+  substitutionId: number,
+  deps: Dependencies,
+) {
+  const row = await db
+    .prepare(`SELECT s.*,i.food_id AS original_food_id,i.grams_equivalent AS original_grams,
+      m.meal_plan_id,mp.patient_id,mp.status
+    FROM meal_plan_item_substitutions s
+    JOIN meal_plan_items i ON i.id=s.meal_plan_item_id
+    JOIN meal_plan_meals m ON m.id=i.meal_plan_meal_id
+    JOIN meal_plans mp ON mp.id=m.meal_plan_id WHERE s.id=?`)
+    .get<Record<string, any>>(substitutionId);
+  if (
+    !row ||
+    user.role !== "nutritionist" ||
+    !(await deps.patientAccess(user, Number(row.patient_id)))
+  )
+    throw new MealPlanError("Substituição não encontrada.", 404);
+  if (row.status !== "draft")
+    throw new MealPlanError("Planos publicados são somente leitura. Crie uma nova versão.", 409);
+  return row;
+}
+
+async function assertDraftLocked(planId: number) {
+  const plan = await db
+    .prepare("SELECT status FROM meal_plans WHERE id=? FOR UPDATE")
+    .get<{ status: string }>(planId);
+  if (plan?.status !== "draft")
+    throw new MealPlanError("Planos publicados são somente leitura. Crie uma nova versão.", 409);
+}
+
+async function ensureDistinctSubstitution(item: Record<string, any>, foodId: number) {
+  if (Number(item.food_id) === foodId)
+    throw new MealPlanError("O alimento principal não pode substituir a si mesmo.", 409);
+  const candidate = await db
+    .prepare("SELECT duplicate_group FROM foods WHERE id=? AND active AND source='TBCA'")
+    .get<{ duplicate_group: string | null }>(foodId);
+  if (!candidate) throw new MealPlanError("Selecione um alimento ativo da TBCA.");
+  const existing = await db
+    .prepare(`SELECT s.food_id,f.duplicate_group FROM meal_plan_item_substitutions s
+      JOIN foods f ON f.id=s.food_id WHERE s.meal_plan_item_id=?`)
+    .all<{ food_id: number; duplicate_group: string | null }>(item.id);
+  if (existing.some((row) => Number(row.food_id) === foodId))
+    throw new MealPlanError("Este alimento já foi aprovado como substituição.", 409);
+  if (
+    candidate.duplicate_group &&
+    existing.some((row) => row.duplicate_group === candidate.duplicate_group)
+  )
+    throw new MealPlanError("Uma variante equivalente deste alimento já foi aprovada.", 409);
+}
+
 async function bump(planId: number) {
   await db
     .prepare(
@@ -183,7 +261,19 @@ async function loadPlan(planId: number) {
     LEFT JOIN food_nutrients fn ON fn.food_id=f.id LEFT JOIN nutrients n ON n.code=fn.nutrient_code
     WHERE m.meal_plan_id=? GROUP BY i.id,f.id ORDER BY i.meal_plan_meal_id,i.position,i.id`)
     .all<Record<string, any>>(planId);
-  const measures = await measuresForFoods([...new Set(rows.map((row) => Number(row.food_id)))]);
+  const substitutionRows = await db
+    .prepare(`SELECT s.*,f.source_code,f.description,f.category,f.source,
+      COALESCE(f.display_name,f.description) AS display_name,
+      COALESCE(jsonb_object_agg(n.code,CASE WHEN fn.status='numeric' THEN fn.numeric_value ELSE NULL END) FILTER(WHERE n.code IS NOT NULL),'{}'::jsonb) AS nutrients_per_100g
+    FROM meal_plan_item_substitutions s
+    JOIN meal_plan_items i ON i.id=s.meal_plan_item_id
+    JOIN meal_plan_meals m ON m.id=i.meal_plan_meal_id
+    JOIN foods f ON f.id=s.food_id
+    LEFT JOIN food_nutrients fn ON fn.food_id=f.id LEFT JOIN nutrients n ON n.code=fn.nutrient_code
+    WHERE m.meal_plan_id=? GROUP BY s.id,f.id ORDER BY s.meal_plan_item_id,s.position,s.id`)
+    .all<Record<string, any>>(planId);
+  const foodIds = [...new Set([...rows, ...substitutionRows].map((row) => Number(row.food_id)))];
+  const measures = await measuresForFoods(foodIds);
   const itemSets = new Map<number, ReturnType<typeof scaleNutrients>>();
   const mealPayload = meals.map((meal) => {
     const items = rows
@@ -196,10 +286,32 @@ async function loadPlan(planId: number) {
         );
         itemSets.set(Number(row.id), scaled);
         const { nutrient_snapshot: _snapshot, nutrients_per_100g: _current, ...publicRow } = row;
+        const substitutions = substitutionRows
+          .filter((substitution) => Number(substitution.meal_plan_item_id) === Number(row.id))
+          .map((substitution) => {
+            const substitutionFrozen = plan.status === "draft"
+              ? null
+              : nutrientsFromSnapshot(substitution.nutrient_snapshot);
+            const substitutionScaled = scaleNutrients(
+              substitutionFrozen ?? substitution.nutrients_per_100g ?? {},
+              Number(substitution.grams_equivalent),
+            );
+            const {
+              nutrient_snapshot: _substitutionSnapshot,
+              nutrients_per_100g: _substitutionCurrent,
+              ...publicSubstitution
+            } = substitution;
+            return {
+              ...publicSubstitution,
+              nutrients: substitutionScaled.values,
+              measures: measures.get(Number(substitution.food_id)) ?? [gramMeasure],
+            };
+          });
         return {
           ...publicRow,
           nutrients: scaled.values,
           measures: measures.get(Number(row.food_id)) ?? [gramMeasure],
+          substitutions,
         };
       });
     const totals = sumNutrientSets(
@@ -241,7 +353,7 @@ async function loadPlan(planId: number) {
           : Number(goals.protein_gkg_min) * Number(weight.weight_kg),
     };
   }
-  return { ...plan, meals: mealPayload, totals: total.values, goals: goalPayload, queryCount: 6 };
+  return { ...plan, meals: mealPayload, totals: total.values, goals: goalPayload, queryCount: 7 };
 }
 
 async function nextVersion(patientId: number) {
@@ -294,10 +406,30 @@ async function clonePlan(sourceId: number, createdBy: number) {
         `INSERT INTO meal_plan_meals(meal_plan_id,meal_type,position,notes) VALUES(?,?,?,?) RETURNING id`,
       )
       .get<{ id: number }>(plan!.id, meal.meal_type, meal.position, meal.notes);
-    await db
-      .prepare(`INSERT INTO meal_plan_items(meal_plan_meal_id,food_id,position,amount,unit,grams_equivalent,measure_snapshot,notes)
-      SELECT ?,food_id,position,amount,unit,grams_equivalent,measure_snapshot,notes FROM meal_plan_items WHERE meal_plan_meal_id=? ORDER BY position,id`)
-      .run(copy!.id, meal.id);
+    const items = await db
+      .prepare("SELECT * FROM meal_plan_items WHERE meal_plan_meal_id=? ORDER BY position,id")
+      .all<Record<string, any>>(meal.id);
+    for (const item of items) {
+      const itemCopy = await db
+        .prepare(`INSERT INTO meal_plan_items(meal_plan_meal_id,food_id,position,amount,unit,grams_equivalent,measure_snapshot,notes)
+          VALUES(?,?,?,?,?,?,?::jsonb,?) RETURNING id`)
+        .get<{ id: number }>(
+          copy!.id,
+          item.food_id,
+          item.position,
+          item.amount,
+          item.unit,
+          item.grams_equivalent,
+          JSON.stringify(item.measure_snapshot),
+          item.notes,
+        );
+      await db
+        .prepare(`INSERT INTO meal_plan_item_substitutions(
+          meal_plan_item_id,food_id,position,amount,unit,grams_equivalent,measure_snapshot,origin,algorithm_version,equivalence_metadata)
+          SELECT ?,food_id,position,amount,unit,grams_equivalent,measure_snapshot,origin,algorithm_version,equivalence_metadata
+          FROM meal_plan_item_substitutions WHERE meal_plan_item_id=? ORDER BY position,id`)
+        .run(itemCopy!.id, item.id);
+    }
   }
   return plan!.id;
 }
@@ -464,6 +596,26 @@ export function mealPlanRouter(deps: Dependencies) {
             GROUP BY item_source.id
           ) snapshot
           WHERE item.id=snapshot.id`).run(original.id);
+        await db.prepare(`UPDATE meal_plan_item_substitutions substitution SET nutrient_snapshot=snapshot.payload
+          FROM (
+            SELECT substitution_source.id,
+              COALESCE(jsonb_object_agg(
+                nutrient.code,
+                jsonb_build_object(
+                  'numeric_value',food_nutrient.numeric_value,
+                  'raw_value',food_nutrient.raw_value,
+                  'status',food_nutrient.status
+                )
+              ) FILTER(WHERE nutrient.code IS NOT NULL),'{}'::jsonb) AS payload
+            FROM meal_plan_item_substitutions substitution_source
+            JOIN meal_plan_items item ON item.id=substitution_source.meal_plan_item_id
+            JOIN meal_plan_meals meal ON meal.id=item.meal_plan_meal_id
+            LEFT JOIN food_nutrients food_nutrient ON food_nutrient.food_id=substitution_source.food_id
+            LEFT JOIN nutrients nutrient ON nutrient.code=food_nutrient.nutrient_code
+            WHERE meal.meal_plan_id=?
+            GROUP BY substitution_source.id
+          ) snapshot
+          WHERE substitution.id=snapshot.id`).run(original.id);
         await db
           .prepare(
             "UPDATE meal_plans SET status='archived',archived_at=CURRENT_TIMESTAMP,updated_at=CURRENT_TIMESTAMP WHERE patient_id=? AND status='active'",
@@ -711,6 +863,213 @@ export function mealPlanRouter(deps: Dependencies) {
         await bump(meal.meal_plan_id);
       });
       res.json(await loadPlan(meal.meal_plan_id));
+    }),
+  );
+  router.get(
+    "/meal-plan-items/:itemId/substitution-suggestions",
+    handler(async (req, res) => {
+      const user = await deps.authUser(req, res);
+      if (!user) return;
+      const item = await requireDraftByItem(user, id.parse(req.params.itemId), deps);
+      const approved = await db
+        .prepare("SELECT food_id FROM meal_plan_item_substitutions WHERE meal_plan_item_id=?")
+        .all<{ food_id: number }>(item.id);
+      const [result, patient] = await Promise.all([
+        automaticSubstitutionSuggestions(
+          Number(item.food_id),
+          Number(item.grams_equivalent),
+          approved.map((row) => Number(row.food_id)),
+        ),
+        db.prepare("SELECT food_preferences,food_restrictions,allergies FROM patients WHERE id=?")
+          .get<Record<string, string | null>>(item.patient_id),
+      ]);
+      res.json({
+        ...result,
+        patientContext: {
+          preferences: patient?.food_preferences ?? null,
+          restrictions: patient?.food_restrictions ?? null,
+          allergies: patient?.allergies ?? null,
+          structuredFiltering: false,
+        },
+      });
+    }),
+  );
+  router.get(
+    "/meal-plan-items/:itemId/substitution-equivalence",
+    handler(async (req, res) => {
+      const user = await deps.authUser(req, res);
+      if (!user) return;
+      const item = await requireDraftByItem(user, id.parse(req.params.itemId), deps);
+      const candidateFoodId = id.parse(req.query.foodId);
+      if (candidateFoodId === Number(item.food_id))
+        throw new MealPlanError("O alimento principal não pode substituir a si mesmo.", 409);
+      const result = await manualSubstitutionEquivalence(
+        Number(item.food_id),
+        Number(item.grams_equivalent),
+        candidateFoodId,
+      );
+      if (!result)
+        throw new MealPlanError("Não há dados nutricionais suficientes para calcular esta alternativa.", 422);
+      res.json(result);
+    }),
+  );
+  router.post(
+    "/meal-plan-items/:itemId/substitutions",
+    handler(async (req, res) => {
+      const user = await deps.authUser(req, res);
+      if (!user) return;
+      const item = await requireDraftByItem(user, id.parse(req.params.itemId), deps);
+      const payload = substitutionPayload.parse(req.body);
+      await transaction(async () => {
+        await assertDraftLocked(Number(item.meal_plan_id));
+        await ensureDistinctSubstitution(item, payload.foodId);
+        const count = await db
+          .prepare("SELECT count(*)::int AS count FROM meal_plan_item_substitutions WHERE meal_plan_item_id=?")
+          .get<{ count: number }>(item.id);
+        if (Number(count?.count) >= 3)
+          throw new MealPlanError("Cada alimento pode ter no máximo 3 substituições.", 409);
+        const suggested = await manualSubstitutionEquivalence(
+          Number(item.food_id),
+          Number(item.grams_equivalent),
+          payload.foodId,
+        );
+        if (!suggested)
+          throw new MealPlanError("Não há dados nutricionais suficientes para calcular esta alternativa.", 422);
+        if (payload.origin === "suggestion" && !suggested.equivalence.automaticCompatible)
+          throw new MealPlanError("Esta opção não atende mais aos critérios de sugestão automática.", 409);
+        const hasQuantity = payload.grams != null || payload.quantity != null || payload.measureId != null;
+        const converted = hasQuantity
+          ? await resolveQuantity(payload.foodId, payload).catch((error) => {
+              throw new MealPlanError(error.message);
+            })
+          : {
+              amount: suggested.equivalence.amount,
+              unit: suggested.equivalence.unit,
+              grams: suggested.equivalence.gramsFinal,
+              snapshot: suggested.equivalence.measureSnapshot,
+            };
+        const evaluated = hasQuantity
+          ? await manualSubstitutionEquivalence(
+              Number(item.food_id),
+              Number(item.grams_equivalent),
+              payload.foodId,
+              converted.grams,
+            )
+          : suggested;
+        if (!evaluated)
+          throw new MealPlanError("Não foi possível avaliar a quantidade desta alternativa.", 422);
+        const position = await db
+          .prepare("SELECT COALESCE(MAX(position),-1)::int+1 AS position FROM meal_plan_item_substitutions WHERE meal_plan_item_id=?")
+          .get<{ position: number }>(item.id);
+        await db.prepare(`INSERT INTO meal_plan_item_substitutions(
+          meal_plan_item_id,food_id,position,amount,unit,grams_equivalent,measure_snapshot,origin,algorithm_version,equivalence_metadata)
+          VALUES(?,?,?,?,?,?,?::jsonb,?,?,?::jsonb)`)
+          .run(
+            item.id,
+            payload.foodId,
+            position!.position,
+            converted.amount,
+            converted.unit,
+            converted.grams,
+            JSON.stringify(converted.snapshot),
+            payload.origin,
+            SUBSTITUTION_ALGORITHM_VERSION,
+            JSON.stringify(equivalenceMetadata(evaluated.equivalence)),
+          );
+        await bump(Number(item.meal_plan_id));
+      });
+      res.status(201).json(await loadPlan(Number(item.meal_plan_id)));
+    }),
+  );
+  router.patch(
+    "/meal-plan-item-substitutions/:substitutionId",
+    handler(async (req, res) => {
+      const user = await deps.authUser(req, res);
+      if (!user) return;
+      const substitution = await requireDraftSubstitution(
+        user,
+        id.parse(req.params.substitutionId),
+        deps,
+      );
+      const payload = substitutionPatch.parse(req.body);
+      await transaction(async () => {
+        await assertDraftLocked(Number(substitution.meal_plan_id));
+        const converted = await resolveQuantity(
+          Number(substitution.food_id),
+          payload,
+          substitution.measure_snapshot,
+        ).catch((error) => {
+          throw new MealPlanError(error.message);
+        });
+        const evaluated = await manualSubstitutionEquivalence(
+          Number(substitution.original_food_id),
+          Number(substitution.original_grams),
+          Number(substitution.food_id),
+          converted.grams,
+        );
+        if (!evaluated)
+          throw new MealPlanError("Não foi possível avaliar a quantidade desta alternativa.", 422);
+        await db.prepare(`UPDATE meal_plan_item_substitutions SET
+          amount=?,unit=?,grams_equivalent=?,measure_snapshot=?::jsonb,
+          algorithm_version=?,equivalence_metadata=?::jsonb,updated_at=CURRENT_TIMESTAMP WHERE id=?`)
+          .run(
+            converted.amount,
+            converted.unit,
+            converted.grams,
+            JSON.stringify(converted.snapshot),
+            SUBSTITUTION_ALGORITHM_VERSION,
+            JSON.stringify(equivalenceMetadata(evaluated.equivalence)),
+            substitution.id,
+          );
+        await bump(Number(substitution.meal_plan_id));
+      });
+      res.json(await loadPlan(Number(substitution.meal_plan_id)));
+    }),
+  );
+  router.delete(
+    "/meal-plan-item-substitutions/:substitutionId",
+    handler(async (req, res) => {
+      const user = await deps.authUser(req, res);
+      if (!user) return;
+      const substitution = await requireDraftSubstitution(
+        user,
+        id.parse(req.params.substitutionId),
+        deps,
+      );
+      await transaction(async () => {
+        await assertDraftLocked(Number(substitution.meal_plan_id));
+        await db.prepare("DELETE FROM meal_plan_item_substitutions WHERE id=?").run(substitution.id);
+        await db.prepare(`WITH ranked AS(
+          SELECT id,row_number() OVER(ORDER BY position,id)-1 AS p
+          FROM meal_plan_item_substitutions WHERE meal_plan_item_id=?
+        ) UPDATE meal_plan_item_substitutions s SET position=ranked.p,updated_at=CURRENT_TIMESTAMP
+          FROM ranked WHERE s.id=ranked.id`).run(substitution.meal_plan_item_id);
+        await bump(Number(substitution.meal_plan_id));
+      });
+      res.status(204).end();
+    }),
+  );
+  router.put(
+    "/meal-plan-items/:itemId/substitutions/order",
+    handler(async (req, res) => {
+      const user = await deps.authUser(req, res);
+      if (!user) return;
+      const item = await requireDraftByItem(user, id.parse(req.params.itemId), deps);
+      const order = z.object({ ids: z.array(z.number().int().positive()).max(3) }).parse(req.body).ids;
+      const existing = (await db
+        .prepare("SELECT id FROM meal_plan_item_substitutions WHERE meal_plan_item_id=? ORDER BY id")
+        .all<{ id: number }>(item.id)).map((row) => Number(row.id)).sort((a, b) => a - b);
+      if ([...order].sort((a, b) => a - b).join() !== existing.join())
+        throw new MealPlanError("A ordem deve conter todas as substituições do alimento.");
+      await transaction(async () => {
+        await assertDraftLocked(Number(item.meal_plan_id));
+        await db.prepare("SET CONSTRAINTS meal_plan_item_substitutions_meal_plan_item_id_position_key DEFERRED").run();
+        for (const [position, substitutionId] of order.entries())
+          await db.prepare("UPDATE meal_plan_item_substitutions SET position=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND meal_plan_item_id=?")
+            .run(position, substitutionId, item.id);
+        await bump(Number(item.meal_plan_id));
+      });
+      res.json(await loadPlan(Number(item.meal_plan_id)));
     }),
   );
   router.get(
