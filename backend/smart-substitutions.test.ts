@@ -94,6 +94,20 @@ describe('smart substitutions deterministic core', () => {
       compatible: false,
       reason: 'different_group',
     });
+    expect(substitutionCompatibility(rice, { ...potato, family: 'arroz' })).toMatchObject({
+      compatible: true,
+      reason: 'compatible',
+    });
+  });
+
+  it('abstains from demonstrated processed and composite preparations', () => {
+    for (const displayName of ['Linguiça de frango grelhada', 'Empanado de frango assado', 'Apresuntado cozido', 'Empada de frango assada']) {
+      expect(classifySubstitutionFood(food({
+        display_name: displayName,
+        description: displayName,
+        category: 'Carnes e derivados',
+      })).group).toBe('unknown');
+    }
   });
 
   it('solves weighted least squares deterministically without unstable zero divisions', () => {

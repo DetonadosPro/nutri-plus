@@ -258,6 +258,8 @@ export type SubstitutionSuggestionResponse = {
   }>;
   metrics: {
     initialCandidates: number;
+    semanticCandidates: number;
+    eligibleCandidates: number;
     classifiedCandidates: number;
     rankingMs: number;
     returned: number;
