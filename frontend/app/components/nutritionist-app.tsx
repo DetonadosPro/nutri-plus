@@ -65,6 +65,7 @@ import { PatientMealList } from './patient-meal-list';
 import { UserIdentity } from './user-identity';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { NutritionistMealPlan } from './meal-plan';
+import { PlanDiaryAdherencePanel } from './plan-diary-adherence';
 
 import { PatientApp } from './patient-app';
 import { Button } from '@/components/ui/button';
@@ -902,7 +903,10 @@ function PatientWorkspace({
             </>
           )}
           {tab === 'analysis' && (
-            <PatientAnalysis detail={detail} range={range} onRange={onRange} />
+            <>
+              <PlanDiaryAdherencePanel patientId={Number(profile.id)} />
+              <PatientAnalysis detail={detail} range={range} onRange={onRange} />
+            </>
           )}
           {tab === 'notes' && (
             <PatientFeedback detail={detail} onSaved={onReload} />

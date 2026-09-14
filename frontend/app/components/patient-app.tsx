@@ -48,6 +48,7 @@ import { PatientDayHome } from './patient-day-home';
 import { UserIdentity } from './user-identity';
 import { ProfileDisclosure } from './profile-disclosure';
 import { PatientMealPlan } from './meal-plan';
+import { PlanDiaryAdherencePanel } from './plan-diary-adherence';
 import {
   ChartPanel,
   ContentSkeleton,
@@ -375,7 +376,12 @@ export function PatientApp({
                 />
               </>
             )}
-            {active === 'plan' && <PatientMealPlan />}
+            {active === 'plan' && (
+              <>
+                <PatientMealPlan />
+                <PlanDiaryAdherencePanel simple />
+              </>
+            )}
             {active === 'diary' &&
               (diarySummary?.date === diaryDate ? (
                 <DiaryArea

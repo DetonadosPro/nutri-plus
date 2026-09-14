@@ -146,6 +146,50 @@ export type History = {
   weights: Array<{ weighed_at: string; weight_kg: number }>;
   glycemic: GlycemicSummary;
 };
+export type AdherenceItem = {
+  state: 'matched_original' | 'matched_substitution' | 'matched_quantity_difference' | 'planned_not_recorded' | 'extra_recorded';
+  planned: null | { name: string; amount: number; unit: string; grams: number | null };
+  recorded: null | { name: string; amount: number; unit: string; grams: number | null };
+  approvedSubstitution: boolean;
+  quantity: 'within_target' | 'near_target' | 'outside_target' | 'not_evaluable';
+  differenceGrams: number | null;
+  differencePercent: number | null;
+};
+export type PlanDiaryAdherence = {
+  version: 'plan-diary-adherence-v1';
+  from: string;
+  to: string;
+  timezone: 'America/Sao_Paulo';
+  planChangedDuringPeriod: boolean;
+  summary: {
+    eligiblePlannedItems: number;
+    coveredPlannedItems: number;
+    eligibleMeals: number;
+    evaluableMeals: number;
+    alignedMeals: number;
+    compatibleItems: number;
+    evaluableRecordedItems: number;
+    substitutionsUsed: number;
+    quantityAlignedItems: number;
+    quantityEvaluableItems: number;
+    relevantQuantityDifferences: number;
+    extraRecordedItems: number;
+    plannedWithoutRecord: number;
+    noPlanDays: number;
+  };
+  days: Array<{
+    date: string;
+    state: 'no_plan' | 'not_evaluable' | 'evaluable';
+    plan: null | { version: number; effectiveDate: string; publishedAt: string };
+    recordedItems: number;
+    meals: Array<{
+      mealType: import('../../shared/meal-types').MealType;
+      planned: boolean;
+      state: 'aligned' | 'mostly_aligned' | 'different' | 'not_evaluable';
+      items: AdherenceItem[];
+    }>;
+  }>;
+};
 export type PatientListItem = {
   id: number;
   name: string;
