@@ -13,6 +13,7 @@ import {
   MessageSquareText,
   Plus,
   Scale,
+  Utensils,
   Weight,
 } from 'lucide-react';
 import {
@@ -46,6 +47,7 @@ import { EnergyProgress } from './energy-progress';
 import { PatientDayHome } from './patient-day-home';
 import { UserIdentity } from './user-identity';
 import { ProfileDisclosure } from './profile-disclosure';
+import { PatientMealPlan } from './meal-plan';
 import {
   ChartPanel,
   ContentSkeleton,
@@ -86,9 +88,10 @@ import type {
   User,
 } from '../types';
 
-type PatientArea = 'today' | 'diary' | 'progress' | 'guidance' | 'profile';
+type PatientArea = 'today' | 'plan' | 'diary' | 'progress' | 'guidance' | 'profile';
 const navItems = [
   ['today', 'Diário', Home],
+  ['plan', 'Plano', Utensils],
   ['diary', 'Detalhes', ClipboardList],
   ['progress', 'Evolução', BarChart3],
   ['guidance', 'Orientações', MessageSquareText],
@@ -286,7 +289,7 @@ export function PatientApp({
             {navItems
               .filter(
                 ([id]) =>
-                  id !== 'diary' && (!professionalMode || id !== 'guidance'),
+                  id !== 'diary' && (!professionalMode || (id !== 'guidance' && id !== 'plan')),
               )
               .map(([id, label, Icon]) => (
                 <button
@@ -327,7 +330,20 @@ export function PatientApp({
         <div className="min-w-0">
           <div className="content-shell">
             {active === 'today' && (
-              <PatientDayHome
+              <>
+                {!professionalMode && (
+                  <button
+                    className="meal-plan-mobile-entry lg:hidden"
+                    onClick={() => navigate({ active: 'plan' })}
+                  >
+                    <span>
+                      <Utensils className="size-5" />
+                      <strong>Meu plano alimentar</strong>
+                    </span>
+                    <small>Veja a prescrição do seu nutricionista</small>
+                  </button>
+                )}
+                <PatientDayHome
                 summary={homeSummary ?? summary}
                 date={homeDate}
                 loading={loading}
@@ -356,8 +372,10 @@ export function PatientApp({
                   await refreshPatientData();
                   success('Água atualizada.');
                 }}
-              />
+                />
+              </>
             )}
+            {active === 'plan' && <PatientMealPlan />}
             {active === 'diary' &&
               (diarySummary?.date === diaryDate ? (
                 <DiaryArea
@@ -418,7 +436,7 @@ export function PatientApp({
         aria-label="Navegação principal"
       >
         {navItems
-          .filter(([id]) => id !== 'diary')
+          .filter(([id]) => id === 'today' || id === 'progress')
           .slice(0, 2)
           .map(([id, label, Icon]) => (
             <button

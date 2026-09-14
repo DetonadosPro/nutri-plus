@@ -6,6 +6,7 @@ import { detectedFoodSchema,type MatchState,type MeatVisual } from '../shared/fo
 import { randomUUID } from 'node:crypto';
 import { rateLimit } from 'express-rate-limit';
 import { activitiesRouter, seedActivityCatalog } from './activities';
+import { mealPlanRouter } from './meal-plans';
 import express, { type Request, type Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -356,6 +357,7 @@ function daysBetween(from: string, to: string) {
 }
 
 app.use("/api/activities", activitiesRouter({ authUser, patientAccess }));
+app.use('/api', mealPlanRouter({ authUser, patientAccess }));
 
 app.get("/api/health", (_req, res) =>
   res.json({ ok: true, foods: tbcaCount, database: databaseInfo.engine, source: "TBCA", version: appConfig.release }),
