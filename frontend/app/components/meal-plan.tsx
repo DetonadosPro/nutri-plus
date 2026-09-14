@@ -658,7 +658,7 @@ function SubstitutionDialog({
               ) : (
                 <p className="meal-plan-substitution-empty">
                   {suggestions?.classification?.group === 'unknown'
-                    ? 'Este alimento não tem classificação segura para sugestões automáticas.'
+                    ? 'Este alimento não tem classificação confiável para sugestões automáticas.'
                     : 'Nenhuma sugestão automática atingiu os critérios conservadores.'}
                 </p>
               )}

@@ -79,11 +79,14 @@ describe('meal plan view model', () => {
   });
   it('makes conservative automation and free-text safety limits explicit', () => {
     expect(component).toContain('Nenhuma sugestão automática atingiu os critérios conservadores.');
+    expect(component).toContain('classificação confiável para sugestões automáticas');
     expect(component).toContain('não filtram sugestões automaticamente');
     expect(component).toContain('Alergias:');
     expect(component).toContain('Restrições:');
+    expect(component).toContain('const hasPatientNotes = Boolean(');
     expect(component).toContain('não atende aos critérios automáticos de grupo, preparo ou equivalência');
     expect(component).toContain('Diferença nutricional estimada');
+    expect(component).not.toMatch(/opção segura|compatível com alergias|recomendado para suas restrições/i);
   });
   it('shows only approved substitutions to the patient without persisting a visual choice', () => {
     const readItem = component.slice(

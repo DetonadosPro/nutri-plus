@@ -113,24 +113,29 @@ export const SUBSTITUTION_GROUP_CONFIG: Record<Exclude<SubstitutionGroup, 'unkno
 
 const ALLOWED_CURATION = new Set(['base_food', 'simple_preparation']);
 const BLOCKED_FLAGS = new Set(['composite_meal', 'many_ingredients', 'infant_specific', 'supplement', 'branded']);
-const PROCESSING = /\b(linguic|salsich|salame|presunto|mortadela|hamburguer|nugget|empanad|embutid|industrializ|almond[êe]ga)\b/;
-const COMPOSITE = /\b(lasanha|sanduiche|pizza|estrogonofe|feijoada|risoto|torta|sopa|bolo|biscoito|sobremesa)\b/;
+const PROCESSING = /\b(?:linguic\w*|salsich\w*|salam\w*|presunt\w*|apresunt\w*|mortadel\w*|hamburguer\w*|nugget\w*|empanad\w*|embutid\w*|industrializ\w*|almondeg\w*|fiambre\w*|bacon\w*|charque\w*|paio\w*|defumad\w*)\b|\bcarne seca\b/;
+const COMPOSITE = /\b(?:lasanha|sanduiche|pizza|estrogonofe|feijoada|risoto|torta|sopa|bolo|biscoito|sobremesa|empada|quibe|falafel|homus|enroladinho)\b|\bespeto de queijo\b|\biogurte\b.*\bgranola\b|\bcuscuz\b.*\b(?:atum|camarao|legumes)\b|\bpizzaiol\w*\b|\bpure\b.*\b(?:manteiga|leite|creme)\b/;
 
 function normalizedFoodText(food: Pick<SubstitutionFood, 'display_name' | 'description'>) {
   return normalizeFoodName(`${food.display_name} ${food.description}`);
 }
 
-function familyFrom(text: string) {
+function familyFrom(text: string, group: SubstitutionGroup = 'unknown') {
   const families: Array<[RegExp, string]> = [
     [/\barroz\b/, 'arroz'], [/\bbatata(?: doce| inglesa)?\b/, 'batata'], [/\bmandioca|aipim|macaxeira\b/, 'mandioca'],
     [/\bmacarrao|massa\b/, 'macarrao'], [/\bcuscuz\b/, 'cuscuz'], [/\bmilho\b/, 'milho'], [/\baveia\b/, 'aveia'], [/\bpao\b/, 'pao'],
     [/\bfeijao\b/, 'feijao'], [/\blentilha\b/, 'lentilha'], [/\bervilha\b/, 'ervilha'], [/\bgrao de bico\b/, 'grao-de-bico'],
-    [/\bbanana\b/, 'banana'], [/\bmaca\b/, 'maca'], [/\bpera\b/, 'pera'], [/\blaranja\b/, 'laranja'], [/\bmamao\b/, 'mamao'],
+    [/\bbanana\b/, 'banana'], [/\bmaca\b/, 'maca'], [/\blaranja\b/, 'laranja'], [/\bpera\b/, 'pera'], [/\bmamao\b/, 'mamao'],
     [/\bfrango\b/, 'frango'], [/\bperu\b/, 'peru'], [/\bbovin|carne de boi|contrafile|patinho|alcatra\b/, 'bovino'],
     [/\bsuino|porco|lombo\b/, 'suino'], [/\bcamarao|crustaceo\b/, 'camarao'], [/\btilapia|salmao|sardinha|atum|merluza|pescad|peixe\b/, 'peixe'],
     [/\bovo|omelete\b/, 'ovo'], [/\bleite\b/, 'leite'], [/\biogurte\b/, 'iogurte'], [/\bqueijo\b/, 'queijo'],
-    [/\bazeite\b/, 'azeite'], [/\boleo\b/, 'oleo'], [/\bmanteiga\b/, 'manteiga'], [/\bmargarina\b/, 'margarina'],
   ];
+  if (group === 'fat') {
+    if (/\bazeite\b/.test(text)) return 'azeite';
+    if (/\bmargarina\b/.test(text)) return 'margarina';
+    if (/\bmanteiga\b/.test(text)) return 'manteiga';
+    if (/\boleo\b/.test(text)) return 'oleo';
+  }
   return families.find(([pattern]) => pattern.test(text))?.[1] ?? text.split(' ')[0] ?? 'unknown';
 }
 
@@ -158,7 +163,7 @@ export function classifySubstitutionFood(food: Omit<SubstitutionFood, 'nutrients
   if (food.category === 'Cereais e derivados' && /\b(arroz|macarrao|massa|cuscuz|aveia|pao|milho|quinoa)\b/.test(text)) group = 'carbohydrate';
   else if (food.category === 'Vegetais e derivados' && /\b(batata|mandioca|aipim|macaxeira|inhame|car[aá]|taro)\b/.test(text)) group = 'carbohydrate';
   else if (food.category === 'Leguminosas e derivados' && /\b(feijao|lentilha|ervilha|grao de bico)\b/.test(text) && !/\b(farinha|pasta|proteina|extrato|vagem)\b/.test(text)) group = 'legume';
-  else if (['Carnes e derivados', 'Pescados e frutos do mar'].includes(food.category ?? '') && !PROCESSING.test(text) && !/\b(coracao|figado|rim|miolo|dobradinha|tripa)\b/.test(text)) group = 'animal_protein';
+  else if (['Carnes e derivados', 'Pescados e frutos do mar'].includes(food.category ?? '') && !PROCESSING.test(text) && !/\b(coracao|figado|rim|miolo|dobradinha|tripa|bucho|moela|lingua|rabo|pe de)\b/.test(text)) group = 'animal_protein';
   else if (food.category === 'Ovos e derivados' && /\bovo|omelete\b/.test(text) && !/\b(vegetais|frios|queijo|maionese|carne|frango|atum|cogumelo|espinafre|couve flor|margarina|benedict|po|desidratad)\b/.test(text)) group = 'egg';
   else if (food.category === 'Leite e derivados') {
     if (/\bleite\b/.test(text) && /\bfluido|uht|pasteurizad|organico\b/.test(text) && !/\b(po|vitamina|bebida|creme|condensado)\b/.test(text)) { group = 'dairy'; role = 'milk'; }
@@ -167,20 +172,18 @@ export function classifySubstitutionFood(food: Omit<SubstitutionFood, 'nutrients
   } else if (food.category === 'Frutas e derivados' && !/\b(suco|geleia|doce|desidratad|cozid|assad|farinha|polpa com|nectar)\b/.test(text)) { group = 'fruit'; role = 'fresh'; }
   else if (food.category === 'Vegetais e derivados' && !/\b(farinha|suco|sopa|pure|conserva|desidratad|empanad)\b/.test(text)) group = 'vegetable';
   else if (food.category === 'Gorduras e óleos') {
-    if (/\bazeite|oleo\b/.test(text)) { group = 'fat'; role = 'oil'; }
-    else if (/\bmanteiga|margarina\b/.test(text)) { group = 'fat'; role = 'spread'; }
+    if (/\bmanteiga cacau|manteiga de cacau|oleo de cobertura\b/.test(text)) return unknown('non_culinary_fat');
+    if (/\bmanteiga|margarina\b/.test(text)) { group = 'fat'; role = 'spread'; }
+    else if (/\bazeite|oleo\b/.test(text)) { group = 'fat'; role = 'oil'; }
   }
   if (group === 'unknown') return unknown('insufficient_structural_evidence');
-  return { group, role, family: familyFrom(familyText), preparation: preparationFrom(text, group), confidence: food.curation_confidence === 'high' ? 'high' : 'medium', reason: 'structured_category_and_curated_identity' };
+  return { group, role, family: familyFrom(familyText, group), preparation: preparationFrom(text, group), confidence: food.curation_confidence === 'high' ? 'high' : 'medium', reason: 'structured_category_and_curated_identity' };
 }
 
 export function substitutionCompatibility(original: FoodClassification, candidate: FoodClassification) {
   if (original.group === 'unknown' || candidate.group === 'unknown') return { compatible: false, preparationScore: 0, reason: 'unknown_group' };
   if (original.group !== candidate.group) return { compatible: false, preparationScore: 0, reason: 'different_group' };
   if (original.role !== candidate.role) return { compatible: false, preparationScore: 0, reason: 'different_culinary_role' };
-  const diversifyFamily = new Set<SubstitutionGroup>(['carbohydrate', 'legume', 'animal_protein', 'fruit', 'vegetable']);
-  if (original.family === candidate.family && diversifyFamily.has(original.group))
-    return { compatible: false, preparationScore: 0, reason: 'same_food_family' };
   const strict = new Set(['raw', 'fresh', 'fried', 'liquid']);
   if ((strict.has(original.preparation) || strict.has(candidate.preparation)) && original.preparation !== candidate.preparation)
     return { compatible: false, preparationScore: 0, reason: 'incompatible_preparation' };
@@ -237,17 +240,35 @@ function rounded(value: number, step: number, minimum = step) {
   return Math.max(minimum, Math.round(value / step) * step);
 }
 
-function servingCandidates(idealGrams: number, measures: FoodMeasure[]) {
+function measureFriendliness(measure: FoodMeasure, classification: FoodClassification) {
+  if (measure.kind === 'household') {
+    const name = normalizeFoodName(measure.name);
+    if (/\bporcao anvisa\b/.test(name)) return 0;
+    if (/\bporcao media\b/.test(name)) return 1;
+    return 4;
+  }
+  if (measure.kind === 'count') {
+    if (classification.role === 'yogurt' && measure.name.includes('/')) return 1;
+    return 3;
+  }
+  if (measure.kind === 'volume') return 2;
+  return 1;
+}
+
+function servingCandidates(idealGrams: number, measures: FoodMeasure[], classification: FoodClassification) {
   const choices: Array<{ amount: number; unit: string; grams: number; snapshot: FoodMeasure | null; friendliness: number }> = [];
   for (const measure of measures) {
     if (measure.id === 0 || measure.kind === 'mass') continue;
     const exact = idealGrams / (measure.grams / measure.quantity);
     const step = measure.kind === 'count' ? 1 : measure.kind === 'volume' ? (exact >= 100 ? 25 : 10) : .5;
-    const amount = rounded(exact, step);
-    const grams = amount * (measure.grams / measure.quantity);
-    if (measure.kind === 'household' && amount > 6) continue;
-    if (measure.kind === 'count' && amount > 10) continue;
-    if (grams > 0 && grams <= 5000) choices.push({ amount, unit: measure.name, grams, snapshot: measure, friendliness: measure.kind === 'household' ? 4 : measure.kind === 'count' ? 3 : 2 });
+    const nearest = rounded(exact, step);
+    for (const amount of new Set([nearest, nearest - step, nearest + step])) {
+      if (amount <= 0) continue;
+      const grams = amount * (measure.grams / measure.quantity);
+      if (measure.kind === 'household' && amount > 6) continue;
+      if (measure.kind === 'count' && amount > 10) continue;
+      if (grams > 0 && grams <= 5000) choices.push({ amount, unit: measure.name, grams, snapshot: measure, friendliness: measureFriendliness(measure, classification) });
+    }
   }
   const grams = rounded(idealGrams, 5, 5);
   choices.push({ amount: grams, unit: 'g', grams, snapshot: null, friendliness: 1 });
@@ -266,11 +287,11 @@ export function equivalentServing(original: SubstitutionFood, originalGrams: num
   if (!idealGrams) return null;
   const plausible = idealGrams >= config.minGrams && idealGrams <= config.maxGrams && idealGrams / originalGrams >= config.minRatio && idealGrams / originalGrams <= config.maxRatio;
   if (!manual && (!compatibility.compatible || !plausible)) return null;
-  const evaluated = servingCandidates(idealGrams, candidate.measures).map((choice) => {
+  const evaluated = servingCandidates(idealGrams, candidate.measures, candidateClass).map((choice) => {
     const result = servingDifferences(target, nutrientPortion(candidate.nutrients, choice.grams), config);
     return { ...choice, ...result, accepted: withinTolerances(result.differences, result.weightedError, config) };
   }).sort((a, b) => {
-    const practicalError = (choice: typeof a) => choice.weightedError + (choice.friendliness > 1 ? 0 : .03);
+    const practicalError = (choice: typeof a) => choice.weightedError + (choice.friendliness > 1 ? 0 : choice.friendliness === 1 ? .03 : .06);
     return Number(b.accepted) - Number(a.accepted)
       || practicalError(a) - practicalError(b)
       || b.friendliness - a.friendliness
@@ -343,9 +364,9 @@ export async function manualSubstitutionEquivalence(originalFoodId: number, orig
 export async function automaticSubstitutionSuggestions(originalFoodId: number, originalGrams: number, excludedFoodIds: number[] = []) {
   const started = performance.now();
   const original = await loadFood(originalFoodId);
-  if (!original) return { algorithmVersion: SUBSTITUTION_ALGORITHM_VERSION, suggestions: [], metrics: { initialCandidates: 0, classifiedCandidates: 0, rankingMs: 0, returned: 0 }, classification: null };
+  if (!original) return { algorithmVersion: SUBSTITUTION_ALGORITHM_VERSION, suggestions: [], metrics: { initialCandidates: 0, semanticCandidates: 0, eligibleCandidates: 0, classifiedCandidates: 0, rankingMs: 0, returned: 0 }, classification: null };
   const classification = classifySubstitutionFood(original);
-  if (classification.group === 'unknown') return { algorithmVersion: SUBSTITUTION_ALGORITHM_VERSION, suggestions: [], metrics: { initialCandidates: 0, classifiedCandidates: 0, rankingMs: Number((performance.now() - started).toFixed(2)), returned: 0 }, classification };
+  if (classification.group === 'unknown') return { algorithmVersion: SUBSTITUTION_ALGORITHM_VERSION, suggestions: [], metrics: { initialCandidates: 0, semanticCandidates: 0, eligibleCandidates: 0, classifiedCandidates: 0, rankingMs: Number((performance.now() - started).toFixed(2)), returned: 0 }, classification };
   const candidateRows = await loadCandidateFoodRows(SUBSTITUTION_GROUP_CONFIG[classification.group].categories);
   const excluded = new Set([originalFoodId, ...excludedFoodIds]);
   const semanticRows = candidateRows.filter((candidate) => {
@@ -367,18 +388,41 @@ export async function automaticSubstitutionSuggestions(originalFoodId: number, o
     return [{ food: candidate, equivalence, score }];
   }).sort((a, b) => b.score - a.score || a.food.source_code.localeCompare(b.food.source_code));
   const selected: typeof ranked = [];
+  const deferredSameFamily: typeof ranked = [];
   const families = new Set<string>();
+  const duplicateGroups = new Set<string>();
   for (const suggestion of ranked) {
-    if (families.has(suggestion.equivalence.candidateClassification.family)) continue;
-    families.add(suggestion.equivalence.candidateClassification.family);
+    const duplicateGroup = suggestion.food.duplicate_group;
+    if (duplicateGroup && duplicateGroups.has(duplicateGroup)) continue;
+    const family = suggestion.equivalence.candidateClassification.family;
+    if (families.has(family)) {
+      deferredSameFamily.push(suggestion);
+      continue;
+    }
+    if (duplicateGroup) duplicateGroups.add(duplicateGroup);
+    families.add(family);
     selected.push(suggestion);
     if (selected.length === 3) break;
+  }
+  for (const suggestion of deferredSameFamily) {
+    if (selected.length === 3) break;
+    const duplicateGroup = suggestion.food.duplicate_group;
+    if (duplicateGroup && duplicateGroups.has(duplicateGroup)) continue;
+    if (duplicateGroup) duplicateGroups.add(duplicateGroup);
+    selected.push(suggestion);
   }
   return {
     algorithmVersion: SUBSTITUTION_ALGORITHM_VERSION,
     classification,
     suggestions: selected.map(({ food, equivalence }) => ({ food, equivalence })),
-    metrics: { initialCandidates: candidateRows.length, classifiedCandidates: ranked.length, rankingMs: Number((performance.now() - started).toFixed(2)), returned: selected.length },
+    metrics: {
+      initialCandidates: candidateRows.length,
+      semanticCandidates: semanticRows.length,
+      eligibleCandidates: ranked.length,
+      classifiedCandidates: ranked.length,
+      rankingMs: Number((performance.now() - started).toFixed(2)),
+      returned: selected.length,
+    },
   };
 }
 
