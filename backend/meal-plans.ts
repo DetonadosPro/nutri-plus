@@ -6,6 +6,11 @@ import { quantityInput, resolveQuantity } from "./food-measures";
 import { measuresForFoods } from "./food-measures";
 import { gramMeasure } from "../shared/food-measures";
 import { macroGoalsFromEnergy, scaleNutrients, sumNutrientSets } from "./domain/nutrition";
+import {
+  MEAL_TYPE_ORDER,
+  MEAL_TYPE_VALUES,
+  type MealType,
+} from "../shared/meal-types";
 
 type Dependencies = {
   authUser: (req: Request, res: Response) => Promise<AuthUser | null>;
@@ -33,14 +38,15 @@ const planPatch = z
     "Informe ao menos uma alteração.",
   );
 const mealPayload = z.object({
-  name: z.string().trim().min(1).max(100),
-  time: z
-    .string()
-    .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
-    .nullable()
-    .optional(),
+  mealType: z.enum(MEAL_TYPE_VALUES),
   notes: z.string().max(2000).nullable().optional(),
 });
+const mealPatch = z
+  .object({
+    mealType: z.enum(MEAL_TYPE_VALUES).optional(),
+    notes: z.string().max(2000).nullable().optional(),
+  })
+  .refine((value) => Object.keys(value).length > 0, "Informe ao menos uma alteração.");
 const itemPayload = quantityInput.safeExtend({
   foodId: z.number().int().positive(),
   notes: z.string().max(1000).nullable().optional(),
@@ -199,12 +205,7 @@ async function loadPlan(planId: number) {
     const totals = sumNutrientSets(
       items.map((item) => itemSets.get(Number((item as Record<string, any>).id))!),
     );
-    return {
-      ...meal,
-      time: meal.meal_time?.slice?.(0, 5) ?? meal.meal_time ?? null,
-      items,
-      totals: totals.values,
-    };
+    return { ...meal, items, totals: totals.values };
   });
   const total = sumNutrientSets([...itemSets.values()]);
   const goals = await db
@@ -251,6 +252,24 @@ async function nextVersion(patientId: number) {
   return Number(row!.version);
 }
 
+async function canonicalizeMealPositions(planId: number) {
+  const rows = await db
+    .prepare("SELECT id,meal_type FROM meal_plan_meals WHERE meal_plan_id=? ORDER BY position,id")
+    .all<{ id: number; meal_type: MealType }>(planId);
+  rows.sort(
+    (a, b) => MEAL_TYPE_ORDER[a.meal_type] - MEAL_TYPE_ORDER[b.meal_type] || a.id - b.id,
+  );
+  await db
+    .prepare("SET CONSTRAINTS meal_plan_meals_meal_plan_id_position_key DEFERRED")
+    .run();
+  for (const [position, meal] of rows.entries())
+    await db
+      .prepare(
+        "UPDATE meal_plan_meals SET position=?,updated_at=CURRENT_TIMESTAMP WHERE id=?",
+      )
+      .run(position, meal.id);
+}
+
 async function clonePlan(sourceId: number, createdBy: number) {
   const source = await planOwner(sourceId);
   if (!source) throw new MealPlanError("Plano alimentar não encontrado.", 404);
@@ -272,9 +291,9 @@ async function clonePlan(sourceId: number, createdBy: number) {
   for (const meal of meals) {
     const copy = await db
       .prepare(
-        `INSERT INTO meal_plan_meals(meal_plan_id,name,position,meal_time,notes) VALUES(?,?,?,?,?) RETURNING id`,
+        `INSERT INTO meal_plan_meals(meal_plan_id,meal_type,position,notes) VALUES(?,?,?,?) RETURNING id`,
       )
-      .get<{ id: number }>(plan!.id, meal.name, meal.position, meal.meal_time, meal.notes);
+      .get<{ id: number }>(plan!.id, meal.meal_type, meal.position, meal.notes);
     await db
       .prepare(`INSERT INTO meal_plan_items(meal_plan_meal_id,food_id,position,amount,unit,grams_equivalent,measure_snapshot,notes)
       SELECT ?,food_id,position,amount,unit,grams_equivalent,measure_snapshot,notes FROM meal_plan_items WHERE meal_plan_meal_id=? ORDER BY position,id`)
@@ -467,17 +486,26 @@ export function mealPlanRouter(deps: Dependencies) {
       if (!user) return;
       const plan = await requireNutritionistPlan(user, id.parse(req.params.planId), deps, true);
       const payload = mealPayload.parse(req.body);
-      const pos = await db
-        .prepare(
-          "SELECT COALESCE(MAX(position),-1)::int+1 AS position FROM meal_plan_meals WHERE meal_plan_id=?",
-        )
-        .get<{ position: number }>(plan.id);
-      await db
-        .prepare(
-          "INSERT INTO meal_plan_meals(meal_plan_id,name,position,meal_time,notes) VALUES(?,?,?,?,?)",
-        )
-        .run(plan.id, payload.name, pos!.position, payload.time ?? null, payload.notes ?? null);
-      await bump(plan.id);
+      await transaction(async () => {
+        await db.prepare("SELECT id FROM meal_plans WHERE id=? FOR UPDATE").get(plan.id);
+        const existing = await db
+          .prepare("SELECT id FROM meal_plan_meals WHERE meal_plan_id=? AND meal_type=?")
+          .get(plan.id, payload.mealType);
+        if (existing)
+          throw new MealPlanError("Esta refeição já faz parte do plano.", 409);
+        const pos = await db
+          .prepare(
+            "SELECT COALESCE(MAX(position),-1)::int+1 AS position FROM meal_plan_meals WHERE meal_plan_id=?",
+          )
+          .get<{ position: number }>(plan.id);
+        await db
+          .prepare(
+            "INSERT INTO meal_plan_meals(meal_plan_id,meal_type,position,notes) VALUES(?,?,?,?)",
+          )
+          .run(plan.id, payload.mealType, pos!.position, payload.notes ?? null);
+        await canonicalizeMealPositions(plan.id);
+        await bump(plan.id);
+      });
       res.status(201).json(await loadPlan(plan.id));
     }),
   );
@@ -487,21 +515,27 @@ export function mealPlanRouter(deps: Dependencies) {
       const user = await deps.authUser(req, res);
       if (!user) return;
       const meal = await requireDraftByMeal(user, id.parse(req.params.mealId), deps);
-      const payload = mealPayload
-        .partial()
-        .refine((v) => Object.keys(v).length > 0)
-        .parse(req.body);
-      await db
-        .prepare(
-          "UPDATE meal_plan_meals SET name=?,meal_time=?,notes=?,updated_at=CURRENT_TIMESTAMP WHERE id=?",
-        )
-        .run(
-          payload.name ?? meal.name,
-          payload.time === undefined ? meal.meal_time : payload.time,
-          payload.notes === undefined ? meal.notes : payload.notes,
-          meal.id,
-        );
-      await bump(meal.meal_plan_id);
+      const payload = mealPatch.parse(req.body);
+      await transaction(async () => {
+        if (payload.mealType && payload.mealType !== meal.meal_type) {
+          const existing = await db
+            .prepare("SELECT id FROM meal_plan_meals WHERE meal_plan_id=? AND meal_type=?")
+            .get(meal.meal_plan_id, payload.mealType);
+          if (existing)
+            throw new MealPlanError("Esta refeição já faz parte do plano.", 409);
+        }
+        await db
+          .prepare(
+            "UPDATE meal_plan_meals SET meal_type=?,notes=?,updated_at=CURRENT_TIMESTAMP WHERE id=?",
+          )
+          .run(
+            payload.mealType ?? meal.meal_type,
+            payload.notes === undefined ? meal.notes : payload.notes,
+            meal.id,
+          );
+        await canonicalizeMealPositions(meal.meal_plan_id);
+        await bump(meal.meal_plan_id);
+      });
       res.json(await loadPlan(meal.meal_plan_id));
     }),
   );

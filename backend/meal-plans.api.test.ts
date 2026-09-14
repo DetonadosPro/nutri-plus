@@ -120,10 +120,21 @@ it.skipIf(!process.env.NUTRI_MEAL_PLAN_TEST_API)(
         ).status,
       ).toBe(404);
       const breakfast = await request(`/meal-plans/${plan.id}/meals`, "POST", {
-        name: "Café da manhã",
-        time: "07:30",
+        mealType: "breakfast",
       });
+      expect(breakfast.status).toBe(201);
       plan = breakfast.body;
+      expect(plan.meals[0]).toMatchObject({ meal_type: "breakfast", position: 0 });
+      expect(plan.meals[0]).not.toHaveProperty("name");
+      expect(plan.meals[0]).not.toHaveProperty("time");
+      expect(
+        (await request(`/meal-plans/${plan.id}/meals`, "POST", { mealType: "invalid" }))
+          .status,
+      ).toBe(400);
+      expect(
+        (await request(`/meal-plans/${plan.id}/meals`, "POST", { mealType: "breakfast" }))
+          .status,
+      ).toBe(409);
       const breakfastId = plan.meals[0].id;
       plan = (
         await request(`/meal-plan-meals/${breakfastId}/items`, "POST", {
@@ -156,7 +167,7 @@ it.skipIf(!process.env.NUTRI_MEAL_PLAN_TEST_API)(
       expect(plan.goals.protein_g).toBe(100);
       expect(plan.goals.protein_gkg_min_grams).toBeCloseTo(98, 8);
       plan = (
-        await request(`/meal-plans/${plan.id}/meals`, "POST", { name: "Almoço", time: "12:30" })
+        await request(`/meal-plans/${plan.id}/meals`, "POST", { mealType: "lunch" })
       ).body;
       const lunchId = plan.meals[1].id;
       for (const [foodId, m] of [
@@ -177,7 +188,7 @@ it.skipIf(!process.env.NUTRI_MEAL_PLAN_TEST_API)(
         })
       ).body;
       plan = (
-        await request(`/meal-plans/${plan.id}/meals`, "POST", { name: "Jantar", time: "19:30" })
+        await request(`/meal-plans/${plan.id}/meals`, "POST", { mealType: "dinner" })
       ).body;
       const dinnerId = plan.meals[2].id;
       plan = (
@@ -265,6 +276,9 @@ it.skipIf(!process.env.NUTRI_MEAL_PLAN_TEST_API)(
       const v2 = duplicate.body;
       expect(v2).toMatchObject({ version: 2, status: "draft", source_plan_id: plan.id });
       expect(v2.meals).toHaveLength(plan.meals.length);
+      expect(v2.meals.map((meal: any) => meal.meal_type)).toEqual(
+        plan.meals.map((meal: any) => meal.meal_type),
+      );
       const clonedItem = v2.meals
         .flatMap((meal: any) => meal.items)
         .find((item: any) => item.food_id === frozenItem.food_id);
@@ -354,9 +368,15 @@ it.skipIf(!process.env.NUTRI_MEAL_PLAN_TEST_API)(
       for (let mealPosition = 0; mealPosition < 6; mealPosition++) {
         const meal = await db
           .prepare(
-            "INSERT INTO meal_plan_meals(meal_plan_id,name,position) VALUES(?,?,?) RETURNING id",
+            "INSERT INTO meal_plan_meals(meal_plan_id,meal_type,position) VALUES(?,?,?) RETURNING id",
           )
-          .get<{ id: number }>(performancePlan.id, `Refeição ${mealPosition + 1}`, mealPosition);
+          .get<{ id: number }>(
+            performancePlan.id,
+            ["breakfast", "morning_snack", "lunch", "afternoon_snack", "dinner", "supper"][
+              mealPosition
+            ],
+            mealPosition,
+          );
         for (let itemPosition = 0; itemPosition < 4; itemPosition++)
           await db
             .prepare(

@@ -2,7 +2,7 @@
 
 ## Arquitetura
 
-O Plano Alimentar foi implementado como um agregado próprio e normalizado, independente de `daily_logs`, `meals` e `meal_entries`. A raiz `meal_plans` representa uma versão da prescrição; `meal_plan_meals` mantém refeições customizáveis e ordenadas; `meal_plan_items` liga cada prescrição ao alimento TBCA e à quantidade convertida. Nada prescrito é gravado automaticamente no Diário.
+O Plano Alimentar foi implementado como um agregado próprio e normalizado, independente de `daily_logs`, `meals` e `meal_entries`. A raiz `meal_plans` representa uma versão da prescrição; `meal_plan_meals` mantém tipos canônicos e ordenados; `meal_plan_items` liga cada prescrição ao alimento TBCA e à quantidade convertida. Nada prescrito é gravado automaticamente no Diário.
 
 O desenho mantém chaves estáveis para uma futura comparação Plano × Diário e permite acrescentar alternativas/grupos de substituição por item sem serializar refeições em JSON.
 
@@ -11,12 +11,12 @@ O desenho mantém chaves estáveis para uma futura comparação Plano × Diário
 A migration `026_meal_plans.sql` cria:
 
 - `meal_plans`: paciente, autor, versão, estado, título, orientações, plano de origem, controle otimista e datas de publicação/arquivamento;
-- `meal_plan_meals`: nome, posição, horário e observação;
+- `meal_plan_meals`: tipo canônico, posição e observação após a migration `027_meal_plan_canonical_meals.sql`;
 - `meal_plan_items`: alimento, posição, quantidade, unidade, gramas equivalentes, snapshots da medida e dos nutrientes publicados, e observação.
 
 Constraints garantem estados coerentes, versões positivas e únicas por paciente, quantidades válidas, posições válidas e textos limitados. O índice parcial `meal_plans_one_active_per_patient` impede mais de um plano ativo por paciente. As posições são únicas e deferrable para permitir reordenação transacional. Índices cobrem paciente/estado/versão, autor, plano/refeição/posição e alimento.
 
-A migration foi validada tanto no fluxo completo de banco limpo quanto sobre um schema parado na migration 023, preservando os registros anteriores e registrando 024, 025 e 026 normalmente.
+As migrations foram validadas tanto no fluxo completo de banco limpo quanto sobre um schema existente. Como a 026 já havia sido publicada antes desta rodada, a 027 converte os rótulos conhecidos para `meal_type`, remove `name` e `meal_time` e preserva as demais informações.
 
 ## Estados, versionamento e publicação
 
@@ -64,9 +64,9 @@ Erros conhecidos retornam 400, 403, 404 ou 409 com mensagens compreensíveis. Ex
 
 O workspace do nutricionista ganhou a área `Plano`, com estado vazio, continuidade do draft, resumo nutricional, comparação de metas, refeições em cards, editor de título/orientações, busca humanizada, `MeasureInput`, observação por item, reordenação leve por botões, mutations imediatas, status de salvamento, publicação, nova versão, duplicação e histórico read-only.
 
-O paciente ganhou a área `Plano` read-only e um atalho mobile no Diário. A visualização mostra data, orientações, refeições, horários, alimentos, porções e kcal discretas, sem IDs ou dados técnicos. O Diário continua inalterado.
+O paciente ganhou a área `Plano` read-only e um atalho mobile no Diário. A visualização mostra atualização, orientações, refeições, alimentos e porções, sem horários, IDs ou dados técnicos. O Diário continua inalterado.
 
-O layout é limitado a 70rem no desktop, possui cards arredondados e converte grids em uma coluna no mobile. Totais viram uma faixa horizontal rolável, controles têm área mínima de toque e estados de foco/alerta acessíveis.
+O layout é limitado a 58rem no desktop, possui cards arredondados e converte editores em uma coluna no mobile. O resumo nutricional virou um único bloco compacto; controles têm área mínima de toque e estados de foco/alerta acessíveis.
 
 ## Atualização e consistência
 
@@ -78,11 +78,11 @@ O endpoint completo usa seis queries previsíveis, independentemente do número 
 
 ## Testes
 
-O teste integrado cobre criação de draft, refeições customizadas, omelete por contagem, leite em mL, arroz/feijão em medida caseira, quantidade em gramas, edição, observação, exclusão, ordenação, nutrientes, metas, primeira publicação, leitura pelo paciente, imutabilidade, duplicação, nova versão, arquivamento, histórico, único ativo, clique duplo concorrente, rollback forçado, IDs inválidos, medida inválida, autorização cruzada, isolamento do Diário e cenário 6×24.
+O teste integrado cobre criação de draft, refeições canônicas, rejeição de tipo inválido e duplicado, omelete por contagem, leite em mL, arroz/feijão em medida caseira, quantidade em gramas, edição, observação, exclusão, ordenação, nutrientes, metas, primeira publicação, leitura pelo paciente, imutabilidade, duplicação, nova versão, arquivamento, histórico, único ativo, clique duplo concorrente, rollback forçado, IDs inválidos, medida inválida, autorização cruzada, isolamento do Diário e cenário 6×24.
 
 Os testes frontend cobrem prioridade do draft, reordenação sem perda/duplicação, progresso de metas, estados vazios, criação, busca, medidas, mutation sem reload, remoção, resumo, publicação, histórico, leitura do paciente, erro acessível e estrutura responsiva.
 
-O smoke visual foi executado no aplicativo real, em desktop e viewport móvel de 375 × 812 px, com dados sintéticos descartáveis. Foram conferidos editor profissional, renomeação de refeição, medidas caseiras, contagem, mL, metas, versão read-only e navegação do paciente. A validação encontrou e corrigiu o tratamento da data de publicação na visão do paciente; a tela foi retestada após a correção.
+O smoke visual foi executado no aplicativo real, em desktop e viewports móveis, com dados sintéticos descartáveis. Foram conferidos editor profissional, refeições canônicas, medidas caseiras, contagem, mL, metas, versão read-only, histórico e navegação do paciente. A validação encontrou e corrigiu o tratamento da data de publicação na visão do paciente; a tela foi retestada após a correção.
 
 ## Extensões futuras deliberadamente adiadas
 
@@ -91,7 +91,7 @@ Substituições poderão ser modeladas por tabelas associadas a `meal_plan_items
 ## Riscos restantes
 
 - A ordenação usa botões acessíveis em vez de drag-and-drop para evitar dependência pesada.
-- A primeira versão não relaciona semanticamente refeições do plano a tipos fixos do Diário; essa associação deve ser desenhada junto da futura aderência.
+- A opção canônica `other` continua disponível para preservar a taxonomia completa do Diário, mas não aceita rótulo personalizado nesta versão.
 
 ## Revisão final antes da publicação
 
@@ -128,3 +128,31 @@ O índice parcial de plano ativo e `UNIQUE(patient_id,version)` são barreiras f
 ### Mudanças e riscos desta revisão
 
 Foi acrescentado o snapshot nutricional de publicação e ampliada a cobertura concorrente. Permanecem como riscos controlados a ausência de timeout explícito para locks e o fato de mutations de refeições/itens seguirem a política de última escrita, enquanto apenas os metadados do plano usam `lock_version`.
+
+## Refinamento final de UX e identidade visual
+
+### Taxonomia e schema
+
+A fonte canônica foi centralizada em `shared/meal-types.ts` e é compartilhada pelo Diário, backend e Plano: `breakfast`, `morning_snack`, `lunch`, `afternoon_snack`, `dinner`, `supper` e `other`. O frontend mantém apenas os ícones e nomes curtos de apresentação sobre essa fonte comum.
+
+O Plano não recebe mais nome livre nem horário. Como a migration 026 já estava aplicada em produção quando esta revisão começou, ela não foi reescrita. A migration 027 converte os nomes conhecidos para `meal_type`, remove `name` e `meal_time`, valida os sete tipos canônicos e impede repetição do mesmo tipo dentro do plano. A API aceita `mealType`, rejeita valores inválidos ou já usados e posiciona novas refeições na ordem natural da taxonomia. Duplicação e nova versão preservam o tipo e a ordem.
+
+### Experiência simplificada
+
+O topo profissional foi reduzido a título, estado e uma ação principal de publicação. Histórico, nova versão e uso de versão anterior como base permanecem secundários. Título e orientações ficam em uma expansão discreta. O resumo nutricional passou de cinco cards concorrentes para um bloco integrado com energia, três macros e fibras em texto secundário.
+
+As refeições usam linhas, não cards aninhados. O alimento fica compacto com nome e porção; tocar na linha revela `MeasureInput`, observação, ordenação, exclusão e salvamento. A busca continua usando o mesmo endpoint, componentes de campo e `MeasureInput` do Diário. Adicionar refeição exige abrir o seletor e tocar em um tipo; não abre teclado. Tipos já presentes ficam discretamente desabilitados.
+
+O paciente vê somente “Plano alimentar”, a data de atualização, orientações quando existentes, refeições, alimentos e porções. Versão técnica, status interno, snapshots, gramas equivalentes e controles de edição não aparecem. Os horários foram removidos de todas as superfícies.
+
+### Identidade e responsividade
+
+Foram reutilizados tokens, tipografia, botões, campos, `EmptyState`, `MeasureInput`, bordas, raios e estados de foco do Nutri+. A largura útil passou a 58rem, as sombras foram suavizadas e não foi criada paleta própria. O layout usa uma coluna nos editores estreitos, seletor de refeições em duas colunas e alvos de toque de pelo menos 44–48 px. A animação de expansão é curta e respeita `prefers-reduced-motion`.
+
+### Validação
+
+A validação automatizada cobre taxonomia, ausência de nome/horário no contrato, ordem canônica, duplicidade, alimentos, medidas, publicação, snapshot, versionamento, histórico, concorrência, banco limpo e atualização a partir da 026.
+
+O fluxo real foi validado no navegador com dados sintéticos em desktop amplo, monitor de 1024 × 768 px e larguras móveis de 360, 375, 390 e 430 px. Foram conferidos um rascunho totalmente vazio, plano curto, plano completo com seis refeições, os estados sem plano do nutricionista e do paciente, refeição com um item, refeição com vários itens, histórico, seletor canônico, inclusão de refeição na ordem natural, expansão do editor de alimento, busca por omelete e leitura do paciente. A busca retornou Omelete em primeiro lugar e ofereceu contagem em ovos e gramas pelo mesmo `MeasureInput` do Diário.
+
+Não houve overflow horizontal nas quatro larguras móveis. Em 375 × 812 px, a primeira passagem revelou quebra desnecessária dos detalhes de meta dentro dos macros; esses detalhes redundantes foram removidos, preservando energia versus meta no resumo e deixando macros legíveis em uma única linha. O plano do paciente permaneceu sem controles, horário, versão técnica ou metadados internos, e a navegação inferior existente continuou íntegra.

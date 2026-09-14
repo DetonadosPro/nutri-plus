@@ -5,13 +5,10 @@ import {
   ArrowDown,
   ArrowUp,
   Check,
-  Clock3,
-  Copy,
   History,
   Plus,
   Search,
   Trash2,
-  Utensils,
   X,
 } from 'lucide-react';
 import { api } from '@/lib/client-api';
@@ -31,6 +28,7 @@ import { EmptyState } from './page-primitives';
 import { MeasureInput, gramMeasure, safeGrams } from './measure-input';
 import { formatServing, type FoodMeasure } from '../../../shared/food-measures';
 import type { Food, MealPlan, MealPlanItem, MealPlanListItem } from '../types';
+import { MEAL_TYPES, mealDefinition, type MealType } from '@/lib/meal-types';
 
 function errorMessage(reason: unknown) {
   return reason instanceof Error
@@ -39,44 +37,46 @@ function errorMessage(reason: unknown) {
 }
 function PlanTotals({ plan }: { plan: MealPlan }) {
   const metrics = [
-    ['Energia', 'energia_kcal', 'energy_kcal', 'kcal'],
-    ['Proteína', 'proteina_g', 'protein_g', 'g'],
-    ['Carboidratos', 'carboidrato_g', 'carbohydrate_g', 'g'],
-    ['Gorduras', 'lipideos_g', 'fat_g', 'g'],
-    ['Fibras', 'fibra_alimentar_g', 'fiber_g', 'g'],
+    ['Proteína', 'proteina_g', 'g'],
+    ['Carboidratos', 'carboidrato_g', 'g'],
+    ['Gorduras', 'lipideos_g', 'g'],
   ] as const;
+  const energy = nutrientValue(plan.totals, 'energia_kcal');
+  const energyGoal = plan.goals?.energy_kcal;
+  const energyPercent = goalPercent(energy, energyGoal);
   return (
     <section
       className="meal-plan-totals"
       aria-label="Resumo nutricional do plano"
     >
-      {metrics.map(([label, code, goalCode, unit]) => {
+      <div className="meal-plan-energy-total">
+        <small>Resumo do plano</small>
+        <strong>{formatNumber(energy, 0)} kcal</strong>
+        {energyGoal != null && (
+          <span>
+            de {formatNumber(energyGoal, 0)} kcal
+            {energyPercent != null ? ` · ${formatNumber(energyPercent, 0)}%` : ''}
+          </span>
+        )}
+      </div>
+      <div className="meal-plan-macro-list">
+        {metrics.map(([label, code, unit]) => {
         const value = nutrientValue(plan.totals, code);
-        const goal = plan.goals?.[goalCode] as
-          | number
-          | null
-          | undefined;
-        const percent = goalPercent(value, goal);
         return (
           <div key={code}>
             <small>{label}</small>
             <strong>
               {formatNumber(value, 1)} {unit}
             </strong>
-            {goal != null && (
-              <span>
-                {formatNumber(percent, 0)}% da meta · {formatNumber(goal, 1)}{' '}
-                {unit}
-              </span>
-            )}
-            {code === 'proteina_g' && plan.goals?.protein_gkg_min_grams != null && (
-              <span>
-                Mín. por peso: {formatNumber(plan.goals.protein_gkg_min_grams, 1)} g
-              </span>
-            )}
           </div>
         );
       })}
+      </div>
+      {nutrientValue(plan.totals, 'fibra_alimentar_g') > 0 && (
+        <small className="meal-plan-fiber-total">
+          Fibras: {formatNumber(nutrientValue(plan.totals, 'fibra_alimentar_g'), 1)} g
+        </small>
+      )}
     </section>
   );
 }
@@ -234,6 +234,7 @@ function DraftItem({
     ),
     [measure, setMeasure] = useState<FoodMeasure>(initial),
     [notes, setNotes] = useState(item.notes ?? ''),
+    [editing, setEditing] = useState(false),
     [busy, setBusy] = useState(false),
     [error, setError] = useState('');
   async function save() {
@@ -251,6 +252,7 @@ function DraftItem({
           }),
         }),
       );
+      setEditing(false);
     } catch (reason) {
       setError(errorMessage(reason));
     } finally {
@@ -259,49 +261,57 @@ function DraftItem({
   }
   return (
     <article className="meal-plan-item">
-      <div>
-        <strong>{item.display_name}</strong>
-        <small>
-          {formatNumber(item.nutrients.energia_kcal, 0)} kcal ·{' '}
-          {formatNumber(item.nutrients.proteina_g, 1)} g proteína
-        </small>
-      </div>
-      <MeasureInput
-        id={`plan-item-${item.id}`}
-        value={quantity}
-        measure={measure}
-        measures={item.measures ?? [gramMeasure]}
-        onChange={(value, next) => {
-          setQuantity(value);
-          setMeasure(next);
-        }}
-      />
-      <Input
-        aria-label={`Observação de ${item.display_name}`}
-        value={notes}
-        onChange={(e) => setNotes(e.target.value)}
-        placeholder="Observação"
-      />
-      <div className="meal-plan-item-actions">
-        <button
-          aria-label={`Mover ${item.display_name} para cima`}
-          onClick={() => onMove(-1)}
-        >
-          <ArrowUp />
-        </button>
-        <button
-          aria-label={`Mover ${item.display_name} para baixo`}
-          onClick={() => onMove(1)}
-        >
-          <ArrowDown />
-        </button>
-        <button aria-label={`Remover ${item.display_name}`} onClick={onRemoved}>
-          <Trash2 />
-        </button>
-        <Button size="sm" variant="outline" disabled={busy} onClick={save}>
-          {busy ? 'Salvando…' : 'Salvar'}
-        </Button>
-      </div>
+      <button
+        className="meal-plan-item-summary"
+        aria-expanded={editing}
+        onClick={() => setEditing((value) => !value)}
+      >
+        <span>
+          <strong>{item.display_name}</strong>
+          {item.notes && <small>{item.notes}</small>}
+        </span>
+        <span>{formatServing(item)}</span>
+      </button>
+      {editing && (
+        <div className="meal-plan-item-editor">
+          <MeasureInput
+            id={`plan-item-${item.id}`}
+            value={quantity}
+            measure={measure}
+            measures={item.measures ?? [gramMeasure]}
+            onChange={(value, next) => {
+              setQuantity(value);
+              setMeasure(next);
+            }}
+          />
+          <Input
+            aria-label={`Observação de ${item.display_name}`}
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Observação opcional"
+          />
+          <div className="meal-plan-item-actions">
+            <button
+              aria-label={`Mover ${item.display_name} para cima`}
+              onClick={() => onMove(-1)}
+            >
+              <ArrowUp />
+            </button>
+            <button
+              aria-label={`Mover ${item.display_name} para baixo`}
+              onClick={() => onMove(1)}
+            >
+              <ArrowDown />
+            </button>
+            <button aria-label={`Remover ${item.display_name}`} onClick={onRemoved}>
+              <Trash2 />
+            </button>
+            <Button size="sm" disabled={busy} onClick={save}>
+              {busy ? 'Salvando…' : 'Salvar'}
+            </Button>
+          </div>
+        </div>
+      )}
       {error && (
         <p role="alert" className="meal-plan-error">
           {error}
@@ -321,8 +331,7 @@ function PlanContent({
   onChange?: (plan: MealPlan) => void;
 }) {
   const [adding, setAdding] = useState<number | null>(null),
-    [mealName, setMealName] = useState(''),
-    [mealTime, setMealTime] = useState(''),
+    [choosingMeal, setChoosingMeal] = useState(false),
     [error, setError] = useState(''),
     [busy, setBusy] = useState(false);
   const change = onChange ?? (() => {});
@@ -352,16 +361,12 @@ function PlanContent({
       setBusy(false);
     }
   }
-  async function addMeal() {
-    if (!mealName.trim()) return;
+  async function addMeal(mealType: MealType) {
     const result = await mutate(`/meal-plans/${plan.id}/meals`, {
       method: 'POST',
-      body: JSON.stringify({ name: mealName, time: mealTime || null }),
+      body: JSON.stringify({ mealType }),
     });
-    if (result) {
-      setMealName('');
-      setMealTime('');
-    }
+    if (result) setChoosingMeal(false);
   }
   async function moveMeal(mealId: number, direction: -1 | 1) {
     const current = plan.meals.map((meal) => meal.id);
@@ -389,48 +394,7 @@ function PlanContent({
         <section className="meal-plan-meal" key={meal.id}>
           <header>
             <div>
-              <small>REFEIÇÃO {meal.position + 1}</small>
-              {editable ? (
-                <div
-                  className="meal-plan-meal-fields"
-                  key={`${meal.id}:${meal.name}:${meal.time ?? ''}`}
-                >
-                  <Input
-                    aria-label={`Nome da refeição ${meal.position + 1}`}
-                    defaultValue={meal.name}
-                    onBlur={(event) => {
-                      const name = event.target.value.trim();
-                      if (name && name !== meal.name)
-                        void mutate(`/meal-plan-meals/${meal.id}`, {
-                          method: 'PATCH',
-                          body: JSON.stringify({ name }),
-                        });
-                    }}
-                  />
-                  <Input
-                    aria-label={`Horário de ${meal.name}`}
-                    type="time"
-                    defaultValue={meal.time ?? ''}
-                    onBlur={(event) => {
-                      const time = event.target.value || null;
-                      if (time !== (meal.time ?? null))
-                        void mutate(`/meal-plan-meals/${meal.id}`, {
-                          method: 'PATCH',
-                          body: JSON.stringify({ time }),
-                        });
-                    }}
-                  />
-                </div>
-              ) : (
-                <>
-                  <h3>{meal.name}</h3>
-                  {meal.time && (
-                    <span>
-                      <Clock3 /> {meal.time}
-                    </span>
-                  )}
-                </>
-              )}
+              <h3>{mealDefinition(meal.meal_type).label}</h3>
             </div>
             <strong>
               {formatNumber(meal.totals.energia_kcal, 0)} kcal ·{' '}
@@ -439,19 +403,19 @@ function PlanContent({
             {editable && (
               <div>
                 <button
-                  aria-label={`Mover ${meal.name} para cima`}
+                  aria-label={`Mover ${mealDefinition(meal.meal_type).label} para cima`}
                   onClick={() => moveMeal(meal.id, -1)}
                 >
                   <ArrowUp />
                 </button>
                 <button
-                  aria-label={`Mover ${meal.name} para baixo`}
+                  aria-label={`Mover ${mealDefinition(meal.meal_type).label} para baixo`}
                   onClick={() => moveMeal(meal.id, 1)}
                 >
                   <ArrowDown />
                 </button>
                 <button
-                  aria-label={`Excluir ${meal.name}`}
+                  aria-label={`Excluir ${mealDefinition(meal.meal_type).label}`}
                   disabled={busy}
                   onClick={() => void remove(`/meal-plan-meals/${meal.id}`)}
                 >
@@ -506,28 +470,37 @@ function PlanContent({
       ))}
       {editable && (
         <section className="meal-plan-add-meal">
-          <h3>Adicionar refeição</h3>
-          <div>
-            <Label htmlFor="meal-plan-meal-name">Nome</Label>
-            <Input
-              id="meal-plan-meal-name"
-              value={mealName}
-              onChange={(e) => setMealName(e.target.value)}
-              placeholder="Ex.: Café da manhã"
-            />
-          </div>
-          <div>
-            <Label htmlFor="meal-plan-meal-time">Horário opcional</Label>
-            <Input
-              id="meal-plan-meal-time"
-              type="time"
-              value={mealTime}
-              onChange={(e) => setMealTime(e.target.value)}
-            />
-          </div>
-          <Button disabled={busy || !mealName.trim()} onClick={addMeal}>
-            <Plus /> Adicionar refeição
-          </Button>
+          {choosingMeal ? (
+            <>
+              <div className="meal-plan-picker-head">
+                <h3>Qual refeição deseja adicionar?</h3>
+                <button aria-label="Fechar opções de refeição" onClick={() => setChoosingMeal(false)}>
+                  <X className="size-4" />
+                </button>
+              </div>
+              <div className="meal-plan-type-options">
+                {MEAL_TYPES.map((definition) => {
+                  const alreadyAdded = plan.meals.some(
+                    (meal) => meal.meal_type === definition.value,
+                  );
+                  return (
+                    <button
+                      key={definition.value}
+                      disabled={busy || alreadyAdded}
+                      onClick={() => void addMeal(definition.value)}
+                    >
+                      {definition.label}
+                      {alreadyAdded && <small>Já adicionada</small>}
+                    </button>
+                  );
+                })}
+              </div>
+            </>
+          ) : (
+            <Button variant="outline" onClick={() => setChoosingMeal(true)}>
+              <Plus /> Adicionar refeição
+            </Button>
+          )}
         </section>
       )}
       {error && (
@@ -588,8 +561,8 @@ export function NutritionistMealPlan({ patientId }: { patientId: number }) {
   if (!plan)
     return (
       <EmptyState
-        title="Crie o primeiro plano alimentar deste paciente."
-        description="O plano ficará separado do diário e só será visível ao paciente depois da publicação."
+        title="Este paciente ainda não tem um plano alimentar."
+        description="Crie o plano e publique quando estiver pronto."
         action={
           <Button
             onClick={() =>
@@ -606,15 +579,14 @@ export function NutritionistMealPlan({ patientId }: { patientId: number }) {
     <div className="meal-plan-page">
       <header className="meal-plan-hero">
         <div>
-          <p className="eyebrow">Prescrição alimentar</p>
-          <h2>{plan.title || `Plano alimentar v${plan.version}`}</h2>
+          <p className="eyebrow">Prescrição</p>
+          <h2>Plano alimentar</h2>
           <p>
             {editable
-              ? 'Rascunho editável'
+              ? 'Rascunho'
               : plan.status === 'active'
-                ? 'Plano ativo'
-                : 'Versão arquivada'}{' '}
-            · versão {plan.version}
+                ? 'Plano atual do paciente'
+                : 'Versão anterior'}
           </p>
         </div>
         <div className="meal-plan-actions">
@@ -630,19 +602,26 @@ export function NutritionistMealPlan({ patientId }: { patientId: number }) {
               <Plus /> Nova versão
             </Button>
           )}
-          {!editable && (
+          {plan.status === 'archived' && (
             <Button
               variant="outline"
               disabled={busy}
               onClick={() => action(`/meal-plans/${plan.id}/duplicate`)}
             >
-              <Copy /> Duplicar
+              Usar como base
             </Button>
           )}
           {editable && (
             <Button
               disabled={busy}
-              onClick={() => action(`/meal-plans/${plan.id}/publish`)}
+              onClick={() => {
+                const replacesCurrent = plans.some((item) => item.status === 'active');
+                const message = replacesCurrent
+                  ? 'Publicar este plano? A versão atual do paciente será arquivada.'
+                  : 'Publicar este plano? A versão atual ficará disponível para o paciente.';
+                if (window.confirm(message))
+                  void action(`/meal-plans/${plan.id}/publish`);
+              }}
             >
               <Check /> Publicar plano
             </Button>
@@ -678,40 +657,43 @@ export function NutritionistMealPlan({ patientId }: { patientId: number }) {
         </section>
       )}
       {editable && (
-        <section
+        <details
           className="meal-plan-metadata"
           key={`${plan.id}:${plan.lock_version}`}
         >
-          <div>
-            <Label htmlFor="plan-title">Título opcional</Label>
-            <Input
-              id="plan-title"
-              defaultValue={plan.title ?? ''}
-              onBlur={(e) =>
-                action(`/meal-plans/${plan.id}`, 'PATCH', {
-                  title: e.target.value.trim() || null,
-                  lockVersion: plan.lock_version,
-                })
-              }
-            />
-          </div>
-          <div>
-            <Label htmlFor="plan-notes">Orientações gerais</Label>
-            <Textarea
-              id="plan-notes"
-              defaultValue={plan.notes ?? ''}
-              onBlur={(e) =>
-                action(`/meal-plans/${plan.id}`, 'PATCH', {
-                  notes: e.target.value.trim() || null,
-                  lockVersion: plan.lock_version,
-                })
-              }
-            />
+          <summary>Orientações e título do plano</summary>
+          <div className="meal-plan-metadata-fields">
+            <div>
+              <Label htmlFor="plan-title">Título opcional</Label>
+              <Input
+                id="plan-title"
+                defaultValue={plan.title ?? ''}
+                onBlur={(e) =>
+                  action(`/meal-plans/${plan.id}`, 'PATCH', {
+                    title: e.target.value.trim() || null,
+                    lockVersion: plan.lock_version,
+                  })
+                }
+              />
+            </div>
+            <div>
+              <Label htmlFor="plan-notes">Orientações gerais</Label>
+              <Textarea
+                id="plan-notes"
+                defaultValue={plan.notes ?? ''}
+                onBlur={(e) =>
+                  action(`/meal-plans/${plan.id}`, 'PATCH', {
+                    notes: e.target.value.trim() || null,
+                    lockVersion: plan.lock_version,
+                  })
+                }
+              />
+            </div>
           </div>
           <span className="meal-plan-save-status" aria-live="polite">
-            {busy ? 'Salvando…' : 'Alterações salvas'}
+            {busy ? 'Salvando…' : 'Salvo'}
           </span>
-        </section>
+        </details>
       )}
       <PlanContent plan={plan} editable={editable} onChange={setPlan} />
       {error && (
@@ -736,22 +718,20 @@ export function PatientMealPlan() {
   if (!plan)
     return (
       <EmptyState
-        title="Seu plano alimentar ainda não foi publicado."
-        description="Quando seu nutricionista publicar a prescrição, ela aparecerá aqui."
+        title="Seu plano alimentar ainda não está disponível."
+        description="Quando estiver pronto, ele aparecerá aqui."
       />
     );
   return (
     <div className="meal-plan-page patient-meal-plan">
       <header className="meal-plan-hero">
         <div>
-          <p className="eyebrow">Plano alimentar</p>
-          <h1>{plan.title || 'Seu plano alimentar'}</h1>
+          <h1>Plano alimentar</h1>
           <p>
             Atualizado em{' '}
             {plan.published_at ? formatDateTime(plan.published_at) : '—'}
           </p>
         </div>
-        <Utensils className="size-7" />
       </header>
       {plan.notes && <p className="meal-plan-patient-note">{plan.notes}</p>}
       <PlanContent plan={plan} editable={false} />
