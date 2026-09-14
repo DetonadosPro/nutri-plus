@@ -23,6 +23,7 @@ import {
   Sparkles,
   Trash2,
   UsersRound,
+  Utensils,
   Weight,
 } from 'lucide-react';
 import {
@@ -63,6 +64,7 @@ import { MacroDistributionSummary } from './macro-distribution';
 import { PatientMealList } from './patient-meal-list';
 import { UserIdentity } from './user-identity';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { NutritionistMealPlan } from './meal-plan';
 
 import { PatientApp } from './patient-app';
 import { Button } from '@/components/ui/button';
@@ -100,7 +102,7 @@ import type {
 } from '../types';
 
 type MainArea = 'overview' | 'patients' | 'profile';
-type WorkspaceArea = 'overview' | 'diary' | 'progress' | 'analysis' | 'notes';
+type WorkspaceArea = 'overview' | 'plan' | 'diary' | 'progress' | 'analysis' | 'notes';
 const nutritionistNav = [
   ['overview', 'Visão geral', LayoutDashboard],
   ['patients', 'Pacientes', UsersRound],
@@ -108,6 +110,7 @@ const nutritionistNav = [
 ] as const;
 const workspaceTabs = [
   ['overview', 'Visão geral', LayoutDashboard],
+  ['plan', 'Plano', Utensils],
   ['diary', 'Diário', ClipboardList],
   ['progress', 'Evolução', BarChart3],
   ['analysis', 'Análise', Sparkles],
@@ -889,6 +892,9 @@ function PatientWorkspace({
             />
           )}
           {tab === 'diary' && <PatientDiary detail={detail} />}
+          {tab === 'plan' && (
+            <NutritionistMealPlan patientId={Number(profile.id)} />
+          )}
           {tab === 'progress' && (
             <>
               <EnergyProgress patientId={Number(profile.id)} professional />

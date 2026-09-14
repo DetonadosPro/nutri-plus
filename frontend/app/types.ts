@@ -178,6 +178,64 @@ export type NutritionistDetail = {
     created_at: string;
   }>;
 };
+export type MealPlanItem = {
+  id: number;
+  meal_plan_meal_id: number;
+  food_id: number;
+  position: number;
+  amount: number;
+  unit: string;
+  grams_equivalent: number;
+  measure_snapshot?: FoodMeasure | null;
+  notes?: string | null;
+  source_code: string;
+  description: string;
+  display_name: string;
+  category?: string | null;
+  source: 'TBCA';
+  nutrients: NutrientMap;
+  measures: FoodMeasure[];
+};
+export type MealPlanMeal = {
+  id: number;
+  meal_plan_id: number;
+  name: string;
+  position: number;
+  time?: string | null;
+  notes?: string | null;
+  items: MealPlanItem[];
+  totals: NutrientMap;
+};
+export type MealPlan = {
+  id: number;
+  patient_id: number;
+  created_by: number;
+  source_plan_id?: number | null;
+  version: number;
+  status: 'draft' | 'active' | 'archived';
+  title?: string | null;
+  notes?: string | null;
+  lock_version: number;
+  created_at: string;
+  updated_at: string;
+  published_at?: string | null;
+  archived_at?: string | null;
+  meals: MealPlanMeal[];
+  totals: NutrientMap;
+  goals: (Goals & { protein_gkg_min_grams?: number }) | null;
+  queryCount: number;
+};
+export type MealPlanListItem = Pick<
+  MealPlan,
+  | 'id'
+  | 'version'
+  | 'status'
+  | 'title'
+  | 'created_at'
+  | 'updated_at'
+  | 'published_at'
+  | 'archived_at'
+> & { meal_count: number };
 export type Orientation = {
   id: number;
   content: string;

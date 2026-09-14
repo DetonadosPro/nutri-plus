@@ -33,7 +33,7 @@ function runNormalMigration(name:string){
   execFileSync(process.execPath,['--import','tsx','--eval',runner],{cwd:projectDir,env:{...process.env,DATABASE_URL:schemaUrl(name)},stdio:'pipe'});
 }
 
-describe.runIf(enabled)('migrations 024 e 025 em PostgreSQL temporário',()=>{
+describe.runIf(enabled)('migrations 024 a 026 em PostgreSQL temporário',()=>{
   beforeAll(async()=>{for(const name of schemas)await createSchema(name)},30_000);
   afterAll(async()=>{for(const name of schemas)await dropSchema(name);await admin!.end()},30_000);
 
@@ -47,6 +47,10 @@ describe.runIf(enabled)('migrations 024 e 025 em PostgreSQL temporário',()=>{
     expect(columns.rows.find(row=>row.column_name==='manual_search')).toMatchObject({is_nullable:'NO'});
     expect((await client.query(`SELECT count(*)::int AS count FROM schema_migrations WHERE version='024_food_vision_feedback_context.sql'`)).rows[0].count).toBe(1);
     expect((await client.query(`SELECT count(*)::int AS count FROM schema_migrations WHERE version='025_simple_omelet.sql'`)).rows[0].count).toBe(1);
+    expect((await client.query(`SELECT count(*)::int AS count FROM schema_migrations WHERE version='026_meal_plans.sql'`)).rows[0].count).toBe(1);
+    expect((await client.query(`SELECT count(*)::int AS count FROM information_schema.tables WHERE table_schema=current_schema() AND table_name IN ('meal_plans','meal_plan_meals','meal_plan_items')`)).rows[0].count).toBe(3);
+    expect((await client.query(`SELECT data_type,is_nullable FROM information_schema.columns WHERE table_schema=current_schema() AND table_name='meal_plan_items' AND column_name='nutrient_snapshot'`)).rows[0]).toMatchObject({data_type:'jsonb',is_nullable:'YES'});
+    expect((await client.query(`SELECT indexdef FROM pg_indexes WHERE schemaname=current_schema() AND indexname='meal_plans_one_active_per_patient'`)).rows[0].indexdef).toContain("WHERE (status = 'active'::text)");
     expect((await client.query(`SELECT indexdef FROM pg_indexes WHERE schemaname=current_schema() AND indexname='idx_food_vision_feedback_family_cut'`)).rows[0].indexdef).toContain('WHERE (final_food_id IS NOT NULL)');
     await client.end();
   },60_000);
@@ -65,6 +69,8 @@ describe.runIf(enabled)('migrations 024 e 025 em PostgreSQL temporário',()=>{
     expect(row).toMatchObject({detected_payload:{},suggested_family:null,chosen_family:null,candidate_food_ids:[],manual_search:false});
     const omelet=(await migrated.query(`SELECT f.display_name,m.key,m.kind,m.name,m.quantity::float8 AS quantity,m.grams::float8 AS grams,m.is_default FROM foods f JOIN food_measures m ON m.food_id=f.id WHERE f.source='TBCA' AND f.source_code='BRC0065J'`)).rows[0];
     expect(omelet).toMatchObject({display_name:'Omelete',key:'omelet-egg-count',kind:'count',name:'ovo',quantity:1,grams:50,is_default:true});
+    expect((await migrated.query(`SELECT count(*)::int AS count FROM meal_entries`)).rows[0].count).toBe(0);
+    expect((await migrated.query(`SELECT count(*)::int AS count FROM foods WHERE source_code='BRC0065J'`)).rows[0].count).toBe(1);
     await expect(migrated.query(`INSERT INTO food_vision_predictions(analysis_id,item_token,decision_state,top1_score,top2_score,margin,visual_confidence,suggested_family) VALUES($1,$2,'ASK_IDENTITY',.7,.6,.1,.8,'fish')`,[analysis.id,randomUUID()])).rejects.toThrow();
     await migrated.query('BEGIN');
     await migrated.query('DROP INDEX idx_food_vision_feedback_family_cut');
