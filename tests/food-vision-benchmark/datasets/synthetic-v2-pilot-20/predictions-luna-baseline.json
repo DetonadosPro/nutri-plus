@@ -1,0 +1,2395 @@
+{
+  "variant": "pilot-20-production-ec436e3-luna-low",
+  "model": "gpt-5.6-luna",
+  "reasoningEffort": "low",
+  "store": false,
+  "pricing": {
+    "inputPerMillionUsd": 0.2,
+    "outputPerMillionUsd": 1.2
+  },
+  "cases": [
+    {
+      "id": "food-001",
+      "difficulty": "facil",
+      "latencyMs": 9703.6901,
+      "costUsd": 0.0006793999999999999,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 4429,
+        "inputTokens": 1207,
+        "outputTokens": 51,
+        "reasoningTokens": 0,
+        "totalTokens": 1258
+      },
+      "items": [
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0018A",
+            "BRC0208A",
+            "BRC0209A"
+          ],
+          "topNames": [
+            "Arroz polido cozido sem óleo sem sal",
+            "Arroz polido cozido com óleo de soja cebola e alho sem sal",
+            "Arroz polido cozido com óleo de soja cebola e alho com sal"
+          ],
+          "top1Score": 1,
+          "top2Score": 1,
+          "margin": 0,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "arroz",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "grãos brancos e soltos em uma tigela"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1485.2308000000003,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 4429,
+            "inputTokens": 1207,
+            "outputTokens": 51,
+            "reasoningTokens": 0,
+            "totalTokens": 1258
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3465,
+            "inputTokens": 1170,
+            "outputTokens": 119,
+            "reasoningTokens": 89,
+            "totalTokens": 1289
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.97,
+            "uncertain": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "food-002",
+      "difficulty": "facil",
+      "latencyMs": 11173.1768,
+      "costUsd": 0.0009426,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 3359,
+        "inputTokens": 1207,
+        "outputTokens": 55,
+        "reasoningTokens": 0,
+        "totalTokens": 1262
+      },
+      "items": [
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0012A",
+            "BRC0016A",
+            "BRC0018A"
+          ],
+          "topNames": [
+            "Arroz creme cozido sem tempero",
+            "Arroz integral cozido sem óleo sem sal",
+            "Arroz polido cozido sem óleo sem sal"
+          ],
+          "top1Score": 1,
+          "top2Score": 1,
+          "margin": 0,
+          "visualConfidence": 0.98,
+          "detected": {
+            "name": "Arroz",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "Grãos claros e alongados",
+              "Aspecto úmido e solto"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "matcherMs": 1236.3827,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3359,
+            "inputTokens": 1207,
+            "outputTokens": 55,
+            "reasoningTokens": 0,
+            "totalTokens": 1262
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 6451,
+            "inputTokens": 1166,
+            "outputTokens": 335,
+            "reasoningTokens": 305,
+            "totalTokens": 1501
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.97,
+            "uncertain": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "food-003",
+      "difficulty": "facil",
+      "latencyMs": 7312.3691,
+      "costUsd": 0.0008124,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 1729,
+        "inputTokens": 1207,
+        "outputTokens": 52,
+        "reasoningTokens": 0,
+        "totalTokens": 1259
+      },
+      "items": [
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0028T",
+            "BRC0029T",
+            "BRC0254T"
+          ],
+          "topNames": [
+            "Feijão branco cozido sem óleo sem sal",
+            "Feijão vermelho cozido sem óleo sem sal",
+            "Feijão carioca cozido drenado sem óleo sem sal"
+          ],
+          "top1Score": 1,
+          "top2Score": 1,
+          "margin": 0,
+          "visualConfidence": 0.98,
+          "detected": {
+            "name": "Feijão cozido",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "Grãos claros e rosados em caldo marrom"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "matcherMs": 1170.3148999999976,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 1729,
+            "inputTokens": 1207,
+            "outputTokens": 52,
+            "reasoningTokens": 0,
+            "totalTokens": 1259
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 4294,
+            "inputTokens": 1157,
+            "outputTokens": 231,
+            "reasoningTokens": 201,
+            "totalTokens": 1388
+          },
+          "rerankerDecision": {
+            "candidateIndex": 1,
+            "confidence": 0.66,
+            "uncertain": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "food-004",
+      "difficulty": "facil",
+      "latencyMs": 10093.8626,
+      "costUsd": 0.0007966,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 3420,
+        "inputTokens": 1207,
+        "outputTokens": 168,
+        "reasoningTokens": 76,
+        "totalTokens": 1375
+      },
+      "items": [
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0008T",
+            "BRC0258T",
+            "BRC0275T"
+          ],
+          "topNames": [
+            "Feijão preto cozido (50% grão e 50% caldo) sem óleo sem sal",
+            "Feijão preto cozido (50% grão e 50% caldo) sem óleo com sal",
+            "Feijão preto cozido no vapor sem óleo sem sal"
+          ],
+          "top1Score": 1,
+          "top2Score": 1,
+          "margin": 0,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "feijão-preto",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "grãos pretos inteiros em caldo escuro"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1347.2581000000027,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3420,
+            "inputTokens": 1207,
+            "outputTokens": 168,
+            "reasoningTokens": 76,
+            "totalTokens": 1375
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3973,
+            "inputTokens": 1204,
+            "outputTokens": 94,
+            "reasoningTokens": 64,
+            "totalTokens": 1298
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.99,
+            "uncertain": true
+          }
+        },
+        {
+          "state": "AUTOSELECT",
+          "selectedCode": "BRC0775B",
+          "topCodes": [
+            "BRC0775B",
+            "BRC0085B",
+            "BRC0716B"
+          ],
+          "topNames": [
+            "Coentro folha cru",
+            "Coentro folhas desidratadas",
+            "Chicória do Pará (coentro bravo) cru"
+          ],
+          "top1Score": 1,
+          "top2Score": 0.9192,
+          "margin": 0.0808,
+          "visualConfidence": 0.84,
+          "detected": {
+            "name": "coentro",
+            "preparation": "cru",
+            "visibleDetails": [
+              "folhas verdes frescas visíveis em um prato ao fundo"
+            ],
+            "confidence": 0.84,
+            "alternative": null
+          },
+          "matcherMs": 1212.0599000000002,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3420,
+            "inputTokens": 1207,
+            "outputTokens": 168,
+            "reasoningTokens": 76,
+            "totalTokens": 1375
+          },
+          "rerankerTelemetry": null,
+          "rerankerDecision": null
+        }
+      ]
+    },
+    {
+      "id": "food-005",
+      "difficulty": "facil",
+      "latencyMs": 10029.9251,
+      "costUsd": 0.0010078,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 3414,
+        "inputTokens": 1207,
+        "outputTokens": 166,
+        "reasoningTokens": 77,
+        "totalTokens": 1373
+      },
+      "items": [
+        {
+          "state": "RERANK",
+          "selectedCode": "BRC0015J",
+          "topCodes": [
+            "BRC0015J",
+            "BRC0028J",
+            "BRC0001J"
+          ],
+          "topNames": [
+            "Ovo de galinha inteiro frito (com óleo de soja) sem sal",
+            "Ovo de galinha inteiro frito (com óleo de soja*) com sal",
+            "Ovo de codorna clara crua"
+          ],
+          "top1Score": 1,
+          "top2Score": 1,
+          "margin": 0,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "ovo",
+            "preparation": "frito",
+            "visibleDetails": [
+              "gema inteira e brilhante",
+              "clara com bordas douradas"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1192.9126000000033,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3414,
+            "inputTokens": 1207,
+            "outputTokens": 166,
+            "reasoningTokens": 77,
+            "totalTokens": 1373
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 1397,
+            "inputTokens": 1152,
+            "outputTokens": 28,
+            "reasoningTokens": 0,
+            "totalTokens": 1180
+          },
+          "rerankerDecision": {
+            "candidateIndex": 0,
+            "confidence": 0.98,
+            "uncertain": false
+          }
+        },
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0048G",
+            "BRC0049G",
+            "BRC0051G"
+          ],
+          "topNames": [
+            "Queijo coalho",
+            "Queijo fundido",
+            "Queijo ricota"
+          ],
+          "top1Score": 0.8602,
+          "top2Score": 0.8602,
+          "margin": 0,
+          "visualConfidence": 0.94,
+          "detected": {
+            "name": "queijo",
+            "preparation": "derretido",
+            "visibleDetails": [
+              "camada branca derretida sobre o ovo"
+            ],
+            "confidence": 0.94,
+            "alternative": null
+          },
+          "matcherMs": 1446.4991999999984,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3414,
+            "inputTokens": 1207,
+            "outputTokens": 166,
+            "reasoningTokens": 77,
+            "totalTokens": 1373
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2390,
+            "inputTokens": 1120,
+            "outputTokens": 66,
+            "reasoningTokens": 36,
+            "totalTokens": 1186
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.98,
+            "uncertain": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "food-006",
+      "difficulty": "facil",
+      "latencyMs": 6712.038500000002,
+      "costUsd": 0.0006954,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 2629,
+        "inputTokens": 1207,
+        "outputTokens": 58,
+        "reasoningTokens": 0,
+        "totalTokens": 1265
+      },
+      "items": [
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0010J",
+            "BRC0052J",
+            "BRC0004J"
+          ],
+          "topNames": [
+            "Ovo de galinha inteiro cozido sem sal",
+            "Ovo de codorna inteiro cozido sem sal",
+            "Ovo de galinha clara cozida/10 min sem sal"
+          ],
+          "top1Score": 0.9832,
+          "top2Score": 0.9832,
+          "margin": 0,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "ovo",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "um ovo inteiro sem casca",
+              "metade de um ovo mostrando gema amarela e clara branca"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1532.1527999999962,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2629,
+            "inputTokens": 1207,
+            "outputTokens": 58,
+            "reasoningTokens": 0,
+            "totalTokens": 1265
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2443,
+            "inputTokens": 1160,
+            "outputTokens": 127,
+            "reasoningTokens": 97,
+            "totalTokens": 1287
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.98,
+            "uncertain": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "food-007",
+      "difficulty": "medio",
+      "latencyMs": 5960.9024999999965,
+      "costUsd": 0.0006188000000000001,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 2760,
+        "inputTokens": 1207,
+        "outputTokens": 55,
+        "reasoningTokens": 0,
+        "totalTokens": 1262
+      },
+      "items": [
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0038J",
+            "BRC0055J",
+            "BRC0033J"
+          ],
+          "topNames": [
+            "Omelete vegetais sem sal",
+            "Omelete carne bovina sem sal",
+            "Omelete vegetais e queijo parmesão sem sal"
+          ],
+          "top1Score": 0.9192,
+          "top2Score": 0.9132,
+          "margin": 0.006,
+          "visualConfidence": 0.98,
+          "detected": {
+            "name": "omelete",
+            "preparation": "frita",
+            "visibleDetails": [
+              "Formato dobrado",
+              "Superfície dourada",
+              "Textura espessa e irregular"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "matcherMs": 1208.8713000000062,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2760,
+            "inputTokens": 1207,
+            "outputTokens": 55,
+            "reasoningTokens": 0,
+            "totalTokens": 1262
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 1876,
+            "inputTokens": 1143,
+            "outputTokens": 69,
+            "reasoningTokens": 39,
+            "totalTokens": 1212
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.98,
+            "uncertain": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "food-008",
+      "difficulty": "dificil",
+      "latencyMs": 21810.53680000001,
+      "costUsd": 0.0021576,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 3182,
+        "inputTokens": 1207,
+        "outputTokens": 211,
+        "reasoningTokens": 0,
+        "totalTokens": 1418
+      },
+      "items": [
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0018A",
+            "BRC0208A",
+            "BRC0209A"
+          ],
+          "topNames": [
+            "Arroz polido cozido sem óleo sem sal",
+            "Arroz polido cozido com óleo de soja cebola e alho sem sal",
+            "Arroz polido cozido com óleo de soja cebola e alho com sal"
+          ],
+          "top1Score": 1,
+          "top2Score": 1,
+          "margin": 0,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "Arroz",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "grãos brancos soltos"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1512.1766000000061,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3182,
+            "inputTokens": 1207,
+            "outputTokens": 211,
+            "reasoningTokens": 0,
+            "totalTokens": 1418
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2620,
+            "inputTokens": 1166,
+            "outputTokens": 127,
+            "reasoningTokens": 97,
+            "totalTokens": 1293
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.97,
+            "uncertain": true
+          }
+        },
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0001T",
+            "BRC0006T",
+            "BRC0008T"
+          ],
+          "topNames": [
+            "Feijão carioca cozido (50% grão e 50% caldo) sem óleo sem sal",
+            "Feijão jalo cozido (50% grão e 50% caldo) sem óleo sem sal",
+            "Feijão preto cozido (50% grão e 50% caldo) sem óleo sem sal"
+          ],
+          "top1Score": 1,
+          "top2Score": 1,
+          "margin": 0,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "Feijão",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "grãos marrons em caldo"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1393.0950999999914,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3182,
+            "inputTokens": 1207,
+            "outputTokens": 211,
+            "reasoningTokens": 0,
+            "totalTokens": 1418
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2271,
+            "inputTokens": 1200,
+            "outputTokens": 100,
+            "reasoningTokens": 70,
+            "totalTokens": 1300
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.95,
+            "uncertain": true
+          }
+        },
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0763F",
+            "BRC0764F",
+            "BRC0989F"
+          ],
+          "topNames": [
+            "Linguiça frango/porco fresca grelhada/assada sem óleo sem sal",
+            "Linguiça frango/porco fresca grelhada/assada sem óleo com sal",
+            "Linguiça frango/porco fresca grelhada/assada com óleo de soja sem sal"
+          ],
+          "top1Score": 0.898,
+          "top2Score": 0.848,
+          "margin": 0.05,
+          "visualConfidence": 0.98,
+          "detected": {
+            "name": "Frango",
+            "preparation": "grelhado",
+            "visibleDetails": [
+              "filé grande com marcas de grelha e superfície dourada"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "matcherMs": 1540.3435000000027,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3182,
+            "inputTokens": 1207,
+            "outputTokens": 211,
+            "reasoningTokens": 0,
+            "totalTokens": 1418
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2133,
+            "inputTokens": 1177,
+            "outputTokens": 80,
+            "reasoningTokens": 50,
+            "totalTokens": 1257
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.99,
+            "uncertain": true
+          }
+        },
+        {
+          "state": "RERANK",
+          "selectedCode": "BRC0060B",
+          "topCodes": [
+            "BRC0009B",
+            "BRC0060B",
+            "BRC0061B"
+          ],
+          "topNames": [
+            "Alface crua",
+            "Alface crespa crua",
+            "Alface lisa crua"
+          ],
+          "top1Score": 1,
+          "top2Score": 1,
+          "margin": 0,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "Alface",
+            "preparation": "crua",
+            "visibleDetails": [
+              "folhas verdes crespas"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1219.7926999999909,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3182,
+            "inputTokens": 1207,
+            "outputTokens": 211,
+            "reasoningTokens": 0,
+            "totalTokens": 1418
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 1602,
+            "inputTokens": 1121,
+            "outputTokens": 48,
+            "reasoningTokens": 18,
+            "totalTokens": 1169
+          },
+          "rerankerDecision": {
+            "candidateIndex": 1,
+            "confidence": 0.99,
+            "uncertain": false
+          }
+        },
+        {
+          "state": "AUTOSELECT",
+          "selectedCode": "BRC0035B",
+          "topCodes": [
+            "BRC0035B",
+            "BRC0098B",
+            "BRC0099B"
+          ],
+          "topNames": [
+            "Tomate cru",
+            "Tomate extrato industrializado",
+            "Tomate purê industrializado"
+          ],
+          "top1Score": 1,
+          "top2Score": 0.9192,
+          "margin": 0.0808,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "Tomate",
+            "preparation": "cru",
+            "visibleDetails": [
+              "pedaços vermelhos"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1104.5060000000085,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3182,
+            "inputTokens": 1207,
+            "outputTokens": 211,
+            "reasoningTokens": 0,
+            "totalTokens": 1418
+          },
+          "rerankerTelemetry": null,
+          "rerankerDecision": null
+        },
+        {
+          "state": "RERANK",
+          "selectedCode": "BRC0018B",
+          "topCodes": [
+            "BRC0018B",
+            "BRC1207B",
+            "BRC0356B"
+          ],
+          "topNames": [
+            "Cebola branca crua",
+            "Cebola roxa crua",
+            "Cebola branca assada sem óleo sem sal"
+          ],
+          "top1Score": 1,
+          "top2Score": 0.9952,
+          "margin": 0.0048,
+          "visualConfidence": 0.97,
+          "detected": {
+            "name": "Cebola",
+            "preparation": "crua",
+            "visibleDetails": [
+              "fatias brancas"
+            ],
+            "confidence": 0.97,
+            "alternative": null
+          },
+          "matcherMs": 1371.6860999999917,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3182,
+            "inputTokens": 1207,
+            "outputTokens": 211,
+            "reasoningTokens": 0,
+            "totalTokens": 1418
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 1445,
+            "inputTokens": 1113,
+            "outputTokens": 68,
+            "reasoningTokens": 38,
+            "totalTokens": 1181
+          },
+          "rerankerDecision": {
+            "candidateIndex": 0,
+            "confidence": 0.98,
+            "uncertain": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "food-009",
+      "difficulty": "medio",
+      "latencyMs": 5213.964699999997,
+      "costUsd": 0.0005872000000000001,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 1760,
+        "inputTokens": 1207,
+        "outputTokens": 67,
+        "reasoningTokens": 0,
+        "totalTokens": 1274
+      },
+      "items": [
+        {
+          "state": "RERANK",
+          "selectedCode": "BRC0167F",
+          "topCodes": [
+            "BRC0706F",
+            "BRC0167F",
+            "BRC0489F"
+          ],
+          "topNames": [
+            "Pernil suíno grelhada/assada sem óleo com sal",
+            "Pernil suíno assada sem óleo sem sal",
+            "Pernil suíno assada com tucupi pimenta-de-cheiro jambu chicória (coentro bravo) cebola alho com sal"
+          ],
+          "top1Score": 0.866,
+          "top2Score": 0.832,
+          "margin": 0.034,
+          "visualConfidence": 0.93,
+          "detected": {
+            "name": "pernil de porco",
+            "preparation": "assado",
+            "visibleDetails": [
+              "peça grande com osso",
+              "pele dourada e crocante",
+              "superfície tostada com ervas"
+            ],
+            "confidence": 0.93,
+            "alternative": "pernil suíno"
+          },
+          "matcherMs": 1940.536300000007,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 1760,
+            "inputTokens": 1207,
+            "outputTokens": 67,
+            "reasoningTokens": 0,
+            "totalTokens": 1274
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 1400,
+            "inputTokens": 1159,
+            "outputTokens": 28,
+            "reasoningTokens": 0,
+            "totalTokens": 1187
+          },
+          "rerankerDecision": {
+            "candidateIndex": 1,
+            "confidence": 0.72,
+            "uncertain": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "food-010",
+      "difficulty": "dificil",
+      "latencyMs": 22758.165800000002,
+      "costUsd": 0.0022418,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 3068,
+        "inputTokens": 1207,
+        "outputTokens": 223,
+        "reasoningTokens": 0,
+        "totalTokens": 1430
+      },
+      "items": [
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0222F",
+            "BRC0312F",
+            "BRC0402F"
+          ],
+          "topNames": [
+            "Bife à cavalo sem sal",
+            "Bife à parmegiana sem sal",
+            "Bife à role sem sal"
+          ],
+          "top1Score": 0.9192,
+          "top2Score": 0.9192,
+          "margin": 0,
+          "visualConfidence": 0.98,
+          "detected": {
+            "name": "Bife",
+            "preparation": "grelhado",
+            "visibleDetails": [
+              "peça grande de carne bovina com marcas de grelha e gordura"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "matcherMs": 1206.2730999999912,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3068,
+            "inputTokens": 1207,
+            "outputTokens": 223,
+            "reasoningTokens": 0,
+            "totalTokens": 1430
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 1943,
+            "inputTokens": 1141,
+            "outputTokens": 100,
+            "reasoningTokens": 70,
+            "totalTokens": 1241
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.99,
+            "uncertain": true
+          }
+        },
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0018A",
+            "BRC0208A",
+            "BRC0209A"
+          ],
+          "topNames": [
+            "Arroz polido cozido sem óleo sem sal",
+            "Arroz polido cozido com óleo de soja cebola e alho sem sal",
+            "Arroz polido cozido com óleo de soja cebola e alho com sal"
+          ],
+          "top1Score": 1,
+          "top2Score": 1,
+          "margin": 0,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "Arroz",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "grãos brancos cozidos"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1457.101800000004,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3068,
+            "inputTokens": 1207,
+            "outputTokens": 223,
+            "reasoningTokens": 0,
+            "totalTokens": 1430
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3412,
+            "inputTokens": 1166,
+            "outputTokens": 111,
+            "reasoningTokens": 81,
+            "totalTokens": 1277
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.95,
+            "uncertain": true
+          }
+        },
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0008T",
+            "BRC0258T",
+            "BRC0275T"
+          ],
+          "topNames": [
+            "Feijão preto cozido (50% grão e 50% caldo) sem óleo sem sal",
+            "Feijão preto cozido (50% grão e 50% caldo) sem óleo com sal",
+            "Feijão preto cozido no vapor sem óleo sem sal"
+          ],
+          "top1Score": 1,
+          "top2Score": 1,
+          "margin": 0,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "Feijão-preto",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "grãos pretos inteiros com caldo escuro"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1161.0341000000044,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3068,
+            "inputTokens": 1207,
+            "outputTokens": 223,
+            "reasoningTokens": 0,
+            "totalTokens": 1430
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 1972,
+            "inputTokens": 1204,
+            "outputTokens": 89,
+            "reasoningTokens": 59,
+            "totalTokens": 1293
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.98,
+            "uncertain": true
+          }
+        },
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0780B",
+            "BRC0781B",
+            "BRC0782B"
+          ],
+          "topNames": [
+            "Farofa carne bovina com sal",
+            "Farofa carne bovina sem sal",
+            "Farofa linguiça com sal"
+          ],
+          "top1Score": 1,
+          "top2Score": 1,
+          "margin": 0,
+          "visualConfidence": 0.96,
+          "detected": {
+            "name": "Farofa",
+            "preparation": null,
+            "visibleDetails": [
+              "farofa granulada de cor bege"
+            ],
+            "confidence": 0.96,
+            "alternative": null
+          },
+          "matcherMs": 817.2937000000093,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3068,
+            "inputTokens": 1207,
+            "outputTokens": 223,
+            "reasoningTokens": 0,
+            "totalTokens": 1430
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2462,
+            "inputTokens": 1137,
+            "outputTokens": 63,
+            "reasoningTokens": 33,
+            "totalTokens": 1200
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.99,
+            "uncertain": true
+          }
+        },
+        {
+          "state": "RERANK",
+          "selectedCode": "BRC0009B",
+          "topCodes": [
+            "BRC0583B",
+            "BRC0589B",
+            "BRC0595B"
+          ],
+          "topNames": [
+            "Salada alface crespa sem óleo sem sal",
+            "Salada alface lisa sem óleo sem sal",
+            "Salada alface americana sem óleo sem sal"
+          ],
+          "top1Score": 0.74,
+          "top2Score": 0.74,
+          "margin": 0,
+          "visualConfidence": 0.98,
+          "detected": {
+            "name": "Alface",
+            "preparation": "cru",
+            "visibleDetails": [
+              "folhas verdes"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "matcherMs": 1136.5838999999978,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3068,
+            "inputTokens": 1207,
+            "outputTokens": 223,
+            "reasoningTokens": 0,
+            "totalTokens": 1430
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2607,
+            "inputTokens": 1142,
+            "outputTokens": 116,
+            "reasoningTokens": 86,
+            "totalTokens": 1258
+          },
+          "rerankerDecision": {
+            "candidateIndex": 4,
+            "confidence": 0.86,
+            "uncertain": false
+          }
+        },
+        {
+          "state": "AUTOSELECT",
+          "selectedCode": "BRC0035B",
+          "topCodes": [
+            "BRC0035B",
+            "BRC0098B",
+            "BRC0099B"
+          ],
+          "topNames": [
+            "Tomate cru",
+            "Tomate extrato industrializado",
+            "Tomate purê industrializado"
+          ],
+          "top1Score": 1,
+          "top2Score": 0.9192,
+          "margin": 0.0808,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "Tomate",
+            "preparation": "cru",
+            "visibleDetails": [
+              "rodelas vermelhas com sementes visíveis"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1113.792100000006,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3068,
+            "inputTokens": 1207,
+            "outputTokens": 223,
+            "reasoningTokens": 0,
+            "totalTokens": 1430
+          },
+          "rerankerTelemetry": null,
+          "rerankerDecision": null
+        }
+      ]
+    },
+    {
+      "id": "food-011",
+      "difficulty": "medio",
+      "latencyMs": 10757.605299999996,
+      "costUsd": 0.0006958,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 3180,
+        "inputTokens": 1207,
+        "outputTokens": 57,
+        "reasoningTokens": 0,
+        "totalTokens": 1264
+      },
+      "items": [
+        {
+          "state": "RERANK",
+          "selectedCode": "BRC0066E",
+          "topCodes": [
+            "BRC0066E",
+            "BRC0197E",
+            "BRC0200E"
+          ],
+          "topNames": [
+            "Salmão filé com pele fresco grelhado sem óleo sem sal",
+            "Salmão filé sem pele assado/grelhado sem óleo com sal",
+            "Salmão filé sem pele ensopado (com cebola tomate e pimentão) com óleo com sal"
+          ],
+          "top1Score": 0.956,
+          "top2Score": 0.956,
+          "margin": 0,
+          "visualConfidence": 0.88,
+          "detected": {
+            "name": "Filé de peixe",
+            "preparation": "grelhado",
+            "visibleDetails": [
+              "Filé único com pele e marcas de douramento"
+            ],
+            "confidence": 0.88,
+            "alternative": "Filé de salmão"
+          },
+          "matcherMs": 1806.6217000000033,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3180,
+            "inputTokens": 1207,
+            "outputTokens": 57,
+            "reasoningTokens": 0,
+            "totalTokens": 1264
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 5654,
+            "inputTokens": 1126,
+            "outputTokens": 134,
+            "reasoningTokens": 104,
+            "totalTokens": 1260
+          },
+          "rerankerDecision": {
+            "candidateIndex": 0,
+            "confidence": 0.98,
+            "uncertain": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "food-012",
+      "difficulty": "medio",
+      "latencyMs": 14711.155800000008,
+      "costUsd": 0.0014042000000000002,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 3176,
+        "inputTokens": 1207,
+        "outputTokens": 219,
+        "reasoningTokens": 92,
+        "totalTokens": 1426
+      },
+      "items": [
+        {
+          "state": "RERANK",
+          "selectedCode": "BRC0054E",
+          "topCodes": [
+            "BRC0054E",
+            "BRC0103F",
+            "BRC0194E"
+          ],
+          "topNames": [
+            "Pescada filé empanado frito sem sal",
+            "Carne frango/galinha peito sem pele filé empanado cru sem sal",
+            "Peixe agua salgada merluza frito oleo soja sal"
+          ],
+          "top1Score": 0.637,
+          "top2Score": 0.6122,
+          "margin": 0.0248,
+          "visualConfidence": 0.84,
+          "detected": {
+            "name": "filé de peixe empanado",
+            "preparation": "frito",
+            "visibleDetails": [
+              "filés alongados",
+              "cobertura crocante dourada"
+            ],
+            "confidence": 0.84,
+            "alternative": "filé de frango empanado"
+          },
+          "matcherMs": 2315.8744000000006,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3176,
+            "inputTokens": 1207,
+            "outputTokens": 219,
+            "reasoningTokens": 92,
+            "totalTokens": 1426
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 1714,
+            "inputTokens": 1126,
+            "outputTokens": 28,
+            "reasoningTokens": 0,
+            "totalTokens": 1154
+          },
+          "rerankerDecision": {
+            "candidateIndex": 0,
+            "confidence": 0.99,
+            "uncertain": false
+          }
+        },
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0062C",
+            "BRC0022R",
+            "BRC0023R"
+          ],
+          "topNames": [
+            "Limão cravo in natura suco sem diluição",
+            "Gelatina limão em pó",
+            "Gelatina limão em pó"
+          ],
+          "top1Score": 0.9012,
+          "top2Score": 0.846,
+          "margin": 0.0552,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "limão",
+            "preparation": "cru",
+            "visibleDetails": [
+              "gomos verdes cortados"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1573.113799999992,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3176,
+            "inputTokens": 1207,
+            "outputTokens": 219,
+            "reasoningTokens": 92,
+            "totalTokens": 1426
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2406,
+            "inputTokens": 1131,
+            "outputTokens": 94,
+            "reasoningTokens": 64,
+            "totalTokens": 1225
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.99,
+            "uncertain": true
+          }
+        },
+        {
+          "state": "RERANK",
+          "selectedCode": "BRC0060B",
+          "topCodes": [
+            "BRC0009B",
+            "BRC0060B",
+            "BRC0061B"
+          ],
+          "topNames": [
+            "Alface crua",
+            "Alface crespa crua",
+            "Alface lisa crua"
+          ],
+          "top1Score": 1,
+          "top2Score": 1,
+          "margin": 0,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "alface",
+            "preparation": "crua",
+            "visibleDetails": [
+              "folhas verdes inteiras"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1268.1269999999786,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3176,
+            "inputTokens": 1207,
+            "outputTokens": 219,
+            "reasoningTokens": 92,
+            "totalTokens": 1426
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 1972,
+            "inputTokens": 1121,
+            "outputTokens": 65,
+            "reasoningTokens": 35,
+            "totalTokens": 1186
+          },
+          "rerankerDecision": {
+            "candidateIndex": 1,
+            "confidence": 0.93,
+            "uncertain": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "food-013",
+      "difficulty": "facil",
+      "latencyMs": 21007.23689999999,
+      "costUsd": 0.0019592,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 4606,
+        "inputTokens": 1207,
+        "outputTokens": 264,
+        "reasoningTokens": 104,
+        "totalTokens": 1471
+      },
+      "items": [
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0053B",
+            "BRC0308B",
+            "BRC0309B"
+          ],
+          "topNames": [
+            "Mandioca (aipim macaxeira) sem casca cozida drenada sem óleo sem sal",
+            "Mandioca (aipim macaxeira) sem casca cozida com óleo de soja sem sal",
+            "Mandioca (aipim macaxeira) sem casca cozida com óleo de soja com sal"
+          ],
+          "top1Score": 1,
+          "top2Score": 1,
+          "margin": 0,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "mandioca",
+            "preparation": "cozida",
+            "visibleDetails": [
+              "pedaços amarelos e fibrosos"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1695.4291999999841,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 4606,
+            "inputTokens": 1207,
+            "outputTokens": 264,
+            "reasoningTokens": 104,
+            "totalTokens": 1471
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 4375,
+            "inputTokens": 1210,
+            "outputTokens": 193,
+            "reasoningTokens": 163,
+            "totalTokens": 1403
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.98,
+            "uncertain": true
+          }
+        },
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0500B",
+            "BRC0501B",
+            "BRC0504B"
+          ],
+          "topNames": [
+            "Salada cenoura crua com azeite de oliva com sal",
+            "Salada cenoura crua com óleo de soja com sal",
+            "Salada cenoura crua sem tempero sem sal"
+          ],
+          "top1Score": 1,
+          "top2Score": 1,
+          "margin": 0,
+          "visualConfidence": 0.98,
+          "detected": {
+            "name": "salada",
+            "preparation": "crua",
+            "visibleDetails": [
+              "folhas verdes e pedaços de tomate"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "matcherMs": 1230.9071000000113,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 4606,
+            "inputTokens": 1207,
+            "outputTokens": 264,
+            "reasoningTokens": 104,
+            "totalTokens": 1471
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2345,
+            "inputTokens": 1159,
+            "outputTokens": 96,
+            "reasoningTokens": 66,
+            "totalTokens": 1255
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.98,
+            "uncertain": true
+          }
+        },
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0991F",
+            "BRC0990F",
+            "BRC0978F"
+          ],
+          "topNames": [
+            "Almôndega carne bovina grelhada artesanal sem sal",
+            "Almôndega carne bovina grelhada artesanal com sal",
+            "Carne peito de frango grelhado à pizzaiolo"
+          ],
+          "top1Score": 1,
+          "top2Score": 0.9788,
+          "margin": 0.0212,
+          "visualConfidence": 0.82,
+          "detected": {
+            "name": "carne",
+            "preparation": "grelhada",
+            "visibleDetails": [
+              "pedaços dourados e escuros em uma travessa"
+            ],
+            "confidence": 0.82,
+            "alternative": null
+          },
+          "matcherMs": 1087.4397999999928,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 4606,
+            "inputTokens": 1207,
+            "outputTokens": 264,
+            "reasoningTokens": 104,
+            "totalTokens": 1471
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 1696,
+            "inputTokens": 1150,
+            "outputTokens": 70,
+            "reasoningTokens": 40,
+            "totalTokens": 1220
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.99,
+            "uncertain": true
+          }
+        },
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0001T",
+            "BRC0002T",
+            "BRC0004T"
+          ],
+          "topNames": [
+            "Feijão carioca cozido (50% grão e 50% caldo) sem óleo sem sal",
+            "Feijão carioca cru",
+            "Feijão fradinho (corda caupi massacar) cru"
+          ],
+          "top1Score": 1,
+          "top2Score": 1,
+          "margin": 0,
+          "visualConfidence": 0.78,
+          "detected": {
+            "name": "feijão",
+            "preparation": null,
+            "visibleDetails": [
+              "alimento escuro e líquido em uma tigela"
+            ],
+            "confidence": 0.78,
+            "alternative": null
+          },
+          "matcherMs": 928.8601000000199,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 4606,
+            "inputTokens": 1207,
+            "outputTokens": 264,
+            "reasoningTokens": 104,
+            "totalTokens": 1471
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2712,
+            "inputTokens": 1164,
+            "outputTokens": 28,
+            "reasoningTokens": 0,
+            "totalTokens": 1192
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.99,
+            "uncertain": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "food-014",
+      "difficulty": "facil",
+      "latencyMs": 5635.761400000018,
+      "costUsd": 0.0006774,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 1956,
+        "inputTokens": 1207,
+        "outputTokens": 59,
+        "reasoningTokens": 0,
+        "totalTokens": 1266
+      },
+      "items": [
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0041B",
+            "BRC0042B",
+            "BRC0054B"
+          ],
+          "topNames": [
+            "Batata inglesa sem casca cozida drenada sem óleo sem sal",
+            "Batata doce sem casca cozida drenada sem óleo sem sal",
+            "Batata baroa (mandioquinha batata salsa) sem casca cozida drenada sem óleo sem sal"
+          ],
+          "top1Score": 1,
+          "top2Score": 1,
+          "margin": 0,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "batata",
+            "preparation": "cozida",
+            "visibleDetails": [
+              "pedaços grandes amarelos",
+              "textura macia",
+              "coberta com ervas verdes"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1309.8056999999972,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 1956,
+            "inputTokens": 1207,
+            "outputTokens": 59,
+            "reasoningTokens": 0,
+            "totalTokens": 1266
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2253,
+            "inputTokens": 1190,
+            "outputTokens": 106,
+            "reasoningTokens": 76,
+            "totalTokens": 1296
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.95,
+            "uncertain": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "food-015",
+      "difficulty": "facil",
+      "latencyMs": 5504.722699999984,
+      "costUsd": 0.0006586,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 1528,
+        "inputTokens": 1207,
+        "outputTokens": 54,
+        "reasoningTokens": 0,
+        "totalTokens": 1261
+      },
+      "items": [
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC1170B",
+            "BRC0316B",
+            "BRC0006M"
+          ],
+          "topNames": [
+            "Batata frita com queijo muçarela com toucinho defumado (bacon) com sal",
+            "Batata baroa (mandioquinha batata salsa) sem casca frita sem sal",
+            "Batata frita McDonald's"
+          ],
+          "top1Score": 1,
+          "top2Score": 0.994,
+          "margin": 0.006,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "Batata frita",
+            "preparation": "frita",
+            "visibleDetails": [
+              "Palitos alongados",
+              "Superfície dourada e crocante"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1295.1891999999934,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 1528,
+            "inputTokens": 1207,
+            "outputTokens": 54,
+            "reasoningTokens": 0,
+            "totalTokens": 1261
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2568,
+            "inputTokens": 1180,
+            "outputTokens": 97,
+            "reasoningTokens": 67,
+            "totalTokens": 1277
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.99,
+            "uncertain": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "food-016",
+      "difficulty": "medio",
+      "latencyMs": 8017.9054999999935,
+      "costUsd": 0.00074,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 2423,
+        "inputTokens": 1207,
+        "outputTokens": 125,
+        "reasoningTokens": 0,
+        "totalTokens": 1332
+      },
+      "items": [
+        {
+          "state": "NO_MATCH",
+          "selectedCode": null,
+          "topCodes": [],
+          "topNames": [],
+          "top1Score": 0,
+          "top2Score": 0,
+          "margin": 0,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "espaguete",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "fios longos",
+              "coberto por molho vermelho"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1300.2118999999948,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2423,
+            "inputTokens": 1207,
+            "outputTokens": 125,
+            "reasoningTokens": 0,
+            "totalTokens": 1332
+          },
+          "rerankerTelemetry": null,
+          "rerankerDecision": null
+        },
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0030L",
+            "BRC0100B",
+            "BRC0707B"
+          ],
+          "topNames": [
+            "Catchup tomate molho",
+            "Tomate molho industrializado não peneirado",
+            "Molho de tomate com peito de frango com óleo cebola e alho com sal"
+          ],
+          "top1Score": 1,
+          "top2Score": 1,
+          "margin": 0,
+          "visualConfidence": 0.98,
+          "detected": {
+            "name": "molho de tomate",
+            "preparation": null,
+            "visibleDetails": [
+              "molho vermelho",
+              "pedaços visíveis de tomate"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "matcherMs": 972.8907000000181,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2423,
+            "inputTokens": 1207,
+            "outputTokens": 125,
+            "reasoningTokens": 0,
+            "totalTokens": 1332
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 1996,
+            "inputTokens": 1161,
+            "outputTokens": 97,
+            "reasoningTokens": 67,
+            "totalTokens": 1258
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.96,
+            "uncertain": true
+          }
+        },
+        {
+          "state": "AUTOSELECT",
+          "selectedCode": "BRC0034B",
+          "topCodes": [
+            "BRC0034B",
+            "BRC1199B",
+            "BRC0057B"
+          ],
+          "topNames": [
+            "Salsa (salsinha) crua",
+            "Salsa (salsinha) seca",
+            "Salsa (salsinha) cozida drenada sem óleo sem sal"
+          ],
+          "top1Score": 1,
+          "top2Score": 0.9048,
+          "margin": 0.0952,
+          "visualConfidence": 0.97,
+          "detected": {
+            "name": "salsinha",
+            "preparation": "crua",
+            "visibleDetails": [
+              "folhas verdes picadas sobre a massa"
+            ],
+            "confidence": 0.97,
+            "alternative": null
+          },
+          "matcherMs": 1211.2722999999824,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2423,
+            "inputTokens": 1207,
+            "outputTokens": 125,
+            "reasoningTokens": 0,
+            "totalTokens": 1332
+          },
+          "rerankerTelemetry": null,
+          "rerankerDecision": null
+        }
+      ]
+    },
+    {
+      "id": "food-017",
+      "difficulty": "medio",
+      "latencyMs": 8236.668600000005,
+      "costUsd": 0.0008296,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 3681,
+        "inputTokens": 1207,
+        "outputTokens": 221,
+        "reasoningTokens": 122,
+        "totalTokens": 1428
+      },
+      "items": [
+        {
+          "state": "AUTOSELECT",
+          "selectedCode": "BRC0395A",
+          "topCodes": [
+            "BRC0395A",
+            "BRC0576A",
+            "BRC0111A"
+          ],
+          "topNames": [
+            "Lasanha bolonhesa artesanal assada",
+            "Lasanha legumes",
+            "Lasanha pronta industrializada"
+          ],
+          "top1Score": 1,
+          "top2Score": 0.9252,
+          "margin": 0.0748,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "Lasanha",
+            "preparation": "assada",
+            "visibleDetails": [
+              "camadas de massa",
+              "carne moída ao molho",
+              "queijo gratinado"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1084.8298000000068,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3681,
+            "inputTokens": 1207,
+            "outputTokens": 221,
+            "reasoningTokens": 122,
+            "totalTokens": 1428
+          },
+          "rerankerTelemetry": null,
+          "rerankerDecision": null
+        },
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0019B",
+            "BRC0069B",
+            "BRC0076B"
+          ],
+          "topNames": [
+            "Cebolinha verde crua",
+            "Caruru folha crua",
+            "Mostarda folha crua"
+          ],
+          "top1Score": 0.6524,
+          "top2Score": 0.6524,
+          "margin": 0,
+          "visualConfidence": 0.8,
+          "detected": {
+            "name": "Folhas verdes",
+            "preparation": "cruas",
+            "visibleDetails": [
+              "folhas verdes visíveis em uma tigela ao fundo"
+            ],
+            "confidence": 0.8,
+            "alternative": "salada de folhas"
+          },
+          "matcherMs": 1448.9237999999896,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 3681,
+            "inputTokens": 1207,
+            "outputTokens": 221,
+            "reasoningTokens": 122,
+            "totalTokens": 1428
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 1909,
+            "inputTokens": 1129,
+            "outputTokens": 81,
+            "reasoningTokens": 51,
+            "totalTokens": 1210
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.98,
+            "uncertain": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "food-018",
+      "difficulty": "medio",
+      "latencyMs": 8082.8445000000065,
+      "costUsd": 0.0007318,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 2845,
+        "inputTokens": 1207,
+        "outputTokens": 164,
+        "reasoningTokens": 38,
+        "totalTokens": 1371
+      },
+      "items": [
+        {
+          "state": "RERANK",
+          "selectedCode": "BRC0060B",
+          "topCodes": [
+            "BRC0009B",
+            "BRC0060B",
+            "BRC0061B"
+          ],
+          "topNames": [
+            "Alface crua",
+            "Alface crespa crua",
+            "Alface lisa crua"
+          ],
+          "top1Score": 1,
+          "top2Score": 1,
+          "margin": 0,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "Alface",
+            "preparation": "crua",
+            "visibleDetails": [
+              "Folhas verdes inteiras e enrugadas"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1118.3109000000113,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2845,
+            "inputTokens": 1207,
+            "outputTokens": 164,
+            "reasoningTokens": 38,
+            "totalTokens": 1371
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 1703,
+            "inputTokens": 1126,
+            "outputTokens": 57,
+            "reasoningTokens": 27,
+            "totalTokens": 1183
+          },
+          "rerankerDecision": {
+            "candidateIndex": 1,
+            "confidence": 0.94,
+            "uncertain": false
+          }
+        },
+        {
+          "state": "AUTOSELECT",
+          "selectedCode": "BRC0035B",
+          "topCodes": [
+            "BRC0035B",
+            "BRC0098B",
+            "BRC0099B"
+          ],
+          "topNames": [
+            "Tomate cru",
+            "Tomate extrato industrializado",
+            "Tomate purê industrializado"
+          ],
+          "top1Score": 1,
+          "top2Score": 0.9192,
+          "margin": 0.0808,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "Tomate",
+            "preparation": "cru",
+            "visibleDetails": [
+              "Tomates vermelhos cortados ao meio, com sementes visíveis"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1121.603299999988,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2845,
+            "inputTokens": 1207,
+            "outputTokens": 164,
+            "reasoningTokens": 38,
+            "totalTokens": 1371
+          },
+          "rerankerTelemetry": null,
+          "rerankerDecision": null
+        },
+        {
+          "state": "AUTOSELECT",
+          "selectedCode": "BRC0030B",
+          "topCodes": [
+            "BRC0030B",
+            "BRC0705B",
+            "BRC0526B"
+          ],
+          "topNames": [
+            "Pepino com casca cru",
+            "Picles pepino azedo em conserva drenado",
+            "Salada pepino sem óleo sem sal"
+          ],
+          "top1Score": 1,
+          "top2Score": 0.834,
+          "margin": 0.166,
+          "visualConfidence": 0.98,
+          "detected": {
+            "name": "Pepino",
+            "preparation": "cru",
+            "visibleDetails": [
+              "Rodelas verdes com centro claro e sementes visíveis"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "matcherMs": 1173.7613000000129,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2845,
+            "inputTokens": 1207,
+            "outputTokens": 164,
+            "reasoningTokens": 38,
+            "totalTokens": 1371
+          },
+          "rerankerTelemetry": null,
+          "rerankerDecision": null
+        }
+      ]
+    },
+    {
+      "id": "food-019",
+      "difficulty": "facil",
+      "latencyMs": 2378.1737999999896,
+      "costUsd": 0.00030619999999999996,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 1260,
+        "inputTokens": 1207,
+        "outputTokens": 54,
+        "reasoningTokens": 0,
+        "totalTokens": 1261
+      },
+      "items": [
+        {
+          "state": "AUTOSELECT",
+          "selectedCode": "BRC0035B",
+          "topCodes": [
+            "BRC0035B",
+            "BRC0098B",
+            "BRC0099B"
+          ],
+          "topNames": [
+            "Tomate cru",
+            "Tomate extrato industrializado",
+            "Tomate purê industrializado"
+          ],
+          "top1Score": 1,
+          "top2Score": 0.9192,
+          "margin": 0.0808,
+          "visualConfidence": 0.99,
+          "detected": {
+            "name": "Tomate",
+            "preparation": "cru",
+            "visibleDetails": [
+              "fatias redondas vermelhas",
+              "sementes e polpa visíveis"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "matcherMs": 1079.8260999999766,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 1260,
+            "inputTokens": 1207,
+            "outputTokens": 54,
+            "reasoningTokens": 0,
+            "totalTokens": 1261
+          },
+          "rerankerTelemetry": null,
+          "rerankerDecision": null
+        }
+      ]
+    },
+    {
+      "id": "food-020",
+      "difficulty": "dificil",
+      "latencyMs": 5246.9272000000055,
+      "costUsd": 0.0006474,
+      "firstTelemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "low",
+        "latencyMs": 2150,
+        "inputTokens": 1207,
+        "outputTokens": 53,
+        "reasoningTokens": 0,
+        "totalTokens": 1260
+      },
+      "items": [
+        {
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0036N",
+            "BRC0037N",
+            "BRC0038N"
+          ],
+          "topNames": [
+            "Queijo minas frescal light",
+            "Queijo minas frescal light",
+            "Queijo minas padrão zero % gordura"
+          ],
+          "top1Score": 1,
+          "top2Score": 1,
+          "margin": 0,
+          "visualConfidence": 0.96,
+          "detected": {
+            "name": "queijo",
+            "preparation": null,
+            "visibleDetails": [
+              "fatias claras e espessas",
+              "superfície lisa com pequenos furos"
+            ],
+            "confidence": 0.96,
+            "alternative": null
+          },
+          "matcherMs": 1033.3129999999946,
+          "firstTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 2150,
+            "inputTokens": 1207,
+            "outputTokens": 53,
+            "reasoningTokens": 0,
+            "totalTokens": 1260
+          },
+          "rerankerTelemetry": {
+            "model": "gpt-5.6-luna",
+            "reasoningEffort": "low",
+            "latencyMs": 1959,
+            "inputTokens": 1130,
+            "outputTokens": 97,
+            "reasoningTokens": 67,
+            "totalTokens": 1227
+          },
+          "rerankerDecision": {
+            "candidateIndex": null,
+            "confidence": 0.95,
+            "uncertain": true
+          }
+        }
+      ]
+    }
+  ]
+}

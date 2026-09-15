@@ -1,0 +1,33 @@
+﻿id;image;componentIndex;expectedLabel;tbcaCode;acceptableCodes;difficulty;visualReviewStatus;catalogReviewStatus;unresolvedAttributes;notes
+food-001;images/food-001.png;1;Arroz branco cozido;;;facil;preliminary;pending;cultivar | teor de sal | quantidade de óleo;Grãos brancos cozidos.
+food-002;images/food-002.png;1;Arroz integral cozido;;;facil;preliminary;pending;cultivar | teor de sal | quantidade de óleo;Grãos de arroz com coloração e aspecto integrais.
+food-003;images/food-003.png;1;Feijão carioca cozido;;;facil;preliminary;pending;teor de sal | ingredientes do tempero;Grãos marrons em caldo.
+food-004;images/food-004.png;1;Feijão preto cozido;;;facil;preliminary;pending;teor de sal | ingredientes do tempero;Grãos pretos em caldo escuro.
+food-005;images/food-005.png;1;Ovo frito;;;facil;preliminary;pending;tipo e quantidade de gordura | teor de sal;Ovo com gema visível e clara de bordas douradas.
+food-006;images/food-006.png;1;Ovo de galinha cozido;;;facil;preliminary;pending;teor de sal;Ovo inteiro descascado e metade com gema firme.
+food-007;images/food-007.png;1;Omelete simples;;;medio;preliminary;pending;ingredientes internos | gordura de preparo | teor de sal;"Omelete dobrada e dourada; recheio não identificável."
+food-008;images/food-008.png;1;Peito de frango grelhado;;;dificil;preliminary;pending;corte exato | pele | gordura de preparo;Filé de frango dourado com marcas de grelha.
+food-008;images/food-008.png;2;Arroz branco cozido;;;dificil;preliminary;pending;;
+food-008;images/food-008.png;3;Feijão carioca cozido;;;dificil;preliminary;pending;;Grãos marrons em caldo.
+food-008;images/food-008.png;4;Alface crua;;;dificil;preliminary;pending;;Folhas verdes da salada.
+food-008;images/food-008.png;5;Tomate cru;;;dificil;preliminary;pending;;Pedaços vermelhos da salada.
+food-008;images/food-008.png;6;Cebola crua;;;dificil;preliminary;pending;;Tiras brancas visíveis na salada.
+food-009;images/food-009.png;1;Coxa de frango assada;;;medio;preliminary;pending;teor de sal | gordura de preparo;Peça de frango com osso e pele dourada.
+food-010;images/food-010.png;1;Bife bovino grelhado;;;dificil;preliminary;pending;corte bovino exato;"Bife com marcas de grelha e gordura lateral; corte não identificável."
+food-010;images/food-010.png;2;Arroz branco cozido;;;dificil;preliminary;pending;;
+food-010;images/food-010.png;3;Feijão preto cozido;;;dificil;preliminary;pending;;Grãos escuros ao fundo do prato.
+food-010;images/food-010.png;4;Farofa;;;dificil;preliminary;pending;tipo de farinha | gordura | ingredientes;"Preparação granulada amarelada; composição exata desconhecida."
+food-010;images/food-010.png;5;Alface crua;;;dificil;preliminary;pending;;
+food-010;images/food-010.png;6;Tomate cru;;;dificil;preliminary;pending;;
+food-011;images/food-011.png;1;Filé de peixe grelhado;;;medio;preliminary;pending;espécie de peixe | corte exato | gordura de preparo;Filé com superfície dourada e marcas de grelha.
+food-012;images/food-012.png;1;Filé de peixe empanado;;;medio;preliminary;pending;espécie de peixe | método exato de cocção | tipo de empanamento | gordura de preparo;Dois filés com crosta dourada.
+food-013;images/food-013.png;1;Mandioca cozida;;;facil;preliminary;pending;variedade | teor de sal;Pedaços amarelo-claros de raiz com fibras longitudinais.
+food-014;images/food-014.png;1;Batata inglesa cozida;;;facil;preliminary;pending;gordura adicionada | teor de sal;Pedaços de batata com ervas visíveis.
+food-015;images/food-015.png;1;Batata inglesa frita;;;facil;preliminary;pending;tipo e quantidade de óleo | teor de sal;Batatas cortadas em palitos e douradas.
+food-016;images/food-016.png;1;Espaguete ao molho de tomate;;;medio;preliminary;pending;receita do molho | gordura adicionada | teor de sal;"Massa longa com molho vermelho e ervas; sem carne claramente identificável."
+food-017;images/food-017.png;1;Lasanha à bolonhesa;;;medio;preliminary;pending;composição exata | tipo de queijo | proporções;Camadas de massa, molho vermelho, carne moída aparente e queijo gratinado.
+food-018;images/food-018.png;1;Alface crua;;;medio;preliminary;pending;;Folhas verdes da salada.
+food-018;images/food-018.png;2;Tomate cru;;;medio;preliminary;pending;;Metades de tomates pequenos.
+food-018;images/food-018.png;3;Pepino cru;;;medio;preliminary;pending;;Rodelas de pepino.
+food-019;images/food-019.png;1;Tomate cru;;;facil;preliminary;pending;cultivar;Tomate vermelho cortado em rodelas.
+food-020;images/food-020.png;1;Queijo muçarela;;;dificil;preliminary;pending;tipo exato de queijo | teor de gordura | teor de sal;Fatias de queijo claro, semelhante a muçarela.

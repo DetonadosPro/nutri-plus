@@ -1,0 +1,694 @@
+{
+  "configuration": {
+    "variant": "semantic-identity-v2-fast-none-low",
+    "model": "gpt-5.6-luna",
+    "reasoningEffort": "none",
+    "imageDetail": "low",
+    "store": false,
+    "images": 20,
+    "technicalFailures": 0
+  },
+  "denominators": {
+    "expectedVisual": 32,
+    "resolvedTbca": 27,
+    "ambiguousVisualOnly": 5
+  },
+  "visual": {
+    "matched": 30,
+    "missing": 2,
+    "extras": 2,
+    "recallPercent": 93.75,
+    "precisionPercent": 93.75
+  },
+  "tbca": {
+    "top1Acceptable": {
+      "count": 20,
+      "denominator": 27
+    },
+    "top3Acceptable": {
+      "count": 21,
+      "denominator": 27
+    },
+    "top5Acceptable": {
+      "count": 21,
+      "denominator": 27
+    },
+    "autoSelect": {
+      "count": 17,
+      "correct": 17,
+      "precisionPercent": 100,
+      "coveragePercent": 62.96
+    },
+    "userChoice": {
+      "count": 7,
+      "expectedInTop5": 4
+    }
+  },
+  "usage": {
+    "inputTokens": 10320,
+    "outputTokens": 1534,
+    "reasoningTokens": 0
+  },
+  "costUsd": {
+    "total": 0.0039047999999999995,
+    "averagePerImage": 0.00019523999999999998
+  },
+  "latency": {
+    "provider": {
+      "meanMs": 3123,
+      "p50Ms": 2912,
+      "p95Ms": 4769,
+      "maxMs": 4813
+    },
+    "pipeline": {
+      "meanMs": 3231,
+      "p50Ms": 3060,
+      "p95Ms": 4895,
+      "maxMs": 5007
+    }
+  },
+  "components": [
+    {
+      "id": "food-001",
+      "expectedLabel": "Arroz branco cozido",
+      "resolved": true,
+      "predictionIndex": 0,
+      "detectedName": "arroz branco",
+      "state": "AUTOSELECT",
+      "selectedCode": "BRC0018A",
+      "topCodes": [
+        "BRC0018A",
+        "BRC0505A",
+        "BRC0524A",
+        "BRC0525A",
+        "BRC0528A"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": true
+    },
+    {
+      "id": "food-002",
+      "expectedLabel": "Arroz integral cozido",
+      "resolved": true,
+      "predictionIndex": 0,
+      "detectedName": "arroz",
+      "state": "ASK_ATTRIBUTE",
+      "selectedCode": null,
+      "topCodes": [
+        "BRC0016A",
+        "BRC0018A",
+        "BRC0457A",
+        "BRC0994A",
+        "BRC1115A"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": false
+    },
+    {
+      "id": "food-003",
+      "expectedLabel": "Feijão carioca cozido",
+      "resolved": true,
+      "predictionIndex": 0,
+      "detectedName": "feijão",
+      "state": "AUTOSELECT",
+      "selectedCode": "BRC0001T",
+      "topCodes": [
+        "BRC0001T",
+        "BRC0014T",
+        "BRC0255T",
+        "BRC0254T",
+        "BRC0080T"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": true
+    },
+    {
+      "id": "food-004",
+      "expectedLabel": "Feijão preto cozido",
+      "resolved": true,
+      "predictionIndex": 0,
+      "detectedName": "Feijão preto",
+      "state": "AUTOSELECT",
+      "selectedCode": "BRC0258T",
+      "topCodes": [
+        "BRC0258T",
+        "BRC0008T",
+        "BRC0107T",
+        "BRC0194T",
+        "BRC0195T"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": true
+    },
+    {
+      "id": "food-005",
+      "expectedLabel": "Ovo frito",
+      "resolved": true,
+      "predictionIndex": 0,
+      "detectedName": "ovo",
+      "state": "AUTOSELECT",
+      "selectedCode": "BRC0028J",
+      "topCodes": [
+        "BRC0028J",
+        "BRC0015J",
+        "BRC0014J",
+        "BRC0065J",
+        "BRC0066J"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": true
+    },
+    {
+      "id": "food-006",
+      "expectedLabel": "Ovo de galinha cozido",
+      "resolved": true,
+      "predictionIndex": 0,
+      "detectedName": "ovo",
+      "state": "AUTOSELECT",
+      "selectedCode": "BRC0023J",
+      "topCodes": [
+        "BRC0023J",
+        "BRC0010J",
+        "BRC0014J",
+        "BRC0065J",
+        "BRC0139T"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": true
+    },
+    {
+      "id": "food-007",
+      "expectedLabel": "Omelete simples",
+      "resolved": false,
+      "predictionIndex": 0,
+      "detectedName": "omelete",
+      "state": "NO_EXACT_TBCA_MATCH",
+      "selectedCode": null,
+      "topCodes": [
+        "BRC0253T",
+        "BRC0026J",
+        "BRC0025J",
+        "BRC0031J",
+        "BRC0030J"
+      ],
+      "top1Acceptable": false,
+      "top3Acceptable": false,
+      "top5Acceptable": false,
+      "autoCorrect": false
+    },
+    {
+      "id": "food-008",
+      "expectedLabel": "Peito de frango grelhado",
+      "resolved": true,
+      "predictionIndex": 2,
+      "detectedName": "Frango",
+      "state": "ASK_ATTRIBUTE",
+      "selectedCode": null,
+      "topCodes": [
+        "BRC0114F",
+        "BRC0230F",
+        "BRC0978F",
+        "BRC0996F",
+        "BRC0997F"
+      ],
+      "top1Acceptable": false,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": false
+    },
+    {
+      "id": "food-008",
+      "expectedLabel": "Arroz branco cozido",
+      "resolved": true,
+      "predictionIndex": 0,
+      "detectedName": "Arroz branco",
+      "state": "AUTOSELECT",
+      "selectedCode": "BRC0018A",
+      "topCodes": [
+        "BRC0018A",
+        "BRC0001A",
+        "BRC0505A",
+        "BRC0524A",
+        "BRC0525A"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": true
+    },
+    {
+      "id": "food-008",
+      "expectedLabel": "Feijão carioca cozido",
+      "resolved": true,
+      "predictionIndex": 1,
+      "detectedName": "Feijão",
+      "state": "AUTOSELECT",
+      "selectedCode": "BRC0001T",
+      "topCodes": [
+        "BRC0001T",
+        "BRC0014T",
+        "BRC0255T",
+        "BRC0254T",
+        "BRC0080T"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": true
+    },
+    {
+      "id": "food-008",
+      "expectedLabel": "Alface crua",
+      "resolved": true,
+      "predictionIndex": 3,
+      "detectedName": "Salada",
+      "state": "ASK_ATTRIBUTE",
+      "selectedCode": null,
+      "topCodes": [
+        "BRC0504B",
+        "BRC0521B",
+        "BRC0538B",
+        "BRC0544B",
+        "BRC0550B"
+      ],
+      "top1Acceptable": false,
+      "top3Acceptable": false,
+      "top5Acceptable": false,
+      "autoCorrect": false
+    },
+    {
+      "id": "food-008",
+      "expectedLabel": "Tomate cru",
+      "resolved": true,
+      "predictionIndex": null,
+      "detectedName": null,
+      "state": "MISSING",
+      "selectedCode": null,
+      "topCodes": [],
+      "top1Acceptable": false,
+      "top3Acceptable": false,
+      "top5Acceptable": false,
+      "autoCorrect": false
+    },
+    {
+      "id": "food-008",
+      "expectedLabel": "Cebola crua",
+      "resolved": true,
+      "predictionIndex": null,
+      "detectedName": null,
+      "state": "MISSING",
+      "selectedCode": null,
+      "topCodes": [],
+      "top1Acceptable": false,
+      "top3Acceptable": false,
+      "top5Acceptable": false,
+      "autoCorrect": false
+    },
+    {
+      "id": "food-009",
+      "expectedLabel": "Coxa de frango assada",
+      "resolved": true,
+      "predictionIndex": 0,
+      "detectedName": "Frango",
+      "state": "ASK_ATTRIBUTE",
+      "selectedCode": null,
+      "topCodes": [
+        "BRC0113F",
+        "BRC0231F",
+        "BRC0112F",
+        "BRC0443A",
+        "BRC0101F"
+      ],
+      "top1Acceptable": false,
+      "top3Acceptable": false,
+      "top5Acceptable": false,
+      "autoCorrect": false
+    },
+    {
+      "id": "food-010",
+      "expectedLabel": "Bife bovino grelhado",
+      "resolved": false,
+      "predictionIndex": 0,
+      "detectedName": "bife",
+      "state": "NO_EXACT_TBCA_MATCH",
+      "selectedCode": null,
+      "topCodes": [
+        "BRC0293F",
+        "BRC0312F",
+        "BRC0923F",
+        "BRC0222F",
+        "BRC0401F"
+      ],
+      "top1Acceptable": false,
+      "top3Acceptable": false,
+      "top5Acceptable": false,
+      "autoCorrect": false
+    },
+    {
+      "id": "food-010",
+      "expectedLabel": "Arroz branco cozido",
+      "resolved": true,
+      "predictionIndex": 1,
+      "detectedName": "arroz",
+      "state": "AUTOSELECT",
+      "selectedCode": "BRC0018A",
+      "topCodes": [
+        "BRC0018A",
+        "BRC0457A",
+        "BRC0731A",
+        "BRC0887A",
+        "BRC0187A"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": true
+    },
+    {
+      "id": "food-010",
+      "expectedLabel": "Feijão preto cozido",
+      "resolved": true,
+      "predictionIndex": 2,
+      "detectedName": "feijão-preto",
+      "state": "AUTOSELECT",
+      "selectedCode": "BRC0258T",
+      "topCodes": [
+        "BRC0258T",
+        "BRC0008T",
+        "BRC0107T",
+        "BRC0194T",
+        "BRC0195T"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": true
+    },
+    {
+      "id": "food-010",
+      "expectedLabel": "Farofa",
+      "resolved": false,
+      "predictionIndex": 3,
+      "detectedName": "farofa",
+      "state": "NO_EXACT_TBCA_MATCH",
+      "selectedCode": null,
+      "topCodes": [
+        "BRC1096B",
+        "BRC1097B",
+        "BRC1098B",
+        "BRC1099B",
+        "BRC0711N"
+      ],
+      "top1Acceptable": false,
+      "top3Acceptable": false,
+      "top5Acceptable": false,
+      "autoCorrect": false
+    },
+    {
+      "id": "food-010",
+      "expectedLabel": "Alface crua",
+      "resolved": true,
+      "predictionIndex": 4,
+      "detectedName": "alface",
+      "state": "ASK_ATTRIBUTE",
+      "selectedCode": null,
+      "topCodes": [
+        "BRC0009B",
+        "BRC0060B",
+        "BRC0061B",
+        "BRC0062B",
+        "BRC0063B"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": false
+    },
+    {
+      "id": "food-010",
+      "expectedLabel": "Tomate cru",
+      "resolved": true,
+      "predictionIndex": 5,
+      "detectedName": "tomate",
+      "state": "AUTOSELECT",
+      "selectedCode": "BRC0035B",
+      "topCodes": [
+        "BRC0035B",
+        "BRC0390B",
+        "BRC0151T",
+        "BRC0152T",
+        "BRC0464A"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": true
+    },
+    {
+      "id": "food-011",
+      "expectedLabel": "Filé de peixe grelhado",
+      "resolved": true,
+      "predictionIndex": 0,
+      "detectedName": "salmão",
+      "state": "ASK_ATTRIBUTE",
+      "selectedCode": null,
+      "topCodes": [
+        "BRC0066E",
+        "BRC0067E",
+        "BRC0197E",
+        "BRC0296E",
+        "BRC0092G"
+      ],
+      "top1Acceptable": false,
+      "top3Acceptable": false,
+      "top5Acceptable": false,
+      "autoCorrect": false
+    },
+    {
+      "id": "food-012",
+      "expectedLabel": "Filé de peixe empanado",
+      "resolved": false,
+      "predictionIndex": 0,
+      "detectedName": "Filé de peixe empanado",
+      "state": "NO_EXACT_TBCA_MATCH",
+      "selectedCode": null,
+      "topCodes": [
+        "BRC0108E",
+        "BRC0109E",
+        "BRC0219E",
+        "BRC0441E",
+        "BRC0125E"
+      ],
+      "top1Acceptable": false,
+      "top3Acceptable": false,
+      "top5Acceptable": false,
+      "autoCorrect": false
+    },
+    {
+      "id": "food-013",
+      "expectedLabel": "Mandioca cozida",
+      "resolved": true,
+      "predictionIndex": 0,
+      "detectedName": "Mandioca",
+      "state": "AUTOSELECT",
+      "selectedCode": "BRC0908B",
+      "topCodes": [
+        "BRC0908B",
+        "BRC0053B",
+        "BRC0457A",
+        "BRC0309B",
+        "BRC0308B"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": true
+    },
+    {
+      "id": "food-014",
+      "expectedLabel": "Batata inglesa cozida",
+      "resolved": true,
+      "predictionIndex": 0,
+      "detectedName": "batata",
+      "state": "AUTOSELECT",
+      "selectedCode": "BRC0117B",
+      "topCodes": [
+        "BRC0117B",
+        "BRC0041B",
+        "BRC0315B",
+        "BRC0314B",
+        "BRC1105B"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": true
+    },
+    {
+      "id": "food-015",
+      "expectedLabel": "Batata inglesa frita",
+      "resolved": true,
+      "predictionIndex": 0,
+      "detectedName": "batata frita",
+      "state": "AUTOSELECT",
+      "selectedCode": "BRC0118B",
+      "topCodes": [
+        "BRC0118B",
+        "BRC0048B",
+        "BRC0049B",
+        "BRC0006M",
+        "BRC0305B"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": true
+    },
+    {
+      "id": "food-016",
+      "expectedLabel": "Espaguete ao molho de tomate",
+      "resolved": true,
+      "predictionIndex": 0,
+      "detectedName": "espaguete ao molho de tomate",
+      "state": "AUTOSELECT",
+      "selectedCode": "BRC0218A",
+      "topCodes": [
+        "BRC0218A",
+        "BRC0217A",
+        "BRC0235A",
+        "BRC0234A",
+        "BRC0613A"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": true
+    },
+    {
+      "id": "food-017",
+      "expectedLabel": "Lasanha à bolonhesa",
+      "resolved": true,
+      "predictionIndex": 0,
+      "detectedName": "lasanha",
+      "state": "AUTOSELECT",
+      "selectedCode": "BRC0395A",
+      "topCodes": [
+        "BRC0395A",
+        "BRC0684B",
+        "BRC0894A",
+        "BRC1025B",
+        "BRC0111A"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": true
+    },
+    {
+      "id": "food-018",
+      "expectedLabel": "Alface crua",
+      "resolved": true,
+      "predictionIndex": 0,
+      "detectedName": "alface",
+      "state": "ASK_ATTRIBUTE",
+      "selectedCode": null,
+      "topCodes": [
+        "BRC0009B",
+        "BRC0060B",
+        "BRC0061B",
+        "BRC0062B",
+        "BRC0063B"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": false
+    },
+    {
+      "id": "food-018",
+      "expectedLabel": "Tomate cru",
+      "resolved": true,
+      "predictionIndex": 1,
+      "detectedName": "tomate-cereja",
+      "state": "NO_MATCH",
+      "selectedCode": null,
+      "topCodes": [],
+      "top1Acceptable": false,
+      "top3Acceptable": false,
+      "top5Acceptable": false,
+      "autoCorrect": false
+    },
+    {
+      "id": "food-018",
+      "expectedLabel": "Pepino cru",
+      "resolved": true,
+      "predictionIndex": 2,
+      "detectedName": "pepino",
+      "state": "AUTOSELECT",
+      "selectedCode": "BRC0030B",
+      "topCodes": [
+        "BRC0030B",
+        "BRC0470E",
+        "BRC0471E",
+        "BRC0985A",
+        "BRC0472E"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": true
+    },
+    {
+      "id": "food-019",
+      "expectedLabel": "Tomate cru",
+      "resolved": true,
+      "predictionIndex": 0,
+      "detectedName": "tomate",
+      "state": "AUTOSELECT",
+      "selectedCode": "BRC0035B",
+      "topCodes": [
+        "BRC0035B",
+        "BRC0390B",
+        "BRC0151T",
+        "BRC0152T",
+        "BRC0464A"
+      ],
+      "top1Acceptable": true,
+      "top3Acceptable": true,
+      "top5Acceptable": true,
+      "autoCorrect": true
+    },
+    {
+      "id": "food-020",
+      "expectedLabel": "Queijo muçarela",
+      "resolved": false,
+      "predictionIndex": 0,
+      "detectedName": "Queijo",
+      "state": "NO_EXACT_TBCA_MATCH",
+      "selectedCode": null,
+      "topCodes": [
+        "BRC0048G",
+        "BRC0049G",
+        "BRC0050G",
+        "BRC0051G",
+        "BRC0062G"
+      ],
+      "top1Acceptable": false,
+      "top3Acceptable": false,
+      "top5Acceptable": false,
+      "autoCorrect": false
+    }
+  ]
+}

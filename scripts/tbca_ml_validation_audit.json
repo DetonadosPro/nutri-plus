@@ -1,0 +1,15 @@
+{
+  "foodsWithMlRequested": 445,
+  "foodsCollected": 445,
+  "httpErrors": 0,
+  "mlMeasuresTotal": 813,
+  "statusCounts": {
+    "validated": 809,
+    "column_not_unique": 4
+  },
+  "validatedMeasures": 809,
+  "validatedMatchingNumericMlWithin1PercentOr1g": 809,
+  "validatedDifferentFromNumericMl": 0,
+  "differentExamples": [],
+  "interpretation": "validated = múltiplos nutrientes da própria TBCA convergem para a mesma massa equivalente. Isso documenta o fator de cálculo da tabela, não uma densidade experimental."
+}

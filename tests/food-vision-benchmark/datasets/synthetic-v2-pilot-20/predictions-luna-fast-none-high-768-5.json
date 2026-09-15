@@ -1,0 +1,729 @@
+{
+  "variant": "semantic-identity-v2-fast-none-high-768px",
+  "model": "gpt-5.6-luna",
+  "reasoningEffort": "none",
+  "imageDetail": "high",
+  "maxSide": 768,
+  "store": false,
+  "pricing": {
+    "inputPerMillionUsd": 0.2,
+    "outputPerMillionUsd": 1.2
+  },
+  "cases": [
+    {
+      "id": "food-008",
+      "difficulty": "dificil",
+      "latencyMs": 6647.248600000001,
+      "costUsd": 0.00042239999999999997,
+      "telemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "none",
+        "latencyMs": 6210,
+        "inputTokens": 804,
+        "outputTokens": 218,
+        "reasoningTokens": 0,
+        "totalTokens": 1022
+      },
+      "items": [
+        {
+          "detected": {
+            "name": "arroz branco",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "grãos brancos soltos"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "state": "AUTOSELECT",
+          "policy": null,
+          "selectedCode": "BRC0018A",
+          "topCodes": [
+            "BRC0018A",
+            "BRC0505A",
+            "BRC0524A",
+            "BRC0525A",
+            "BRC0528A"
+          ],
+          "topNames": [
+            "Arroz polido cozido sem óleo sem sal",
+            "Arroz de cuxá com arroz polido com sal",
+            "Arroz com legumes com arroz polido com sal",
+            "Arroz com legumes com arroz polido sem sal",
+            "Arroz com lentilha com arroz polido com sal"
+          ],
+          "top1Score": 0.9312,
+          "top2Score": 0.8046,
+          "margin": 0.1266,
+          "retrievalMs": 13.519500000000335,
+          "matcherMs": 36.39780000000064
+        },
+        {
+          "detected": {
+            "name": "feijão",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "grãos marrons inteiros em caldo espesso"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "state": "AUTOSELECT",
+          "policy": null,
+          "selectedCode": "BRC0001T",
+          "topCodes": [
+            "BRC0001T",
+            "BRC0014T",
+            "BRC0255T",
+            "BRC0254T",
+            "BRC0080T"
+          ],
+          "topNames": [
+            "Feijão carioca cozido (50% grão e 50% caldo) sem óleo sem sal",
+            "Feijão roxo cozido (50% grão e 50% caldo) sem óleo sem sal",
+            "Feijão carioca cozido drenado sem óleo com sal",
+            "Feijão carioca cozido drenado sem óleo sem sal",
+            "Feijão guandu grão seco cozido drenado sem óleo com sal"
+          ],
+          "top1Score": 0.9312,
+          "top2Score": 0.8712,
+          "margin": 0.06,
+          "retrievalMs": 13.62840000000051,
+          "matcherMs": 68.44470000000001
+        },
+        {
+          "detected": {
+            "name": "frango",
+            "preparation": "grelhado",
+            "visibleDetails": [
+              "filé grande com marcas de grelha e superfície dourada"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "state": "ASK_ATTRIBUTE",
+          "policy": null,
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0114F",
+            "BRC0230F",
+            "BRC0978F",
+            "BRC0996F",
+            "BRC0997F"
+          ],
+          "topNames": [
+            "Peito de frango sem pele grelhada sem óleo sem sal",
+            "Peito de frango sem pele grelhada sem gordura sem óleo com sal",
+            "Carne peito de frango grelhado à pizzaiolo",
+            "Peito de frango sem pele grelhado com óleo de soja alho e pimenta do reino com sal",
+            "Peito de frango sem pele grelhado com óleo de soja alho e pimenta do reino sem sal"
+          ],
+          "top1Score": 0.99,
+          "top2Score": 0.99,
+          "margin": 0,
+          "retrievalMs": 20.188500000000204,
+          "matcherMs": 63.616399999999885
+        },
+        {
+          "detected": {
+            "name": "alface",
+            "preparation": "crua",
+            "visibleDetails": [
+              "folhas verdes frisadas"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "state": "ASK_ATTRIBUTE",
+          "policy": null,
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0009B",
+            "BRC0060B",
+            "BRC0061B",
+            "BRC0062B",
+            "BRC0063B"
+          ],
+          "topNames": [
+            "Alface crua",
+            "Alface crespa crua",
+            "Alface lisa crua",
+            "Alface roxa crua",
+            "Alface americana crua"
+          ],
+          "top1Score": 0.94,
+          "top2Score": 0.9312,
+          "margin": 0.0088,
+          "retrievalMs": 4.747199999999793,
+          "matcherMs": 17.01969999999983
+        },
+        {
+          "detected": {
+            "name": "tomate",
+            "preparation": "cru",
+            "visibleDetails": [
+              "pedaços vermelhos"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "state": "AUTOSELECT",
+          "policy": null,
+          "selectedCode": "BRC0035B",
+          "topCodes": [
+            "BRC0035B",
+            "BRC0390B",
+            "BRC0151T",
+            "BRC0152T",
+            "BRC0464A"
+          ],
+          "topNames": [
+            "Tomate cru",
+            "Tomate seco com azeite de oliva artesanal com sal",
+            "Quibe vegetariano com tomate e pimentão com sal",
+            "Quibe vegetariano com tomate e pimentão sem sal",
+            "Risoto de rúcula com tomate seco com arroz polido com sal"
+          ],
+          "top1Score": 0.94,
+          "top2Score": 0.7312,
+          "margin": 0.2088,
+          "retrievalMs": 16.420500000000175,
+          "matcherMs": 61.63619999999992
+        },
+        {
+          "detected": {
+            "name": "cebola",
+            "preparation": "crua",
+            "visibleDetails": [
+              "anéis e tiras brancas"
+            ],
+            "confidence": 0.97,
+            "alternative": null
+          },
+          "state": "AUTOSELECT",
+          "policy": null,
+          "selectedCode": "BRC0018B",
+          "topCodes": [
+            "BRC0018B",
+            "BRC0599N",
+            "BRC0600N",
+            "BRC0602N",
+            "BRC0603N"
+          ],
+          "topNames": [
+            "Cebola branca crua",
+            "Papa de peixe (pescada branca) e batata com caldo de peixe com cebola e óleo de soja com sal",
+            "Papa de peixe (pescada branca) e batata com caldo de peixe com cebola e óleo de soja sem sal",
+            "Papa de peixe (pescada branca) e batata com caldo de peixe com cebola sem óleo com sal",
+            "Papa de peixe (pescada branca) e batata com caldo de peixe com cebola sem óleo sem sal"
+          ],
+          "top1Score": 0.9312,
+          "top2Score": 0.7204,
+          "margin": 0.2108,
+          "retrievalMs": 30.751099999999497,
+          "matcherMs": 51.034599999999955
+        }
+      ]
+    },
+    {
+      "id": "food-009",
+      "difficulty": "medio",
+      "latencyMs": 2223.4182,
+      "costUsd": 0.00024,
+      "telemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "none",
+        "latencyMs": 2169,
+        "inputTokens": 804,
+        "outputTokens": 66,
+        "reasoningTokens": 0,
+        "totalTokens": 870
+      },
+      "items": [
+        {
+          "detected": {
+            "name": "Coxa de frango",
+            "preparation": "assada",
+            "visibleDetails": [
+              "Peça única com osso",
+              "Pele dourada e marcas de tostado",
+              "Ervas ou temperos visíveis"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "state": "AUTOSELECT",
+          "policy": "salt_default",
+          "selectedCode": "BRC0842F",
+          "topCodes": [
+            "BRC0842F",
+            "BRC0108F",
+            "BRC0936F",
+            "BRC0937F",
+            "BRC0109F"
+          ],
+          "topNames": [
+            "Coxa de frango com pele assada sem óleo com sal",
+            "Coxa de frango com pele assada sem óleo sem sal",
+            "Coxa de frango com pele assada com molho de alecrim (vinagre de maçã alecrim pimenta-do-reino com azeite de oliva com açúcar) com sal",
+            "Coxa de frango com pele assada com molho de alecrim (vinagre de maçã alecrim pimenta-do-reino com azeite de oliva com açúcar) sem sal",
+            "Coxa de frango sem pele cozida sem óleo sem sal"
+          ],
+          "top1Score": 0.99,
+          "top2Score": 0.99,
+          "margin": 0,
+          "retrievalMs": 19.797199999999066,
+          "matcherMs": 2.9655000000002474
+        }
+      ]
+    },
+    {
+      "id": "food-010",
+      "difficulty": "dificil",
+      "latencyMs": 3692.1911,
+      "costUsd": 0.0004356,
+      "telemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "none",
+        "latencyMs": 3473,
+        "inputTokens": 804,
+        "outputTokens": 229,
+        "reasoningTokens": 0,
+        "totalTokens": 1033
+      },
+      "items": [
+        {
+          "detected": {
+            "name": "bife",
+            "preparation": "grelhado",
+            "visibleDetails": [
+              "peça grande de carne bovina com marcas de grelha e crosta-d­"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "state": "NO_EXACT_TBCA_MATCH",
+          "policy": "salt_default",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0293F",
+            "BRC0312F",
+            "BRC0923F",
+            "BRC0222F",
+            "BRC0401F"
+          ],
+          "topNames": [
+            "Bife à parmegiana com sal",
+            "Bife à parmegiana sem sal",
+            "Bife à cavalo com sal",
+            "Bife à cavalo sem sal",
+            "Bife à role com carne bovina com sal"
+          ],
+          "top1Score": 0.6512,
+          "top2Score": 0.6512,
+          "margin": 0,
+          "retrievalMs": 0.9860000000007858,
+          "matcherMs": 0.567800000000716
+        },
+        {
+          "detected": {
+            "name": "arroz",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "grãos brancos cozidos agrupados"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "state": "AUTOSELECT",
+          "policy": null,
+          "selectedCode": "BRC0018A",
+          "topCodes": [
+            "BRC0018A",
+            "BRC0457A",
+            "BRC0731A",
+            "BRC0887A",
+            "BRC0187A"
+          ],
+          "topNames": [
+            "Arroz polido cozido sem óleo sem sal",
+            "Arroz com mandioca (aipim macaxeira) cozida com sal",
+            "Arroz com macarrão (aletria cabelo de anjo) com arroz polido com sal",
+            "Arroz carreteiro com arroz polido e charque (carne seca jaba) com sal",
+            "Arroz carreteiro com arroz polido e charque (carne seca jaba) sem sal"
+          ],
+          "top1Score": 0.9312,
+          "top2Score": 0.8112,
+          "margin": 0.12,
+          "retrievalMs": 7.334600000000137,
+          "matcherMs": 35.679299999999785
+        },
+        {
+          "detected": {
+            "name": "feijão preto",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "grãos pretos brilhantes com caldo escuro"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "state": "AUTOSELECT",
+          "policy": "salt_default",
+          "selectedCode": "BRC0258T",
+          "topCodes": [
+            "BRC0258T",
+            "BRC0008T",
+            "BRC0107T",
+            "BRC0194T",
+            "BRC0195T"
+          ],
+          "topNames": [
+            "Feijão preto cozido (50% grão e 50% caldo) sem óleo com sal",
+            "Feijão preto cozido (50% grão e 50% caldo) sem óleo sem sal",
+            "Feijão preto cozido (50% grão e 50% caldo) com óleo cebola e alho sem sal",
+            "Feijão preto cozido (50% grão e 50% caldo) com carne de boi músculo sem gordura com óleo cebola e alho com sal",
+            "Feijão preto cozido (50% grão e 50% caldo) com carne de boi músculo sem gordura com óleo cebola e alho sem sal"
+          ],
+          "top1Score": 0.9312,
+          "top2Score": 0.9312,
+          "margin": 0,
+          "retrievalMs": 7.915399999999863,
+          "matcherMs": 28.874799999999595
+        },
+        {
+          "detected": {
+            "name": "farofa",
+            "preparation": null,
+            "visibleDetails": [
+              "farofa granulada de cor bege"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "state": "NO_EXACT_TBCA_MATCH",
+          "policy": "salt_default",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC1096B",
+            "BRC1097B",
+            "BRC1098B",
+            "BRC1099B",
+            "BRC0711N"
+          ],
+          "topNames": [
+            "Farofa vegana com farinha de mandioca (aipim macaxeira) com sal",
+            "Farofa vegana com farinha de mandioca (aipim macaxeira) sem sal",
+            "Farofa vegana com farinha de milho com sal",
+            "Farofa vegana com farinha de milho sem sal",
+            "Farofa com óleo de soja cebola e alho com sal(teor reduzido de gordura)"
+          ],
+          "top1Score": 0.8512,
+          "top2Score": 0.8512,
+          "margin": 0,
+          "retrievalMs": 1.4741000000012718,
+          "matcherMs": 2.189300000000003
+        },
+        {
+          "detected": {
+            "name": "alface",
+            "preparation": "cru",
+            "visibleDetails": [
+              "folhas verdes frescas"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "state": "ASK_ATTRIBUTE",
+          "policy": null,
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0009B",
+            "BRC0060B",
+            "BRC0061B",
+            "BRC0062B",
+            "BRC0063B"
+          ],
+          "topNames": [
+            "Alface crua",
+            "Alface crespa crua",
+            "Alface lisa crua",
+            "Alface roxa crua",
+            "Alface americana crua"
+          ],
+          "top1Score": 0.94,
+          "top2Score": 0.9312,
+          "margin": 0.0088,
+          "retrievalMs": 4.47860000000037,
+          "matcherMs": 19.596300000001065
+        },
+        {
+          "detected": {
+            "name": "tomate",
+            "preparation": "cru",
+            "visibleDetails": [
+              "fatias vermelhas com sementes visíveis"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "state": "AUTOSELECT",
+          "policy": null,
+          "selectedCode": "BRC0035B",
+          "topCodes": [
+            "BRC0035B",
+            "BRC0390B",
+            "BRC0151T",
+            "BRC0152T",
+            "BRC0464A"
+          ],
+          "topNames": [
+            "Tomate cru",
+            "Tomate seco com azeite de oliva artesanal com sal",
+            "Quibe vegetariano com tomate e pimentão com sal",
+            "Quibe vegetariano com tomate e pimentão sem sal",
+            "Risoto de rúcula com tomate seco com arroz polido com sal"
+          ],
+          "top1Score": 0.94,
+          "top2Score": 0.7312,
+          "margin": 0.2088,
+          "retrievalMs": 16.16660000000047,
+          "matcherMs": 59.63600000000042
+        }
+      ]
+    },
+    {
+      "id": "food-012",
+      "difficulty": "medio",
+      "latencyMs": 2582.3601,
+      "costUsd": 0.0003,
+      "telemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "none",
+        "latencyMs": 2443,
+        "inputTokens": 804,
+        "outputTokens": 116,
+        "reasoningTokens": 0,
+        "totalTokens": 920
+      },
+      "items": [
+        {
+          "detected": {
+            "name": "peixe empanado",
+            "preparation": "frito",
+            "visibleDetails": [
+              "filés alongados",
+              "cobertura crocante dourada"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "state": "NO_EXACT_TBCA_MATCH",
+          "policy": null,
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0108E",
+            "BRC0109E",
+            "BRC0219E",
+            "BRC0441E",
+            "BRC0125E"
+          ],
+          "topNames": [
+            "Filé à milanesa (farinha de trigo ovo e farinha de rosca) frito (com óleo de soja) sem sal",
+            "Filé à milanesa à milanesa (farinha de trigo refinada ovo e farinha de rosca) frito (com óleo de soja) com sal",
+            "Filé/posta à milanesa (ovo e farinha de rosca*) frito (com óleo de soja) com sal",
+            "Filé/posta à milanesa (ovo e farinha de rosca) frito (com óleo de soja) sem sal",
+            "Abadejo filé à milanesa (ovo e farinha de rosca) frito (com óleo de soja) com sal"
+          ],
+          "top1Score": 0.7604,
+          "top2Score": 0.7604,
+          "margin": 0,
+          "retrievalMs": 10.854199999999764,
+          "matcherMs": 52.91560000000027
+        },
+        {
+          "detected": {
+            "name": "alface",
+            "preparation": "crua",
+            "visibleDetails": [
+              "folhas verdes enrugadas"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "state": "AUTOSELECT",
+          "policy": null,
+          "selectedCode": "BRC0060B",
+          "topCodes": [
+            "BRC0060B",
+            "BRC0009B",
+            "BRC0583B",
+            "BRC0061B",
+            "BRC0062B"
+          ],
+          "topNames": [
+            "Alface crespa crua",
+            "Alface crua",
+            "Salada alface crespa sem óleo sem sal",
+            "Alface lisa crua",
+            "Alface roxa crua"
+          ],
+          "top1Score": 0.9312,
+          "top2Score": 0.82,
+          "margin": 0.1112,
+          "retrievalMs": 6.854799999999159,
+          "matcherMs": 17.53230000000076
+        },
+        {
+          "detected": {
+            "name": "limão",
+            "preparation": null,
+            "visibleDetails": [
+              "gomos verdes cortados"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "state": "AUTOSELECT",
+          "policy": null,
+          "selectedCode": "BRC0062C",
+          "topCodes": [
+            "BRC0062C",
+            "BRC0009N",
+            "BRC0010H",
+            "BRC0010N",
+            "BRC0018N"
+          ],
+          "topNames": [
+            "Limão cravo in natura suco sem diluição",
+            "Gelatina limão em pó diet",
+            "Chá lata/garrafa limão sem açúcar",
+            "Gelatina limão em pó diet",
+            "Gelatina limão em pó diet preparada"
+          ],
+          "top1Score": 0.9312,
+          "top2Score": 0.8404,
+          "margin": 0.0908,
+          "retrievalMs": 4.183100000000195,
+          "matcherMs": 14.287800000000061
+        }
+      ]
+    },
+    {
+      "id": "food-018",
+      "difficulty": "medio",
+      "latencyMs": 3013.003600000002,
+      "costUsd": 0.0003,
+      "telemetry": {
+        "model": "gpt-5.6-luna",
+        "reasoningEffort": "none",
+        "latencyMs": 2870,
+        "inputTokens": 804,
+        "outputTokens": 116,
+        "reasoningTokens": 0,
+        "totalTokens": 920
+      },
+      "items": [
+        {
+          "detected": {
+            "name": "Alface",
+            "preparation": "crua",
+            "visibleDetails": [
+              "folhas verdes frescas e crocantes"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "state": "ASK_ATTRIBUTE",
+          "policy": null,
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0009B",
+            "BRC0060B",
+            "BRC0061B",
+            "BRC0062B",
+            "BRC0063B"
+          ],
+          "topNames": [
+            "Alface crua",
+            "Alface crespa crua",
+            "Alface lisa crua",
+            "Alface roxa crua",
+            "Alface americana crua"
+          ],
+          "top1Score": 0.94,
+          "top2Score": 0.9312,
+          "margin": 0.0088,
+          "retrievalMs": 4.9922999999980675,
+          "matcherMs": 18.953600000000733
+        },
+        {
+          "detected": {
+            "name": "Tomate",
+            "preparation": "cru",
+            "visibleDetails": [
+              "tomates vermelhos cortados ao meio"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "state": "AUTOSELECT",
+          "policy": null,
+          "selectedCode": "BRC0035B",
+          "topCodes": [
+            "BRC0035B",
+            "BRC0390B",
+            "BRC0151T",
+            "BRC0152T",
+            "BRC0464A"
+          ],
+          "topNames": [
+            "Tomate cru",
+            "Tomate seco com azeite de oliva artesanal com sal",
+            "Quibe vegetariano com tomate e pimentão com sal",
+            "Quibe vegetariano com tomate e pimentão sem sal",
+            "Risoto de rúcula com tomate seco com arroz polido com sal"
+          ],
+          "top1Score": 0.94,
+          "top2Score": 0.7312,
+          "margin": 0.2088,
+          "retrievalMs": 15.865099999999074,
+          "matcherMs": 63.09679999999935
+        },
+        {
+          "detected": {
+            "name": "Pepino",
+            "preparation": "cru",
+            "visibleDetails": [
+              "rodelas verdes com sementes visíveis"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "state": "AUTOSELECT",
+          "policy": null,
+          "selectedCode": "BRC0030B",
+          "topCodes": [
+            "BRC0030B",
+            "BRC0470E",
+            "BRC0471E",
+            "BRC0985A",
+            "BRC0472E"
+          ],
+          "topNames": [
+            "Pepino com casca cru",
+            "Poke hawaiano com salmão e pepino",
+            "Poke hawaiano com salmão pepino manga e cenoura",
+            "Uramaki com salmão e pepino",
+            "Poke hawaiano com atum pepino avocado e cebola"
+          ],
+          "top1Score": 0.9312,
+          "top2Score": 0.7204,
+          "margin": 0.2108,
+          "retrievalMs": 2.1234000000004016,
+          "matcherMs": 4.9605999999985215
+        }
+      ]
+    }
+  ]
+}

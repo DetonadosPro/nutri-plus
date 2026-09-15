@@ -1,0 +1,978 @@
+{
+  "configuration": {
+    "variant": "pilot-20-production-ec436e3-luna-low",
+    "model": "gpt-5.6-luna",
+    "reasoningEffort": "low",
+    "store": false,
+    "productionCommit": "ec436e3",
+    "images": 20,
+    "expectedVisualComponents": 32,
+    "resolvedTbcaComponents": 27,
+    "ambiguousVisualOnly": 5,
+    "detectedItems": 42,
+    "technicalFailures": 0
+  },
+  "visual": {
+    "matched": 31,
+    "missing": 1,
+    "extras": 11,
+    "recallPercent": 96.88,
+    "precisionPercent": 73.81
+  },
+  "tbca": {
+    "denominator": 27,
+    "exact": {
+      "count": 8,
+      "percent": 29.63
+    },
+    "acceptable": {
+      "count": 11,
+      "percent": 40.74
+    },
+    "top1Exact": {
+      "count": 13,
+      "percent": 48.15
+    },
+    "top1Acceptable": {
+      "count": 19,
+      "percent": 70.37
+    },
+    "top3Exact": {
+      "count": 17,
+      "percent": 62.96
+    },
+    "top3Acceptable": {
+      "count": 20,
+      "percent": 74.07
+    }
+  },
+  "decision": {
+    "autoSelect": {
+      "count": 6,
+      "correct": 6,
+      "precisionPercent": 100,
+      "coveragePercent": 22.22
+    },
+    "rerank": {
+      "count": 6,
+      "correct": 5,
+      "accuracyPercent": 83.33
+    },
+    "askUser": {
+      "count": 13,
+      "percent": 48.15
+    },
+    "noMatch": {
+      "count": 1,
+      "percent": 3.7
+    }
+  },
+  "difficulty": {
+    "facil": {
+      "images": 10,
+      "visualExpected": 10,
+      "visualMatched": 10,
+      "tbcaDenominator": 10,
+      "exact": 1,
+      "acceptable": 2
+    },
+    "medio": {
+      "images": 7,
+      "visualExpected": 9,
+      "visualMatched": 8,
+      "tbcaDenominator": 7,
+      "exact": 3,
+      "acceptable": 4
+    },
+    "dificil": {
+      "images": 3,
+      "visualExpected": 13,
+      "visualMatched": 13,
+      "tbcaDenominator": 10,
+      "exact": 4,
+      "acceptable": 5
+    }
+  },
+  "tokens": {
+    "first": {
+      "calls": 20,
+      "input": 24140,
+      "output": 2376,
+      "reasoning": 509,
+      "costUsd": 0.007679200000000001
+    },
+    "reranker": {
+      "calls": 33,
+      "input": 38101,
+      "output": 3242,
+      "reasoning": 2260,
+      "costUsd": 0.011510599999999998
+    }
+  },
+  "costUsd": {
+    "total": 0.0191898,
+    "averagePerImage": 0.00095949
+  },
+  "latencyMs": {
+    "first": {
+      "calls": 20,
+      "mean": 2828,
+      "p50": 3068,
+      "p95": 4606,
+      "max": 4606
+    },
+    "matcher": {
+      "calls": 42,
+      "mean": 1306,
+      "p50": 1231,
+      "p95": 1807,
+      "max": 2316
+    },
+    "reranker": {
+      "calls": 33,
+      "mean": 2588,
+      "p50": 2271,
+      "p95": 5654,
+      "max": 6451
+    },
+    "pipeline": {
+      "calls": 20,
+      "mean": 10017,
+      "p50": 8237,
+      "p95": 22758,
+      "max": 22758
+    }
+  },
+  "cases": [
+    {
+      "id": "food-001",
+      "difficulty": "facil",
+      "expected": 1,
+      "detected": 1,
+      "visualMatched": 1,
+      "missing": 0,
+      "extras": 0,
+      "latencyMs": 9704,
+      "costUsd": 0.0006793999999999999,
+      "components": [
+        {
+          "expectedLabel": "Arroz branco cozido",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 0,
+          "detectedName": "arroz",
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0018A",
+            "BRC0208A",
+            "BRC0209A"
+          ],
+          "exact": false,
+          "acceptable": false,
+          "top1Exact": true,
+          "top1Acceptable": true,
+          "top3Exact": true,
+          "top3Acceptable": true
+        }
+      ]
+    },
+    {
+      "id": "food-002",
+      "difficulty": "facil",
+      "expected": 1,
+      "detected": 1,
+      "visualMatched": 1,
+      "missing": 0,
+      "extras": 0,
+      "latencyMs": 11173,
+      "costUsd": 0.0009426,
+      "components": [
+        {
+          "expectedLabel": "Arroz integral cozido",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 0,
+          "detectedName": "Arroz",
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0012A",
+            "BRC0016A",
+            "BRC0018A"
+          ],
+          "exact": false,
+          "acceptable": false,
+          "top1Exact": false,
+          "top1Acceptable": false,
+          "top3Exact": true,
+          "top3Acceptable": true
+        }
+      ]
+    },
+    {
+      "id": "food-003",
+      "difficulty": "facil",
+      "expected": 1,
+      "detected": 1,
+      "visualMatched": 1,
+      "missing": 0,
+      "extras": 0,
+      "latencyMs": 7312,
+      "costUsd": 0.0008124,
+      "components": [
+        {
+          "expectedLabel": "Feijão carioca cozido",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 0,
+          "detectedName": "Feijão cozido",
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0028T",
+            "BRC0029T",
+            "BRC0254T"
+          ],
+          "exact": false,
+          "acceptable": false,
+          "top1Exact": false,
+          "top1Acceptable": false,
+          "top3Exact": false,
+          "top3Acceptable": false
+        }
+      ]
+    },
+    {
+      "id": "food-004",
+      "difficulty": "facil",
+      "expected": 1,
+      "detected": 2,
+      "visualMatched": 1,
+      "missing": 0,
+      "extras": 1,
+      "latencyMs": 10094,
+      "costUsd": 0.0007966,
+      "components": [
+        {
+          "expectedLabel": "Feijão preto cozido",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 0,
+          "detectedName": "feijão-preto",
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0008T",
+            "BRC0258T",
+            "BRC0275T"
+          ],
+          "exact": false,
+          "acceptable": false,
+          "top1Exact": false,
+          "top1Acceptable": true,
+          "top3Exact": true,
+          "top3Acceptable": true
+        }
+      ]
+    },
+    {
+      "id": "food-005",
+      "difficulty": "facil",
+      "expected": 1,
+      "detected": 2,
+      "visualMatched": 1,
+      "missing": 0,
+      "extras": 1,
+      "latencyMs": 10030,
+      "costUsd": 0.0010078,
+      "components": [
+        {
+          "expectedLabel": "Ovo frito",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 0,
+          "detectedName": "ovo",
+          "state": "RERANK",
+          "selectedCode": "BRC0015J",
+          "topCodes": [
+            "BRC0015J",
+            "BRC0028J",
+            "BRC0001J"
+          ],
+          "exact": false,
+          "acceptable": true,
+          "top1Exact": false,
+          "top1Acceptable": true,
+          "top3Exact": true,
+          "top3Acceptable": true
+        }
+      ]
+    },
+    {
+      "id": "food-006",
+      "difficulty": "facil",
+      "expected": 1,
+      "detected": 1,
+      "visualMatched": 1,
+      "missing": 0,
+      "extras": 0,
+      "latencyMs": 6712,
+      "costUsd": 0.0006954,
+      "components": [
+        {
+          "expectedLabel": "Ovo de galinha cozido",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 0,
+          "detectedName": "ovo",
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0010J",
+            "BRC0052J",
+            "BRC0004J"
+          ],
+          "exact": false,
+          "acceptable": false,
+          "top1Exact": false,
+          "top1Acceptable": true,
+          "top3Exact": false,
+          "top3Acceptable": true
+        }
+      ]
+    },
+    {
+      "id": "food-007",
+      "difficulty": "medio",
+      "expected": 1,
+      "detected": 1,
+      "visualMatched": 1,
+      "missing": 0,
+      "extras": 0,
+      "latencyMs": 5961,
+      "costUsd": 0.0006188000000000001,
+      "components": [
+        {
+          "expectedLabel": "Omelete simples",
+          "catalogReviewStatus": "pending",
+          "predictionIndex": 0,
+          "detectedName": "omelete",
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0038J",
+            "BRC0055J",
+            "BRC0033J"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-008",
+      "difficulty": "dificil",
+      "expected": 6,
+      "detected": 6,
+      "visualMatched": 6,
+      "missing": 0,
+      "extras": 0,
+      "latencyMs": 21811,
+      "costUsd": 0.0021576,
+      "components": [
+        {
+          "expectedLabel": "Peito de frango grelhado",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 2,
+          "detectedName": "Frango",
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0763F",
+            "BRC0764F",
+            "BRC0989F"
+          ],
+          "exact": false,
+          "acceptable": false,
+          "top1Exact": false,
+          "top1Acceptable": false,
+          "top3Exact": false,
+          "top3Acceptable": false
+        },
+        {
+          "expectedLabel": "Arroz branco cozido",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 0,
+          "detectedName": "Arroz",
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0018A",
+            "BRC0208A",
+            "BRC0209A"
+          ],
+          "exact": false,
+          "acceptable": false,
+          "top1Exact": true,
+          "top1Acceptable": true,
+          "top3Exact": true,
+          "top3Acceptable": true
+        },
+        {
+          "expectedLabel": "Feijão carioca cozido",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 1,
+          "detectedName": "Feijão",
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0001T",
+            "BRC0006T",
+            "BRC0008T"
+          ],
+          "exact": false,
+          "acceptable": false,
+          "top1Exact": true,
+          "top1Acceptable": true,
+          "top3Exact": true,
+          "top3Acceptable": true
+        },
+        {
+          "expectedLabel": "Alface crua",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 3,
+          "detectedName": "Alface",
+          "state": "RERANK",
+          "selectedCode": "BRC0060B",
+          "topCodes": [
+            "BRC0009B",
+            "BRC0060B",
+            "BRC0061B"
+          ],
+          "exact": false,
+          "acceptable": true,
+          "top1Exact": true,
+          "top1Acceptable": true,
+          "top3Exact": true,
+          "top3Acceptable": true
+        },
+        {
+          "expectedLabel": "Tomate cru",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 4,
+          "detectedName": "Tomate",
+          "state": "AUTOSELECT",
+          "selectedCode": "BRC0035B",
+          "topCodes": [
+            "BRC0035B",
+            "BRC0098B",
+            "BRC0099B"
+          ],
+          "exact": true,
+          "acceptable": true,
+          "top1Exact": true,
+          "top1Acceptable": true,
+          "top3Exact": true,
+          "top3Acceptable": true
+        },
+        {
+          "expectedLabel": "Cebola crua",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 5,
+          "detectedName": "Cebola",
+          "state": "RERANK",
+          "selectedCode": "BRC0018B",
+          "topCodes": [
+            "BRC0018B",
+            "BRC1207B",
+            "BRC0356B"
+          ],
+          "exact": true,
+          "acceptable": true,
+          "top1Exact": true,
+          "top1Acceptable": true,
+          "top3Exact": true,
+          "top3Acceptable": true
+        }
+      ]
+    },
+    {
+      "id": "food-009",
+      "difficulty": "medio",
+      "expected": 1,
+      "detected": 1,
+      "visualMatched": 0,
+      "missing": 1,
+      "extras": 1,
+      "latencyMs": 5214,
+      "costUsd": 0.0005872000000000001,
+      "components": [
+        {
+          "expectedLabel": "Coxa de frango assada",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": null,
+          "detectedName": null,
+          "state": "MISSING",
+          "selectedCode": null,
+          "topCodes": [],
+          "exact": false,
+          "acceptable": false,
+          "top1Exact": false,
+          "top1Acceptable": false,
+          "top3Exact": false,
+          "top3Acceptable": false
+        }
+      ]
+    },
+    {
+      "id": "food-010",
+      "difficulty": "dificil",
+      "expected": 6,
+      "detected": 6,
+      "visualMatched": 6,
+      "missing": 0,
+      "extras": 0,
+      "latencyMs": 22758,
+      "costUsd": 0.0022418,
+      "components": [
+        {
+          "expectedLabel": "Bife bovino grelhado",
+          "catalogReviewStatus": "pending",
+          "predictionIndex": 0,
+          "detectedName": "Bife",
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0222F",
+            "BRC0312F",
+            "BRC0402F"
+          ]
+        },
+        {
+          "expectedLabel": "Arroz branco cozido",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 1,
+          "detectedName": "Arroz",
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0018A",
+            "BRC0208A",
+            "BRC0209A"
+          ],
+          "exact": false,
+          "acceptable": false,
+          "top1Exact": true,
+          "top1Acceptable": true,
+          "top3Exact": true,
+          "top3Acceptable": true
+        },
+        {
+          "expectedLabel": "Feijão preto cozido",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 2,
+          "detectedName": "Feijão-preto",
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0008T",
+            "BRC0258T",
+            "BRC0275T"
+          ],
+          "exact": false,
+          "acceptable": false,
+          "top1Exact": false,
+          "top1Acceptable": true,
+          "top3Exact": true,
+          "top3Acceptable": true
+        },
+        {
+          "expectedLabel": "Farofa",
+          "catalogReviewStatus": "pending",
+          "predictionIndex": 3,
+          "detectedName": "Farofa",
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0780B",
+            "BRC0781B",
+            "BRC0782B"
+          ]
+        },
+        {
+          "expectedLabel": "Alface crua",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 4,
+          "detectedName": "Alface",
+          "state": "RERANK",
+          "selectedCode": "BRC0009B",
+          "topCodes": [
+            "BRC0583B",
+            "BRC0589B",
+            "BRC0595B"
+          ],
+          "exact": true,
+          "acceptable": true,
+          "top1Exact": false,
+          "top1Acceptable": false,
+          "top3Exact": false,
+          "top3Acceptable": false
+        },
+        {
+          "expectedLabel": "Tomate cru",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 5,
+          "detectedName": "Tomate",
+          "state": "AUTOSELECT",
+          "selectedCode": "BRC0035B",
+          "topCodes": [
+            "BRC0035B",
+            "BRC0098B",
+            "BRC0099B"
+          ],
+          "exact": true,
+          "acceptable": true,
+          "top1Exact": true,
+          "top1Acceptable": true,
+          "top3Exact": true,
+          "top3Acceptable": true
+        }
+      ]
+    },
+    {
+      "id": "food-011",
+      "difficulty": "medio",
+      "expected": 1,
+      "detected": 1,
+      "visualMatched": 1,
+      "missing": 0,
+      "extras": 0,
+      "latencyMs": 10758,
+      "costUsd": 0.0006958,
+      "components": [
+        {
+          "expectedLabel": "Filé de peixe grelhado",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 0,
+          "detectedName": "Filé de peixe",
+          "state": "RERANK",
+          "selectedCode": "BRC0066E",
+          "topCodes": [
+            "BRC0066E",
+            "BRC0197E",
+            "BRC0200E"
+          ],
+          "exact": false,
+          "acceptable": false,
+          "top1Exact": false,
+          "top1Acceptable": false,
+          "top3Exact": false,
+          "top3Acceptable": false
+        }
+      ]
+    },
+    {
+      "id": "food-012",
+      "difficulty": "medio",
+      "expected": 1,
+      "detected": 3,
+      "visualMatched": 1,
+      "missing": 0,
+      "extras": 2,
+      "latencyMs": 14711,
+      "costUsd": 0.0014042000000000002,
+      "components": [
+        {
+          "expectedLabel": "Filé de peixe empanado",
+          "catalogReviewStatus": "pending",
+          "predictionIndex": 0,
+          "detectedName": "filé de peixe empanado",
+          "state": "RERANK",
+          "selectedCode": "BRC0054E",
+          "topCodes": [
+            "BRC0054E",
+            "BRC0103F",
+            "BRC0194E"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-013",
+      "difficulty": "facil",
+      "expected": 1,
+      "detected": 4,
+      "visualMatched": 1,
+      "missing": 0,
+      "extras": 3,
+      "latencyMs": 21007,
+      "costUsd": 0.0019592,
+      "components": [
+        {
+          "expectedLabel": "Mandioca cozida",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 0,
+          "detectedName": "mandioca",
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0053B",
+            "BRC0308B",
+            "BRC0309B"
+          ],
+          "exact": false,
+          "acceptable": false,
+          "top1Exact": false,
+          "top1Acceptable": true,
+          "top3Exact": false,
+          "top3Acceptable": true
+        }
+      ]
+    },
+    {
+      "id": "food-014",
+      "difficulty": "facil",
+      "expected": 1,
+      "detected": 1,
+      "visualMatched": 1,
+      "missing": 0,
+      "extras": 0,
+      "latencyMs": 5636,
+      "costUsd": 0.0006774,
+      "components": [
+        {
+          "expectedLabel": "Batata inglesa cozida",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 0,
+          "detectedName": "batata",
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0041B",
+            "BRC0042B",
+            "BRC0054B"
+          ],
+          "exact": false,
+          "acceptable": false,
+          "top1Exact": false,
+          "top1Acceptable": true,
+          "top3Exact": false,
+          "top3Acceptable": true
+        }
+      ]
+    },
+    {
+      "id": "food-015",
+      "difficulty": "facil",
+      "expected": 1,
+      "detected": 1,
+      "visualMatched": 1,
+      "missing": 0,
+      "extras": 0,
+      "latencyMs": 5505,
+      "costUsd": 0.0006586,
+      "components": [
+        {
+          "expectedLabel": "Batata inglesa frita",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 0,
+          "detectedName": "Batata frita",
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC1170B",
+            "BRC0316B",
+            "BRC0006M"
+          ],
+          "exact": false,
+          "acceptable": false,
+          "top1Exact": false,
+          "top1Acceptable": false,
+          "top3Exact": false,
+          "top3Acceptable": false
+        }
+      ]
+    },
+    {
+      "id": "food-016",
+      "difficulty": "medio",
+      "expected": 1,
+      "detected": 3,
+      "visualMatched": 1,
+      "missing": 0,
+      "extras": 2,
+      "latencyMs": 8018,
+      "costUsd": 0.00074,
+      "components": [
+        {
+          "expectedLabel": "Espaguete ao molho de tomate",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 0,
+          "detectedName": "espaguete",
+          "state": "NO_MATCH",
+          "selectedCode": null,
+          "topCodes": [],
+          "exact": false,
+          "acceptable": false,
+          "top1Exact": false,
+          "top1Acceptable": false,
+          "top3Exact": false,
+          "top3Acceptable": false
+        }
+      ]
+    },
+    {
+      "id": "food-017",
+      "difficulty": "medio",
+      "expected": 1,
+      "detected": 2,
+      "visualMatched": 1,
+      "missing": 0,
+      "extras": 1,
+      "latencyMs": 8237,
+      "costUsd": 0.0008296,
+      "components": [
+        {
+          "expectedLabel": "Lasanha à bolonhesa",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 0,
+          "detectedName": "Lasanha",
+          "state": "AUTOSELECT",
+          "selectedCode": "BRC0395A",
+          "topCodes": [
+            "BRC0395A",
+            "BRC0576A",
+            "BRC0111A"
+          ],
+          "exact": true,
+          "acceptable": true,
+          "top1Exact": true,
+          "top1Acceptable": true,
+          "top3Exact": true,
+          "top3Acceptable": true
+        }
+      ]
+    },
+    {
+      "id": "food-018",
+      "difficulty": "medio",
+      "expected": 3,
+      "detected": 3,
+      "visualMatched": 3,
+      "missing": 0,
+      "extras": 0,
+      "latencyMs": 8083,
+      "costUsd": 0.0007318,
+      "components": [
+        {
+          "expectedLabel": "Alface crua",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 0,
+          "detectedName": "Alface",
+          "state": "RERANK",
+          "selectedCode": "BRC0060B",
+          "topCodes": [
+            "BRC0009B",
+            "BRC0060B",
+            "BRC0061B"
+          ],
+          "exact": false,
+          "acceptable": true,
+          "top1Exact": true,
+          "top1Acceptable": true,
+          "top3Exact": true,
+          "top3Acceptable": true
+        },
+        {
+          "expectedLabel": "Tomate cru",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 1,
+          "detectedName": "Tomate",
+          "state": "AUTOSELECT",
+          "selectedCode": "BRC0035B",
+          "topCodes": [
+            "BRC0035B",
+            "BRC0098B",
+            "BRC0099B"
+          ],
+          "exact": true,
+          "acceptable": true,
+          "top1Exact": true,
+          "top1Acceptable": true,
+          "top3Exact": true,
+          "top3Acceptable": true
+        },
+        {
+          "expectedLabel": "Pepino cru",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 2,
+          "detectedName": "Pepino",
+          "state": "AUTOSELECT",
+          "selectedCode": "BRC0030B",
+          "topCodes": [
+            "BRC0030B",
+            "BRC0705B",
+            "BRC0526B"
+          ],
+          "exact": true,
+          "acceptable": true,
+          "top1Exact": true,
+          "top1Acceptable": true,
+          "top3Exact": true,
+          "top3Acceptable": true
+        }
+      ]
+    },
+    {
+      "id": "food-019",
+      "difficulty": "facil",
+      "expected": 1,
+      "detected": 1,
+      "visualMatched": 1,
+      "missing": 0,
+      "extras": 0,
+      "latencyMs": 2378,
+      "costUsd": 0.00030619999999999996,
+      "components": [
+        {
+          "expectedLabel": "Tomate cru",
+          "catalogReviewStatus": "reviewed",
+          "predictionIndex": 0,
+          "detectedName": "Tomate",
+          "state": "AUTOSELECT",
+          "selectedCode": "BRC0035B",
+          "topCodes": [
+            "BRC0035B",
+            "BRC0098B",
+            "BRC0099B"
+          ],
+          "exact": true,
+          "acceptable": true,
+          "top1Exact": true,
+          "top1Acceptable": true,
+          "top3Exact": true,
+          "top3Acceptable": true
+        }
+      ]
+    },
+    {
+      "id": "food-020",
+      "difficulty": "dificil",
+      "expected": 1,
+      "detected": 1,
+      "visualMatched": 1,
+      "missing": 0,
+      "extras": 0,
+      "latencyMs": 5247,
+      "costUsd": 0.0006474,
+      "components": [
+        {
+          "expectedLabel": "Queijo muçarela",
+          "catalogReviewStatus": "pending",
+          "predictionIndex": 0,
+          "detectedName": "queijo",
+          "state": "ASK_USER",
+          "selectedCode": null,
+          "topCodes": [
+            "BRC0036N",
+            "BRC0037N",
+            "BRC0038N"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,356 @@
+{
+  "configuration": {
+    "images": 20,
+    "failures": 0,
+    "model": "gpt-5.6-luna",
+    "reasoning": "none",
+    "detail": "high",
+    "maxSide": 768,
+    "store": false
+  },
+  "denominators": {
+    "visual": 32,
+    "tbca": 27,
+    "ambiguous": 5
+  },
+  "visual": {
+    "matched": 26,
+    "missing": 6,
+    "extras": 2,
+    "recallPercent": 81.25,
+    "precisionPercent": 92.86
+  },
+  "tbca": {
+    "top1": {
+      "count": 17,
+      "denominator": 27
+    },
+    "top3": {
+      "count": 18,
+      "denominator": 27
+    },
+    "top5": {
+      "count": 18,
+      "denominator": 27
+    },
+    "auto": {
+      "count": 16,
+      "correct": 15,
+      "precisionPercent": 93.75,
+      "coveragePercent": 59.26
+    }
+  },
+  "ignored": {
+    "count": 7,
+    "items": [
+      {
+        "id": "food-004",
+        "name": "coentro",
+        "role": "BACKGROUND"
+      },
+      {
+        "id": "food-012",
+        "name": "limão",
+        "role": "GARNISH"
+      },
+      {
+        "id": "food-013",
+        "name": "Carne assada",
+        "role": "BACKGROUND"
+      },
+      {
+        "id": "food-013",
+        "name": "Molho escuro",
+        "role": "BACKGROUND"
+      },
+      {
+        "id": "food-014",
+        "name": "salsinha",
+        "role": "GARNISH"
+      },
+      {
+        "id": "food-016",
+        "name": "Salsinha",
+        "role": "INTEGRATED"
+      },
+      {
+        "id": "food-017",
+        "name": "salada verde",
+        "role": "BACKGROUND"
+      }
+    ]
+  },
+  "costUsd": 0.006019200000000001,
+  "latency": {
+    "meanMs": 2788,
+    "p50Ms": 2755,
+    "p95Ms": 4235,
+    "maxMs": 4356
+  },
+  "details": [
+    {
+      "id": "food-001",
+      "expected": "Arroz branco cozido",
+      "detected": "arroz branco",
+      "role": "MAIN",
+      "state": "AUTOSELECT",
+      "top1": "BRC0018A",
+      "acceptable": true
+    },
+    {
+      "id": "food-002",
+      "expected": "Arroz integral cozido",
+      "detected": "Arroz",
+      "role": "MAIN",
+      "state": "ASK_ATTRIBUTE",
+      "top1": "BRC0016A",
+      "acceptable": true
+    },
+    {
+      "id": "food-003",
+      "expected": "Feijão carioca cozido",
+      "detected": "feijão",
+      "role": "MAIN",
+      "state": "AUTOSELECT",
+      "top1": "BRC0001T",
+      "acceptable": true
+    },
+    {
+      "id": "food-004",
+      "expected": "Feijão preto cozido",
+      "detected": "feijão-preto",
+      "role": "MAIN",
+      "state": "AUTOSELECT",
+      "top1": "BRC0258T",
+      "acceptable": true
+    },
+    {
+      "id": "food-005",
+      "expected": "Ovo frito",
+      "detected": "ovo frito",
+      "role": "MAIN",
+      "state": "AUTOSELECT",
+      "top1": "BRC0028J",
+      "acceptable": true
+    },
+    {
+      "id": "food-006",
+      "expected": "Ovo de galinha cozido",
+      "detected": "ovo",
+      "role": "MAIN",
+      "state": "AUTOSELECT",
+      "top1": "BRC0023J",
+      "acceptable": true
+    },
+    {
+      "id": "food-007",
+      "expected": "Omelete simples",
+      "detected": "omelete",
+      "role": "MAIN",
+      "state": "NO_EXACT_TBCA_MATCH",
+      "top1": "BRC0253T",
+      "acceptable": null
+    },
+    {
+      "id": "food-008",
+      "expected": "Peito de frango grelhado",
+      "detected": "frango",
+      "role": "MAIN",
+      "state": "ASK_ATTRIBUTE",
+      "top1": "BRC0114F",
+      "acceptable": false
+    },
+    {
+      "id": "food-008",
+      "expected": "Arroz branco cozido",
+      "detected": "arroz branco",
+      "role": "SIDE",
+      "state": "AUTOSELECT",
+      "top1": "BRC0018A",
+      "acceptable": true
+    },
+    {
+      "id": "food-008",
+      "expected": "Feijão carioca cozido",
+      "detected": "feijão",
+      "role": "SIDE",
+      "state": "AUTOSELECT",
+      "top1": "BRC0001T",
+      "acceptable": true
+    },
+    {
+      "id": "food-008",
+      "expected": "Alface crua",
+      "detected": "salada",
+      "role": "SIDE",
+      "state": "ASK_ATTRIBUTE",
+      "top1": "BRC0504B",
+      "acceptable": false
+    },
+    {
+      "id": "food-008",
+      "expected": "Tomate cru",
+      "result": "MISSING"
+    },
+    {
+      "id": "food-008",
+      "expected": "Cebola crua",
+      "result": "MISSING"
+    },
+    {
+      "id": "food-009",
+      "expected": "Coxa de frango assada",
+      "detected": "coxa de frango",
+      "role": "MAIN",
+      "state": "AUTOSELECT",
+      "top1": "BRC0842F",
+      "acceptable": true
+    },
+    {
+      "id": "food-010",
+      "expected": "Bife bovino grelhado",
+      "detected": "bife",
+      "role": "SIDE",
+      "state": "ASK_ATTRIBUTE",
+      "top1": "BRC0401F",
+      "acceptable": null
+    },
+    {
+      "id": "food-010",
+      "expected": "Arroz branco cozido",
+      "result": "MISSING"
+    },
+    {
+      "id": "food-010",
+      "expected": "Feijão preto cozido",
+      "detected": "feijão preto",
+      "role": "SIDE",
+      "state": "AUTOSELECT",
+      "top1": "BRC0258T",
+      "acceptable": true
+    },
+    {
+      "id": "food-010",
+      "expected": "Farofa",
+      "detected": "farofa",
+      "role": "SIDE",
+      "state": "NO_EXACT_TBCA_MATCH",
+      "top1": "BRC1096B",
+      "acceptable": null
+    },
+    {
+      "id": "food-010",
+      "expected": "Alface crua",
+      "detected": "salada de alface e tomate",
+      "role": "SIDE",
+      "state": "AUTOSELECT",
+      "top1": "BRC0615B",
+      "acceptable": false
+    },
+    {
+      "id": "food-010",
+      "expected": "Tomate cru",
+      "result": "MISSING"
+    },
+    {
+      "id": "food-011",
+      "expected": "Filé de peixe grelhado",
+      "detected": "filé de peixe",
+      "role": "MAIN",
+      "state": "AUTOSELECT",
+      "top1": "BRC0104E",
+      "acceptable": true
+    },
+    {
+      "id": "food-012",
+      "expected": "Filé de peixe empanado",
+      "detected": "filé de peixe empanado",
+      "role": "MAIN",
+      "state": "NO_EXACT_TBCA_MATCH",
+      "top1": "BRC0108E",
+      "acceptable": null
+    },
+    {
+      "id": "food-013",
+      "expected": "Mandioca cozida",
+      "detected": "Mandioca",
+      "role": "MAIN",
+      "state": "ASK_ATTRIBUTE",
+      "top1": "BRC0908B",
+      "acceptable": true
+    },
+    {
+      "id": "food-014",
+      "expected": "Batata inglesa cozida",
+      "detected": "batata",
+      "role": "MAIN",
+      "state": "AUTOSELECT",
+      "top1": "BRC0117B",
+      "acceptable": true
+    },
+    {
+      "id": "food-015",
+      "expected": "Batata inglesa frita",
+      "detected": "batata frita",
+      "role": "MAIN",
+      "state": "AUTOSELECT",
+      "top1": "BRC0118B",
+      "acceptable": true
+    },
+    {
+      "id": "food-016",
+      "expected": "Espaguete ao molho de tomate",
+      "detected": "Espaguete ao molho de tomate",
+      "role": "MAIN",
+      "state": "AUTOSELECT",
+      "top1": "BRC0218A",
+      "acceptable": true
+    },
+    {
+      "id": "food-017",
+      "expected": "Lasanha à bolonhesa",
+      "detected": "lasanha à bolonhesa",
+      "role": "MAIN",
+      "state": "AUTOSELECT",
+      "top1": "BRC0395A",
+      "acceptable": true
+    },
+    {
+      "id": "food-018",
+      "expected": "Alface crua",
+      "detected": "salada verde",
+      "role": "MAIN",
+      "state": "ASK_ATTRIBUTE",
+      "top1": "BRC0538B",
+      "acceptable": false
+    },
+    {
+      "id": "food-018",
+      "expected": "Tomate cru",
+      "result": "MISSING"
+    },
+    {
+      "id": "food-018",
+      "expected": "Pepino cru",
+      "result": "MISSING"
+    },
+    {
+      "id": "food-019",
+      "expected": "Tomate cru",
+      "detected": "tomate",
+      "role": "MAIN",
+      "state": "AUTOSELECT",
+      "top1": "BRC0035B",
+      "acceptable": true
+    },
+    {
+      "id": "food-020",
+      "expected": "Queijo muçarela",
+      "detected": "queijo",
+      "role": "MAIN",
+      "state": "NO_EXACT_TBCA_MATCH",
+      "top1": "BRC0048G",
+      "acceptable": null
+    }
+  ]
+}

@@ -1,0 +1,201 @@
+{
+  "source": "TBCA",
+  "parser_version": 4,
+  "detail_endpoint": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php",
+  "note": "mL é preservado como volume; não foi assumido 1 mL = 1 g.",
+  "workers": 8,
+  "min_interval_seconds": 0.2,
+  "foods_requested": 8,
+  "foods_collected": 8,
+  "errors": {},
+  "foods": [
+    {
+      "code": "BRC0292A",
+      "description": "Sanduíche, hambúrguer bovino* grelhado (c/ pão hambúrguer*), c/ ovo frito* (c/ sal) e maionese, Brasil,",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0292A",
+      "measures": [
+        {
+          "label": "",
+          "raw_header": "(200 g)",
+          "quantity": 200.0,
+          "unit": "g",
+          "grams": 200.0,
+          "volume_ml": null,
+          "parse_status": "missing_label"
+        }
+      ],
+      "warning": null,
+      "requested_code": "BRC0292A"
+    },
+    {
+      "code": "BRC0292B",
+      "description": "Batata, inglesa, cozida, s/ casca, c/ molho branco (leite, farinha de trigo e manteiga), s/ sal, Solanum tuberosum L.",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0292B",
+      "measures": [
+        {
+          "label": "Spoon serving full",
+          "raw_header": "Spoon serving full (60 g)",
+          "quantity": 60.0,
+          "unit": "g",
+          "grams": 60.0,
+          "volume_ml": null,
+          "parse_status": "ok"
+        },
+        {
+          "label": "Spoon serve shallow",
+          "raw_header": "Spoon serve shallow (40 g)",
+          "quantity": 40.0,
+          "unit": "g",
+          "grams": 40.0,
+          "volume_ml": null,
+          "parse_status": "ok"
+        },
+        {
+          "label": "Full soup spoon",
+          "raw_header": "Full soup spoon (30 g)",
+          "quantity": 30.0,
+          "unit": "g",
+          "grams": 30.0,
+          "volume_ml": null,
+          "parse_status": "ok"
+        },
+        {
+          "label": "Full skimmer",
+          "raw_header": "Full skimmer (80 g)",
+          "quantity": 80.0,
+          "unit": "g",
+          "grams": 80.0,
+          "volume_ml": null,
+          "parse_status": "ok"
+        },
+        {
+          "label": "Shallow skimmer",
+          "raw_header": "Shallow skimmer (50 g)",
+          "quantity": 50.0,
+          "unit": "g",
+          "grams": 50.0,
+          "volume_ml": null,
+          "parse_status": "ok"
+        }
+      ],
+      "warning": null,
+      "requested_code": "BRC0292B"
+    },
+    {
+      "code": "BRC0292C",
+      "description": "Camu-camu, in natura , Brasil, Myrciaria dubia",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0292C",
+      "measures": [
+        {
+          "label": "",
+          "raw_header": "(15 g)",
+          "quantity": 15.0,
+          "unit": "g",
+          "grams": 15.0,
+          "volume_ml": null,
+          "parse_status": "missing_label"
+        },
+        {
+          "label": "",
+          "raw_header": "(120 g)",
+          "quantity": 120.0,
+          "unit": "g",
+          "grams": 120.0,
+          "volume_ml": null,
+          "parse_status": "missing_label"
+        }
+      ],
+      "warning": null,
+      "requested_code": "BRC0292C"
+    },
+    {
+      "code": "BRC0292E",
+      "description": "Frutos do mar com legumes, c/ sal, (frutos do mar - camarão, lula, mexilhão e polvo, legumes - cenoura, vagem, couve-flor, brócolis e champginon paris, tomate, pimentão, salsa, suco de limão, c/ óleo, cebola e alho, c/ pimenta-do-reino, c/ sal),",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0292E",
+      "measures": [
+        {
+          "label": "Spoon serving full",
+          "raw_header": "Spoon serving full (45 g)",
+          "quantity": 45.0,
+          "unit": "g",
+          "grams": 45.0,
+          "volume_ml": null,
+          "parse_status": "ok"
+        },
+        {
+          "label": "Spoon serving full",
+          "raw_header": "Spoon serving full (60 g)",
+          "quantity": 60.0,
+          "unit": "g",
+          "grams": 60.0,
+          "volume_ml": null,
+          "parse_status": "ok"
+        }
+      ],
+      "warning": null,
+      "requested_code": "BRC0292E"
+    },
+    {
+      "code": "BRC0292F",
+      "description": "Carne, boi, contra-filé, à milanesa (farinha de trigo, ovo e farinha de rosca, frita em imersão), c/ sal,",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0292F",
+      "measures": [
+        {
+          "label": "Piece/ Unit/ Slice (M)",
+          "raw_header": "Piece/ Unit/ Slice (M) (110 g)",
+          "quantity": 110.0,
+          "unit": "g",
+          "grams": 110.0,
+          "volume_ml": null,
+          "parse_status": "ok"
+        }
+      ],
+      "warning": null,
+      "requested_code": "BRC0292F"
+    },
+    {
+      "code": "BRC0292L",
+      "description": "Bebida, café, solúvel, em pó, descafeinado (dado importado),",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0292L",
+      "measures": [
+        {
+          "label": "",
+          "raw_header": "(1.5 g)",
+          "quantity": 1.5,
+          "unit": "g",
+          "grams": 1.5,
+          "volume_ml": null,
+          "parse_status": "missing_label"
+        }
+      ],
+      "warning": null,
+      "requested_code": "BRC0292L"
+    },
+    {
+      "code": "BRC0292N",
+      "description": "Papa de maçã, abacaxi, e pera, s/ açúcar,",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0292N",
+      "measures": [
+        {
+          "label": "Spoon serving full",
+          "raw_header": "Spoon serving full (55 g)",
+          "quantity": 55.0,
+          "unit": "g",
+          "grams": 55.0,
+          "volume_ml": null,
+          "parse_status": "ok"
+        }
+      ],
+      "warning": null,
+      "requested_code": "BRC0292N"
+    },
+    {
+      "code": "BRC0292T",
+      "description": "Hommus de grão-de-bico e cúrcuma, c/ azeite, c/ sal, Brasil, [grão-de-bico, tahini (pasta de gergelim), suco de limão, azeite de oliva, cúrcuma, alho, pimenta-do-reino, c/ sal],",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0292T",
+      "measures": [],
+      "warning": null,
+      "requested_code": "BRC0292T"
+    }
+  ]
+}
