@@ -1,0 +1,798 @@
+{
+  "datasetId": "synthetic-v2-pilot-20",
+  "version": "1.0.0",
+  "status": "pending_independent_visual_and_catalog_review",
+  "description": "20 imagens individuais originais, sem recortes ou ampliação, com rótulos provisórios independentes do pipeline avaliado.",
+  "imageCount": 20,
+  "expectedComponentCount": 32,
+  "saltPolicy": "Se somente com sal/sem sal diferir e não houver evidência visual, preferir com sal no código principal. Não inferir que o sal é visível. Alternativas devem ser revisadas individualmente.",
+  "evaluationPolicy": {
+    "exactMatch": "Código oficial principal pré-aprovado.",
+    "acceptableMatch": "Código principal ou equivalência explicitamente aprovada antes da inferência.",
+    "groundTruthVisibility": "Nunca enviar rótulos, códigos, dificuldade ou notas do gabarito ao modelo.",
+    "componentMatching": "Associação um-para-um; registrar ausências e componentes extras.",
+    "compositeFoods": "Evitar pontuação dupla de preparação composta e seus ingredientes."
+  },
+  "cases": [
+    {
+      "id": "food-001",
+      "image": "images/food-001.png",
+      "expectedLabel": "Arroz branco cozido",
+      "difficulty": "facil",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Arroz branco cozido",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Grãos brancos cozidos.",
+          "unresolvedAttributes": [
+            "cultivar",
+            "teor de sal",
+            "quantidade de óleo"
+          ]
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "e1e71bfd-d8c6-42c0-9a5b-424169ffa36c",
+        "originalFilename": "arroz_branco_em_tigela_sobre_mesa_texturizada.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 2198172,
+        "sha256": "045a5fd307b5226cc7c8301762e29892b88e49be7ce69a984de08014dedebc0c",
+        "bytesPreserved": true
+      }
+    },
+    {
+      "id": "food-002",
+      "image": "images/food-002.png",
+      "expectedLabel": "Arroz integral cozido",
+      "difficulty": "facil",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Arroz integral cozido",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Grãos de arroz com coloração e aspecto integrais.",
+          "unresolvedAttributes": [
+            "cultivar",
+            "teor de sal",
+            "quantidade de óleo"
+          ]
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "435d8f94-d3c3-48e1-8776-46f88d65a242",
+        "originalFilename": "arroz_integral_em_tigela_branca.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 2257354,
+        "sha256": "ed88432422b35ced76236621575f49f718e40e94a00deaf819467b216c5740a3",
+        "bytesPreserved": true
+      }
+    },
+    {
+      "id": "food-003",
+      "image": "images/food-003.png",
+      "expectedLabel": "Feijão carioca cozido",
+      "difficulty": "facil",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Feijão carioca cozido",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Grãos marrons em caldo.",
+          "unresolvedAttributes": [
+            "teor de sal",
+            "ingredientes do tempero"
+          ]
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "2e5e4598-277a-4f43-b33c-150c36840424",
+        "originalFilename": "feijão_caseiro_em_tigela_rústica.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 2621279,
+        "sha256": "30301db551a929af0aeb7cd3f3eda490da8747300c53aeb6fd900bf8c82c0f78",
+        "bytesPreserved": true
+      }
+    },
+    {
+      "id": "food-004",
+      "image": "images/food-004.png",
+      "expectedLabel": "Feijão preto cozido",
+      "difficulty": "facil",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Feijão preto cozido",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Grãos pretos em caldo escuro.",
+          "unresolvedAttributes": [
+            "teor de sal",
+            "ingredientes do tempero"
+          ]
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "a4cba3cd-96a7-44a1-a4af-6a047e3c9a36",
+        "originalFilename": "feijão_preto_cremoso_à_mesa.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 2741551,
+        "sha256": "465cb3de3f3196313d40bbd753ab519ab4a7a0c2ae5e56570e7db553164756ce",
+        "bytesPreserved": true
+      }
+    },
+    {
+      "id": "food-005",
+      "image": "images/food-005.png",
+      "expectedLabel": "Ovo frito",
+      "difficulty": "facil",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Ovo frito",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Ovo com gema visível e clara de bordas douradas.",
+          "unresolvedAttributes": [
+            "tipo e quantidade de gordura",
+            "teor de sal"
+          ]
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "34aab3b4-30db-4c43-8029-30ddfc930994",
+        "originalFilename": "ovo_frito_com_pimenta_no_prato_branco.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 2360159,
+        "sha256": "6ab114734dd026aac33f51ccd3799eb73b7c9ab0a113e1b4e6337bf6c422deab",
+        "bytesPreserved": true
+      }
+    },
+    {
+      "id": "food-006",
+      "image": "images/food-006.png",
+      "expectedLabel": "Ovo cozido",
+      "difficulty": "facil",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Ovo de galinha cozido",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Ovo inteiro descascado e metade com gema firme.",
+          "unresolvedAttributes": [
+            "teor de sal"
+          ]
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "d2374e52-ac8d-43ea-9d48-297196debadb",
+        "originalFilename": "ovos_cozidos_em_prato_cerâmico.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 1954005,
+        "sha256": "6c9efa6e1d127faf099c43d40736f0345dd2250fbfd6c27e6b1a3ac71e7330e5",
+        "bytesPreserved": true
+      }
+    },
+    {
+      "id": "food-007",
+      "image": "images/food-007.png",
+      "expectedLabel": "Omelete simples",
+      "difficulty": "medio",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Omelete simples",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Omelete dobrada e dourada; recheio não identificável.",
+          "unresolvedAttributes": [
+            "ingredientes internos",
+            "gordura de preparo",
+            "teor de sal"
+          ]
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "35f3e528-f730-4136-88cc-60381dc08b79",
+        "originalFilename": "omelete_dourada_no_prato.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 2383379,
+        "sha256": "79ef224eb10fe38062e076aad06161a66659cfb4d58a53845f930b3243df2d6d",
+        "bytesPreserved": true
+      }
+    },
+    {
+      "id": "food-008",
+      "image": "images/food-008.png",
+      "expectedLabel": "Peito de frango grelhado com arroz, feijão e salada",
+      "difficulty": "dificil",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Peito de frango grelhado",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Filé de frango dourado com marcas de grelha.",
+          "unresolvedAttributes": [
+            "corte exato",
+            "pele",
+            "gordura de preparo"
+          ]
+        },
+        {
+          "expectedLabel": "Arroz branco cozido",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "",
+          "unresolvedAttributes": []
+        },
+        {
+          "expectedLabel": "Feijão carioca cozido",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Grãos marrons em caldo.",
+          "unresolvedAttributes": []
+        },
+        {
+          "expectedLabel": "Alface crua",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Folhas verdes da salada.",
+          "unresolvedAttributes": []
+        },
+        {
+          "expectedLabel": "Tomate cru",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Pedaços vermelhos da salada.",
+          "unresolvedAttributes": []
+        },
+        {
+          "expectedLabel": "Cebola crua",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Tiras brancas visíveis na salada.",
+          "unresolvedAttributes": []
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [
+        "Não pontuar folhas incidentais ao fundo como porções adicionais."
+      ],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "a8bda451-5858-4a35-9996-1db3c127507b",
+        "originalFilename": "prato_brasileiro_com_frango_grelhado.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 2455250,
+        "sha256": "24a98416fa065ca724b377babdab657abd6cc3bf990716d52cbde290232f46e4",
+        "bytesPreserved": true
+      }
+    },
+    {
+      "id": "food-009",
+      "image": "images/food-009.png",
+      "expectedLabel": "Coxa de frango assada",
+      "difficulty": "medio",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Coxa de frango assada",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Peça de frango com osso e pele dourada.",
+          "unresolvedAttributes": [
+            "teor de sal",
+            "gordura de preparo"
+          ]
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "b1c2022f-4674-471b-a0c7-a98aa4e7bd3d",
+        "originalFilename": "coxa_de_frango_assada_dourada.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 2253948,
+        "sha256": "34e1de3484f965351e9f81e4ac684c97b1175e08b51cabe55db22db954390b96",
+        "bytesPreserved": true
+      }
+    },
+    {
+      "id": "food-010",
+      "image": "images/food-010.png",
+      "expectedLabel": "Bife bovino grelhado com arroz, feijão, farofa e salada",
+      "difficulty": "dificil",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Bife bovino grelhado",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Bife com marcas de grelha e gordura lateral; corte não identificável.",
+          "unresolvedAttributes": [
+            "corte bovino exato"
+          ]
+        },
+        {
+          "expectedLabel": "Arroz branco cozido",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "",
+          "unresolvedAttributes": []
+        },
+        {
+          "expectedLabel": "Feijão preto cozido",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Grãos escuros ao fundo do prato.",
+          "unresolvedAttributes": []
+        },
+        {
+          "expectedLabel": "Farofa",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Preparação granulada amarelada; composição exata desconhecida.",
+          "unresolvedAttributes": [
+            "tipo de farinha",
+            "gordura",
+            "ingredientes"
+          ]
+        },
+        {
+          "expectedLabel": "Alface crua",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "",
+          "unresolvedAttributes": []
+        },
+        {
+          "expectedLabel": "Tomate cru",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "",
+          "unresolvedAttributes": []
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [
+        "Prato misto: associar cada componente separável uma única vez."
+      ],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "2f3a592a-61e6-470b-9efc-46021d134045",
+        "originalFilename": "bife_grelhado_com_arroz_e_feijão.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 2612387,
+        "sha256": "3e099d06fa767c13f1e4f6d7e2b4483b381b00db50dadc831ac52f9158b1feda",
+        "bytesPreserved": true
+      }
+    },
+    {
+      "id": "food-011",
+      "image": "images/food-011.png",
+      "expectedLabel": "Filé de peixe grelhado",
+      "difficulty": "medio",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Filé de peixe grelhado",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Filé com superfície dourada e marcas de grelha.",
+          "unresolvedAttributes": [
+            "espécie de peixe",
+            "corte exato",
+            "gordura de preparo"
+          ]
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "9e84895f-0892-4c12-b389-789106dc5c1b",
+        "originalFilename": "filé_de_peixe_grelhado_dourado.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 2574142,
+        "sha256": "27b10edd882e878a0fc09bef9b9670bcf9ebf860c1d8e93f7f3a8cc73a848bf0",
+        "bytesPreserved": true
+      }
+    },
+    {
+      "id": "food-012",
+      "image": "images/food-012.png",
+      "expectedLabel": "Filé de peixe empanado",
+      "difficulty": "medio",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Filé de peixe empanado",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Dois filés com crosta dourada.",
+          "unresolvedAttributes": [
+            "espécie de peixe",
+            "método exato de cocção",
+            "tipo de empanamento",
+            "gordura de preparo"
+          ]
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [
+        "Limão e folha de alface funcionam como guarnição; não são porções obrigatórias."
+      ],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "746f0982-691a-4d38-8a2f-6042af130b1c",
+        "originalFilename": "filés_de_peixe_empanados_com_limão.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 2805701,
+        "sha256": "174bf71fdc12640e2b59a9b3b520cb5a5929922156deb828f861633652a4f82d",
+        "bytesPreserved": true
+      }
+    },
+    {
+      "id": "food-013",
+      "image": "images/food-013.png",
+      "expectedLabel": "Mandioca cozida",
+      "difficulty": "facil",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Mandioca cozida",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Pedaços amarelo-claros de raiz com fibras longitudinais.",
+          "unresolvedAttributes": [
+            "variedade",
+            "teor de sal"
+          ]
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [
+        "Alimentos incidentais de outros pratos ao fundo não fazem parte da porção principal."
+      ],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "710091d5-e619-4ebc-bfd6-277001eed13e",
+        "originalFilename": "prato_rústico_de_mandioca_cozida.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 2388132,
+        "sha256": "5e896ae0733e958e42eb519c478cc77f73d47175f70378e87855b6ea865ddeef",
+        "bytesPreserved": true
+      }
+    },
+    {
+      "id": "food-014",
+      "image": "images/food-014.png",
+      "expectedLabel": "Batata cozida",
+      "difficulty": "facil",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Batata inglesa cozida",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Pedaços de batata com ervas visíveis.",
+          "unresolvedAttributes": [
+            "gordura adicionada",
+            "teor de sal"
+          ]
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "cc041a2e-acd8-4f09-b1fa-285a851a48b2",
+        "originalFilename": "batatas_cozidas_com_ervas_frescas.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 2363907,
+        "sha256": "8a1f87ff3daa642aa0be83cdb2bd9fc9fd379c15ae6fb79537e728f13c395742",
+        "bytesPreserved": true
+      }
+    },
+    {
+      "id": "food-015",
+      "image": "images/food-015.png",
+      "expectedLabel": "Batata frita",
+      "difficulty": "facil",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Batata inglesa frita",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Batatas cortadas em palitos e douradas.",
+          "unresolvedAttributes": [
+            "tipo e quantidade de óleo",
+            "teor de sal"
+          ]
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "bad8ee13-628f-41b2-a973-d4cf4e18295e",
+        "originalFilename": "porção_dourada_de_batatas_fritas.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 2524410,
+        "sha256": "37fe820721890cd8b1f54310c4da6d3aff26a06d8779321a211e75f656443c72",
+        "bytesPreserved": true
+      }
+    },
+    {
+      "id": "food-016",
+      "image": "images/food-016.png",
+      "expectedLabel": "Espaguete ao molho de tomate",
+      "difficulty": "medio",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Espaguete ao molho de tomate",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Massa longa com molho vermelho e ervas; sem carne claramente identificável.",
+          "unresolvedAttributes": [
+            "receita do molho",
+            "gordura adicionada",
+            "teor de sal"
+          ]
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [
+        "Usar preparação composta quando houver registro apropriado; não duplicar massa e molho."
+      ],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "5a3c29a7-2398-45bc-acea-c6e57a2f9f97",
+        "originalFilename": "espaguete_ao_molho_de_tomate_com_ervas.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 2412650,
+        "sha256": "2ab4f86e348a5e97fb0da97e737e95438e0f529f04b788f6b7e8a49418ed7c04",
+        "bytesPreserved": true
+      }
+    },
+    {
+      "id": "food-017",
+      "image": "images/food-017.png",
+      "expectedLabel": "Lasanha à bolonhesa",
+      "difficulty": "medio",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Lasanha à bolonhesa",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Camadas de massa, molho vermelho, carne moída aparente e queijo gratinado.",
+          "unresolvedAttributes": [
+            "composição exata",
+            "tipo de queijo",
+            "proporções"
+          ]
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [
+        "Tratar como preparação composta, salvo regra explícita e justificada do catálogo."
+      ],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "74f51c77-3a4b-497b-8bec-869a4c36d88c",
+        "originalFilename": "lasanha_dourada_em_mesa_rústica.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 2358389,
+        "sha256": "5afdf3d2998d3a7f7c8830931db05faad2998f6b1cfda05be856e2d7ebb66b73",
+        "bytesPreserved": true
+      }
+    },
+    {
+      "id": "food-018",
+      "image": "images/food-018.png",
+      "expectedLabel": "Salada de alface, tomate e pepino",
+      "difficulty": "medio",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Alface crua",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Folhas verdes da salada.",
+          "unresolvedAttributes": []
+        },
+        {
+          "expectedLabel": "Tomate cru",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Metades de tomates pequenos.",
+          "unresolvedAttributes": []
+        },
+        {
+          "expectedLabel": "Pepino cru",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Rodelas de pepino.",
+          "unresolvedAttributes": []
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [
+        "Tempero e óleo da salada não são identificáveis de modo confiável."
+      ],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "f3d5a7df-6e7a-4212-97d1-d3f9b284befc",
+        "originalFilename": "salada_fresca_de_folhas_pepino_e_tomate.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 2496307,
+        "sha256": "a2148e1361b4db459ae33221cc4cd9a3f796d1444c5da89599ba4abe8625cb8d",
+        "bytesPreserved": true
+      }
+    },
+    {
+      "id": "food-019",
+      "image": "images/food-019.png",
+      "expectedLabel": "Tomate cru fatiado",
+      "difficulty": "facil",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Tomate cru",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Tomate vermelho cortado em rodelas.",
+          "unresolvedAttributes": [
+            "cultivar"
+          ]
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "e1a2c7bc-117c-4069-8077-a0f89fd2131b",
+        "originalFilename": "fatias_de_tomate_fresco_no_prato.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 2414905,
+        "sha256": "dfcd31eef1c6a31eb01a59e72cf4985b085bc55e197b4b19c867e961be6838d6",
+        "bytesPreserved": true
+      }
+    },
+    {
+      "id": "food-020",
+      "image": "images/food-020.png",
+      "expectedLabel": "Queijo muçarela fatiado",
+      "difficulty": "dificil",
+      "expectedFoods": [
+        {
+          "expectedLabel": "Queijo muçarela",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "visualNotes": "Fatias de queijo claro, semelhante a muçarela.",
+          "unresolvedAttributes": [
+            "tipo exato de queijo",
+            "teor de gordura",
+            "teor de sal"
+          ]
+        }
+      ],
+      "visualReviewStatus": "preliminary",
+      "catalogReviewStatus": "pending",
+      "reviewNotes": [
+        "Muçarela é a intenção de geração, mas a variedade não pode ser confirmada só pela aparência; não forçar exact match."
+      ],
+      "source": {
+        "type": "synthetic_individual_generation",
+        "generator": "ChatGPT image generation",
+        "generationId": "26580452-1b78-422f-bf8a-6b26a9c14312",
+        "originalFilename": "fatias_de_queijo_sobre_prato_branco.png",
+        "nativeWidth": 1448,
+        "nativeHeight": 1086,
+        "bytes": 2126226,
+        "sha256": "97f7e3a8990aedd489fda3901f0e4c79d7070bce4d262f41d43f15e28586b9ce",
+        "bytesPreserved": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "source": "TBCA",
+  "parser_version": 4,
+  "foods_requested": 8,
+  "foods_collected": 8,
+  "foods_with_measures": 7,
+  "foods_without_measures": 1,
+  "measures_total": 13,
+  "measures_in_grams": 13,
+  "measures_in_ml": 0,
+  "measures_missing_label": 4,
+  "measures_unparsed": 0,
+  "foods_with_missing_labels": 3,
+  "foods_with_unparsed_measures": 0,
+  "http_or_collection_errors": 0,
+  "error_codes": [],
+  "missing_label_examples": [
+    {
+      "code": "BRC0292A",
+      "description": "Sanduíche, hambúrguer bovino* grelhado (c/ pão hambúrguer*), c/ ovo frito* (c/ sal) e maionese, Brasil,",
+      "raw_header": "(200 g)",
+      "quantity": 200.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0292A"
+    },
+    {
+      "code": "BRC0292C",
+      "description": "Camu-camu, in natura , Brasil, Myrciaria dubia",
+      "raw_header": "(15 g)",
+      "quantity": 15.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0292C"
+    },
+    {
+      "code": "BRC0292C",
+      "description": "Camu-camu, in natura , Brasil, Myrciaria dubia",
+      "raw_header": "(120 g)",
+      "quantity": 120.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0292C"
+    },
+    {
+      "code": "BRC0292L",
+      "description": "Bebida, café, solúvel, em pó, descafeinado (dado importado),",
+      "raw_header": "(1.5 g)",
+      "quantity": 1.5,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0292L"
+    }
+  ],
+  "unparsed_examples": [],
+  "notes": [
+    "mL não é convertido automaticamente em gramas.",
+    "missing_label significa que a TBCA publicou a quantidade/unidade sem texto de medida no cabeçalho capturado.",
+    "unparsed significa que o cabeçalho apareceu na área de medidas, mas não seguiu o padrão '(valor g)' ou '(valor mL)'."
+  ]
+}

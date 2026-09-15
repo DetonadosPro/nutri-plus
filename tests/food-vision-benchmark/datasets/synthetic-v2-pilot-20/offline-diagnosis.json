@@ -1,0 +1,2554 @@
+{
+  "sourcePredictions": "predictions-luna-baseline.json",
+  "apiCalls": 0,
+  "matcherRevision": "semantic-identity-v2-working-tree",
+  "cases": [
+    {
+      "id": "food-001",
+      "components": [
+        {
+          "expectedLabel": "Arroz branco cozido",
+          "tbcaCode": "BRC0018A",
+          "acceptableCodes": [],
+          "catalogReviewStatus": "reviewed",
+          "cause": "hidden_variant_tie",
+          "detected": {
+            "name": "arroz",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "grãos brancos e soltos em uma tigela"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "baselineState": "ASK_USER",
+          "baselineSelectedCode": null,
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": null,
+          "recommendedCode": "BRC0018A",
+          "top1Score": 0.9312,
+          "top2Score": 0.8112,
+          "margin": 0.12,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0018A",
+              "name": "Arroz polido cozido sem óleo sem sal",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0187A",
+              "name": "Arroz carreteiro com arroz polido e charque (carne seca jaba) sem sal",
+              "score": 0.8112,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0457A",
+              "name": "Arroz com mandioca (aipim macaxeira) cozida com sal",
+              "score": 0.8112,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0505A",
+              "name": "Arroz de cuxá com arroz polido com sal",
+              "score": 0.8112,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0520A",
+              "name": "Arroz com frutos do mar com arroz polido com sal",
+              "score": 0.8112,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-002",
+      "components": [
+        {
+          "expectedLabel": "Arroz integral cozido",
+          "tbcaCode": "BRC0016A",
+          "acceptableCodes": [],
+          "catalogReviewStatus": "reviewed",
+          "cause": "visual_identity_underspecified",
+          "detected": {
+            "name": "Arroz",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "Grãos claros e alongados",
+              "Aspecto úmido e solto"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "baselineState": "ASK_USER",
+          "baselineSelectedCode": null,
+          "decisionState": "RERANK",
+          "decisionPolicy": null,
+          "recommendedCode": null,
+          "top1Score": 0.9312,
+          "top2Score": 0.9312,
+          "margin": 0,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0016A",
+              "name": "Arroz integral cozido sem óleo sem sal",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0018A",
+              "name": "Arroz polido cozido sem óleo sem sal",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0457A",
+              "name": "Arroz com mandioca (aipim macaxeira) cozida com sal",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0994A",
+              "name": "Arroz selvagem cozido sem óleo sem sal",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC1115A",
+              "name": "Arroz basmati (jasmine) cozido sem óleo sem sal",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-003",
+      "components": [
+        {
+          "expectedLabel": "Feijão carioca cozido",
+          "tbcaCode": "BRC0001T",
+          "acceptableCodes": [],
+          "catalogReviewStatus": "reviewed",
+          "cause": "visual_identity_underspecified",
+          "detected": {
+            "name": "Feijão cozido",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "Grãos claros e rosados em caldo marrom"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "baselineState": "ASK_USER",
+          "baselineSelectedCode": null,
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": null,
+          "recommendedCode": "BRC0001T",
+          "top1Score": 0.9004,
+          "top2Score": 0.8404,
+          "margin": 0.06,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0001T",
+              "name": "Feijão carioca cozido (50% grão e 50% caldo) sem óleo sem sal",
+              "score": 0.9004,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0014T",
+              "name": "Feijão roxo cozido (50% grão e 50% caldo) sem óleo sem sal",
+              "score": 0.8404,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0255T",
+              "name": "Feijão carioca cozido drenado sem óleo com sal",
+              "score": 0.8404,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0254T",
+              "name": "Feijão carioca cozido drenado sem óleo sem sal",
+              "score": 0.8404,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0080T",
+              "name": "Feijão guandu grão seco cozido drenado sem óleo com sal",
+              "score": 0.7804,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-004",
+      "components": [
+        {
+          "expectedLabel": "Feijão preto cozido",
+          "tbcaCode": "BRC0258T",
+          "acceptableCodes": [
+            "BRC0008T"
+          ],
+          "catalogReviewStatus": "reviewed",
+          "cause": "hidden_variant_tie",
+          "detected": {
+            "name": "feijão-preto",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "grãos pretos inteiros em caldo escuro"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "baselineState": "ASK_USER",
+          "baselineSelectedCode": null,
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": "salt_default",
+          "recommendedCode": "BRC0258T",
+          "top1Score": 0.9312,
+          "top2Score": 0.9312,
+          "margin": 0,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0258T",
+              "name": "Feijão preto cozido (50% grão e 50% caldo) sem óleo com sal",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0008T",
+              "name": "Feijão preto cozido (50% grão e 50% caldo) sem óleo sem sal",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0107T",
+              "name": "Feijão preto cozido (50% grão e 50% caldo) com óleo cebola e alho sem sal",
+              "score": 0.7712,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0194T",
+              "name": "Feijão preto cozido (50% grão e 50% caldo) com carne de boi músculo sem gordura com óleo cebola e alho com sal",
+              "score": 0.7712,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0195T",
+              "name": "Feijão preto cozido (50% grão e 50% caldo) com carne de boi músculo sem gordura com óleo cebola e alho sem sal",
+              "score": 0.7712,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-005",
+      "components": [
+        {
+          "expectedLabel": "Ovo frito",
+          "tbcaCode": "BRC0028J",
+          "acceptableCodes": [
+            "BRC0015J"
+          ],
+          "catalogReviewStatus": "reviewed",
+          "cause": "hidden_variant_tie",
+          "detected": {
+            "name": "ovo",
+            "preparation": "frito",
+            "visibleDetails": [
+              "gema inteira e brilhante",
+              "clara com bordas douradas"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "baselineState": "RERANK",
+          "baselineSelectedCode": "BRC0015J",
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": "salt_default",
+          "recommendedCode": "BRC0028J",
+          "top1Score": 0.9612,
+          "top2Score": 0.9612,
+          "margin": 0,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0028J",
+              "name": "Ovo de galinha inteiro frito (com óleo de soja*) com sal",
+              "score": 0.9612,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": [
+                "standard_chicken_egg"
+              ]
+            },
+            {
+              "rank": 2,
+              "code": "BRC0015J",
+              "name": "Ovo de galinha inteiro frito (com óleo de soja) sem sal",
+              "score": 0.9612,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": [
+                "standard_chicken_egg"
+              ]
+            },
+            {
+              "rank": 3,
+              "code": "BRC0014J",
+              "name": "Ovo de galinha integral desidratada pasteurizada",
+              "score": 0.7812,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": [
+                "standard_chicken_egg"
+              ]
+            },
+            {
+              "rank": 4,
+              "code": "BRC0065J",
+              "name": "Ovo de galinha mexido sem óleo sem sal",
+              "score": 0.7812,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": [
+                "standard_chicken_egg"
+              ]
+            },
+            {
+              "rank": 5,
+              "code": "BRC0066J",
+              "name": "Ovo de galinha mexido com espinafre com óleo de soja com sal",
+              "score": 0.7812,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": [
+                "standard_chicken_egg"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-006",
+      "components": [
+        {
+          "expectedLabel": "Ovo de galinha cozido",
+          "tbcaCode": "BRC0023J",
+          "acceptableCodes": [
+            "BRC0010J"
+          ],
+          "catalogReviewStatus": "reviewed",
+          "cause": "identity_hierarchy_missing",
+          "detected": {
+            "name": "ovo",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "um ovo inteiro sem casca",
+              "metade de um ovo mostrando gema amarela e clara branca"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "baselineState": "ASK_USER",
+          "baselineSelectedCode": null,
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": "salt_default",
+          "recommendedCode": "BRC0023J",
+          "top1Score": 0.9612,
+          "top2Score": 0.9612,
+          "margin": 0,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0023J",
+              "name": "Ovo de galinha inteiro cozido com sal",
+              "score": 0.9612,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": [
+                "standard_chicken_egg"
+              ]
+            },
+            {
+              "rank": 2,
+              "code": "BRC0010J",
+              "name": "Ovo de galinha inteiro cozido sem sal",
+              "score": 0.9612,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": [
+                "standard_chicken_egg"
+              ]
+            },
+            {
+              "rank": 3,
+              "code": "BRC0014J",
+              "name": "Ovo de galinha integral desidratada pasteurizada",
+              "score": 0.7812,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": [
+                "standard_chicken_egg"
+              ]
+            },
+            {
+              "rank": 4,
+              "code": "BRC0065J",
+              "name": "Ovo de galinha mexido sem óleo sem sal",
+              "score": 0.7812,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": [
+                "standard_chicken_egg"
+              ]
+            },
+            {
+              "rank": 5,
+              "code": "BRC0139T",
+              "name": "Tutu de feijão com ovo cozido com sal",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-007",
+      "components": [
+        {
+          "expectedLabel": "Omelete simples",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "cause": "no_exact_tbca_match",
+          "detected": {
+            "name": "omelete",
+            "preparation": "frita",
+            "visibleDetails": [
+              "Formato dobrado",
+              "Superfície dourada",
+              "Textura espessa e irregular"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "baselineState": "ASK_USER",
+          "baselineSelectedCode": null,
+          "decisionState": "NO_EXACT_TBCA_MATCH",
+          "decisionPolicy": null,
+          "recommendedCode": null,
+          "top1Score": 0.6712,
+          "top2Score": 0.5112,
+          "margin": 0.16,
+          "firstAcceptableRank": null,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0253T",
+              "name": "Omelete vegano grãomelete (farinha de grão de bico água tomate cheiro verde com óleo de girassol com sal)",
+              "score": 0.6712,
+              "contradictions": [],
+              "materialUnknowns": [
+                "recipe:vegano",
+                "attribute:omelet_recipe"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0026J",
+              "name": "Omelete com ovo de galinha com queijo parmesão com sal",
+              "score": 0.5112,
+              "contradictions": [],
+              "materialUnknowns": [
+                "recipe:queijo",
+                "recipe:ovo",
+                "attribute:omelet_recipe"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0025J",
+              "name": "Omelete com ovo de galinha com queijo parmesão sem sal",
+              "score": 0.5112,
+              "contradictions": [],
+              "materialUnknowns": [
+                "recipe:queijo",
+                "recipe:ovo",
+                "attribute:omelet_recipe"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0031J",
+              "name": "Omelete com ovo de galinha com queijo muçarela com sal",
+              "score": 0.5112,
+              "contradictions": [],
+              "materialUnknowns": [
+                "recipe:queijo",
+                "recipe:ovo",
+                "attribute:omelet_recipe"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0030J",
+              "name": "Omelete com ovo de galinha com queijo muçarela sem sal",
+              "score": 0.5112,
+              "contradictions": [],
+              "materialUnknowns": [
+                "recipe:queijo",
+                "recipe:ovo",
+                "attribute:omelet_recipe"
+              ],
+              "resolutionPolicies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-008",
+      "components": [
+        {
+          "expectedLabel": "Peito de frango grelhado",
+          "tbcaCode": "BRC0230F",
+          "acceptableCodes": [],
+          "catalogReviewStatus": "reviewed",
+          "cause": "retrieval_identity_leak",
+          "detected": {
+            "name": "Frango",
+            "preparation": "grelhado",
+            "visibleDetails": [
+              "filé grande com marcas de grelha e superfície dourada"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "baselineState": "ASK_USER",
+          "baselineSelectedCode": null,
+          "decisionState": "RERANK",
+          "decisionPolicy": null,
+          "recommendedCode": null,
+          "top1Score": 0.99,
+          "top2Score": 0.99,
+          "margin": 0,
+          "firstAcceptableRank": 2,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0114F",
+              "name": "Peito de frango sem pele grelhada sem óleo sem sal",
+              "score": 0.99,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0230F",
+              "name": "Peito de frango sem pele grelhada sem gordura sem óleo com sal",
+              "score": 0.99,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0978F",
+              "name": "Carne peito de frango grelhado à pizzaiolo",
+              "score": 0.9536,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0996F",
+              "name": "Peito de frango sem pele grelhado com óleo de soja alho e pimenta do reino com sal",
+              "score": 0.9336,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0997F",
+              "name": "Peito de frango sem pele grelhado com óleo de soja alho e pimenta do reino sem sal",
+              "score": 0.9336,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        },
+        {
+          "expectedLabel": "Arroz branco cozido",
+          "tbcaCode": "BRC0018A",
+          "acceptableCodes": [],
+          "catalogReviewStatus": "reviewed",
+          "cause": "hidden_variant_tie",
+          "detected": {
+            "name": "Arroz",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "grãos brancos soltos"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "baselineState": "ASK_USER",
+          "baselineSelectedCode": null,
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": null,
+          "recommendedCode": "BRC0018A",
+          "top1Score": 0.9312,
+          "top2Score": 0.8112,
+          "margin": 0.12,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0018A",
+              "name": "Arroz polido cozido sem óleo sem sal",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0187A",
+              "name": "Arroz carreteiro com arroz polido e charque (carne seca jaba) sem sal",
+              "score": 0.8112,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0457A",
+              "name": "Arroz com mandioca (aipim macaxeira) cozida com sal",
+              "score": 0.8112,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0505A",
+              "name": "Arroz de cuxá com arroz polido com sal",
+              "score": 0.8112,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0520A",
+              "name": "Arroz com frutos do mar com arroz polido com sal",
+              "score": 0.8112,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        },
+        {
+          "expectedLabel": "Feijão carioca cozido",
+          "tbcaCode": "BRC0001T",
+          "acceptableCodes": [],
+          "catalogReviewStatus": "reviewed",
+          "cause": "visual_identity_underspecified",
+          "detected": {
+            "name": "Feijão",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "grãos marrons em caldo"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "baselineState": "ASK_USER",
+          "baselineSelectedCode": null,
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": null,
+          "recommendedCode": "BRC0001T",
+          "top1Score": 0.9312,
+          "top2Score": 0.8712,
+          "margin": 0.06,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0001T",
+              "name": "Feijão carioca cozido (50% grão e 50% caldo) sem óleo sem sal",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0014T",
+              "name": "Feijão roxo cozido (50% grão e 50% caldo) sem óleo sem sal",
+              "score": 0.8712,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0255T",
+              "name": "Feijão carioca cozido drenado sem óleo com sal",
+              "score": 0.8712,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0254T",
+              "name": "Feijão carioca cozido drenado sem óleo sem sal",
+              "score": 0.8712,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0080T",
+              "name": "Feijão guandu grão seco cozido drenado sem óleo com sal",
+              "score": 0.8112,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        },
+        {
+          "expectedLabel": "Alface crua",
+          "tbcaCode": "BRC0009B",
+          "acceptableCodes": [
+            "BRC0060B",
+            "BRC0061B",
+            "BRC0062B",
+            "BRC0063B"
+          ],
+          "catalogReviewStatus": "reviewed",
+          "cause": "hidden_variety_tie",
+          "detected": {
+            "name": "Alface",
+            "preparation": "crua",
+            "visibleDetails": [
+              "folhas verdes crespas"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "baselineState": "RERANK",
+          "baselineSelectedCode": "BRC0060B",
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": null,
+          "recommendedCode": "BRC0060B",
+          "top1Score": 0.9312,
+          "top2Score": 0.82,
+          "margin": 0.1112,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0060B",
+              "name": "Alface crespa crua",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0009B",
+              "name": "Alface crua",
+              "score": 0.82,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0583B",
+              "name": "Salada alface crespa sem óleo sem sal",
+              "score": 0.5604,
+              "contradictions": [],
+              "materialUnknowns": [
+                "recipe:salada"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0061B",
+              "name": "Alface lisa crua",
+              "score": 0.5312,
+              "contradictions": [
+                "crespa!=lisa"
+              ],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0062B",
+              "name": "Alface roxa crua",
+              "score": 0.5312,
+              "contradictions": [
+                "crespa!=roxo"
+              ],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        },
+        {
+          "expectedLabel": "Tomate cru",
+          "tbcaCode": "BRC0035B",
+          "acceptableCodes": [],
+          "catalogReviewStatus": "reviewed",
+          "cause": "correct",
+          "detected": {
+            "name": "Tomate",
+            "preparation": "cru",
+            "visibleDetails": [
+              "pedaços vermelhos"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "baselineState": "AUTOSELECT",
+          "baselineSelectedCode": "BRC0035B",
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": null,
+          "recommendedCode": "BRC0035B",
+          "top1Score": 0.94,
+          "top2Score": 0.7312,
+          "margin": 0.2088,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": false,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0035B",
+              "name": "Tomate cru",
+              "score": 0.94,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0390B",
+              "name": "Tomate seco com azeite de oliva artesanal com sal",
+              "score": 0.7312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0151T",
+              "name": "Quibe vegetariano com tomate e pimentão com sal",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0152T",
+              "name": "Quibe vegetariano com tomate e pimentão sem sal",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0464A",
+              "name": "Risoto de rúcula com tomate seco com arroz polido com sal",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        },
+        {
+          "expectedLabel": "Cebola crua",
+          "tbcaCode": "BRC0018B",
+          "acceptableCodes": [],
+          "catalogReviewStatus": "reviewed",
+          "cause": "visible_variety_rerank",
+          "detected": {
+            "name": "Cebola",
+            "preparation": "crua",
+            "visibleDetails": [
+              "fatias brancas"
+            ],
+            "confidence": 0.97,
+            "alternative": null
+          },
+          "baselineState": "RERANK",
+          "baselineSelectedCode": "BRC0018B",
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": null,
+          "recommendedCode": "BRC0018B",
+          "top1Score": 0.9312,
+          "top2Score": 0.7204,
+          "margin": 0.2108,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0018B",
+              "name": "Cebola branca crua",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0592N",
+              "name": "Papa de peixe (pescada branca) abóbora (jerimum) batata doce e couve com caldo de peixe com cebola e azeite de oliva com sal",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0593N",
+              "name": "Papa de peixe (pescada branca) abóbora (jerimum) batata doce e couve com caldo de peixe com cebola e óleo de soja com sal",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0594N",
+              "name": "Papa de peixe (pescada branca) abóbora (jerimum) batata doce e couve com caldo de peixe com cebola e óleo de soja sem sal",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0595N",
+              "name": "Papa de peixe (pescada branca) abóbora (jerimum) batata doce e couve com caldo de peixe com cebola e azeite de oliva sem sal",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-009",
+      "components": [
+        {
+          "expectedLabel": "Coxa de frango assada",
+          "tbcaCode": "BRC0842F",
+          "acceptableCodes": [
+            "BRC0108F"
+          ],
+          "catalogReviewStatus": "reviewed",
+          "cause": "visual_misidentification",
+          "detected": null,
+          "baselineState": "MISSING",
+          "baselineSelectedCode": null,
+          "decisionState": "MISSING",
+          "decisionPolicy": null,
+          "recommendedCode": null,
+          "top1Score": 0,
+          "top2Score": 0,
+          "margin": 0,
+          "firstAcceptableRank": null,
+          "rerankerCalled": false,
+          "candidates": []
+        }
+      ]
+    },
+    {
+      "id": "food-010",
+      "components": [
+        {
+          "expectedLabel": "Bife bovino grelhado",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "cause": "no_exact_tbca_match",
+          "detected": {
+            "name": "Bife",
+            "preparation": "grelhado",
+            "visibleDetails": [
+              "peça grande de carne bovina com marcas de grelha e gordura"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "baselineState": "ASK_USER",
+          "baselineSelectedCode": null,
+          "decisionState": "NO_EXACT_TBCA_MATCH",
+          "decisionPolicy": "salt_default",
+          "recommendedCode": null,
+          "top1Score": 0.6512,
+          "top2Score": 0.6512,
+          "margin": 0,
+          "firstAcceptableRank": null,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0923F",
+              "name": "Bife à cavalo com sal",
+              "score": 0.6512,
+              "contradictions": [],
+              "materialUnknowns": [
+                "recipe:cavalo"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0222F",
+              "name": "Bife à cavalo sem sal",
+              "score": 0.6512,
+              "contradictions": [],
+              "materialUnknowns": [
+                "recipe:cavalo"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0293F",
+              "name": "Bife à parmegiana com sal",
+              "score": 0.6512,
+              "contradictions": [],
+              "materialUnknowns": [
+                "recipe:parmegiana"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0312F",
+              "name": "Bife à parmegiana sem sal",
+              "score": 0.6512,
+              "contradictions": [],
+              "materialUnknowns": [
+                "recipe:parmegiana"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0401F",
+              "name": "Bife à role com carne bovina com sal",
+              "score": 0.6512,
+              "contradictions": [],
+              "materialUnknowns": [
+                "recipe:role"
+              ],
+              "resolutionPolicies": []
+            }
+          ]
+        },
+        {
+          "expectedLabel": "Arroz branco cozido",
+          "tbcaCode": "BRC0018A",
+          "acceptableCodes": [],
+          "catalogReviewStatus": "reviewed",
+          "cause": "hidden_variant_tie",
+          "detected": {
+            "name": "Arroz",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "grãos brancos cozidos"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "baselineState": "ASK_USER",
+          "baselineSelectedCode": null,
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": null,
+          "recommendedCode": "BRC0018A",
+          "top1Score": 0.9312,
+          "top2Score": 0.8112,
+          "margin": 0.12,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0018A",
+              "name": "Arroz polido cozido sem óleo sem sal",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0187A",
+              "name": "Arroz carreteiro com arroz polido e charque (carne seca jaba) sem sal",
+              "score": 0.8112,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0457A",
+              "name": "Arroz com mandioca (aipim macaxeira) cozida com sal",
+              "score": 0.8112,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0505A",
+              "name": "Arroz de cuxá com arroz polido com sal",
+              "score": 0.8112,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0520A",
+              "name": "Arroz com frutos do mar com arroz polido com sal",
+              "score": 0.8112,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        },
+        {
+          "expectedLabel": "Feijão preto cozido",
+          "tbcaCode": "BRC0258T",
+          "acceptableCodes": [
+            "BRC0008T"
+          ],
+          "catalogReviewStatus": "reviewed",
+          "cause": "hidden_variant_tie",
+          "detected": {
+            "name": "Feijão-preto",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "grãos pretos inteiros com caldo escuro"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "baselineState": "ASK_USER",
+          "baselineSelectedCode": null,
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": "salt_default",
+          "recommendedCode": "BRC0258T",
+          "top1Score": 0.9312,
+          "top2Score": 0.9312,
+          "margin": 0,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0258T",
+              "name": "Feijão preto cozido (50% grão e 50% caldo) sem óleo com sal",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0008T",
+              "name": "Feijão preto cozido (50% grão e 50% caldo) sem óleo sem sal",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0107T",
+              "name": "Feijão preto cozido (50% grão e 50% caldo) com óleo cebola e alho sem sal",
+              "score": 0.7712,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0194T",
+              "name": "Feijão preto cozido (50% grão e 50% caldo) com carne de boi músculo sem gordura com óleo cebola e alho com sal",
+              "score": 0.7712,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0195T",
+              "name": "Feijão preto cozido (50% grão e 50% caldo) com carne de boi músculo sem gordura com óleo cebola e alho sem sal",
+              "score": 0.7712,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        },
+        {
+          "expectedLabel": "Farofa",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "cause": "no_exact_tbca_match",
+          "detected": {
+            "name": "Farofa",
+            "preparation": null,
+            "visibleDetails": [
+              "farofa granulada de cor bege"
+            ],
+            "confidence": 0.96,
+            "alternative": null
+          },
+          "baselineState": "ASK_USER",
+          "baselineSelectedCode": null,
+          "decisionState": "NO_EXACT_TBCA_MATCH",
+          "decisionPolicy": "salt_default",
+          "recommendedCode": null,
+          "top1Score": 0.8512,
+          "top2Score": 0.8512,
+          "margin": 0,
+          "firstAcceptableRank": null,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC1096B",
+              "name": "Farofa vegana com farinha de mandioca (aipim macaxeira) com sal",
+              "score": 0.8512,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:farofa_recipe"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC1097B",
+              "name": "Farofa vegana com farinha de mandioca (aipim macaxeira) sem sal",
+              "score": 0.8512,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:farofa_recipe"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC1098B",
+              "name": "Farofa vegana com farinha de milho com sal",
+              "score": 0.8512,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:farofa_recipe"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC1099B",
+              "name": "Farofa vegana com farinha de milho sem sal",
+              "score": 0.8512,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:farofa_recipe"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0711N",
+              "name": "Farofa com óleo de soja cebola e alho com sal(teor reduzido de gordura)",
+              "score": 0.6912,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:farofa_recipe"
+              ],
+              "resolutionPolicies": []
+            }
+          ]
+        },
+        {
+          "expectedLabel": "Alface crua",
+          "tbcaCode": "BRC0009B",
+          "acceptableCodes": [
+            "BRC0060B",
+            "BRC0061B",
+            "BRC0062B",
+            "BRC0063B"
+          ],
+          "catalogReviewStatus": "reviewed",
+          "cause": "normalization_and_compound_bias",
+          "detected": {
+            "name": "Alface",
+            "preparation": "cru",
+            "visibleDetails": [
+              "folhas verdes"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "baselineState": "RERANK",
+          "baselineSelectedCode": "BRC0009B",
+          "decisionState": "RERANK",
+          "decisionPolicy": null,
+          "recommendedCode": null,
+          "top1Score": 0.94,
+          "top2Score": 0.9312,
+          "margin": 0.0088,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0009B",
+              "name": "Alface crua",
+              "score": 0.94,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0060B",
+              "name": "Alface crespa crua",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0061B",
+              "name": "Alface lisa crua",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0062B",
+              "name": "Alface roxa crua",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0063B",
+              "name": "Alface americana crua",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        },
+        {
+          "expectedLabel": "Tomate cru",
+          "tbcaCode": "BRC0035B",
+          "acceptableCodes": [],
+          "catalogReviewStatus": "reviewed",
+          "cause": "correct",
+          "detected": {
+            "name": "Tomate",
+            "preparation": "cru",
+            "visibleDetails": [
+              "rodelas vermelhas com sementes visíveis"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "baselineState": "AUTOSELECT",
+          "baselineSelectedCode": "BRC0035B",
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": null,
+          "recommendedCode": "BRC0035B",
+          "top1Score": 0.94,
+          "top2Score": 0.7312,
+          "margin": 0.2088,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": false,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0035B",
+              "name": "Tomate cru",
+              "score": 0.94,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0390B",
+              "name": "Tomate seco com azeite de oliva artesanal com sal",
+              "score": 0.7312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0151T",
+              "name": "Quibe vegetariano com tomate e pimentão com sal",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0152T",
+              "name": "Quibe vegetariano com tomate e pimentão sem sal",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0464A",
+              "name": "Risoto de rúcula com tomate seco com arroz polido com sal",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-011",
+      "components": [
+        {
+          "expectedLabel": "Filé de peixe grelhado",
+          "tbcaCode": "BRC0104E",
+          "acceptableCodes": [
+            "BRC0105E"
+          ],
+          "catalogReviewStatus": "reviewed",
+          "cause": "visual_over_specificity",
+          "detected": {
+            "name": "Filé de peixe",
+            "preparation": "grelhado",
+            "visibleDetails": [
+              "Filé único com pele e marcas de douramento"
+            ],
+            "confidence": 0.88,
+            "alternative": "Filé de salmão"
+          },
+          "baselineState": "RERANK",
+          "baselineSelectedCode": "BRC0066E",
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": "salt_default",
+          "recommendedCode": "BRC0104E",
+          "top1Score": 0.9104,
+          "top2Score": 0.9104,
+          "margin": 0,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0104E",
+              "name": "Filé grelhado/assado sem óleo com sal",
+              "score": 0.9104,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0105E",
+              "name": "Filé grelhado/assado sem óleo sem sal",
+              "score": 0.9104,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0215E",
+              "name": "Filé/posta assado/grelhado sem óleo com sal",
+              "score": 0.8304,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:posta"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0214E",
+              "name": "Filé/posta assado/grelhado sem óleo sem sal",
+              "score": 0.8304,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:posta"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0036E",
+              "name": "Abadejo filé congelado grelhado sem óleo sem sal",
+              "score": 0.7704,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:fish_species"
+              ],
+              "resolutionPolicies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-012",
+      "components": [
+        {
+          "expectedLabel": "Filé de peixe empanado",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "cause": "no_exact_tbca_match",
+          "detected": {
+            "name": "filé de peixe empanado",
+            "preparation": "frito",
+            "visibleDetails": [
+              "filés alongados",
+              "cobertura crocante dourada"
+            ],
+            "confidence": 0.84,
+            "alternative": "filé de frango empanado"
+          },
+          "baselineState": "RERANK",
+          "baselineSelectedCode": "BRC0054E",
+          "decisionState": "NO_EXACT_TBCA_MATCH",
+          "decisionPolicy": null,
+          "recommendedCode": null,
+          "top1Score": 0.8337,
+          "top2Score": 0.8337,
+          "margin": 0,
+          "firstAcceptableRank": null,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0108E",
+              "name": "Filé à milanesa (farinha de trigo ovo e farinha de rosca) frito (com óleo de soja) sem sal",
+              "score": 0.8337,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:breaded_fish_recipe"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0109E",
+              "name": "Filé à milanesa à milanesa (farinha de trigo refinada ovo e farinha de rosca) frito (com óleo de soja) com sal",
+              "score": 0.8337,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:breaded_fish_recipe"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0219E",
+              "name": "Filé/posta à milanesa (ovo e farinha de rosca*) frito (com óleo de soja) com sal",
+              "score": 0.7537,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:posta",
+                "attribute:breaded_fish_recipe"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0441E",
+              "name": "Filé/posta à milanesa (ovo e farinha de rosca) frito (com óleo de soja) sem sal",
+              "score": 0.7537,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:posta",
+                "attribute:breaded_fish_recipe"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0125E",
+              "name": "Abadejo filé à milanesa (ovo e farinha de rosca) frito (com óleo de soja) com sal",
+              "score": 0.6937,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:fish_species",
+                "attribute:breaded_fish_recipe"
+              ],
+              "resolutionPolicies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-013",
+      "components": [
+        {
+          "expectedLabel": "Mandioca cozida",
+          "tbcaCode": "BRC0908B",
+          "acceptableCodes": [
+            "BRC0053B"
+          ],
+          "catalogReviewStatus": "reviewed",
+          "cause": "hidden_variant_tie",
+          "detected": {
+            "name": "mandioca",
+            "preparation": "cozida",
+            "visibleDetails": [
+              "pedaços amarelos e fibrosos"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "baselineState": "ASK_USER",
+          "baselineSelectedCode": null,
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": "salt_default",
+          "recommendedCode": "BRC0908B",
+          "top1Score": 0.9312,
+          "top2Score": 0.9312,
+          "margin": 0,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0908B",
+              "name": "Mandioca (aipim macaxeira) sem casca cozida drenada sem óleo com sal",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0053B",
+              "name": "Mandioca (aipim macaxeira) sem casca cozida drenada sem óleo sem sal",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0457A",
+              "name": "Arroz com mandioca (aipim macaxeira) cozida com sal",
+              "score": 0.8646,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0309B",
+              "name": "Mandioca (aipim macaxeira) sem casca cozida com óleo de soja com sal",
+              "score": 0.8512,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0308B",
+              "name": "Mandioca (aipim macaxeira) sem casca cozida com óleo de soja sem sal",
+              "score": 0.8512,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-014",
+      "components": [
+        {
+          "expectedLabel": "Batata inglesa cozida",
+          "tbcaCode": "BRC0117B",
+          "acceptableCodes": [
+            "BRC0041B"
+          ],
+          "catalogReviewStatus": "reviewed",
+          "cause": "identity_hierarchy_missing",
+          "detected": {
+            "name": "batata",
+            "preparation": "cozida",
+            "visibleDetails": [
+              "pedaços grandes amarelos",
+              "textura macia",
+              "coberta com ervas verdes"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "baselineState": "ASK_USER",
+          "baselineSelectedCode": null,
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": "salt_default",
+          "recommendedCode": "BRC0117B",
+          "top1Score": 0.9812,
+          "top2Score": 0.9812,
+          "margin": 0,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0117B",
+              "name": "Batata inglesa sem casca cozida drenada sem óleo com sal",
+              "score": 0.9812,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": [
+                "standard_potato"
+              ]
+            },
+            {
+              "rank": 2,
+              "code": "BRC0041B",
+              "name": "Batata inglesa sem casca cozida drenada sem óleo sem sal",
+              "score": 0.9812,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": [
+                "standard_potato"
+              ]
+            },
+            {
+              "rank": 3,
+              "code": "BRC0315B",
+              "name": "Batata inglesa sem casca cozida drenada com óleo de soja com sal",
+              "score": 0.9012,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": [
+                "standard_potato"
+              ]
+            },
+            {
+              "rank": 4,
+              "code": "BRC0314B",
+              "name": "Batata inglesa sem casca cozida drenada com óleo de soja sem sal",
+              "score": 0.9012,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": [
+                "standard_potato"
+              ]
+            },
+            {
+              "rank": 5,
+              "code": "BRC1105B",
+              "name": "Yacón (batata yácon) raiz sem casca cozida sem óleo sem sal",
+              "score": 0.8536,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-015",
+      "components": [
+        {
+          "expectedLabel": "Batata inglesa frita",
+          "tbcaCode": "BRC0118B",
+          "acceptableCodes": [
+            "BRC0048B"
+          ],
+          "catalogReviewStatus": "reviewed",
+          "cause": "specificity_penalty_too_weak",
+          "detected": {
+            "name": "Batata frita",
+            "preparation": "frita",
+            "visibleDetails": [
+              "Palitos alongados",
+              "Superfície dourada e crocante"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "baselineState": "ASK_USER",
+          "baselineSelectedCode": null,
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": "salt_default",
+          "recommendedCode": "BRC0118B",
+          "top1Score": 0.8436,
+          "top2Score": 0.8436,
+          "margin": 0,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0118B",
+              "name": "Batata inglesa frita (com óleo de soja) com sal",
+              "score": 0.8436,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": [
+                "standard_potato"
+              ]
+            },
+            {
+              "rank": 2,
+              "code": "BRC0048B",
+              "name": "Batata inglesa frita (com óleo de soja) sem sal",
+              "score": 0.8436,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": [
+                "standard_potato"
+              ]
+            },
+            {
+              "rank": 3,
+              "code": "BRC0006M",
+              "name": "Batata frita McDonald's",
+              "score": 0.6512,
+              "contradictions": [],
+              "materialUnknowns": [
+                "recipe:mcdonald"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0305B",
+              "name": "Batata doce sem casca frita (com óleo de soja) com sal",
+              "score": 0.5804,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:doce"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0304B",
+              "name": "Batata doce sem casca frita (com óleo de soja) sem sal",
+              "score": 0.5804,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:doce"
+              ],
+              "resolutionPolicies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-016",
+      "components": [
+        {
+          "expectedLabel": "Espaguete ao molho de tomate",
+          "tbcaCode": "BRC0218A",
+          "acceptableCodes": [
+            "BRC0217A"
+          ],
+          "catalogReviewStatus": "reviewed",
+          "cause": "alias_and_retrieval_gap",
+          "detected": {
+            "name": "espaguete",
+            "preparation": "cozido",
+            "visibleDetails": [
+              "fios longos",
+              "coberto por molho vermelho"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "baselineState": "NO_MATCH",
+          "baselineSelectedCode": null,
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": "salt_default",
+          "recommendedCode": "BRC0218A",
+          "top1Score": 0.9112,
+          "top2Score": 0.9112,
+          "margin": 0,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": false,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0218A",
+              "name": "Macarrão trigo com ovos com molho de tomate (tomate com óleo cebola e alho) com sal",
+              "score": 0.9112,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0217A",
+              "name": "Macarrão trigo com ovos com molho de tomate (tomate com óleo cebola e alho) sem sal",
+              "score": 0.9112,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0235A",
+              "name": "Macarrão trigo integral com molho de tomate (tomate com óleo cebola e alho) com sal",
+              "score": 0.9112,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0234A",
+              "name": "Macarrão trigo integral com molho de tomate (tomate com óleo cebola e alho) sem sal",
+              "score": 0.9112,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0220A",
+              "name": "Macarrão trigo com ovos com molho branco (leite manteiga e farinha de trigo) com sal",
+              "score": 0.8512,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-017",
+      "components": [
+        {
+          "expectedLabel": "Lasanha à bolonhesa",
+          "tbcaCode": "BRC0395A",
+          "acceptableCodes": [],
+          "catalogReviewStatus": "reviewed",
+          "cause": "correct",
+          "detected": {
+            "name": "Lasanha",
+            "preparation": "assada",
+            "visibleDetails": [
+              "camadas de massa",
+              "carne moída ao molho",
+              "queijo gratinado"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "baselineState": "AUTOSELECT",
+          "baselineSelectedCode": "BRC0395A",
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": null,
+          "recommendedCode": "BRC0395A",
+          "top1Score": 0.9112,
+          "top2Score": 0.8512,
+          "margin": 0.06,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": false,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0395A",
+              "name": "Lasanha bolonhesa artesanal assada",
+              "score": 0.9112,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0684B",
+              "name": "Lasanha berinjela com molho bolonhesa caseira com sal",
+              "score": 0.8512,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0894A",
+              "name": "Lasanha queijos com molho branco com sal caseira",
+              "score": 0.8512,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC1025B",
+              "name": "Lasanha abobrinha com molho bolonhesa caseira com sal",
+              "score": 0.8512,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0111A",
+              "name": "Lasanha pronta industrializada",
+              "score": 0.7912,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-018",
+      "components": [
+        {
+          "expectedLabel": "Alface crua",
+          "tbcaCode": "BRC0009B",
+          "acceptableCodes": [
+            "BRC0060B",
+            "BRC0061B",
+            "BRC0062B",
+            "BRC0063B"
+          ],
+          "catalogReviewStatus": "reviewed",
+          "cause": "hidden_variety_tie",
+          "detected": {
+            "name": "Alface",
+            "preparation": "crua",
+            "visibleDetails": [
+              "Folhas verdes inteiras e enrugadas"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "baselineState": "RERANK",
+          "baselineSelectedCode": "BRC0060B",
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": null,
+          "recommendedCode": "BRC0060B",
+          "top1Score": 0.9312,
+          "top2Score": 0.82,
+          "margin": 0.1112,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0060B",
+              "name": "Alface crespa crua",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0009B",
+              "name": "Alface crua",
+              "score": 0.82,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0583B",
+              "name": "Salada alface crespa sem óleo sem sal",
+              "score": 0.5604,
+              "contradictions": [],
+              "materialUnknowns": [
+                "recipe:salada"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0061B",
+              "name": "Alface lisa crua",
+              "score": 0.5312,
+              "contradictions": [
+                "crespa!=lisa"
+              ],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0062B",
+              "name": "Alface roxa crua",
+              "score": 0.5312,
+              "contradictions": [
+                "crespa!=roxo"
+              ],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        },
+        {
+          "expectedLabel": "Tomate cru",
+          "tbcaCode": "BRC0035B",
+          "acceptableCodes": [],
+          "catalogReviewStatus": "reviewed",
+          "cause": "correct",
+          "detected": {
+            "name": "Tomate",
+            "preparation": "cru",
+            "visibleDetails": [
+              "Tomates vermelhos cortados ao meio, com sementes visíveis"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "baselineState": "AUTOSELECT",
+          "baselineSelectedCode": "BRC0035B",
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": null,
+          "recommendedCode": "BRC0035B",
+          "top1Score": 0.94,
+          "top2Score": 0.7312,
+          "margin": 0.2088,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": false,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0035B",
+              "name": "Tomate cru",
+              "score": 0.94,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0390B",
+              "name": "Tomate seco com azeite de oliva artesanal com sal",
+              "score": 0.7312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0151T",
+              "name": "Quibe vegetariano com tomate e pimentão com sal",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0152T",
+              "name": "Quibe vegetariano com tomate e pimentão sem sal",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0464A",
+              "name": "Risoto de rúcula com tomate seco com arroz polido com sal",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        },
+        {
+          "expectedLabel": "Pepino cru",
+          "tbcaCode": "BRC0030B",
+          "acceptableCodes": [],
+          "catalogReviewStatus": "reviewed",
+          "cause": "correct",
+          "detected": {
+            "name": "Pepino",
+            "preparation": "cru",
+            "visibleDetails": [
+              "Rodelas verdes com centro claro e sementes visíveis"
+            ],
+            "confidence": 0.98,
+            "alternative": null
+          },
+          "baselineState": "AUTOSELECT",
+          "baselineSelectedCode": "BRC0030B",
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": null,
+          "recommendedCode": "BRC0030B",
+          "top1Score": 0.9312,
+          "top2Score": 0.7204,
+          "margin": 0.2108,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": false,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0030B",
+              "name": "Pepino com casca cru",
+              "score": 0.9312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0470E",
+              "name": "Poke hawaiano com salmão e pepino",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0471E",
+              "name": "Poke hawaiano com salmão pepino manga e cenoura",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0985A",
+              "name": "Uramaki com salmão e pepino",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0472E",
+              "name": "Poke hawaiano com atum pepino avocado e cebola",
+              "score": 0.6404,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-019",
+      "components": [
+        {
+          "expectedLabel": "Tomate cru",
+          "tbcaCode": "BRC0035B",
+          "acceptableCodes": [],
+          "catalogReviewStatus": "reviewed",
+          "cause": "correct",
+          "detected": {
+            "name": "Tomate",
+            "preparation": "cru",
+            "visibleDetails": [
+              "fatias redondas vermelhas",
+              "sementes e polpa visíveis"
+            ],
+            "confidence": 0.99,
+            "alternative": null
+          },
+          "baselineState": "AUTOSELECT",
+          "baselineSelectedCode": "BRC0035B",
+          "decisionState": "AUTOSELECT",
+          "decisionPolicy": null,
+          "recommendedCode": "BRC0035B",
+          "top1Score": 0.94,
+          "top2Score": 0.7312,
+          "margin": 0.2088,
+          "firstAcceptableRank": 1,
+          "rerankerCalled": false,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0035B",
+              "name": "Tomate cru",
+              "score": 0.94,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0390B",
+              "name": "Tomate seco com azeite de oliva artesanal com sal",
+              "score": 0.7312,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0151T",
+              "name": "Quibe vegetariano com tomate e pimentão com sal",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0152T",
+              "name": "Quibe vegetariano com tomate e pimentão sem sal",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0464A",
+              "name": "Risoto de rúcula com tomate seco com arroz polido com sal",
+              "score": 0.7204,
+              "contradictions": [],
+              "materialUnknowns": [],
+              "resolutionPolicies": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "food-020",
+      "components": [
+        {
+          "expectedLabel": "Queijo muçarela",
+          "tbcaCode": null,
+          "acceptableCodes": [],
+          "catalogReviewStatus": "pending",
+          "cause": "no_exact_tbca_match",
+          "detected": {
+            "name": "queijo",
+            "preparation": null,
+            "visibleDetails": [
+              "fatias claras e espessas",
+              "superfície lisa com pequenos furos"
+            ],
+            "confidence": 0.96,
+            "alternative": null
+          },
+          "baselineState": "ASK_USER",
+          "baselineSelectedCode": null,
+          "decisionState": "NO_EXACT_TBCA_MATCH",
+          "decisionPolicy": null,
+          "recommendedCode": null,
+          "top1Score": 0.9512,
+          "top2Score": 0.9512,
+          "margin": 0,
+          "firstAcceptableRank": null,
+          "rerankerCalled": true,
+          "candidates": [
+            {
+              "rank": 1,
+              "code": "BRC0048G",
+              "name": "Queijo coalho",
+              "score": 0.9512,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:cheese_variety"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 2,
+              "code": "BRC0049G",
+              "name": "Queijo fundido",
+              "score": 0.9512,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:cheese_variety"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 3,
+              "code": "BRC0050G",
+              "name": "Queijo petit suisse sabor morango",
+              "score": 0.9512,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:cheese_variety"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 4,
+              "code": "BRC0051G",
+              "name": "Queijo ricota",
+              "score": 0.9512,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:cheese_variety"
+              ],
+              "resolutionPolicies": []
+            },
+            {
+              "rank": 5,
+              "code": "BRC0062G",
+              "name": "Queijo pasteurizado",
+              "score": 0.9512,
+              "contradictions": [],
+              "materialUnknowns": [
+                "attribute:cheese_variety"
+              ],
+              "resolutionPolicies": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

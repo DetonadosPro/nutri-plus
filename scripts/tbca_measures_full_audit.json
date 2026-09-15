@@ -1,0 +1,600 @@
+{
+  "source": "TBCA",
+  "parser_version": 4,
+  "foods_requested": 5874,
+  "foods_collected": 5874,
+  "foods_with_measures": 5571,
+  "foods_without_measures": 303,
+  "measures_total": 8963,
+  "measures_in_grams": 8121,
+  "measures_in_ml": 813,
+  "measures_missing_label": 1009,
+  "measures_unparsed": 29,
+  "foods_with_missing_labels": 875,
+  "foods_with_unparsed_measures": 27,
+  "http_or_collection_errors": 0,
+  "error_codes": [],
+  "missing_label_examples": [
+    {
+      "code": "BRC0001G",
+      "description": "Bebida láctea (média de diferentes sabores), Brasil,",
+      "raw_header": "(240 mL)",
+      "quantity": 240.0,
+      "unit": "mL",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0001G"
+    },
+    {
+      "code": "BRC0001G",
+      "description": "Bebida láctea (média de diferentes sabores), Brasil,",
+      "raw_header": "(165 mL)",
+      "quantity": 165.0,
+      "unit": "mL",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0001G"
+    },
+    {
+      "code": "BRC0001J",
+      "description": "Ovo, codorna, clara, crua, Brasil, Coturnix coturnix",
+      "raw_header": "(7 g)",
+      "quantity": 7.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0001J"
+    },
+    {
+      "code": "BRC0001M",
+      "description": "Sanduíche, Big Mac, McDonald´s (dado importado),",
+      "raw_header": "(200 g)",
+      "quantity": 200.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0001M"
+    },
+    {
+      "code": "BRC0001S",
+      "description": "Refeição composta por 80g arroz polido, 60g feijão carioca, 60g carne bovina refogada e 60g quibebe, c/ óleo de soja, c/ sal, Brasil,",
+      "raw_header": "(260 g)",
+      "quantity": 260.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0001S"
+    },
+    {
+      "code": "BRC0001U",
+      "description": "Amêndoa, torrada, c/ sal, Brasil, Arábic amygdalu var. Dulcis",
+      "raw_header": "(30 g)",
+      "quantity": 30.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0001U"
+    },
+    {
+      "code": "BRC0002G",
+      "description": "Bebida láctea, frutas vermelhas, Brasil, Dan Up,",
+      "raw_header": "(165 mL)",
+      "quantity": 165.0,
+      "unit": "mL",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0002G"
+    },
+    {
+      "code": "BRC0002H",
+      "description": "Bebida alcoólica, destilada (gim, rum, vodka, whisky) (teor alcoólico 33%), Brasil,",
+      "raw_header": "(10 g)",
+      "quantity": 10.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0002H"
+    },
+    {
+      "code": "BRC0002J",
+      "description": "Ovo, codorna, gema, crua, Brasil, Coturnix coturnix",
+      "raw_header": "(3 g)",
+      "quantity": 3.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0002J"
+    },
+    {
+      "code": "BRC0002L",
+      "description": "Caldo, carne/galinha, tablete (média de dois sabores), Brasil,",
+      "raw_header": "(250 mL)",
+      "quantity": 250.0,
+      "unit": "mL",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0002L"
+    },
+    {
+      "code": "BRC0002R",
+      "description": "Bolo, baunilha, mistura p/, Brasil, Oetker,",
+      "raw_header": "(60 g)",
+      "quantity": 60.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0002R"
+    },
+    {
+      "code": "BRC0002S",
+      "description": "Refeição composta por 80g arroz polido, 60g feijão carioca e 60g batata inlgesa sauté, c/ óleo de soja, c/ sal, Brasil,",
+      "raw_header": "(200 g)",
+      "quantity": 200.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0002S"
+    },
+    {
+      "code": "BRC0002U",
+      "description": "Caju, castanha, torrada, c/ sal, Brasil, Anacardium occidentale L.",
+      "raw_header": "(30 g)",
+      "quantity": 30.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0002U"
+    },
+    {
+      "code": "BRC0003G",
+      "description": "Bebida láctea, morango, Brasil, Dan Up,",
+      "raw_header": "(165 mL)",
+      "quantity": 165.0,
+      "unit": "mL",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0003G"
+    },
+    {
+      "code": "BRC0003H",
+      "description": "Bebida alcoólica, destilada (gim, rum, vodka, whisky) (teor alcoólico 36%), Brasil,",
+      "raw_header": "(10 g)",
+      "quantity": 10.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0003H"
+    },
+    {
+      "code": "BRC0003J",
+      "description": "Ovo, codorna, inteiro, cru, Brasil, Coturnix coturnix",
+      "raw_header": "(10 g)",
+      "quantity": 10.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0003J"
+    },
+    {
+      "code": "BRC0003L",
+      "description": "Caldo, carne, tablete, Brasil, Maggi,",
+      "raw_header": "(250 mL)",
+      "quantity": 250.0,
+      "unit": "mL",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0003L"
+    },
+    {
+      "code": "BRC0003R",
+      "description": "Bolo, chocolate, mistura p/, Brasil, Oetker,",
+      "raw_header": "(60 g)",
+      "quantity": 60.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0003R"
+    },
+    {
+      "code": "BRC0003S",
+      "description": "Refeição composta por 80g arroz polido, 60g fígado bovino, c/ molho de tomate (molho sugo) e 60g purê de batata, c/ óleo de soja, c/ sal, Brasil,",
+      "raw_header": "(200 g)",
+      "quantity": 200.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0003S"
+    },
+    {
+      "code": "BRC0004G",
+      "description": "Molho branco (molho bechamel), s/ sal, Brasil, (leite de vaca integral, farinha de trigo refinada, manteiga, s/ sal),",
+      "raw_header": "(15 g)",
+      "quantity": 15.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0004G"
+    },
+    {
+      "code": "BRC0004G",
+      "description": "Molho branco (molho bechamel), s/ sal, Brasil, (leite de vaca integral, farinha de trigo refinada, manteiga, s/ sal),",
+      "raw_header": "(25 g)",
+      "quantity": 25.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0004G"
+    },
+    {
+      "code": "BRC0004H",
+      "description": "Bebida alcoólica, destilada (gim, rum, vodka, whisky) (teor alcoólico 39%), Brasil,",
+      "raw_header": "(10 g)",
+      "quantity": 10.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0004H"
+    },
+    {
+      "code": "BRC0004K",
+      "description": "Açúcar, Brasil (média de diferentes tipos),",
+      "raw_header": "(170 g)",
+      "quantity": 170.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0004K"
+    },
+    {
+      "code": "BRC0004L",
+      "description": "Caldo, galinha, tablete, Brasil, Maggi,",
+      "raw_header": "(250 mL)",
+      "quantity": 250.0,
+      "unit": "mL",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0004L"
+    },
+    {
+      "code": "BRC0004M",
+      "description": "Sundae, Morango, McDonald´s (dado importad),",
+      "raw_header": "(60 g)",
+      "quantity": 60.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0004M"
+    },
+    {
+      "code": "BRC0004R",
+      "description": "Bolo, coco, mistura p/, Brasil, Oetker,",
+      "raw_header": "(60 g)",
+      "quantity": 60.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0004R"
+    },
+    {
+      "code": "BRC0004T",
+      "description": "Feijão, fradinho (corda, caupi, massacar), cru, Brasil, Vigna unguiculata (L.) Walp.",
+      "raw_header": "(180 g)",
+      "quantity": 180.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0004T"
+    },
+    {
+      "code": "BRC0005A",
+      "description": "Milho, pipoca, grão, cru, Brasil (média diferentes amostras), Zea mays",
+      "raw_header": "(10 g)",
+      "quantity": 10.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0005A"
+    },
+    {
+      "code": "BRC0005A",
+      "description": "Milho, pipoca, grão, cru, Brasil (média diferentes amostras), Zea mays",
+      "raw_header": "(90 g)",
+      "quantity": 90.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0005A"
+    },
+    {
+      "code": "BRC0005H",
+      "description": "Bebida alcoólica, destilada (gim, rum, vodka, whisky) (teor alcoólico 42%), Brasil,",
+      "raw_header": "(10 g)",
+      "quantity": 10.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0005H"
+    },
+    {
+      "code": "BRC0005J",
+      "description": "Ovo, galinha, clara, crua, Brasil,",
+      "raw_header": "(30 g)",
+      "quantity": 30.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0005J"
+    },
+    {
+      "code": "BRC0005K",
+      "description": "Açúcar, cristal, Brasil,",
+      "raw_header": "(219 g)",
+      "quantity": 219.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0005K"
+    },
+    {
+      "code": "BRC0005K",
+      "description": "Açúcar, cristal, Brasil,",
+      "raw_header": "(160 g)",
+      "quantity": 160.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0005K"
+    },
+    {
+      "code": "BRC0005K",
+      "description": "Açúcar, cristal, Brasil,",
+      "raw_header": "(170 g)",
+      "quantity": 170.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0005K"
+    },
+    {
+      "code": "BRC0005M",
+      "description": "Sundae, Caramelo, McDonald´s (dado importado),",
+      "raw_header": "(60 g)",
+      "quantity": 60.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0005M"
+    },
+    {
+      "code": "BRC0005R",
+      "description": "Bolo, laranja, mistura p/, Brasil, Oetker,",
+      "raw_header": "(60 g)",
+      "quantity": 60.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0005R"
+    },
+    {
+      "code": "BRC0005T",
+      "description": "Feijão, guandu, grão, cru, Brasil, Cajanus cajan",
+      "raw_header": "(180 g)",
+      "quantity": 180.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0005T"
+    },
+    {
+      "code": "BRC0006A",
+      "description": "Milho, verde, grão, cru, Brasil (média de diferentes amostras), Zea may",
+      "raw_header": "(100 g)",
+      "quantity": 100.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0006A"
+    },
+    {
+      "code": "BRC0006A",
+      "description": "Milho, verde, grão, cru, Brasil (média de diferentes amostras), Zea may",
+      "raw_header": "(150 g)",
+      "quantity": 150.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0006A"
+    },
+    {
+      "code": "BRC0006H",
+      "description": "Bebida alcoólica, aguardente, cachaça, Brasil,",
+      "raw_header": "(10 g)",
+      "quantity": 10.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0006H"
+    },
+    {
+      "code": "BRC0006J",
+      "description": "Ovo, galinha, clara, desidratada, pasteurizada, Brasil,",
+      "raw_header": "(15 g)",
+      "quantity": 15.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0006J"
+    },
+    {
+      "code": "BRC0006J",
+      "description": "Ovo, galinha, clara, desidratada, pasteurizada, Brasil,",
+      "raw_header": "(240 g)",
+      "quantity": 240.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0006J"
+    },
+    {
+      "code": "BRC0006K",
+      "description": "Açúcar, mascavo, Brasil,",
+      "raw_header": "(170 g)",
+      "quantity": 170.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0006K"
+    },
+    {
+      "code": "BRC0006N",
+      "description": "Gelatina, cereja, em pó, dietética, Brasil, Oetker,",
+      "raw_header": "(10 g)",
+      "quantity": 10.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0006N"
+    },
+    {
+      "code": "BRC0006R",
+      "description": "Bolo, mármore, mistura p/, Brasil, Oetker,",
+      "raw_header": "(10 g)",
+      "quantity": 10.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0006R"
+    },
+    {
+      "code": "BRC0006R",
+      "description": "Bolo, mármore, mistura p/, Brasil, Oetker,",
+      "raw_header": "(60 g)",
+      "quantity": 60.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0006R"
+    },
+    {
+      "code": "BRC0006R",
+      "description": "Bolo, mármore, mistura p/, Brasil, Oetker,",
+      "raw_header": "(120 g)",
+      "quantity": 120.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0006R"
+    },
+    {
+      "code": "BRC0007K",
+      "description": "Açúcar, refinado, Brasil (média de diferentes amostras),",
+      "raw_header": "(219 g)",
+      "quantity": 219.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0007K"
+    },
+    {
+      "code": "BRC0007K",
+      "description": "Açúcar, refinado, Brasil (média de diferentes amostras),",
+      "raw_header": "(160 g)",
+      "quantity": 160.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0007K"
+    },
+    {
+      "code": "BRC0007K",
+      "description": "Açúcar, refinado, Brasil (média de diferentes amostras),",
+      "raw_header": "(170 g)",
+      "quantity": 170.0,
+      "unit": "g",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0007K"
+    }
+  ],
+  "unparsed_examples": [
+    {
+      "code": "BRC0003J",
+      "description": "Ovo, codorna, inteiro, cru, Brasil, Coturnix coturnix",
+      "raw_header": "(1 )",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0003J"
+    },
+    {
+      "code": "BRC0010J",
+      "description": "Ovo, galinha, inteiro, cozido, s/ sal, Brasil (média de várias amostras), Gallus gallus domesticus",
+      "raw_header": "Anvisa portion (1 unidade)",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0010J"
+    },
+    {
+      "code": "BRC0011J",
+      "description": "Ovo, galinha, inteiro, cru, Brasil (média de várias amostras),",
+      "raw_header": "(1 )",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0011J"
+    },
+    {
+      "code": "BRC0012J",
+      "description": "Ovo, galinha, branco, inteiro, cru, Brasil,",
+      "raw_header": "Anvisa portion (1 unidade)",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0012J"
+    },
+    {
+      "code": "BRC0013J",
+      "description": "Ovo, galinha, vermelho, inteiro, cru, Brasil,",
+      "raw_header": "Anvisa portion (1 unidade)",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0013J"
+    },
+    {
+      "code": "BRC0016J",
+      "description": "Ovo, galinha, orgânico, inteiro, cru, Brasil,",
+      "raw_header": "(1 )",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0016J"
+    },
+    {
+      "code": "BRC0017J",
+      "description": "Ovo, galinha, semi-orgânico, inteiro, cru, Brasil,",
+      "raw_header": "(1 )",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0017J"
+    },
+    {
+      "code": "BRC0020J",
+      "description": "Ovo, pata, inteiro, cru, Brasil,",
+      "raw_header": "(1 )",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0020J"
+    },
+    {
+      "code": "BRC0030J",
+      "description": "Omelete, c/ ovo de galinha, c/ queijo muçarela, s/ sal, Brasil, [ovo de galinha inteiro, queijo muçarela, salsa (salsinha), c/ óleo de soja, s/ sal],",
+      "raw_header": "Anvisa portion (1 unidade)",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0030J"
+    },
+    {
+      "code": "BRC0031J",
+      "description": "Omelete, c/ ovo de galinha, c/ queijo muçarela, c/ sal, (ovo de galinha inteiro, queijo muçarela, salsa, c/ óleo de soja, c/ sal),",
+      "raw_header": "Anvisa portion (1 unidade)",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0031J"
+    },
+    {
+      "code": "BRC0056G",
+      "description": "Queijo, minas, padrão (média de diferentes amostras), Brasil,",
+      "raw_header": "Piece/ Unit/ Slice (M) (30 unidade)",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0056G"
+    },
+    {
+      "code": "BRC0090K",
+      "description": "Cacau, em pó, s/ açúcar (dado importado), Theobroma cacao",
+      "raw_header": "Anvisa portion (20 )",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0090K"
+    },
+    {
+      "code": "BRC0140A",
+      "description": "Milho, curau, cozido, (milho verde, amido de milho, leite em pó, c/ açúcar),",
+      "raw_header": "Shallow dish (200 -)",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0140A"
+    },
+    {
+      "code": "BRC0172A",
+      "description": "Torrada, levemente salgada, Bauducco,",
+      "raw_header": "Piece/ Unit/ Slice (M) (10 unidade)",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0172A"
+    },
+    {
+      "code": "BRC0235E",
+      "description": "Molusco, lula, cozido, drenado, s/ óleo, s/ sal (dado importado), Order Teuthoidea",
+      "raw_header": "(110 )",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0235E"
+    },
+    {
+      "code": "BRC0247F",
+      "description": "Presunto, porco, cozido, c/ capa de gordura (média de diferentes amostras), Brasil,",
+      "raw_header": "Piece/ Unit/ Slice (M) (20 unidade)",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0247F"
+    },
+    {
+      "code": "BRC0319A",
+      "description": "Sanduíche, pão forma tradicional, c/ margarina, c/ sal,",
+      "raw_header": "Piece/ Unit/ Slice (M) (280 unidade)",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0319A"
+    },
+    {
+      "code": "BRC0592F",
+      "description": "Carne, porco, bisteca, frita, c/ óleo, cebola e alho, c/ sal,",
+      "raw_header": "Piece/ Unit/ Slice (M) (110 unidade)",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0592F"
+    },
+    {
+      "code": "BRC0593A",
+      "description": "Canelone, ricota e espinafre, c/ molho branco, caseiro, c/ sal, (massa com farinha de trigo, c/ ricota e espinafre, c/ molho branco (leite, manteiga e farinha de trigo), c/ sal),",
+      "raw_header": "Piece/ Unit/ Slice (M) (50 unidade)",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0593A"
+    },
+    {
+      "code": "BRC0615A",
+      "description": "Macarrão, trigo, integral, c/ molho de tomate (tomate, c/ óleo, cebola e alho), c/ peito de frango, c/ óleo, cebola e alho, c/ sal,",
+      "raw_header": "Shallow skimmer (90 )",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0615A"
+    },
+    {
+      "code": "BRC0876A",
+      "description": "Guioza, caseiro, (farinha de trigo, água, repolho, lombo suíno, cebolinha, c/ óleo de soja, c/ óleo de gergelim, c/ sal),",
+      "raw_header": "Piece/ Unit/ Slice (M) (60 unidade)",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0876A"
+    },
+    {
+      "code": "BRC0993A",
+      "description": "Cereal, c/ farelo de trigo, All-Bran (dado importado), Kellogg´s,",
+      "raw_header": "Deep dish (100 )",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0993A"
+    },
+    {
+      "code": "BRC0993A",
+      "description": "Cereal, c/ farelo de trigo, All-Bran (dado importado), Kellogg´s,",
+      "raw_header": "Shallow dish (80 )",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC0993A"
+    },
+    {
+      "code": "BRC1023A",
+      "description": "Cereal matinal, milho, c/ acholatado, em pó,",
+      "raw_header": "Deep dish (100 )",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC1023A"
+    },
+    {
+      "code": "BRC1023A",
+      "description": "Cereal matinal, milho, c/ acholatado, em pó,",
+      "raw_header": "Shallow dish (80 )",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC1023A"
+    },
+    {
+      "code": "BRC1074F",
+      "description": "Carne bovina cozida (coxão duro), c/ vegetais (cenoura, abobrinha e chuchu), c/ cebolinha e salsa (salsinha), s/ óleo, c/ sal, , Brasil,",
+      "raw_header": "(100 )",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC1074F"
+    },
+    {
+      "code": "BRC1106F",
+      "description": "Linguiça mista*, c/ molho branco (molho bechamel), c/ queijo parmesão**, gratinado, c/ sal, Brasil, (linguiça mista, leite de vaca integral, farinha de trigo refinada, manteiga, queijo parmesão, c/ sal),",
+      "raw_header": "(100 )",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC1106F"
+    },
+    {
+      "code": "BRC1221A",
+      "description": "Araruta (agutiguepe), farinha, crua (dado importado), Maranta arundinacea",
+      "raw_header": "(9 )",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC1221A"
+    },
+    {
+      "code": "BRC1235B",
+      "description": "Cerefólio, cru (dado importado), Anthriscus cerefolium",
+      "raw_header": "(6 )",
+      "source_url": "https://www.tbca.net.br/base-dados-en/int_food_composition_2_edit.php?cod_produto=BRC1235B"
+    }
+  ],
+  "notes": [
+    "mL não é convertido automaticamente em gramas.",
+    "missing_label significa que a TBCA publicou a quantidade/unidade sem texto de medida no cabeçalho capturado.",
+    "unparsed significa que o cabeçalho apareceu na área de medidas, mas não seguiu o padrão '(valor g)' ou '(valor mL)'."
+  ]
+}
