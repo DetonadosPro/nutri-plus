@@ -190,6 +190,36 @@ export type PlanDiaryAdherence = {
     }>;
   }>;
 };
+export type WeeklyPatientSummary = {
+  version: 'weekly-patient-summary-v1';
+  from: string;
+  to: string;
+  timezone: 'America/Sao_Paulo';
+  registration: { recordedDays: number; totalDays: number };
+  plan: {
+    available: boolean;
+    coveredItems: number;
+    plannedItems: number;
+    coveragePercent: number | null;
+    strongestMeal: WeeklyMealSignal | null;
+    attentionMeal: WeeklyMealSignal | null;
+    quantityDifferences: number;
+    changedDuringPeriod: boolean;
+  };
+  activity: { sessions: number; days: number };
+  weight: {
+    updatedInPeriod: boolean;
+    latestKg: number | null;
+    weighedAt: string | null;
+    changeKg: number | null;
+  };
+};
+export type WeeklyMealSignal = {
+  mealType: import('../../shared/meal-types').MealType;
+  coveredItems: number;
+  plannedItems: number;
+  coveragePercent: number;
+};
 export type PatientListItem = {
   id: number;
   name: string;
