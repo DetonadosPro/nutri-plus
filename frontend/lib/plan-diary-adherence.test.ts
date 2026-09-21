@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 const component = readFileSync(join(import.meta.dirname, '../app/components/plan-diary-adherence.tsx'), 'utf8');
+const weeklySummary = readFileSync(join(import.meta.dirname, '../app/components/weekly-patient-summary.tsx'), 'utf8');
 const css = readFileSync(join(import.meta.dirname, '../app/adherence.css'), 'utf8');
 const nutritionistApp = readFileSync(join(import.meta.dirname, '../app/components/nutritionist-app.tsx'), 'utf8');
 const patientApp = readFileSync(join(import.meta.dirname, '../app/components/patient-app.tsx'), 'utf8');
@@ -12,7 +13,8 @@ describe('plan diary adherence presentation contract', () => {
     expect(component).toContain("'/patient/adherence'");
     expect(component).toContain('`/nutritionist/patients/${patientId}/adherence`');
     expect(component).not.toMatch(/method:\s*['"](?:POST|PATCH|PUT|DELETE)/);
-    expect(nutritionistApp).toContain('<PlanDiaryAdherencePanel patientId={Number(profile.id)} />');
+    expect(nutritionistApp).toContain('<WeeklyPatientSummaryPanel');
+    expect(weeklySummary).toContain('<PlanDiaryAdherencePanel patientId={patientId} />');
     expect(patientApp).toContain('<PlanDiaryAdherencePanel simple />');
   });
 

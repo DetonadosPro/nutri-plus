@@ -65,7 +65,7 @@ import { PatientMealList } from './patient-meal-list';
 import { UserIdentity } from './user-identity';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { NutritionistMealPlan } from './meal-plan';
-import { PlanDiaryAdherencePanel } from './plan-diary-adherence';
+import { WeeklyPatientSummaryPanel } from './weekly-patient-summary';
 
 import { PatientApp } from './patient-app';
 import { Button } from '@/components/ui/button';
@@ -114,8 +114,8 @@ const workspaceTabs = [
   ['plan', 'Plano', Utensils],
   ['diary', 'Diário', ClipboardList],
   ['progress', 'Evolução', BarChart3],
-  ['analysis', 'Análise', Sparkles],
-  ['notes', 'Feedback', MessageSquareText],
+  ['analysis', 'Resumo', Sparkles],
+  ['notes', 'Orientações', MessageSquareText],
 ] as const;
 
 export function NutritionistApp({
@@ -904,8 +904,17 @@ function PatientWorkspace({
           )}
           {tab === 'analysis' && (
             <>
-              <PlanDiaryAdherencePanel patientId={Number(profile.id)} />
-              <PatientAnalysis detail={detail} range={range} onRange={onRange} />
+              <WeeklyPatientSummaryPanel
+                patientId={Number(profile.id)}
+                onOpenDiary={() => onTab('diary')}
+                onSendOrientation={() => onTab('notes')}
+              />
+              <details className="mx-auto mt-4 max-w-[76rem] rounded-2xl border bg-background px-4">
+                <summary className="flex min-h-12 cursor-pointer items-center justify-center font-semibold text-sm text-muted-foreground">
+                  Ver análise nutricional completa
+                </summary>
+                <PatientAnalysis detail={detail} range={range} onRange={onRange} />
+              </details>
             </>
           )}
           {tab === 'notes' && (
@@ -1520,9 +1529,7 @@ function PatientFeedback({
   onSaved: () => void | Promise<void>;
 }) {
   const [note, setNote] = useState('');
-  const [visibility, setVisibility] = useState<'private' | 'patient'>(
-    'private',
-  );
+  const [visibility, setVisibility] = useState<'private' | 'patient'>('patient');
   const [loading, setLoading] = useState(false);
   async function addNote() {
     if (!note.trim()) return;

@@ -8,6 +8,7 @@ import { rateLimit } from 'express-rate-limit';
 import { activitiesRouter, seedActivityCatalog } from './activities';
 import { mealPlanRouter } from './meal-plans';
 import { adherenceRouter } from './plan-diary-adherence';
+import { weeklyPatientSummaryRouter } from './weekly-patient-summary';
 import express, { type Request, type Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -361,6 +362,7 @@ function daysBetween(from: string, to: string) {
 app.use("/api/activities", activitiesRouter({ authUser, patientAccess }));
 app.use('/api', mealPlanRouter({ authUser, patientAccess }));
 app.use('/api', adherenceRouter({ authUser, patientAccess }));
+app.use('/api', weeklyPatientSummaryRouter({ authUser, patientAccess }));
 
 app.get("/api/health", (_req, res) =>
   res.json({ ok: true, foods: tbcaCount, database: databaseInfo.engine, source: "TBCA", version: appConfig.release }),
