@@ -1,0 +1,36 @@
+.weekly-summary { display:grid; gap:1.25rem; max-width:76rem; margin-inline:auto; padding:clamp(1rem,2vw,1.5rem); border:1px solid #dce9e3; border-radius:1.5rem; background:linear-gradient(145deg,#fff,#f5faf7); box-shadow:0 18px 45px rgb(25 70 55 / .07); }
+.weekly-summary-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; }
+.weekly-summary-heading h2 { color:#183d33; font-family:var(--font-display-app); font-size:clamp(1.3rem,2vw,1.8rem); font-weight:760; }
+.weekly-summary-heading p:not(.eyebrow) { margin-top:.25rem; color:var(--muted-foreground); font-size:.9rem; }
+.weekly-summary-period { padding:.45rem .65rem; border-radius:999px; background:#eaf3ee; color:#42665b; font-size:.75rem; font-weight:700; white-space:nowrap; }
+.weekly-summary-main { display:grid; grid-template-columns:minmax(230px,.72fr) minmax(0,1.5fr); gap:.85rem; }
+.weekly-summary-registration { display:grid; align-content:start; gap:.35rem; padding:1.2rem; border-radius:1.2rem; color:#fff; background:linear-gradient(145deg,#176b50,#245a49); }
+.weekly-summary-registration > svg { width:1.2rem; height:1.2rem; margin-bottom:.4rem; opacity:.9; }
+.weekly-summary-registration > span { font-size:.75rem; font-weight:700; opacity:.82; }
+.weekly-summary-registration > strong { font-family:var(--font-display-app); font-size:2.25rem; line-height:1; }
+.weekly-summary-registration > strong small { font-size:1rem; font-weight:650; opacity:.75; }
+.weekly-summary-registration p { margin-top:.35rem; font-size:.75rem; line-height:1.55; opacity:.8; }
+.weekly-summary-insights { display:grid; gap:.65rem; }
+.weekly-summary-insights article { display:grid; grid-template-columns:auto minmax(0,1fr); gap:.75rem; padding:1rem; border:1px solid #dce9e3; border-radius:1rem; background:#fff; }
+.weekly-summary-insights article > svg { width:1.1rem; height:1.1rem; margin-top:.1rem; color:#27785e; }
+.weekly-summary-insights article[data-tone='attention'] > svg { color:#a06b28; }
+.weekly-summary-insights div { display:grid; gap:.15rem; }
+.weekly-summary-insights span { color:#678078; font-size:.68rem; font-weight:750; letter-spacing:.04em; text-transform:uppercase; }
+.weekly-summary-insights strong { color:#203f36; font-size:.88rem; line-height:1.4; }
+.weekly-summary-insights p { color:var(--muted-foreground); font-size:.74rem; line-height:1.45; }
+.weekly-summary-context { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.65rem; }
+.weekly-summary-context > span { display:flex; align-items:center; gap:.65rem; padding:.75rem .9rem; border-radius:.9rem; background:#edf4f0; color:#4f6a61; }
+.weekly-summary-context svg { width:1.05rem; height:1.05rem; flex:none; }
+.weekly-summary-context > span > span { display:grid; font-size:.68rem; }
+.weekly-summary-context strong { color:#24453b; font-size:.78rem; }
+.weekly-summary-actions { display:flex; justify-content:flex-end; gap:.6rem; }
+.weekly-summary-note,.weekly-summary-error { padding:.7rem .8rem; border-radius:.8rem; font-size:.78rem; }
+.weekly-summary-note { background:#eef5ff; color:#355472; }
+.weekly-summary-error { background:#fff1ee; color:#8a473d; }
+.weekly-summary-details { border-top:1px solid #dce9e3; padding-top:.8rem; }
+.weekly-summary-details > summary { display:flex; align-items:center; justify-content:center; gap:.35rem; min-height:40px; color:#41655b; cursor:pointer; font-size:.78rem; font-weight:750; list-style:none; }
+.weekly-summary-details > summary svg { width:.9rem; transition:transform .16s ease; }
+.weekly-summary-details[open] > summary svg { transform:rotate(180deg); }
+.weekly-summary-details .adherence-panel { margin-top:.8rem; box-shadow:none; }
+@media (max-width:760px) { .weekly-summary { border-radius:1.15rem; } .weekly-summary-heading,.weekly-summary-actions { display:grid; } .weekly-summary-period { width:max-content; } .weekly-summary-main { grid-template-columns:1fr; } .weekly-summary-context { grid-template-columns:1fr; } .weekly-summary-actions button { width:100%; } }
+@media (prefers-reduced-motion:reduce) { .weekly-summary-details > summary svg { transition:none; } }
