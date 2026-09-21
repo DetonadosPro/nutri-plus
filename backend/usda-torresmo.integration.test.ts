@@ -24,13 +24,17 @@ describe('USDA Torresmo catalog entry', () => {
     expect(await db.prepare(`SELECT count(*)::int count FROM food_measures WHERE food_id=?`).get(food.id)).toEqual({count:0});
 
     const nutrients = Object.fromEntries((await db.prepare(`SELECT nutrient_code,numeric_value,raw_value,status FROM food_nutrients WHERE food_id=?`).all<any>(food.id)).map((row:any)=>[row.nutrient_code,row]));
+    expect(Object.keys(nutrients)).toHaveLength(41);
     expect(nutrients.energia_kcal.numeric_value).toBe(544);
+    expect(nutrients.energia_kj).toMatchObject({numeric_value:2276,raw_value:'2276',status:'numeric'});
     expect(nutrients.proteina_g.numeric_value).toBe(61.3);
     expect(nutrients.lipideos_g.numeric_value).toBe(31.3);
     expect(nutrients.carboidrato_g.numeric_value).toBe(0);
     expect(nutrients.sodio_mg.numeric_value).toBe(1818);
     expect(nutrients.selenio_mcg.numeric_value).toBe(41);
     expect(nutrients.trans_g).toMatchObject({numeric_value:null,raw_value:'NA',status:'missing'});
+    expect(nutrients.acucar_adicao_g).toMatchObject({numeric_value:null,raw_value:'NA',status:'missing'});
+    expect(nutrients.proteina_animal_g).toMatchObject({numeric_value:null,raw_value:'NA',status:'missing'});
   });
 
   it('scales the stored per-100-g values without portion copies', async () => {

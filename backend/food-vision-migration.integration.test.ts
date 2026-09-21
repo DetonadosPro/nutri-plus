@@ -34,7 +34,7 @@ function runNormalMigration(name:string){
   execFileSync(process.execPath,['--import','tsx','--eval',runner],{cwd:projectDir,env:{...process.env,DATABASE_URL:schemaUrl(name)},stdio:'pipe'});
 }
 
-describe.runIf(enabled)('migrations 024 a 027 em PostgreSQL temporário',()=>{
+describe.runIf(enabled)('migrations PostgreSQL em banco limpo e com dados legados',()=>{
   beforeAll(async()=>{for(const name of schemas)await createSchema(name)},30_000);
   afterAll(async()=>{for(const name of schemas)await dropSchema(name);await admin!.end()},30_000);
 
@@ -50,6 +50,12 @@ describe.runIf(enabled)('migrations 024 a 027 em PostgreSQL temporário',()=>{
     expect((await client.query(`SELECT count(*)::int AS count FROM schema_migrations WHERE version='025_simple_omelet.sql'`)).rows[0].count).toBe(1);
     expect((await client.query(`SELECT count(*)::int AS count FROM schema_migrations WHERE version='026_meal_plans.sql'`)).rows[0].count).toBe(1);
     expect((await client.query(`SELECT count(*)::int AS count FROM schema_migrations WHERE version='027_meal_plan_canonical_meals.sql'`)).rows[0].count).toBe(1);
+    expect((await client.query(`SELECT count(*)::int AS count FROM schema_migrations WHERE version='028a_prepare_usda_nutrients.sql'`)).rows[0].count).toBe(1);
+    expect((await client.query(`SELECT count(*)::int AS count FROM schema_migrations WHERE version='029_usda_torresmo.sql'`)).rows[0].count).toBe(1);
+    expect((await client.query(`SELECT count(*)::int AS count FROM schema_migrations WHERE version='030_usda_torresmo_completeness.sql'`)).rows[0].count).toBe(1);
+    expect((await client.query(`SELECT count(*)::int AS count FROM nutrients`)).rows[0].count).toBe(41);
+    expect((await client.query(`SELECT count(*)::int AS count FROM food_nutrients fn JOIN foods f ON f.id=fn.food_id WHERE f.source='USDA' AND f.source_code='167961'`)).rows[0].count).toBe(41);
+    expect((await client.query(`SELECT numeric_value::float8 AS value,raw_value,status FROM food_nutrients fn JOIN foods f ON f.id=fn.food_id WHERE f.source='USDA' AND f.source_code='167961' AND fn.nutrient_code='energia_kj'`)).rows[0]).toMatchObject({value:2276,raw_value:'2276',status:'numeric'});
     expect((await client.query(`SELECT count(*)::int AS count FROM information_schema.tables WHERE table_schema=current_schema() AND table_name IN ('meal_plans','meal_plan_meals','meal_plan_items')`)).rows[0].count).toBe(3);
     expect((await client.query(`SELECT data_type,is_nullable FROM information_schema.columns WHERE table_schema=current_schema() AND table_name='meal_plan_items' AND column_name='nutrient_snapshot'`)).rows[0]).toMatchObject({data_type:'jsonb',is_nullable:'YES'});
     expect((await client.query(`SELECT column_name FROM information_schema.columns WHERE table_schema=current_schema() AND table_name='meal_plan_meals' AND column_name='meal_type'`)).rows[0].column_name).toBe('meal_type');
