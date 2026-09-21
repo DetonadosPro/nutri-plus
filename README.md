@@ -1,6 +1,6 @@
 # Nutri+
 
-Sistema para acompanhamento nutricional de pacientes e nutricionistas, executável localmente ou em servidor. A base alimentar ativa é a TBCA, com 5.874 alimentos e 41 componentes por 100 g. Os 597 alimentos TACO permanecem inativos e são usados somente como referência de curadoria.
+Sistema para acompanhamento nutricional de pacientes e nutricionistas, executável localmente ou em servidor. A base principal é a TBCA, com 5.874 alimentos e 41 componentes por 100 g; alimentos externos entram de forma aditiva, com fonte explícita, como o Torresmo USDA. A TACO permanece preservada no repositório somente como referência de curadoria e não participa da busca ativa.
 
 ## Organização
 

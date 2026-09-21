@@ -354,7 +354,7 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
       expect(day.foodComplete).toBe(false);
       await db
         .prepare(
-          "INSERT INTO nutrients(code,name,tagname,unit,nutrient_group) VALUES('energia_kcal','Energia','ENERC','kcal','energy')",
+          "INSERT INTO nutrients(code,name,tagname,unit,nutrient_group) VALUES('energia_kcal','Energia','ENERC','kcal','energy') ON CONFLICT(code) DO NOTHING",
         )
         .run();
       await db
@@ -367,7 +367,8 @@ describe.skipIf(process.env.NUTRI_RUN_ACTIVITY_TESTS !== "true")(
           `INSERT INTO nutrients(code,name,tagname,unit,nutrient_group) VALUES
           ('proteina_g','Proteína','PROCNT','g','macro'),
           ('carboidrato_g','Carboidrato','CHOCDF','g','macro'),
-          ('lipideos_g','Lipídeos','FAT','g','macro')`,
+          ('lipideos_g','Lipídeos','FAT','g','macro')
+          ON CONFLICT(code) DO NOTHING`,
         )
         .run();
       await db

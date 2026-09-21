@@ -30,11 +30,11 @@ Os antigos endereços `www`, `pro` e `admin` redirecionam para o domínio princi
 
 A fonte nutricional ativa é a TBCA versionada em `backend/data/tbca/tbca completa normalizada.json`: 5.874 códigos únicos e 41 componentes por alimento. O importador preserva `0` como zero real, `tr` como traço e valores ausentes como `missing`.
 
-Os 597 alimentos TACO antigos permanecem inativos. Eles são lidos durante a geração da curadoria apenas para sinalizar equivalentes fundamentais da dieta brasileira; nutrientes TACO não são copiados e a busca não depende da TACO em runtime. O UPSERT TBCA usa `(source, source_code)`, portanto pode ser repetido sem duplicar identidades ou valores.
+O arquivo TACO com 597 alimentos permanece como referência versionada. Ele é lido durante a geração da curadoria apenas para sinalizar equivalentes fundamentais da dieta brasileira; nutrientes TACO não são copiados para a base ativa e a busca não depende da TACO em runtime. O UPSERT TBCA usa `(source, source_code)`, portanto pode ser repetido sem duplicar identidades ou valores. Alimentos externos, como o Torresmo USDA, usam identidade e fonte próprias e não alteram os fingerprints oficiais da TBCA.
 
 ## Modelo de dados
 
-- `foods`: 5.874 identidades TBCA ativas, 597 identidades TACO inativas e a camada de curadoria da busca;
+- `foods`: 5.874 identidades TBCA ativas, alimentos externos identificados pela própria fonte, eventuais identidades TACO legadas inativas e a camada de curadoria da busca;
 - `nutrients`: catálogo versionado de componentes;
 - `food_nutrients`: valor, representação original e estado `numeric`, `trace` ou `missing`;
 - `nutrition_import_runs`: trilha de cada importação;
