@@ -143,6 +143,7 @@ export function PatientApp({
   } | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [weightOpen, setWeightOpen] = useState(false);
+  const [weightDate, setWeightDate] = useState(today);
   const [selfGoalsOpen, setSelfGoalsOpen] = useState(false);
   const refreshRequest = useRef(0);
 
@@ -373,6 +374,10 @@ export function PatientApp({
                   await refreshPatientData();
                   success('Água atualizada.');
                 }}
+                onWeight={professionalMode ? () => {
+                  setWeightDate(homeDate);
+                  setWeightOpen(true);
+                } : undefined}
                 />
               </>
             )}
@@ -430,7 +435,10 @@ export function PatientApp({
             {active === 'profile' && (
               <ProfileArea
                 summary={summary}
-                onWeight={() => setWeightOpen(true)}
+                onWeight={() => {
+                  setWeightDate(today);
+                  setWeightOpen(true);
+                }}
                 onGoals={selfPatientId ? () => setSelfGoalsOpen(true) : undefined}
               />
             )}
@@ -577,6 +585,8 @@ export function PatientApp({
       <WeightDialog
         open={weightOpen}
         onOpenChange={setWeightOpen}
+        initialDate={weightDate}
+        initialWeightKg={summary.weight?.weight_kg ?? null}
         onSaved={async () => {
           await refreshPatientData();
           success('Peso registrado.');
@@ -1283,14 +1293,24 @@ function WeightDialog({
   open,
   onOpenChange,
   onSaved,
+  initialDate,
+  initialWeightKg,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSaved: () => void | Promise<void>;
+  initialDate?: string;
+  initialWeightKg?: number | null;
 }) {
-  const [weightKg, setWeightKg] = useState('80');
-  const [date, setDate] = useState(brazilNow().date);
+  const [weightKg, setWeightKg] = useState('');
+  const [date, setDate] = useState(initialDate ?? brazilNow().date);
   const [error, setError] = useState('');
+  useEffect(() => {
+    if (!open) return;
+    setDate(initialDate ?? brazilNow().date);
+    setWeightKg(initialWeightKg == null ? '' : String(initialWeightKg));
+    setError('');
+  }, [initialDate, initialWeightKg, open]);
   async function save() {
     const parsedWeight = Number(weightKg);
     if (!Number.isFinite(parsedWeight) || parsedWeight <= 0) {

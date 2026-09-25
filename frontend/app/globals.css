@@ -1158,6 +1158,27 @@
     color: var(--patient-muted);
     font-size: 0.625rem;
   }
+  .patient-weight-action {
+    margin-top: 0.65rem;
+    display: flex;
+    width: 100%;
+    min-height: 2rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    border-radius: 0.7rem;
+    background: var(--patient-blue-soft);
+    color: var(--patient-blue);
+    font-size: 0.65rem;
+    font-weight: 750;
+    transition: background-color 160ms ease, transform 160ms ease;
+  }
+  .patient-weight-action:hover {
+    background: #dceef5;
+  }
+  .patient-weight-action:active {
+    transform: scale(0.98);
+  }
   .patient-water-actions {
     display: flex;
     gap: 0.3rem;

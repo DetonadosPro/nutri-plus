@@ -6,6 +6,7 @@ import {
   Flame,
   Minus,
   Plus,
+  Scale,
   Utensils,
 } from 'lucide-react';
 import { formatNumber, progressPercent } from '@/lib/nutrition-format';
@@ -30,6 +31,7 @@ type PatientDayHomeProps = {
   onDelete: (entryId: number) => void;
   onCopy: (meal: Meal) => void;
   onWater: (value: number) => void;
+  onWeight?: () => void;
   onDiary: () => void;
   onProgress: () => void;
 };
@@ -45,6 +47,7 @@ export function PatientDayHome({
   onDelete,
   onCopy,
   onWater,
+  onWeight,
   onDiary,
   onProgress,
 }: PatientDayHomeProps) {
@@ -245,6 +248,20 @@ export function PatientDayHome({
                 }}
               />
             </div>
+            {onWeight && (
+              <button
+                type="button"
+                className="patient-weight-action"
+                onClick={onWeight}
+              >
+                <Scale className="size-4" />
+                <span>
+                  {weightKg == null
+                    ? 'Registrar meu peso'
+                    : `${formatNumber(weightKg, 1)} kg · alterar peso`}
+                </span>
+              </button>
+            )}
           </article>
         </aside>
 
