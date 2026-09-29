@@ -61,3 +61,5 @@ dist/
 /.codex-local/
 /imagens reais/
 /certificado-android/
+
+/.codex-remote-attachments/
